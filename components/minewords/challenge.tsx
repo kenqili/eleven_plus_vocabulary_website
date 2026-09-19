@@ -1,6 +1,13 @@
 "use client";
 import { BookOpen, ArrowRight } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import {
+  MASTERY_TARGET,
+  QUESTION_TYPES,
+  TYPE_LABELS,
+  type QuestionType,
+} from "@/lib/challenge/config";
 import Header from "./header";
 import ProgressPanel from "./progress-panel";
 import WordExplanation from "./word-explanation";
@@ -24,15 +31,46 @@ export default function Challenge() {
         </div>
         <div className="study-layout">
           <section>
+            <div className="practice-types">
+              <span id="practice-types-label">Practise</span>
+              <ToggleGroup
+                type="multiple"
+                value={study.selectedTypes}
+                onValueChange={(types) =>
+                  study.selectTypes(types as QuestionType[])
+                }
+                aria-labelledby="practice-types-label"
+                disabled={busy}
+              >
+                {QUESTION_TYPES.map((type) => (
+                  <ToggleGroupItem
+                    key={type}
+                    value={type}
+                    className={`practice-type practice-type-${type}`}
+                  >
+                    {TYPE_LABELS[type]}s
+                  </ToggleGroupItem>
+                ))}
+              </ToggleGroup>
+              <span className="muted">Select one or more</span>
+            </div>
             <div className="session-bar">
               <span>{demo ? "TRY FIVE WORDS" : "YOUR PRACTICE"}</span>
-              <span>Choose the definition</span>
+              <span>
+                {question ? TYPE_LABELS[question.type] : "Mixed practice"}
+              </span>
             </div>
-            <article className="question-card" aria-busy={busy}>
+            <article
+              className={`question-card question-${question?.type || "def"}`}
+              aria-busy={busy}
+            >
               {question ? (
                 <>
                   <div className="question-meta">
-                    <span>WORD {String(question.number).padStart(2, "0")}</span>
+                    <span>
+                      {TYPE_LABELS[question.type].toUpperCase()} · WORD{" "}
+                      {String(question.number).padStart(2, "0")}
+                    </span>
                     <span className="pill">
                       {question.seen <= 1
                         ? "New word"
@@ -40,18 +78,18 @@ export default function Challenge() {
                     </span>
                   </div>
                   <h2>{question.word}</h2>
-                  <p>Which definition matches this word?</p>
+                  <p>{question.prompt}</p>
                   <div className="answers">
                     {question.choices.map((choice, i) => (
                       <button
                         key={`${question.id}-${i}`}
-                        className={`answer ${feedback && choice === feedback.definition ? "correct" : ""} ${feedback && feedback.selected === i && !feedback.correct ? "incorrect" : ""}`}
+                        className={`answer ${feedback && choice === feedback.answer ? "correct" : ""} ${feedback && feedback.selected === i && !feedback.correct ? "incorrect" : ""}`}
                         disabled={busy || Boolean(feedback)}
                         onClick={() => void study.answer(i)}
                       >
                         <span>{String.fromCharCode(65 + i)}</span>
                         {choice}
-                        {feedback && choice === feedback.definition && (
+                        {feedback && choice === feedback.answer && (
                           <span aria-label="Correct answer">✓</span>
                         )}
                       </button>
@@ -64,7 +102,7 @@ export default function Challenge() {
                           ? "Correct. Nicely done!"
                           : feedback.skipped
                             ? "Take a moment to learn this one."
-                            : "Not quite. Here’s the meaning."}
+                            : "Not quite. Let’s learn this one."}
                       </strong>
                       <WordExplanation word={feedback} />
                       {!demo && !feedback.correct && (
@@ -78,10 +116,10 @@ export default function Challenge() {
                   <div className="question-footer">
                     <span>
                       {Math.min(
-                        3,
+                        MASTERY_TARGET,
                         question.correctCount + (feedback?.correct ? 1 : 0),
                       )}{" "}
-                      of 3 correct to master this word
+                      of {MASTERY_TARGET} correct to master this word
                     </span>
                     {feedback ? (
                       <button
@@ -107,13 +145,11 @@ export default function Challenge() {
                   <div className="eyebrow">
                     {demo ? "SAMPLE COMPLETE" : "CHALLENGE COMPLETE"}
                   </div>
-                  <h2>
-                    {demo ? "Keep discovering." : "Every word, mastered."}
-                  </h2>
+                  <h2>{demo ? "Keep discovering." : "Practice complete."}</h2>
                   <p>
                     {demo
                       ? "Make the full word collection part of your routine. Create an account to explore membership."
-                      : "You have answered every word correctly three times. Excellent work."}
+                      : `Every available word in your selected practice types has been answered correctly ${MASTERY_TARGET} times. Select other types to keep practising.`}
                   </p>
                   {demo && (
                     <a className="primary-button" href="/account">

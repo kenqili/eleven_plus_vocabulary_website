@@ -1,4 +1,5 @@
 import type { Feedback } from "@/lib/challenge/types";
+import { TYPE_LABELS } from "@/lib/challenge/config";
 
 function display(value: string) {
   return !value?.trim() || /^[—–-]$/.test(value.trim())
@@ -10,6 +11,12 @@ function display(value: string) {
 export default function WordExplanation({ word }: { word: Feedback }) {
   return (
     <dl className="word-explanation">
+      {word.type !== "def" && (
+        <div>
+          <dt>Correct {TYPE_LABELS[word.type].toLowerCase()}</dt>
+          <dd>{word.answer}</dd>
+        </div>
+      )}
       <div>
         <dt>Definition</dt>
         <dd>{word.definition}</dd>

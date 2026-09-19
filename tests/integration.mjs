@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import { writeFileSync, readFileSync, mkdirSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { words } from "../scripts/load-word-bank.mjs";
+import { problems } from "../scripts/load-problem-bank.mjs";
 const origin = process.env.TEST_ORIGIN || "http://localhost:5173";
 if (!["localhost", "127.0.0.1"].includes(new URL(origin).hostname))
   throw Error("Integration tests only run against local development.");
@@ -58,10 +59,28 @@ function sql(text) {
 }
 let userId;
 try {
-  const demo = await call("/api/challenge");
+  const demo = await call("/api/challenge?types=def");
   assert.equal(demo.status, 200);
   assert.equal(demo.data.words.length, Math.min(5, words.length));
   assert.equal(demo.data.stats.total, words.length);
+  for (const type of ["syn", "ant"]) {
+    const sample = await call(`/api/challenge?types=${type}`);
+    assert.equal(sample.status, 200);
+    assert.ok(sample.data.words.length > 0);
+    for (const question of sample.data.words) {
+      assert.equal(question.type, type);
+      assert.equal(
+        question.answer,
+        problems.find((p) => p.id === `${type}:${question.wordId}`).answer,
+      );
+      assert.equal(
+        question.choices.filter((x) => x === question.answer).length,
+        1,
+      );
+    }
+  }
+  assert.equal((await call("/api/challenge?types=")).status, 400);
+  assert.equal((await call("/api/challenge?types=invalid")).status, 400);
   const missingOrigin = await call(
     "/api/auth/register",
     { email: `${stamp}@example.test`, password },
@@ -93,12 +112,14 @@ try {
     `INSERT INTO subscriptions (id,user_id,status,period_end,price_id,checked_at) VALUES ('test-${stamp}','${userId}','active',${Math.floor(Date.now() / 1000) + 3600},'',${Date.now()});`,
   );
   const [first, same] = await Promise.all([
-    call("/api/challenge", { action: "next" }),
-    call("/api/challenge", { action: "next" }),
+    call("/api/challenge", { action: "next", types: ["def"] }),
+    call("/api/challenge", { action: "next", types: ["def"] }),
   ]);
   assert.equal(first.status, 200, JSON.stringify(first.data));
   assert.equal(first.data.question.id, same.data.question.id);
   const q = first.data.question;
+  assert.equal(q.type, "def");
+  assert.equal("answer" in q, false);
   const correct = q.choices.indexOf(
     words.find((w) => w.id === q.wordId).definition,
   );
@@ -159,10 +180,111 @@ try {
   const resumed = await call("/api/challenge", { action: "next" });
   assert.equal(resumed.data.question.id, next.data.question.id);
   assert.equal(resumed.data.stats.correct, 1);
+  for (const types of [[], ["invalid"]])
+    assert.equal(
+      (await call("/api/challenge", { action: "next", types })).status,
+      400,
+    );
+  const syn = await call("/api/challenge", { action: "next", types: ["syn"] });
+  assert.equal(syn.data.question.type, "syn");
+  const synProblem = problems.find(
+    (p) => p.id === `syn:${syn.data.question.wordId}`,
+  );
+  const synIndex = syn.data.question.choices.indexOf(synProblem.answer);
+  assert.ok(synIndex >= 0);
+  // If a pending question changes type, the old question cannot earn credit.
+  const ant = await call("/api/challenge", { action: "next", types: ["ant"] });
+  assert.equal(ant.data.question.type, "ant");
+  assert.equal(
+    (
+      await call("/api/challenge", {
+        action: "answer",
+        id: syn.data.question.id,
+        selected: synIndex,
+        elapsed: 1,
+      })
+    ).status,
+    409,
+  );
+  const antProblem = problems.find(
+    (p) => p.id === `ant:${ant.data.question.wordId}`,
+  );
+  const antIndex = ant.data.question.choices.indexOf(antProblem.answer);
+  const antonymAnswer = await call("/api/challenge", {
+    action: "answer",
+    id: ant.data.question.id,
+    selected: antIndex,
+    elapsed: 1,
+  });
+  assert.equal(antonymAnswer.data.feedback.correct, true);
+  assert.equal(antonymAnswer.data.feedback.answer, antProblem.answer);
+  assert.equal(antonymAnswer.data.feedback.type, "ant");
+  const syn2 = await call("/api/challenge", { action: "next", types: ["syn"] });
+  const syn2Answer = problems.find(
+    (p) => p.id === `syn:${syn2.data.question.wordId}`,
+  ).answer;
+  const wrongIndex = syn2.data.question.choices.findIndex(
+    (x) => x !== syn2Answer,
+  );
+  const wrong = await call("/api/challenge", {
+    action: "answer",
+    id: syn2.data.question.id,
+    selected: wrongIndex,
+    elapsed: 1,
+  });
+  assert.equal(wrong.data.feedback.correct, false);
+  assert.equal(wrong.data.feedback.answer, syn2Answer);
+  assert.equal(wrong.data.stats.correct, 2);
+  // Re-create an old three-correct word. Other words are mastered to make selection deterministic.
+  const target = "abandon";
+  const tuples = words
+    .map(
+      (word) =>
+        `('${userId}','${word.id.replaceAll("'", "''")}',${word.id === target ? 3 : 5},0,NULL)`,
+    )
+    .join(",");
+  sql(
+    `INSERT INTO progress (user_id,word_id,correct,seen,retry_at) VALUES ${tuples} ON CONFLICT(user_id,word_id) DO UPDATE SET correct=excluded.correct,retry_at=NULL;`,
+  );
+  for (const [type, expectedMastered] of [
+    ["def", words.length - 1],
+    ["syn", words.length],
+  ]) {
+    const practice = await call("/api/challenge", {
+      action: "next",
+      types: [type],
+    });
+    assert.equal(practice.data.question.wordId, target);
+    assert.equal(practice.data.question.correctCount, type === "def" ? 3 : 4);
+    const expected = problems.find((p) => p.id === `${type}:${target}`).answer;
+    const selected = practice.data.question.choices.indexOf(expected);
+    const data = {
+      action: "answer",
+      id: practice.data.question.id,
+      selected,
+      elapsed: 1,
+    };
+    const result = await call("/api/challenge", data);
+    assert.equal(result.data.feedback.correct, true);
+    assert.equal(result.data.stats.mastered, expectedMastered);
+    assert.equal(
+      (await call("/api/challenge", data)).data.stats.mastered,
+      expectedMastered,
+    );
+  }
+  assert.equal(
+    (
+      await call("/api/challenge", {
+        action: "next",
+        types: ["def", "syn", "ant"],
+      })
+    ).data.complete,
+    true,
+  );
   sql(`UPDATE subscriptions SET status='canceled' WHERE user_id='${userId}';`);
   assert.equal((await call("/api/challenge", { action: "next" })).status, 402);
   console.log(
-    "PASS: registration, CSRF, cookies, login/logout, membership gating, concurrent questions, answer replay, saved progress, invalid answers, cancellation.",
+    "PASS: accounts, CSRF, membership, all three question types, filters, replaced-question protection, correct/wrong answers, replay safety, saved progress, five-correct mastery and cancellation.",
   );
 } finally {
   if (userId)

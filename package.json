@@ -12,11 +12,13 @@
     "start": "node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js dev --config dist/server/wrangler.json --local --persist-to .wrangler/state --ip 127.0.0.1 --inspector-port 0",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate",
-    "test": "node --test tests/core.test.mjs",
+    "test": "node --test tests/core.test.mjs tests/questions.test.mjs",
     "test:integration": "node tests/integration.mjs",
     "typecheck": "tsc --noEmit",
     "words:validate": "node scripts/validate-words.mjs",
-    "format": "prettier --write app components/minewords lib/server lib/client lib/challenge db/schema.ts tests types README.md"
+    "format": "prettier --write app components/minewords lib/server lib/client lib/challenge db/schema.ts tests types README.md",
+    "questions:generate": "node scripts/generate-questions.mjs",
+    "questions:validate": "node scripts/validate-questions.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

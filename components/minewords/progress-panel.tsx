@@ -1,6 +1,7 @@
 import { Check, GraduationCap } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import type { Stats } from "@/lib/challenge/types";
+import { MASTERY_TARGET } from "@/lib/challenge/config";
 export default function ProgressPanel({
   stats,
   demo,
@@ -13,7 +14,10 @@ export default function ProgressPanel({
       <div className="progress-panel">
         <GraduationCap size={27} />
         <h3>Make every word yours.</h3>
-        <p>Answer a word correctly three times to master it.</p>
+        <p>
+          Answer a word correctly {MASTERY_TARGET} times across your chosen
+          question types to master it.
+        </p>
         <div className="mastered">
           <strong>{stats.mastered}</strong>
           <span>words mastered</span>

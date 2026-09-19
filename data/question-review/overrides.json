@@ -1,0 +1,855 @@
+{
+  "ant:composition": {
+    "exclude": true,
+    "reason": "A composed work is not the opposite of decomposition, which names a different process."
+  },
+  "ant:conscience": {
+    "exclude": true,
+    "reason": "A moral faculty is not the opposite of immoral behaviour."
+  },
+  "ant:enterprise": {
+    "exclude": true,
+    "reason": "A business or project has no simple lexical opposite; inactivity contrasts with initiative, a different sense."
+  },
+  "ant:explanation": {
+    "exclude": true,
+    "reason": "Confusion can persist despite an explanation and is not its antonym."
+  },
+  "ant:merchant": {
+    "exclude": true,
+    "reason": "Customer is a reciprocal role, not an opposite; a merchant is also a buyer."
+  },
+  "ant:raiment": {
+    "exclude": true,
+    "reason": "Clothing and the state of nakedness are not matching lexical opposites."
+  },
+  "ant:scripture": {
+    "exclude": true,
+    "reason": "Secular writing is a contrasting category, not a lexical opposite of sacred writings."
+  },
+  "ant:beck": {
+    "exclude": true,
+    "reason": "A beckoning gesture has no clear antonym among the supplied nouns."
+  },
+  "ant:complement": {
+    "exclude": true,
+    "reason": "A mismatch is not an antonym of a completing or enhancing addition."
+  },
+  "ant:conflagration": {
+    "exclude": true,
+    "reason": "Extinguishment ends a fire; it is not the antonym of a fire."
+  },
+  "ant:evaluation": {
+    "exclude": true,
+    "reason": "Neglect is not an antonym of assessment."
+  },
+  "ant:harbour": {
+    "exclude": true,
+    "reason": "The open sea is a contrasting location, not an antonym of a port."
+  },
+  "ant:incision": {
+    "exclude": true,
+    "reason": "Closure is an action or state, not the lexical opposite of a surgical cut."
+  },
+  "ant:inhabitants": {
+    "exclude": true,
+    "reason": "Visitors are contrasting occupants; the roles are not lexical opposites."
+  },
+  "ant:pigment": {
+    "exclude": true,
+    "reason": "Bleach removes colour but is not an antonym of a colouring substance."
+  },
+  "ant:slit": {
+    "exclude": true,
+    "reason": "A closure is not the lexical opposite of a narrow cut."
+  },
+  "ant:vent": {
+    "exclude": true,
+    "reason": "A seal closes a vent; this is an association rather than an antonym."
+  },
+  "ant:fissure": {
+    "exclude": true,
+    "reason": "Seal is an action or object, not an antonym of a crack."
+  },
+  "ant:crevice": {
+    "exclude": true,
+    "reason": "A solid surface is not a lexical antonym of a crack."
+  },
+  "ant:adolescent": {
+    "exclude": true,
+    "reason": "Adult and infant flank adolescence; neither is a unique lexical opposite."
+  },
+  "ant:ingredient": {
+    "exclude": true,
+    "reason": "A part and its whole are a relation, not antonyms."
+  },
+  "ant:shack": {
+    "exclude": true,
+    "reason": "A mansion differs in size and quality but is not a lexical antonym of a hut."
+  },
+  "ant:cellar": {
+    "exclude": true,
+    "reason": "Attic is a contrasting location, not a lexical antonym of basement."
+  },
+  "ant:notion": {
+    "exclude": true,
+    "reason": "An idea or belief can be factual; fact is not its antonym."
+  },
+  "ant:hind": {
+    "exclude": true,
+    "reason": "Stag is a male counterpart, not a lexical antonym of female deer."
+  },
+  "ant:proxy": {
+    "exclude": true,
+    "reason": "Principal is a represented role, not a lexical antonym of representative."
+  },
+  "ant:blot": {
+    "exclude": true,
+    "reason": "Clean mark is not an established opposite of stain."
+  },
+  "ant:chore": {
+    "exclude": true,
+    "reason": "Pleasure is a feeling, not the lexical opposite of a routine task."
+  },
+  "ant:tepid": {
+    "exclude": true,
+    "reason": "Both hot and cold contrast with lukewarm; no unique directional opposite exists."
+  },
+  "syn:affable": {
+    "answer": "sociable",
+    "reason": "Choose a closer relation matching the taught sense, rather than a broad association or mismatched part of speech."
+  },
+  "syn:oppress": {
+    "answer": "persecute",
+    "reason": "Choose a closer relation matching the taught sense, rather than a broad association or mismatched part of speech."
+  },
+  "syn:pigment": {
+    "answer": "colouring",
+    "reason": "Choose a closer relation matching the taught sense, rather than a broad association or mismatched part of speech."
+  },
+  "syn:prose": {
+    "answer": "ordinary writing",
+    "reason": "Choose a closer relation matching the taught sense, rather than a broad association or mismatched part of speech."
+  },
+  "syn:rural": {
+    "answer": "pastoral",
+    "reason": "Choose a closer relation matching the taught sense, rather than a broad association or mismatched part of speech."
+  },
+  "syn:urban": {
+    "answer": "metropolitan",
+    "reason": "Choose a closer relation matching the taught sense, rather than a broad association or mismatched part of speech."
+  },
+  "syn:extravagance": {
+    "answer": "excess",
+    "reason": "Choose a closer relation matching the taught sense, rather than a broad association or mismatched part of speech."
+  },
+  "syn:amoral": {
+    "answer": "morally indifferent",
+    "reason": "Choose a closer relation matching the taught sense, rather than a broad association or mismatched part of speech."
+  },
+  "syn:hammock": {
+    "answer": "hanging bed",
+    "reason": "Choose a closer relation matching the taught sense, rather than a broad association or mismatched part of speech."
+  },
+  "syn:artefact": {
+    "answer": "man-made object",
+    "reason": "Choose a closer relation matching the taught sense, rather than a broad association or mismatched part of speech."
+  },
+  "syn:witty": {
+    "answer": "amusing",
+    "reason": "Choose a closer relation matching the taught sense, rather than a broad association or mismatched part of speech."
+  },
+  "syn:vapour": {
+    "answer": "steam",
+    "reason": "Choose a closer relation matching the taught sense, rather than a broad association or mismatched part of speech."
+  },
+  "syn:heed": {
+    "answer": "pay attention",
+    "reason": "Choose a closer relation matching the taught sense, rather than a broad association or mismatched part of speech."
+  },
+  "syn:myriad": {
+    "answer": "multitude",
+    "reason": "Choose a closer relation matching the taught sense, rather than a broad association or mismatched part of speech.",
+    "sense": "a myriad of stars"
+  },
+  "syn:yacht": {
+    "answer": "pleasure boat",
+    "reason": "Choose a closer relation matching the taught sense, rather than a broad association or mismatched part of speech."
+  },
+  "syn:hygienic": {
+    "answer": "sanitary",
+    "reason": "Choose a closer relation matching the taught sense, rather than a broad association or mismatched part of speech."
+  },
+  "syn:break a leg": {
+    "answer": "good luck",
+    "reason": "Supply the common equivalent of the idiom; no supplied synonym was present."
+  },
+  "syn:crack up": {
+    "answer": "burst into laughter",
+    "reason": "Supply the common equivalent in the laughter sense of the idiom.",
+    "sense": "laughing"
+  },
+  "syn:chew the fat": {
+    "answer": "chat",
+    "reason": "Supply the common equivalent of the idiom."
+  },
+  "ant:affable": {
+    "answer": "unfriendly",
+    "reason": "Replace a loose contrast or wrong sense with a defensible opposite."
+  },
+  "ant:assiduous": {
+    "answer": "indolent",
+    "reason": "Replace a loose contrast or wrong sense with a defensible opposite."
+  },
+  "ant:deceive": {
+    "answer": "tell the truth",
+    "reason": "Replace a loose contrast or wrong sense with a defensible opposite."
+  },
+  "ant:feign": {
+    "answer": "be genuine",
+    "reason": "Replace a loose contrast or wrong sense with a defensible opposite."
+  },
+  "ant:repent": {
+    "answer": "remain unrepentant",
+    "reason": "Replace a loose contrast or wrong sense with a defensible opposite."
+  },
+  "ant:arid": {
+    "answer": "moist",
+    "reason": "Replace a loose contrast or wrong sense with a defensible opposite."
+  },
+  "ant:sage": {
+    "answer": "fool",
+    "reason": "Replace a loose contrast or wrong sense with a defensible opposite.",
+    "sense": "a person"
+  },
+  "ant:subterranean": {
+    "answer": "aboveground",
+    "reason": "Replace a loose contrast or wrong sense with a defensible opposite."
+  },
+  "ant:mist": {
+    "answer": "clear air",
+    "reason": "Replace a loose contrast or wrong sense with a defensible opposite."
+  },
+  "ant:baffle": {
+    "answer": "enlighten",
+    "reason": "Replace a loose contrast or wrong sense with a defensible opposite."
+  },
+  "ant:brittle": {
+    "answer": "tough",
+    "reason": "Replace a loose contrast or wrong sense with a defensible opposite."
+  },
+  "ant:scalding": {
+    "answer": "cold",
+    "reason": "Replace a loose contrast or wrong sense with a defensible opposite."
+  },
+  "ant:waver": {
+    "answer": "remain firm",
+    "reason": "Replace a loose contrast or wrong sense with a defensible opposite."
+  },
+  "ant:procrastinate": {
+    "answer": "act promptly",
+    "reason": "Replace a loose contrast or wrong sense with a defensible opposite."
+  },
+  "ant:domestic": {
+    "answer": "non-domestic",
+    "reason": "Foreign contrasts with the national sense, which is absent from the taught household definition.",
+    "exclude": true
+  },
+  "syn:commence": {
+    "distractors": [
+      "loathsome",
+      "hammock",
+      "marquee"
+    ],
+    "reason": "Remove an alternative defensible answer from the four options."
+  },
+  "syn:subterfuge": {
+    "distractors": [
+      "vein",
+      "heed",
+      "cellar"
+    ],
+    "reason": "Avoid a near-identical verb distracting from its noun relation."
+  },
+  "syn:condemn": {
+    "distractors": [
+      "crevice",
+      "sway",
+      "cellar"
+    ],
+    "reason": "Remove an alternative defensible answer from the four options."
+  },
+  "syn:imitate": {
+    "distractors": [
+      "severe",
+      "disarray",
+      "cellar"
+    ],
+    "reason": "Remove an alternative defensible answer from the four options."
+  },
+  "syn:apprehend": {
+    "distractors": [
+      "apparent",
+      "peculiar",
+      "cellar"
+    ],
+    "reason": "Remove an alternative defensible answer from the four options.",
+    "sense": "a suspect"
+  },
+  "syn:sagacious": {
+    "distractors": [
+      "myth",
+      "cellar",
+      "fracas"
+    ],
+    "reason": "Remove an alternative defensible answer from the four options."
+  },
+  "syn:salient": {
+    "distractors": [
+      "indolent",
+      "cellar",
+      "lout"
+    ],
+    "reason": "Remove an alternative defensible answer from the four options."
+  },
+  "ant:cordial": {
+    "distractors": [
+      "seize",
+      "cellar",
+      "unsurpassed"
+    ],
+    "reason": "Remove an alternative defensible answer from the four options."
+  },
+  "ant:controversy": {
+    "distractors": [
+      "witty",
+      "cellar",
+      "unfathomable"
+    ],
+    "reason": "Remove an alternative defensible answer from the four options."
+  },
+  "ant:subdued": {
+    "distractors": [
+      "cellar",
+      "vulpine",
+      "auspicious"
+    ],
+    "reason": "Remove an alternative defensible answer from the four options."
+  },
+  "ant:impair": {
+    "distractors": [
+      "cellar",
+      "scoff",
+      "yacht"
+    ],
+    "reason": "Remove an alternative defensible answer from the four options."
+  },
+  "ant:nebulous": {
+    "distractors": [
+      "chore",
+      "cellar",
+      "cordial"
+    ],
+    "reason": "Remove an alternative defensible answer from the four options."
+  },
+  "ant:radiant": {
+    "distractors": [
+      "conscientious",
+      "cellar",
+      "pious"
+    ],
+    "reason": "Remove an alternative defensible answer from the four options.",
+    "sense": "an expression"
+  },
+  "ant:diplomatic": {
+    "distractors": [
+      "crevice",
+      "compliant",
+      "cellar"
+    ],
+    "reason": "Remove an alternative defensible answer from the four options."
+  },
+  "ant:hustle": {
+    "distractors": [
+      "cellar",
+      "trough",
+      "rural"
+    ],
+    "reason": "Remove an alternative defensible answer from the four options."
+  },
+  "ant:meticulous": {
+    "distractors": [
+      "cellar",
+      "abhor",
+      "prose"
+    ],
+    "reason": "Remove an alternative defensible answer from the four options."
+  },
+  "syn:antiquity": {
+    "sense": "a historical period"
+  },
+  "ant:antiquity": {
+    "sense": "a historical period"
+  },
+  "syn:contemporary": {
+    "sense": "describing modern art"
+  },
+  "ant:contemporary": {
+    "sense": "describing modern art"
+  },
+  "syn:apparent": {
+    "sense": "describing an obvious fact"
+  },
+  "ant:apparent": {
+    "sense": "describing an obvious fact"
+  },
+  "syn:fleet": {
+    "sense": "at sea"
+  },
+  "ant:fleet": {
+    "sense": "at sea"
+  },
+  "syn:helix": {
+    "sense": "a shape"
+  },
+  "ant:helix": {
+    "sense": "a shape"
+  },
+  "syn:immerse": {
+    "sense": "in liquid"
+  },
+  "ant:immerse": {
+    "sense": "in liquid"
+  },
+  "syn:matte": {
+    "sense": "a surface finish"
+  },
+  "ant:matte": {
+    "sense": "a surface finish"
+  },
+  "syn:perish": {
+    "sense": "in a disaster"
+  },
+  "ant:perish": {
+    "sense": "in a disaster"
+  },
+  "syn:quaint": {
+    "sense": "describing an old village",
+    "answer": "old-fashioned",
+    "reason": "Use the direct old-fashioned sense, rather than the broader visual association picturesque."
+  },
+  "ant:quaint": {
+    "sense": "describing an old village"
+  },
+  "syn:rigid": {
+    "sense": "a material"
+  },
+  "ant:rigid": {
+    "sense": "a material"
+  },
+  "syn:grave": {
+    "sense": "a warning"
+  },
+  "ant:grave": {
+    "sense": "a warning"
+  },
+  "syn:liable": {
+    "sense": "for damage"
+  },
+  "ant:liable": {
+    "sense": "for damage"
+  },
+  "syn:lofty": {
+    "sense": "a tower"
+  },
+  "ant:lofty": {
+    "sense": "a tower"
+  },
+  "syn:margin": {
+    "sense": "of a page"
+  },
+  "ant:margin": {
+    "sense": "of a page"
+  },
+  "syn:oblige": {
+    "sense": "a rule obliges someone to act"
+  },
+  "ant:oblige": {
+    "sense": "a rule obliges someone to act"
+  },
+  "syn:subordinate": {
+    "sense": "a rank"
+  },
+  "ant:subordinate": {
+    "sense": "a rank"
+  },
+  "syn:peculiar": {
+    "sense": "a habit"
+  },
+  "ant:peculiar": {
+    "sense": "a habit"
+  },
+  "syn:stationary": {
+    "sense": "a vehicle"
+  },
+  "ant:stationary": {
+    "sense": "a vehicle"
+  },
+  "syn:summit": {
+    "sense": "of a mountain"
+  },
+  "ant:summit": {
+    "sense": "of a mountain"
+  },
+  "syn:torment": {
+    "sense": "a feeling"
+  },
+  "ant:torment": {
+    "sense": "a feeling"
+  },
+  "syn:volatile": {
+    "sense": "a situation"
+  },
+  "ant:volatile": {
+    "sense": "a situation"
+  },
+  "syn:grit": {
+    "sense": "a personal quality"
+  },
+  "ant:grit": {
+    "sense": "a personal quality"
+  },
+  "syn:rivet": {
+    "sense": "an audience"
+  },
+  "ant:rivet": {
+    "sense": "an audience"
+  },
+  "syn:sanction": {
+    "sense": "permission"
+  },
+  "ant:sanction": {
+    "sense": "permission"
+  },
+  "syn:acid": {
+    "sense": "describing a substance"
+  },
+  "ant:acid": {
+    "sense": "describing a substance"
+  },
+  "syn:coil": {
+    "sense": "a rope, as a verb"
+  },
+  "ant:coil": {
+    "sense": "a rope, as a verb"
+  },
+  "syn:ramble": {
+    "sense": "on foot"
+  },
+  "ant:ramble": {
+    "sense": "on foot"
+  },
+  "syn:sole": {
+    "sense": "the sole survivor"
+  },
+  "ant:sole": {
+    "sense": "the sole survivor"
+  },
+  "syn:wax": {
+    "sense": "the moon"
+  },
+  "ant:wax": {
+    "sense": "the moon"
+  },
+  "syn:slack": {
+    "sense": "about rules"
+  },
+  "ant:slack": {
+    "sense": "a rope"
+  },
+  "syn:blunt": {
+    "sense": "a cutting edge"
+  },
+  "ant:blunt": {
+    "sense": "in speech"
+  },
+  "syn:hawk": {
+    "sense": "goods at a market"
+  },
+  "ant:hawk": {
+    "sense": "goods at a market"
+  },
+  "syn:limp": {
+    "sense": "walking"
+  },
+  "ant:limp": {
+    "sense": "walking"
+  },
+  "syn:obtuse": {
+    "sense": "a person, not an angle"
+  },
+  "ant:obtuse": {
+    "sense": "a person, not an angle"
+  },
+  "syn:acute": {
+    "sense": "pain"
+  },
+  "ant:acute": {
+    "sense": "pain"
+  },
+  "syn:crooked": {
+    "sense": "a line"
+  },
+  "ant:crooked": {
+    "sense": "a line"
+  },
+  "syn:pique": {
+    "sense": "interest"
+  },
+  "ant:pique": {
+    "sense": "interest"
+  },
+  "syn:exile": {
+    "sense": "a punishment"
+  },
+  "ant:exile": {
+    "sense": "a punishment"
+  },
+  "syn:tally": {
+    "sense": "the votes"
+  },
+  "ant:tally": {
+    "sense": "two accounts tally"
+  },
+  "syn:crop": {
+    "sense": "hair, as a verb"
+  },
+  "ant:crop": {
+    "sense": "hair, as a verb"
+  },
+  "syn:club": {
+    "sense": "a weapon"
+  },
+  "ant:club": {
+    "sense": "a weapon"
+  },
+  "syn:abrupt": {
+    "sense": "a change"
+  },
+  "ant:abrupt": {
+    "sense": "a change"
+  },
+  "syn:tangle": {
+    "sense": "threads, as a verb"
+  },
+  "ant:tangle": {
+    "sense": "threads, as a verb"
+  },
+  "syn:twine": {
+    "sense": "a material"
+  },
+  "ant:twine": {
+    "sense": "threads, as a verb"
+  },
+  "syn:stagnant": {
+    "sense": "water"
+  },
+  "ant:stagnant": {
+    "sense": "water"
+  },
+  "syn:mobile": {
+    "sense": "a device"
+  },
+  "ant:mobile": {
+    "sense": "a device"
+  },
+  "syn:dopey": {
+    "sense": "from tiredness"
+  },
+  "ant:dopey": {
+    "sense": "from tiredness"
+  },
+  "syn:sage": {
+    "sense": "a person"
+  },
+  "syn:subtle": {
+    "sense": "a flavour"
+  },
+  "ant:subtle": {
+    "sense": "a hint"
+  },
+  "syn:lean": {
+    "sense": "against a wall"
+  },
+  "ant:lean": {
+    "sense": "against a wall"
+  },
+  "syn:radiant": {
+    "sense": "a light"
+  },
+  "syn:legend": {
+    "sense": "a traditional story"
+  },
+  "ant:legend": {
+    "sense": "a traditional story"
+  },
+  "syn:current": {
+    "sense": "fashion"
+  },
+  "ant:current": {
+    "sense": "fashion"
+  },
+  "syn:potential": {
+    "sense": "a future possibility"
+  },
+  "ant:potential": {
+    "sense": "a future possibility"
+  },
+  "ant:myriad": {
+    "sense": "myriad stars"
+  },
+  "syn:uniform": {
+    "sense": "a pattern"
+  },
+  "ant:uniform": {
+    "sense": "a pattern"
+  },
+  "syn:desire": {
+    "sense": "a feeling"
+  },
+  "ant:desire": {
+    "sense": "a feeling"
+  },
+  "ant:apprehend": {
+    "sense": "a suspect"
+  },
+  "syn:resonate": {
+    "sense": "a sound"
+  },
+  "ant:resonate": {
+    "sense": "a sound"
+  },
+  "syn:sway": {
+    "sense": "in the breeze"
+  },
+  "ant:sway": {
+    "sense": "in the breeze"
+  },
+  "syn:trough": {
+    "sense": "carrying water"
+  },
+  "ant:trough": {
+    "sense": "of a wave"
+  },
+  "syn:vice": {
+    "sense": "a moral quality"
+  },
+  "ant:vice": {
+    "sense": "a moral quality"
+  },
+  "syn:sedate": {
+    "sense": "a manner"
+  },
+  "ant:sedate": {
+    "sense": "a manner"
+  },
+  "syn:superficial": {
+    "sense": "an investigation"
+  },
+  "ant:superficial": {
+    "sense": "an investigation"
+  },
+  "syn:bland": {
+    "sense": "in flavour"
+  },
+  "ant:bland": {
+    "sense": "in flavour"
+  },
+  "syn:insipid": {
+    "sense": "in flavour"
+  },
+  "ant:insipid": {
+    "sense": "in flavour"
+  },
+  "syn:skim": {
+    "sense": "a text"
+  },
+  "ant:skim": {
+    "sense": "a text"
+  },
+  "syn:veteran": {
+    "sense": "in a profession"
+  },
+  "ant:veteran": {
+    "sense": "in a profession"
+  },
+  "syn:kindle": {
+    "sense": "a fire"
+  },
+  "ant:kindle": {
+    "sense": "a feeling"
+  },
+  "syn:dictate": {
+    "sense": "instructions"
+  },
+  "ant:dictate": {
+    "sense": "instructions"
+  },
+  "syn:fester": {
+    "sense": "a problem"
+  },
+  "ant:fester": {
+    "sense": "a wound"
+  },
+  "syn:fringe": {
+    "sense": "of an area"
+  },
+  "ant:fringe": {
+    "sense": "of an area"
+  },
+  "syn:serpentine": {
+    "sense": "a road"
+  },
+  "ant:serpentine": {
+    "sense": "a road"
+  },
+  "syn:demolish": {
+    "sense": "a building"
+  },
+  "ant:demolish": {
+    "sense": "a building"
+  },
+  "syn:flog": {
+    "sense": "goods at a market"
+  },
+  "ant:flog": {
+    "sense": "goods at a market"
+  },
+  "syn:quench": {
+    "sense": "thirst"
+  },
+  "ant:quench": {
+    "sense": "a fire"
+  },
+  "syn:yield": {
+    "sense": "a harvest"
+  },
+  "ant:yield": {
+    "sense": "in a contest"
+  },
+  "syn:myth": {
+    "sense": "a traditional story"
+  },
+  "ant:myth": {
+    "sense": "a false belief"
+  },
+  "ant:vile": {
+    "sense": "morally bad"
+  },
+  "syn:virulent": {
+    "sense": "of a disease"
+  },
+  "ant:virulent": {
+    "sense": "of a disease"
+  }
+}

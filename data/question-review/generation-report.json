@@ -1,0 +1,508 @@
+{
+  "totalWords": 730,
+  "generated": {
+    "syn": 730,
+    "ant": 631
+  },
+  "excluded": [
+    {
+      "word": "choreographer",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "composition",
+      "type": "ant",
+      "reason": "A composed work is not the opposite of decomposition, which names a different process."
+    },
+    {
+      "word": "conscience",
+      "type": "ant",
+      "reason": "A moral faculty is not the opposite of immoral behaviour."
+    },
+    {
+      "word": "enterprise",
+      "type": "ant",
+      "reason": "A business or project has no simple lexical opposite; inactivity contrasts with initiative, a different sense."
+    },
+    {
+      "word": "errand",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "explanation",
+      "type": "ant",
+      "reason": "Confusion can persist despite an explanation and is not its antonym."
+    },
+    {
+      "word": "fleet",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "merchant",
+      "type": "ant",
+      "reason": "Customer is a reciprocal role, not an opposite; a merchant is also a buyer."
+    },
+    {
+      "word": "omen",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "palaeontologist",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "raiment",
+      "type": "ant",
+      "reason": "Clothing and the state of nakedness are not matching lexical opposites."
+    },
+    {
+      "word": "scripture",
+      "type": "ant",
+      "reason": "Secular writing is a contrasting category, not a lexical opposite of sacred writings."
+    },
+    {
+      "word": "sermon",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "abode",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "beck",
+      "type": "ant",
+      "reason": "A beckoning gesture has no clear antonym among the supplied nouns."
+    },
+    {
+      "word": "complement",
+      "type": "ant",
+      "reason": "A mismatch is not an antonym of a completing or enhancing addition."
+    },
+    {
+      "word": "conflagration",
+      "type": "ant",
+      "reason": "Extinguishment ends a fire; it is not the antonym of a fire."
+    },
+    {
+      "word": "device",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "dwelling",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "evaluation",
+      "type": "ant",
+      "reason": "Neglect is not an antonym of assessment."
+    },
+    {
+      "word": "harbour",
+      "type": "ant",
+      "reason": "The open sea is a contrasting location, not an antonym of a port."
+    },
+    {
+      "word": "incision",
+      "type": "ant",
+      "reason": "Closure is an action or state, not the lexical opposite of a surgical cut."
+    },
+    {
+      "word": "inhabitants",
+      "type": "ant",
+      "reason": "Visitors are contrasting occupants; the roles are not lexical opposites."
+    },
+    {
+      "word": "pigment",
+      "type": "ant",
+      "reason": "Bleach removes colour but is not an antonym of a colouring substance."
+    },
+    {
+      "word": "prophecy",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "yacht",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "foam",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "froth",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "slit",
+      "type": "ant",
+      "reason": "A closure is not the lexical opposite of a narrow cut."
+    },
+    {
+      "word": "vent",
+      "type": "ant",
+      "reason": "A seal closes a vent; this is an association rather than an antonym."
+    },
+    {
+      "word": "cork",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "fissure",
+      "type": "ant",
+      "reason": "Seal is an action or object, not an antonym of a crack."
+    },
+    {
+      "word": "crevice",
+      "type": "ant",
+      "reason": "A solid surface is not a lexical antonym of a crack."
+    },
+    {
+      "word": "adolescent",
+      "type": "ant",
+      "reason": "Adult and infant flank adolescence; neither is a unique lexical opposite."
+    },
+    {
+      "word": "conspiracy",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "domestic",
+      "type": "ant",
+      "reason": "Foreign contrasts with the national sense, which is absent from the taught household definition."
+    },
+    {
+      "word": "lea",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "meadow",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "probate",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "probation",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "impale",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "vapour",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "decoy",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "throng",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "marquee",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "atlas",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "ingredient",
+      "type": "ant",
+      "reason": "A part and its whole are a relation, not antonyms."
+    },
+    {
+      "word": "break a leg",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "club",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "baton",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "shack",
+      "type": "ant",
+      "reason": "A mansion differs in size and quality but is not a lexical antonym of a hut."
+    },
+    {
+      "word": "cellar",
+      "type": "ant",
+      "reason": "Attic is a contrasting location, not a lexical antonym of basement."
+    },
+    {
+      "word": "permeate",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "barb",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "tint",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "caption",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "cackle",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "crack up",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "snicker",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "snivel",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "trinket",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "memoir",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "cuisine",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "vein",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "hallmark",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "insignia",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "ploy",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "token",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "empire",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "artefact",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "magma",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "dais",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "tepid",
+      "type": "ant",
+      "reason": "Both hot and cold contrast with lukewarm; no unique directional opposite exists."
+    },
+    {
+      "word": "notion",
+      "type": "ant",
+      "reason": "An idea or belief can be factual; fact is not its antonym."
+    },
+    {
+      "word": "hind",
+      "type": "ant",
+      "reason": "Stag is a male counterpart, not a lexical antonym of female deer."
+    },
+    {
+      "word": "chronicle",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "gadget",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "chore",
+      "type": "ant",
+      "reason": "Pleasure is a feeling, not the lexical opposite of a routine task."
+    },
+    {
+      "word": "proxy",
+      "type": "ant",
+      "reason": "Principal is a represented role, not a lexical antonym of representative."
+    },
+    {
+      "word": "chew the fat",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "bovine",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "canine",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "caprine",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "cervine",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "corvine",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "equine",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "feline",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "leonine",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "lupine",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "murine",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "ovine",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "piscine",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "porcine",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "ursine",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "vulpine",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "settee",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "hammock",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "blot",
+      "type": "ant",
+      "reason": "Clean mark is not an established opposite of stain."
+    },
+    {
+      "word": "jury",
+      "type": "ant",
+      "reason": "No supplied relation"
+    }
+  ],
+  "preferredLibraryAnswers": {
+    "syn": 204,
+    "ant": 166
+  }
+}

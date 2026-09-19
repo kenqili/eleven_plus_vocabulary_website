@@ -1,6 +1,11 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "@/lib/client/api";
+import {
+  QUESTION_TYPES,
+  MASTERY_TARGET,
+  type QuestionType,
+} from "@/lib/challenge/config";
 import type {
   ChallengeState,
   Feedback,
@@ -8,6 +13,10 @@ import type {
   Stats,
 } from "@/lib/challenge/types";
 type DemoWord = {
+  wordId: string;
+  type: QuestionType;
+  prompt: string;
+  answer: string;
   source: import("@/lib/challenge/words").WordSource;
   id: string;
   word: string;
@@ -35,6 +44,11 @@ export function useChallenge() {
     [error, setError] = useState("");
   const [previous, setPrevious] = useState<Feedback | null>(null);
   const [autoNext, setAutoNext] = useState(false);
+  const [selectedTypes, setSelectedTypes] = useState<QuestionType[]>([
+    ...QUESTION_TYPES,
+  ]);
+  const demoProgress = useRef(new Map<string, number>());
+  const demoStats = useRef(initialStats);
   const demoWords = useRef<DemoWord[]>([]),
     demoIndex = useRef(0),
     elapsed = useRef(0),
@@ -46,12 +60,14 @@ export function useChallenge() {
     return word
       ? {
           id: word.id,
-          wordId: word.id,
+          wordId: word.wordId,
+          type: word.type,
+          prompt: word.prompt,
           source: word.source,
           word: word.word,
           number: word.number,
           choices: word.choices,
-          correctCount: 0,
+          correctCount: demoProgress.current.get(word.wordId) || 0,
           seen: 1,
         }
       : null;
@@ -61,15 +77,24 @@ export function useChallenge() {
     setError("");
     try {
       const result = await api<ChallengeState & { words?: DemoWord[] }>(
-        "/api/challenge",
+        `/api/challenge?types=${selectedTypes.join(",")}`,
       );
       if (result.demo) {
         demoWords.current = result.words || [];
         demoIndex.current = 0;
-        setState({ ...result, question: demoQuestion(0) });
+        const question = demoQuestion(0);
+        setState({
+          ...result,
+          stats: { ...demoStats.current, total: result.stats.total },
+          question,
+          complete: !question,
+        });
       } else
         setState(
-          await api<ChallengeState>("/api/challenge", { action: "next" }),
+          await api<ChallengeState>("/api/challenge", {
+            action: "next",
+            types: selectedTypes,
+          }),
         );
       elapsed.current = 0;
     } catch (e) {
@@ -77,7 +102,7 @@ export function useChallenge() {
     } finally {
       setBusy(false);
     }
-  }, [demoQuestion]);
+  }, [demoQuestion, selectedTypes]);
   useEffect(() => {
     void load();
   }, [load]);
@@ -112,7 +137,10 @@ export function useChallenge() {
         });
       } else
         setState(
-          await api<ChallengeState>("/api/challenge", { action: "next" }),
+          await api<ChallengeState>("/api/challenge", {
+            action: "next",
+            types: selectedTypes,
+          }),
         );
       elapsed.current = 0;
     } catch (e) {
@@ -121,7 +149,7 @@ export function useChallenge() {
       lock.current = false;
       setBusy(false);
     }
-  }, [demoQuestion]);
+  }, [demoQuestion, selectedTypes]);
   const answer = useCallback(async (selected: number) => {
     const current = stateRef.current;
     if (lock.current || !current.question || current.feedback) return;
@@ -133,10 +161,29 @@ export function useChallenge() {
     try {
       if (current.demo) {
         const word = demoWords.current[demoIndex.current];
-        const correct = word.choices[selected] === word.definition;
+        const correct = word.choices[selected] === word.answer;
+        if (correct)
+          demoProgress.current.set(
+            word.wordId,
+            Math.min(
+              MASTERY_TARGET,
+              (demoProgress.current.get(word.wordId) || 0) + 1,
+            ),
+          );
+        demoStats.current = {
+          ...current.stats,
+          mastered: [...demoProgress.current.values()].filter(
+            (count) => count >= MASTERY_TARGET,
+          ).length,
+          correct: current.stats.correct + (correct ? 1 : 0),
+          todaySeconds: current.stats.todaySeconds + elapsed.current,
+          totalSeconds: current.stats.totalSeconds + elapsed.current,
+        };
         setState({
           ...current,
           feedback: {
+            type: word.type,
+            answer: word.answer,
             correct,
             skipped: selected === -1,
             selected,
@@ -146,14 +193,11 @@ export function useChallenge() {
             syn: word.syn,
             ant: word.ant,
           },
-          stats: {
-            ...current.stats,
-            correct: current.stats.correct + (correct ? 1 : 0),
-            todaySeconds: current.stats.todaySeconds + elapsed.current,
-            totalSeconds: current.stats.totalSeconds + elapsed.current,
-          },
+          stats: demoStats.current,
         });
         return {
+          type: word.type,
+          answer: word.answer,
           correct,
           skipped: selected === -1,
           selected,
@@ -259,6 +303,14 @@ export function useChallenge() {
     previous,
     autoNext,
     setAutoNext,
+    selectedTypes,
+    selectTypes: (types: QuestionType[]) => {
+      if (!busy && !lock.current && types.length) {
+        setBusy(true);
+        setPrevious(null);
+        setSelectedTypes(types);
+      }
+    },
     answer,
     next,
     reload: load,

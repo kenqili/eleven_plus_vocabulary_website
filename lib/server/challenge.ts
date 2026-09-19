@@ -1,5 +1,6 @@
-import { words } from "@/lib/challenge/bank";
-import { choicesFor } from "@/lib/challenge/words";
+import { words, problems, problemById } from "@/lib/challenge/bank";
+import { choicesFor, shuffle } from "@/lib/challenge/words";
+import { MASTERY_TARGET, type QuestionType } from "@/lib/challenge/config";
 import type { Question, Stats } from "@/lib/challenge/types";
 import { database } from "./db";
 import { HttpError } from "./http";
@@ -11,6 +12,9 @@ type Attempt = {
   answered_at: number | null;
   selected: number | null;
   is_correct: number | null;
+  question_type: QuestionType;
+  answer: string | null;
+  prompt: string | null;
 };
 type WordProgress = {
   word_id: string;
@@ -25,7 +29,7 @@ export async function statsFor(userId: string): Promise<Stats> {
     .all<{ word_id: string; correct: number }>();
   const ids = new Set(words.map((w) => w.id));
   const mastered = rows.results.filter(
-    (p) => ids.has(p.word_id) && p.correct >= 3,
+    (p) => ids.has(p.word_id) && p.correct >= MASTERY_TARGET,
   ).length;
   const start = new Date();
   start.setUTCHours(0, 0, 0, 0);
@@ -52,6 +56,8 @@ function toQuestion(attempt: Attempt, progress?: WordProgress): Question {
     id: attempt.id,
     word: word.word,
     wordId: word.id,
+    type: attempt.question_type,
+    prompt: attempt.prompt || `Choose the definition for '${word.word}'.`,
     source: word.source,
     number: index + 1,
     choices: JSON.parse(attempt.choices),
@@ -59,7 +65,7 @@ function toQuestion(attempt: Attempt, progress?: WordProgress): Question {
     seen: progress?.seen || 0,
   };
 }
-export async function nextQuestion(userId: string) {
+export async function nextQuestion(userId: string, types: QuestionType[]) {
   const db = database();
   const rows = (
     await db
@@ -76,20 +82,32 @@ export async function nextQuestion(userId: string) {
     .first<Attempt>();
   if (pending) {
     const currentWord = words.find((w) => w.id === pending.word_id);
+    const currentProblem = problemById.get(
+      `${pending.question_type}:${pending.word_id}`,
+    );
     if (
       currentWord &&
-      JSON.parse(pending.choices).includes(currentWord.definition)
+      currentProblem &&
+      types.includes(pending.question_type) &&
+      (pending.answer || currentWord.definition) === currentProblem.answer &&
+      JSON.parse(pending.choices).includes(currentProblem.answer)
     )
       return toQuestion(pending, byId.get(pending.word_id));
     // Retire a pending question when its word was removed or its definition edited.
     await db
       .prepare(
-        "UPDATE attempts SET answered_at=?,selected=-1,is_correct=0 WHERE id=? AND user_id=? AND answered_at IS NULL",
+        "UPDATE attempts SET answered_at=?,selected=-2,is_correct=0 WHERE id=? AND user_id=? AND answered_at IS NULL",
       )
       .bind(Date.now(), pending.id, userId)
       .run();
   }
-  const available = words.filter((w) => (byId.get(w.id)?.correct || 0) < 3);
+  const eligible = problems.filter((problem) => types.includes(problem.type));
+  const eligibleWordIds = new Set(eligible.map((problem) => problem.wordId));
+  const available = words.filter(
+    (w) =>
+      eligibleWordIds.has(w.id) &&
+      (byId.get(w.id)?.correct || 0) < MASTERY_TARGET,
+  );
   if (!available.length) return null;
   const count =
     (
@@ -119,10 +137,33 @@ export async function nextQuestion(userId: string) {
   const word = (pool.length ? pool : available)[
     Math.floor(Math.random() * (pool.length || available.length))
   ];
+  const wordProblems = eligible.filter((problem) => problem.wordId === word.id);
+  // Cycle through eligible types for a word before repeating, while selection remains word-based.
+  const history = (
+    await db
+      .prepare(
+        "SELECT question_type,COUNT(*) AS count FROM attempts WHERE user_id=? AND word_id=? AND answered_at IS NOT NULL AND selected>=-1 GROUP BY question_type",
+      )
+      .bind(userId, word.id)
+      .all<{ question_type: QuestionType; count: number }>()
+  ).results;
+  const counts = new Map(history.map((row) => [row.question_type, row.count]));
+  const leastSeen = Math.min(
+    ...wordProblems.map((problem) => counts.get(problem.type) || 0),
+  );
+  const candidates = wordProblems.filter(
+    (problem) => (counts.get(problem.type) || 0) === leastSeen,
+  );
+  const problem = candidates[Math.floor(Math.random() * candidates.length)];
   const attempt: Attempt = {
     id: crypto.randomUUID(),
     word_id: word.id,
-    choices: JSON.stringify(choicesFor(word, words)),
+    choices: JSON.stringify(
+      problem.choices ? shuffle(problem.choices) : choicesFor(word, words),
+    ),
+    question_type: problem.type,
+    answer: problem.answer,
+    prompt: problem.prompt,
     created_at: Date.now(),
     answered_at: null,
     selected: null,
@@ -132,9 +173,18 @@ export async function nextQuestion(userId: string) {
     await db.batch([
       db
         .prepare(
-          "INSERT INTO attempts (id,user_id,word_id,choices,created_at,elapsed) VALUES (?,?,?,?,?,0)",
+          "INSERT INTO attempts (id,user_id,word_id,choices,created_at,question_type,answer,prompt,elapsed) VALUES (?,?,?,?,?,?,?,?,0)",
         )
-        .bind(attempt.id, userId, word.id, attempt.choices, attempt.created_at),
+        .bind(
+          attempt.id,
+          userId,
+          word.id,
+          attempt.choices,
+          attempt.created_at,
+          attempt.question_type,
+          attempt.answer,
+          attempt.prompt,
+        ),
       db
         .prepare(
           "INSERT INTO progress (user_id,word_id,correct,seen,retry_at) VALUES (?,?,0,1,NULL) ON CONFLICT(user_id,word_id) DO UPDATE SET seen=seen+1,retry_at=NULL",
@@ -147,7 +197,13 @@ export async function nextQuestion(userId: string) {
       .prepare("SELECT * FROM attempts WHERE user_id=? AND answered_at IS NULL")
       .bind(userId)
       .first<Attempt>();
-    if (existing) return toQuestion(existing, byId.get(existing.word_id));
+    if (existing && types.includes(existing.question_type))
+      return toQuestion(existing, byId.get(existing.word_id));
+    if (existing)
+      throw new HttpError(
+        409,
+        "Another tab changed the practice type. Please try again.",
+      );
     throw error;
   }
   const prior = byId.get(word.id);
@@ -173,13 +229,19 @@ export async function answerQuestion(
   const word = words.find((w) => w.id === attempt.word_id);
   if (!word) throw new HttpError(409, "The word list changed. Please reload.");
   const options = JSON.parse(attempt.choices) as string[];
+  if (attempt.selected === -2)
+    throw new HttpError(
+      409,
+      "This question was replaced when practice settings changed. Continue with the current question.",
+    );
   if (
     !Number.isInteger(selected) ||
     selected < -1 ||
     selected >= options.length
   )
     throw new HttpError(400, "Choose a valid answer.");
-  const correct = options[selected] === word.definition;
+  const answer = attempt.answer || word.definition;
+  const correct = options[selected] === answer;
   const count =
     (
       await db
@@ -200,9 +262,17 @@ export async function answerQuestion(
   await db.batch([
     db
       .prepare(
-        "UPDATE progress SET correct=MIN(3,correct+?),retry_at=? WHERE user_id=? AND word_id=? AND EXISTS (SELECT 1 FROM attempts WHERE id=? AND user_id=? AND answered_at IS NULL)",
+        "UPDATE progress SET correct=MIN(?,correct+?),retry_at=? WHERE user_id=? AND word_id=? AND EXISTS (SELECT 1 FROM attempts WHERE id=? AND user_id=? AND answered_at IS NULL)",
       )
-      .bind(correct ? 1 : 0, correct ? null : due, userId, word.id, id, userId),
+      .bind(
+        MASTERY_TARGET,
+        correct ? 1 : 0,
+        correct ? null : due,
+        userId,
+        word.id,
+        id,
+        userId,
+      ),
     db
       .prepare(
         "UPDATE attempts SET answered_at=?,selected=?,is_correct=?,elapsed=? WHERE id=? AND user_id=? AND answered_at IS NULL",
@@ -215,7 +285,14 @@ export async function answerQuestion(
     )
     .bind(id, userId)
     .first<{ selected: number; is_correct: number }>();
+  if (saved?.selected === -2)
+    throw new HttpError(
+      409,
+      "This question was replaced in another tab. Continue with the current question.",
+    );
   return {
+    type: attempt.question_type,
+    answer,
     correct: Boolean(saved?.is_correct),
     skipped: saved?.selected === -1,
     definition: word.definition,

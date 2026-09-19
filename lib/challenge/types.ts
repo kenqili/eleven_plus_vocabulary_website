@@ -1,8 +1,11 @@
 import type { WordSource } from "./words";
+import type { QuestionType } from "./config";
 export type Question = {
   id: string;
   word: string;
   wordId: string;
+  type: QuestionType;
+  prompt: string;
   source: WordSource;
   number: number;
   choices: string[];
@@ -17,6 +20,8 @@ export type Stats = {
   totalSeconds: number;
 };
 export type Feedback = {
+  type: QuestionType;
+  answer: string;
   correct: boolean;
   skipped: boolean;
   definition: string;

@@ -1,21 +1,45 @@
-import { words } from "@/lib/challenge/bank";
-import { choicesFor } from "@/lib/challenge/words";
+import { words, problems } from "@/lib/challenge/bank";
+import { choicesFor, shuffle } from "@/lib/challenge/words";
+import { parseQuestionTypes } from "@/lib/challenge/config";
 import { currentUser, requireUser, rateLimit } from "@/lib/server/auth";
 import { membership } from "@/lib/server/billing";
 import { nextQuestion, answerQuestion, statsFor } from "@/lib/server/challenge";
 import { body, boundary, HttpError, json, sameOrigin } from "@/lib/server/http";
 export async function GET(request: Request) {
   return boundary(async () => {
+    let types;
+    try {
+      const selection = new URL(request.url).searchParams.get("types");
+      types = parseQuestionTypes(
+        selection === null ? undefined : selection.split(","),
+      );
+    } catch (error) {
+      throw new HttpError(400, (error as Error).message);
+    }
     const user = await currentUser(request);
     if (user && (await membership(user)).active)
       return json({ demo: false, stats: await statsFor(user.id) });
     return json({
       demo: true,
-      words: words.slice(0, 5).map((w, i) => ({
-        ...w,
-        number: i + 1,
-        choices: choicesFor(w, words),
-      })),
+      words: words.slice(0, 5).flatMap((word, index) =>
+        problems
+          .filter(
+            (problem) =>
+              problem.wordId === word.id && types.includes(problem.type),
+          )
+          .map((problem) => ({
+            ...word,
+            id: problem.id,
+            wordId: word.id,
+            type: problem.type,
+            prompt: problem.prompt,
+            answer: problem.answer,
+            number: index + 1,
+            choices: problem.choices
+              ? shuffle(problem.choices)
+              : choicesFor(word, words),
+          })),
+      ),
       stats: {
         total: words.length,
         mastered: 0,
@@ -38,7 +62,13 @@ export async function POST(request: Request) {
     await rateLimit(`practice:${user.id}`, 250);
     const input = await body(request);
     if (input.action === "next") {
-      const question = await nextQuestion(user.id);
+      let types;
+      try {
+        types = parseQuestionTypes(input.types);
+      } catch (error) {
+        throw new HttpError(400, (error as Error).message);
+      }
+      const question = await nextQuestion(user.id, types);
       return json({
         question,
         complete: !question,
