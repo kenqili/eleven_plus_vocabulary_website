@@ -487,6 +487,22 @@ h1 {
     display: none;
   }
 }
+.word-explanation {
+  display: grid;
+  gap: 14px;
+  margin: 16px 0 8px;
+  overflow-wrap: anywhere;
+}
+.word-explanation dt {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+.word-explanation dd {
+  margin: 0;
+  white-space: pre-line;
+  line-height: 1.6;
+}
 .previous-review {
   margin-top: 20px;
   padding: 16px 20px;

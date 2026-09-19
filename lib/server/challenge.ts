@@ -219,6 +219,9 @@ export async function answerQuestion(
     correct: Boolean(saved?.is_correct),
     skipped: saved?.selected === -1,
     definition: word.definition,
+    example: word.example,
+    syn: word.syn,
+    ant: word.ant,
     selected: saved?.selected ?? -1,
     word: word.word,
   };

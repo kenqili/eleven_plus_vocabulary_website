@@ -20,6 +20,9 @@ export type Feedback = {
   correct: boolean;
   skipped: boolean;
   definition: string;
+  example: string;
+  syn: string;
+  ant: string;
   selected: number;
   word: string;
 };

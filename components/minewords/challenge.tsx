@@ -3,7 +3,7 @@ import { BookOpen, ArrowRight } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import Header from "./header";
 import ProgressPanel from "./progress-panel";
-import { SOURCE_LABELS } from "@/lib/challenge/words";
+import WordExplanation from "./word-explanation";
 import { useChallenge } from "./use-challenge";
 export default function Challenge() {
   const study = useChallenge();
@@ -14,9 +14,9 @@ export default function Challenge() {
       <main className="workspace">
         <div className="page-heading">
           <div>
-            <div className="eyebrow">500 MINE CHALLENGE</div>
-            <h1>The Word Challenge</h1>
-            <p>Flash Card 1, Flash Card 2 & Blue Book.</p>
+            <div className="eyebrow">LEARN A LITTLE EVERY DAY</div>
+            <h1>11+ Vocabulary Challenge</h1>
+            <p>Build your vocabulary, one word at a time.</p>
           </div>
           <span className="edition">
             <BookOpen size={16} /> Vocabulary practice
@@ -32,10 +32,7 @@ export default function Challenge() {
               {question ? (
                 <>
                   <div className="question-meta">
-                    <span>
-                      {SOURCE_LABELS[question.source]} · WORD{" "}
-                      {String(question.number).padStart(2, "0")}
-                    </span>
+                    <span>WORD {String(question.number).padStart(2, "0")}</span>
                     <span className="pill">
                       {question.seen <= 1
                         ? "New word"
@@ -69,9 +66,7 @@ export default function Challenge() {
                             ? "Take a moment to learn this one."
                             : "Not quite. Here’s the meaning."}
                       </strong>
-                      <div>
-                        {feedback.word}: {feedback.definition}
-                      </div>
+                      <WordExplanation word={feedback} />
                       {!demo && !feedback.correct && (
                         <small>
                           This word will return after 5–20 other questions,
@@ -165,9 +160,9 @@ export default function Challenge() {
               <details className="previous-review">
                 <summary>Review previous word</summary>
                 <p>
-                  <strong>{study.previous.word}</strong> —{" "}
-                  {study.previous.definition}
+                  <strong>{study.previous.word}</strong>
                 </p>
+                <WordExplanation word={study.previous} />
                 <small>Review only. Your score stays the same.</small>
               </details>
             )}
@@ -176,7 +171,7 @@ export default function Challenge() {
         </div>
         <footer className="site-footer">
           <span>Small steps. Lasting knowledge.</span>
-          <span>MINEWORDS / WORD CHALLENGE</span>
+          <span>11+ VOCABULARY CHALLENGE</span>
         </footer>
       </main>
     </div>

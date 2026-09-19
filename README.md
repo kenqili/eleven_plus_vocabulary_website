@@ -1,4 +1,4 @@
-# MineWords — Word Challenge website
+# 11+ Vocabulary Challenge
 
 A web conversion of MineWordsAndroid's definition challenge. Practice now uses Flash Card 1, Flash Card 2 and Blue Book together. There is no game or separate antonym/synonym challenge.
 
@@ -10,7 +10,7 @@ Edit the three UTF-8 CSV files in `data/`:
 2. `flash_card_2.csv`
 3. `blue_book.csv`
 
-The server merges these in exactly that order at build time. The first occurrence of each word wins, including its definition, synonyms, antonyms, example and source. Duplicates within a file are also removed. Matching trims surrounding whitespace, normalizes Unicode (NFKC), and ignores case. Source values are `flash_card_1`, `flash_card_2`, or `blue_book`; they are assigned from the input filename, and the question displays the source label.
+The server merges these in exactly that order at build time. The first occurrence of each word wins, including its definition, synonyms, antonyms, example and source. Duplicates within a file are also removed. Matching trims surrounding whitespace, normalizes Unicode (NFKC), and ignores case. Source values are `flash_card_1`, `flash_card_2`, or `blue_book`; they remain internal metadata. The UI presents one vocabulary library without source names. Each answered or revealed question shows its definition, example, synonyms and antonyms, including in previous-word review.
 
 Use the header `word,def,syn,ant,example`. Word and def are required; other fields are preserved but do not introduce a synonym/antonym challenge. Quote cells containing commas, double quotes or newlines; escape embedded quotes by doubling them. Standard CSV exports and UTF-8 BOMs are supported. Invalid records fail validation with the source name and record number.
 

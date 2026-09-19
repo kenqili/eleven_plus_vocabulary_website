@@ -24,7 +24,7 @@ export default function ProgressPanel({
         />
         <div className="progress-label">
           {stats.total
-            ? `${stats.mastered} of ${stats.total} words across all three sources`
+            ? `${stats.mastered} of ${stats.total} words mastered`
             : "Loading your word collection…"}
         </div>
         <div className="stat-row">
@@ -44,7 +44,7 @@ export default function ProgressPanel({
         <Check size={20} />
         <p>
           {demo
-            ? "Try five words. A membership saves your progress and opens all three word collections."
+            ? "Try five words. A membership saves your progress and opens the full vocabulary library."
             : "Take your time. Words you miss will come back for another try."}
         </p>
       </div>

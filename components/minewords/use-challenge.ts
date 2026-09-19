@@ -12,6 +12,9 @@ type DemoWord = {
   id: string;
   word: string;
   definition: string;
+  example: string;
+  syn: string;
+  ant: string;
   number: number;
   choices: string[];
 };
@@ -139,6 +142,9 @@ export function useChallenge() {
             selected,
             word: word.word,
             definition: word.definition,
+            example: word.example,
+            syn: word.syn,
+            ant: word.ant,
           },
           stats: {
             ...current.stats,
@@ -153,6 +159,9 @@ export function useChallenge() {
           selected,
           word: word.word,
           definition: word.definition,
+          example: word.example,
+          syn: word.syn,
+          ant: word.ant,
         };
       } else {
         const result = await api<ChallengeState>("/api/challenge", {
