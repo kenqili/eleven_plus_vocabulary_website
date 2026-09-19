@@ -1,0 +1,257 @@
+"use client";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { api } from "@/lib/client/api";
+import type {
+  ChallengeState,
+  Feedback,
+  Question,
+  Stats,
+} from "@/lib/challenge/types";
+type DemoWord = {
+  source: import("@/lib/challenge/words").WordSource;
+  id: string;
+  word: string;
+  definition: string;
+  number: number;
+  choices: string[];
+};
+const initialStats: Stats = {
+  total: 0,
+  mastered: 0,
+  correct: 0,
+  todaySeconds: 0,
+  totalSeconds: 0,
+};
+export function useChallenge() {
+  const [state, setState] = useState<ChallengeState>({
+    question: null,
+    stats: initialStats,
+    demo: true,
+  });
+  const [busy, setBusy] = useState(true),
+    [error, setError] = useState("");
+  const [previous, setPrevious] = useState<Feedback | null>(null);
+  const [autoNext, setAutoNext] = useState(false);
+  const demoWords = useRef<DemoWord[]>([]),
+    demoIndex = useRef(0),
+    elapsed = useRef(0),
+    lock = useRef(false);
+  const stateRef = useRef(state);
+  stateRef.current = state;
+  const demoQuestion = useCallback((index: number): Question | null => {
+    const word = demoWords.current[index];
+    return word
+      ? {
+          id: word.id,
+          wordId: word.id,
+          source: word.source,
+          word: word.word,
+          number: word.number,
+          choices: word.choices,
+          correctCount: 0,
+          seen: 1,
+        }
+      : null;
+  }, []);
+  const load = useCallback(async () => {
+    setBusy(true);
+    setError("");
+    try {
+      const result = await api<ChallengeState & { words?: DemoWord[] }>(
+        "/api/challenge",
+      );
+      if (result.demo) {
+        demoWords.current = result.words || [];
+        demoIndex.current = 0;
+        setState({ ...result, question: demoQuestion(0) });
+      } else
+        setState(
+          await api<ChallengeState>("/api/challenge", { action: "next" }),
+        );
+      elapsed.current = 0;
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }, [demoQuestion]);
+  useEffect(() => {
+    void load();
+  }, [load]);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (
+        document.visibilityState === "visible" &&
+        stateRef.current.question &&
+        !stateRef.current.feedback &&
+        !lock.current
+      )
+        elapsed.current++;
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+  const next = useCallback(async () => {
+    if (lock.current) return;
+    lock.current = true;
+    setBusy(true);
+    setError("");
+    try {
+      const current = stateRef.current;
+      if (current.feedback) setPrevious(current.feedback);
+      if (current.demo) {
+        demoIndex.current++;
+        const question = demoQuestion(demoIndex.current);
+        setState({
+          ...current,
+          question,
+          feedback: undefined,
+          complete: !question,
+        });
+      } else
+        setState(
+          await api<ChallengeState>("/api/challenge", { action: "next" }),
+        );
+      elapsed.current = 0;
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      lock.current = false;
+      setBusy(false);
+    }
+  }, [demoQuestion]);
+  const answer = useCallback(async (selected: number) => {
+    const current = stateRef.current;
+    if (lock.current || !current.question || current.feedback) return;
+    if (!Number.isInteger(selected) || selected < -1 || selected > 3)
+      throw Error("Choose an answer between 0 and 3, or -1 to reveal.");
+    lock.current = true;
+    setBusy(true);
+    setError("");
+    try {
+      if (current.demo) {
+        const word = demoWords.current[demoIndex.current];
+        const correct = word.choices[selected] === word.definition;
+        setState({
+          ...current,
+          feedback: {
+            correct,
+            skipped: selected === -1,
+            selected,
+            word: word.word,
+            definition: word.definition,
+          },
+          stats: {
+            ...current.stats,
+            correct: current.stats.correct + (correct ? 1 : 0),
+            todaySeconds: current.stats.todaySeconds + elapsed.current,
+            totalSeconds: current.stats.totalSeconds + elapsed.current,
+          },
+        });
+        return {
+          correct,
+          skipped: selected === -1,
+          selected,
+          word: word.word,
+          definition: word.definition,
+        };
+      } else {
+        const result = await api<ChallengeState>("/api/challenge", {
+          action: "answer",
+          id: current.question.id,
+          selected,
+          elapsed: elapsed.current,
+        });
+        setState({ ...current, ...result });
+        return result.feedback;
+      }
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      lock.current = false;
+      setBusy(false);
+    }
+  }, []);
+  useEffect(() => {
+    if (!autoNext || !state.feedback?.correct || busy || error) return;
+    const timer = setTimeout(() => void next(), 1400);
+    return () => clearTimeout(timer);
+  }, [autoNext, state.feedback, busy, error, next]);
+  useEffect(() => {
+    const context = (
+      document as Document & {
+        modelContext?: {
+          registerTool: (
+            tool: unknown,
+            options: { signal: AbortSignal },
+          ) => Promise<void> | void;
+        };
+      }
+    ).modelContext;
+    if (!context) return;
+    const lifecycle = new AbortController();
+    const register = (tool: unknown) => {
+      try {
+        void Promise.resolve(
+          context.registerTool(tool, { signal: lifecycle.signal }),
+        ).catch(() => {});
+      } catch {}
+    };
+    register({
+      name: "minewords_read_question",
+      description:
+        "Read the visible vocabulary question and practice progress.",
+      inputSchema: {
+        type: "object",
+        properties: {},
+        additionalProperties: false,
+      },
+      annotations: { readOnlyHint: true },
+      execute: () => ({
+        question: stateRef.current.question,
+        stats: stateRef.current.stats,
+        feedback: stateRef.current.feedback,
+      }),
+    });
+    register({
+      name: "minewords_answer_question",
+      description:
+        "Submit a zero-based choice for the visible question; -1 reveals the answer without credit.",
+      inputSchema: {
+        type: "object",
+        properties: { choice: { type: "integer", minimum: -1, maximum: 3 } },
+        required: ["choice"],
+        additionalProperties: false,
+      },
+      execute: async (input: { choice: number }) => {
+        if (
+          !input ||
+          !Number.isInteger(input.choice) ||
+          input.choice < -1 ||
+          input.choice > 3
+        )
+          throw Error("Invalid choice");
+        const feedback = await answer(input.choice);
+        if (!feedback)
+          throw Error(
+            "The answer was not submitted. The question may already be answered or a request failed.",
+          );
+        await new Promise<void>((resolve) =>
+          requestAnimationFrame(() => resolve()),
+        );
+        return { feedback };
+      },
+    });
+    return () => lifecycle.abort();
+  }, [answer]);
+  return {
+    ...state,
+    busy,
+    error,
+    previous,
+    autoNext,
+    setAutoNext,
+    answer,
+    next,
+    reload: load,
+  };
+}
