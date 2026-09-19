@@ -1,6 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { chooseWord, interleaveQuestions } from "../lib/challenge/ordering.ts";
+import {
+  chooseWord,
+  interleaveQuestions,
+  reviewDueAt,
+} from "../lib/challenge/ordering.ts";
 
 test("730 words get full coverage before regular repeats, with spacing across rounds", () => {
   const candidates = Array.from({ length: 730 }, (_, i) => ({
@@ -19,14 +23,14 @@ test("730 words get full coverage before regular repeats, with spacing across ro
   assert.ok(candidates.every((word) => word.seen === 2));
 });
 
-test("due mistakes have priority but cannot bypass recent-word spacing", () => {
+test("due mistakes override recent-word spacing and exposure counts", () => {
   const candidates = Array.from({ length: 30 }, (_, i) => ({
     id: String(i),
     seen: i === 0 ? 4 : 0,
     retryAt: i === 0 ? 5 : null,
   }));
   assert.equal(chooseWord(candidates, [], 10), "0");
-  assert.notEqual(chooseWord(candidates, ["0"], 10), "0");
+  assert.equal(chooseWord(candidates, ["0"], 10), "0");
   assert.notEqual(chooseWord(candidates, [], 4), "0");
 });
 
@@ -42,6 +46,40 @@ test("small and filtered pools relax spacing without getting stuck", () => {
   assert.equal(
     chooseWord(candidates, [], 0, () => 0.99),
     "c",
+  );
+});
+
+test("consecutive mistakes each return exactly 15 questions later, even with repeated mistakes", () => {
+  const candidates = Array.from({ length: 730 }, (_, i) => ({
+    id: String(i),
+    seen: 0,
+    retryAt: null,
+  }));
+  const recent = [];
+  const lastMistake = new Map();
+  for (let count = 0; count < 120; count++) {
+    const id = chooseWord(candidates, recent, count, () => 0);
+    if (lastMistake.has(id)) assert.equal(count + 1 - lastMistake.get(id), 15);
+    const word = candidates.find((word) => word.id === id);
+    word.seen++;
+    word.retryAt = reviewDueAt(count + 1);
+    lastMistake.set(id, count + 1);
+    recent.unshift(id);
+  }
+  assert.equal(lastMistake.size, 15);
+});
+
+test("oldest due review wins over a less-seen newer review", () => {
+  assert.equal(
+    chooseWord(
+      [
+        { id: "old", seen: 9, retryAt: 10 },
+        { id: "new", seen: 1, retryAt: 12 },
+      ],
+      ["old"],
+      20,
+    ),
+    "old",
   );
 });
 

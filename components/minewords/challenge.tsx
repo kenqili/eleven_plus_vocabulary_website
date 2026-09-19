@@ -104,8 +104,8 @@ export default function Challenge() {
                       <WordExplanation word={feedback} />
                       {!demo && !feedback.correct && (
                         <small>
-                          This word is queued for review after a break. We avoid
-                          the last 20 different words when enough words remain.
+                          This word is scheduled to return on your 15th next
+                          question. It may return sooner if few words remain.
                         </small>
                       )}
                     </div>
@@ -205,10 +205,13 @@ export default function Challenge() {
                     selection; this gap shrinks when fewer words remain.
                   </p>
                   <p>
-                    Missed or revealed words get review priority after a break.
-                    For each word, we favour its least-practised selected
-                    question type. Five correct answers across types master the
-                    word and remove it from practice.
+                    Missed or revealed words return on the 15th next question,
+                    overriding the usual 20-word gap. With very few words left,
+                    they may return sooner. Keep the same practice types
+                    selected to include those reviews. For each word, we favour
+                    its least-practised selected question type. Five correct
+                    answers across types master the word and remove it from
+                    practice.
                   </p>
                   <p>
                     Reloading resumes your unanswered question. Changing types

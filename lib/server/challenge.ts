@@ -1,4 +1,4 @@
-import { chooseWord } from "@/lib/challenge/ordering";
+import { chooseWord, reviewDueAt } from "@/lib/challenge/ordering";
 import { words, problems, problemById } from "@/lib/challenge/bank";
 import { choicesFor, shuffle } from "@/lib/challenge/words";
 import { MASTERY_TARGET, type QuestionType } from "@/lib/challenge/config";
@@ -247,7 +247,7 @@ export async function answerQuestion(
         .bind(userId)
         .first<{ count: number }>()
     )?.count || 0;
-  const due = count + 5 + Math.floor(Math.random() * 16);
+  const due = reviewDueAt(count);
   const seconds = Math.max(
     0,
     Math.min(
