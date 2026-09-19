@@ -46,14 +46,21 @@ Existing attempt elapsed values are retained as historical recorded time, not re
 ## Credit rules (initial defaults)
 
 * +2 credits for each correct answer that advances a word's five-correct mastery count.
+* +5 bonus credits for every three consecutive correct answers: at streaks of 3, 6, 9 and so on. Three correct answers therefore earn 11 credits before any mastery bonus (2 + 2 + 2 + 5).
 * +10 bonus credits when that word is first mastered.
 * No credits for wrong answers, reveals, page refreshes or elapsed time; no credit deductions for mistakes.
-* A word can earn at most 20 lifetime learning credits under these rules. Resetting practice or switching question types does not reset award eligibility.
+* Wrong answers and Skip & reveal reset the streak to zero, without taking away earned credits. Changing question types, refreshing, logging out or taking a break preserves the streak. Count consecutive accepted answers across all selected types, not consecutive days; there is no pressure to stay online.
+* Only correct answers that advance mastery count towards the streak. Retired questions and duplicate answer submissions neither advance nor reset it. Order simultaneous accepted answers by the server's transactional sequence, not client timestamps.
+* A word can earn at most 20 lifetime base/mastery credits; streak bonuses are additional awards across words. Resetting practice or switching question types does not reset award eligibility. No unlimited credit farming from already-mastered words.
 * Demo practice shows session-only stats and never earns redeemable credits.
+
+Show three small progress markers beside the balance: “1 of 3 towards +5”, then “2 of 3 towards +5”. On the third correct answer show “Three in a row! +5 bonus” and an award breakdown such as “+2 correct · +5 streak · +10 mastered = +17 credits”. Start the next three-answer group immediately while retaining the overall streak count (for example “6 correct in a row”). Use a brief optional animation that respects reduced-motion preferences. On a mistake, say “New streak starts with your next correct answer”; do not subtract credits or use a punishment animation.
 
 Keep rule values in a versioned server configuration. Include the rule version and event reference on each award. The client cannot submit award amounts, balances or correctness. Replaying an answer must return its original result without additional awards.
 
 Backfill historic credits once from valid saved correct attempts: award the first five correct answers per word plus its first mastery bonus. Use deterministic unique keys so rerunning the backfill is safe. Derive historical first exposure and fifth-correct timestamps from attempts. If imported progress lacks supporting attempts, preserve its mastery count but label its date unknown and do not invent historical activity or awards.
+
+For streak backfill, replay valid accepted answers in stable server order (answered timestamp, then stored insertion order for ties), applying the same eligibility and reset rules. Award each completed trio once, keyed by its third attempt ID, and preserve the resulting current streak. Historic and live processing use the same rule version; run the backfill before enabling live awards so they cannot overlap.
 
 ## Badge redemption and parents
 
@@ -80,7 +87,7 @@ Extend existing tables rather than introduce another datastore. All private read
 * `study_sessions`: user ID, start/end timestamps, last checkpoint, accepted sequence, cumulative active seconds and lease for active-tab ownership.
 * `study_intervals`: accepted time segments for attribution, with unique session/sequence; no credit awards from these events.
 * `user_daily_stats`: user/local date/timezone version, question/correct/reveal/first-exposure/mastery counts and active seconds. Rebuildable summaries, not the only source of history.
-* `credit_wallets`: one row per user, nonnegative integer balance and version.
+* `credit_wallets`: one row per user, nonnegative integer balance, version, current correct streak and best correct streak. Preserve streak state across sessions.
 * `credit_transactions`: immutable ID, user ID, signed integer amount, reason, attempt/word/redemption reference, rule version, created timestamp, balance after, unique per-user event key.
 * `badge_redemptions`: immutable ID, user ID, unique request key, badge ID/version/name snapshot, cost, created timestamp and linked debit transaction ID.
 
@@ -89,6 +96,8 @@ Index attempts by user and answered timestamp; histories by user and timestamp; 
 ## Transaction guarantees
 
 The accepted-answer transition, mastery update, first-exposure/mastery markers, daily summary and credit award must commit atomically. Only an unanswered attempt owned by the current user can trigger them. Database uniqueness enforces one award per event; application checks alone are insufficient under simultaneous tabs.
+
+Streak advancement/reset and its bonus must be part of that same transaction. Use a distinct ledger reason `streak_bonus` and a unique key based on the qualifying third attempt; a correct answer may create separate base, streak and mastery entries. Return the authoritative current streak, next-bonus progress and award breakdown alongside the new balance. Replaying an answer returns the saved award result without reapplying it.
 
 Redemption takes only a known badge ID and idempotency key. Server resolves price and identity, then atomically checks/debits sufficient balance, inserts the ledger entry and creates the badge receipt. Use D1 transactional batches with guarded writes/constraints, or database triggers where needed; do not issue a separate unprotected read followed by a debit. A failed or insufficient-funds transaction produces neither a debit nor a receipt. A concurrent double-spend test is a release requirement.
 
@@ -113,3 +122,5 @@ Before public launch, add verified email and password recovery using short-lived
 5. Complete deployment authentication checks, recovery configuration, backup/restore and free-tier load measurements.
 
 Required tests: correct/wrong/reveal counters; first exposure only once; fifth-correct mastery only once; answer replay and concurrent submissions; timezone midnight, Monday boundary and DST; timer idle/hidden/two-tab behaviour; backfill rerun; redemption replay, concurrent purchases and insufficient funds; cross-user access isolation; persistence after logout/restart; existing question scheduling and CSV review hashes unchanged.
+
+Streak tests: correct/correct/correct awards 11 total; six correct awards 22 before mastery bonuses; wrong or reveal resets progress; switching types and logout preserve it; duplicate/retired answers do not affect it; simultaneous submissions cannot duplicate the third-answer bonus; mastery and streak bonuses can stack; historical replay produces the same awards as live processing.
