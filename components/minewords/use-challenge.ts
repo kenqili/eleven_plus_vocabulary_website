@@ -68,7 +68,9 @@ export function useChallenge() {
           number: word.number,
           choices: word.choices,
           correctCount: demoProgress.current.get(word.wordId) || 0,
-          seen: 1,
+          seen: demoWords.current
+            .slice(0, index + 1)
+            .filter((item) => item.wordId === word.wordId).length,
         }
       : null;
   }, []);

@@ -67,10 +67,7 @@ export default function Challenge() {
               {question ? (
                 <>
                   <div className="question-meta">
-                    <span>
-                      {TYPE_LABELS[question.type].toUpperCase()} · WORD{" "}
-                      {String(question.number).padStart(2, "0")}
-                    </span>
+                    <span>{TYPE_LABELS[question.type].toUpperCase()}</span>
                     <span className="pill">
                       {question.seen <= 1
                         ? "New word"
@@ -107,8 +104,8 @@ export default function Challenge() {
                       <WordExplanation word={feedback} />
                       {!demo && !feedback.correct && (
                         <small>
-                          This word will return after 5–20 other questions,
-                          where enough words remain.
+                          This word is queued for review after a break. We avoid
+                          the last 20 different words when enough words remain.
                         </small>
                       )}
                     </div>
@@ -192,6 +189,34 @@ export default function Challenge() {
                   : "Progress saved to your account"}
               </span>
             </div>
+            <details className="previous-review">
+              <summary>How questions are ordered</summary>
+              {demo ? (
+                <p>
+                  The sample picks five random words. Each shuffled round asks
+                  one question per word before moving to its other selected
+                  types. Reloading or changing types starts a fresh sample.
+                </p>
+              ) : (
+                <>
+                  <p>
+                    We favour words you have seen least, choosing randomly when
+                    tied. The last 20 different words are kept out of the next
+                    selection; this gap shrinks when fewer words remain.
+                  </p>
+                  <p>
+                    Missed or revealed words get review priority after a break.
+                    For each word, we favour its least-practised selected
+                    question type. Five correct answers across types master the
+                    word and remove it from practice.
+                  </p>
+                  <p>
+                    Reloading resumes your unanswered question. Changing types
+                    keeps your saved word progress.
+                  </p>
+                </>
+              )}
+            </details>
             {study.previous && (
               <details className="previous-review">
                 <summary>Review previous word</summary>

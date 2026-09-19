@@ -1,3 +1,4 @@
+import { chooseWord } from "@/lib/challenge/ordering";
 import { words, problems, problemById } from "@/lib/challenge/bank";
 import { choicesFor, shuffle } from "@/lib/challenge/words";
 import { MASTERY_TARGET, type QuestionType } from "@/lib/challenge/config";
@@ -116,27 +117,24 @@ export async function nextQuestion(userId: string, types: QuestionType[]) {
         .bind(userId)
         .first<{ count: number }>()
     )?.count || 0;
-  const previous = await db
-    .prepare(
-      "SELECT word_id FROM attempts WHERE user_id = ? ORDER BY created_at DESC LIMIT 1",
-    )
-    .bind(userId)
-    .first<{ word_id: string }>();
-  const due = available.filter(
-    (w) =>
-      byId.get(w.id)?.retry_at != null && byId.get(w.id)!.retry_at! <= count,
+  const recent = (
+    await db
+      .prepare(
+        "SELECT word_id FROM attempts WHERE user_id = ? GROUP BY word_id ORDER BY MAX(rowid) DESC",
+      )
+      .bind(userId)
+      .all<{ word_id: string }>()
+  ).results;
+  const chosenId = chooseWord(
+    available.map((word) => ({
+      id: word.id,
+      seen: byId.get(word.id)?.seen || 0,
+      retryAt: byId.get(word.id)?.retry_at ?? null,
+    })),
+    recent.map((attempt) => attempt.word_id),
+    count,
   );
-  const regular = available.filter(
-    (w) => byId.get(w.id)?.retry_at == null && w.id !== previous?.word_id,
-  );
-  const pool = due.length
-    ? due
-    : regular.length
-      ? regular
-      : available.filter((w) => w.id !== previous?.word_id);
-  const word = (pool.length ? pool : available)[
-    Math.floor(Math.random() * (pool.length || available.length))
-  ];
+  const word = available.find((word) => word.id === chosenId)!;
   const wordProblems = eligible.filter((problem) => problem.wordId === word.id);
   // Cycle through eligible types for a word before repeating, while selection remains word-based.
   const history = (

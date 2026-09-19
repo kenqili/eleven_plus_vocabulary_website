@@ -1,3 +1,4 @@
+import { interleaveQuestions } from "@/lib/challenge/ordering";
 import { words, problems } from "@/lib/challenge/bank";
 import { choicesFor, shuffle } from "@/lib/challenge/words";
 import { parseQuestionTypes } from "@/lib/challenge/config";
@@ -21,24 +22,35 @@ export async function GET(request: Request) {
       return json({ demo: false, stats: await statsFor(user.id) });
     return json({
       demo: true,
-      words: words.slice(0, 5).flatMap((word, index) =>
-        problems
-          .filter(
-            (problem) =>
-              problem.wordId === word.id && types.includes(problem.type),
-          )
-          .map((problem) => ({
-            ...word,
-            id: problem.id,
-            wordId: word.id,
-            type: problem.type,
-            prompt: problem.prompt,
-            answer: problem.answer,
-            number: index + 1,
-            choices: problem.choices
-              ? shuffle(problem.choices)
-              : choicesFor(word, words),
-          })),
+      words: interleaveQuestions(
+        shuffle(
+          words.filter((word) =>
+            problems.some(
+              (problem) =>
+                problem.wordId === word.id && types.includes(problem.type),
+            ),
+          ),
+        )
+          .slice(0, 5)
+          .flatMap((word, index) =>
+            problems
+              .filter(
+                (problem) =>
+                  problem.wordId === word.id && types.includes(problem.type),
+              )
+              .map((problem) => ({
+                ...word,
+                id: problem.id,
+                wordId: word.id,
+                type: problem.type,
+                prompt: problem.prompt,
+                answer: problem.answer,
+                number: index + 1,
+                choices: problem.choices
+                  ? shuffle(problem.choices)
+                  : choicesFor(word, words),
+              })),
+          ),
       ),
       stats: {
         total: words.length,

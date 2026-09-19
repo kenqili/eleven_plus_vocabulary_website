@@ -135,7 +135,10 @@ try {
   const answeredWord = words.find((word) => word.id === q.wordId);
   for (const field of ["definition", "example", "syn", "ant"]) {
     assert.equal(answered.data.feedback[field], answeredWord[field]);
-    assert.equal(demo.data.words[0][field], words[0][field]);
+    assert.equal(
+      demo.data.words[0][field],
+      words.find((word) => word.id === demo.data.words[0].wordId)[field],
+    );
   }
   assert.equal(answered.data.stats.correct, 1);
   const replay = await call("/api/challenge", {
