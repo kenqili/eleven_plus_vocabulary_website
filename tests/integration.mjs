@@ -238,6 +238,135 @@ try {
   assert.equal(wrong.data.feedback.correct, false);
   assert.equal(wrong.data.feedback.answer, syn2Answer);
   assert.equal(wrong.data.stats.correct, 2);
+  // Saved rewards: six fresh correct answers, replay protection and competing purchases.
+  assert.equal(wrong.data.stats.rewards.streak, 0);
+  let lastPractice;
+  const beforeRewards = await call("/api/rewards");
+  assert.equal(beforeRewards.status, 200);
+  const initialBalance = beforeRewards.data.rewards.balance;
+  for (let i = 1; i <= 6; i++) {
+    lastPractice = (
+      await call("/api/challenge", { action: "next", types: ["def"] })
+    ).data.question;
+    const expected = words.find(
+      (word) => word.id === lastPractice.wordId,
+    ).definition;
+    const payload = {
+      action: "answer",
+      id: lastPractice.id,
+      selected: lastPractice.choices.indexOf(expected),
+      elapsed: 1,
+    };
+    const answered = await call("/api/challenge", payload);
+    assert.equal(answered.status, 200);
+    assert.equal(answered.data.feedback.award.total, i % 3 === 0 ? 7 : 2);
+    assert.equal(answered.data.stats.rewards.streak, i);
+    assert.equal(
+      (await call("/api/challenge", payload)).data.stats.rewards.balance,
+      answered.data.stats.rewards.balance,
+    );
+  }
+  const earned = await call("/api/rewards");
+  assert.equal(earned.data.rewards.balance, initialBalance + 22);
+  assert.equal(
+    earned.data.periods.today.questions,
+    earned.data.periods.all.questions,
+  );
+  assert.ok(earned.data.periods.today.newWords > 0);
+  const keys = [randomUUID(), randomUUID()];
+  const purchased = await Promise.all(
+    keys.map((requestKey) =>
+      call("/api/rewards", { action: "redeem", badgeId: "spark", requestKey }),
+    ),
+  );
+  assert.deepEqual(purchased.map((result) => result.status).sort(), [200, 409]);
+  const winner = purchased.findIndex((result) => result.status === 200);
+  const repeat = await call("/api/rewards", {
+    action: "redeem",
+    badgeId: "spark",
+    requestKey: keys[winner],
+  });
+  assert.equal(repeat.status, 200);
+  assert.equal(repeat.data.receipt.id, purchased[winner].data.receipt.id);
+  assert.equal(repeat.data.rewards.balance, initialBalance + 2);
+  assert.equal(repeat.data.receipts.length, 1);
+  assert.equal(
+    (
+      await call("/api/rewards", {
+        action: "redeem",
+        badgeId: "champion",
+        requestKey: keys[winner],
+      })
+    ).status,
+    409,
+  );
+  assert.equal(
+    (
+      await call(
+        "/api/rewards",
+        { action: "redeem", badgeId: "spark", requestKey: randomUUID() },
+        { headers: { Origin: "https://untrusted.example" } },
+      )
+    ).status,
+    403,
+  );
+  assert.equal(
+    (await call("/api/rewards", undefined, { headers: { Cookie: "" } })).status,
+    401,
+  );
+  const owner = randomUUID();
+  const tick = {
+    action: "time",
+    attemptId: lastPractice.id,
+    owner,
+    sequence: 1,
+    seconds: 0,
+  };
+  const baseline = await call("/api/rewards", tick);
+  assert.equal(baseline.status, 200);
+  sql(
+    `UPDATE study_clock SET last_at=${Date.now() - 15000} WHERE user_id='${userId}';`,
+  );
+  const checkpoint = { ...tick, sequence: 2, seconds: 10 };
+  const timed = await call("/api/rewards", checkpoint);
+  assert.equal(timed.status, 200);
+  assert.equal(
+    timed.data.periods.all.seconds,
+    baseline.data.periods.all.seconds + 10,
+  );
+  assert.equal(
+    (await call("/api/rewards", checkpoint)).data.periods.all.seconds,
+    timed.data.periods.all.seconds,
+  );
+  assert.equal(
+    (
+      await call("/api/rewards", {
+        ...checkpoint,
+        owner: randomUUID(),
+        sequence: 1,
+      })
+    ).data.periods.all.seconds,
+    timed.data.periods.all.seconds,
+  );
+  assert.equal(
+    (
+      await call("/api/rewards", {
+        ...checkpoint,
+        sequence: 3,
+        attemptId: randomUUID(),
+      })
+    ).status,
+    409,
+  );
+  // A rerun of the historic importer must not duplicate any credit or time event.
+  sql(`UPDATE users SET rewards_initialized=0 WHERE id='${userId}';`);
+  const restored = await call("/api/rewards");
+  assert.equal(restored.data.rewards.balance, timed.data.rewards.balance);
+  assert.equal(
+    restored.data.periods.all.seconds,
+    timed.data.periods.all.seconds,
+  );
+  assert.equal(restored.data.receipts[0].id, repeat.data.receipt.id);
   // Re-create an old three-correct word. Other words are mastered to make selection deterministic.
   const target = "abandon";
   const tuples = words

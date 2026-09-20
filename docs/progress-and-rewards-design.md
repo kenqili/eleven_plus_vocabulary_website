@@ -1,6 +1,8 @@
 # Student progress, credits and digital badges
 
-Design proposal, 19 September 2026. This document specifies the next implementation; it does not enable these features yet.
+Design recorded 19 September 2026; progress, rewards and badge redemption implemented 20 September 2026.
+
+Implementation notes: the initial release uses a fixed Europe/London reporting timezone, not a timezone selector. Daily summaries plus learning events, a wallet/ledger, badge receipts and study-clock checkpoints are implemented in D1. Checkpoints run every 15 active seconds (rather than 30); historical attempt timing is retained. One learning transaction stores the total with its base/streak/mastery breakdown in the linked event. The existing password hashing/session protections remain in place; email verification/recovery delivery and hosted CPU benchmarking below are still public-launch preparation. All other sections describe the target behaviour and rationale; README documents operational details.
 
 ## Deployment and storage
 
@@ -18,16 +20,16 @@ Important deployment check: Workers Free currently allows 10 ms CPU per request.
 
 Use three tabs: Today, This week, All time. Default to Today. Always show the current credit balance and overall mastery separately from the selected period.
 
-| Metric | Definition |
-| --- | --- |
-| Questions completed | Accepted answers plus Skip & reveal; excludes pending and retired questions |
-| Correct answers | Accepted correct answers; answer replay never increases the count |
-| Accuracy | Correct / submitted answers, excluding reveals; display an em dash if none |
-| New words explored | Distinct words with their first completed attempt in this period |
-| Words practised | Distinct words with any completed attempt in this period |
-| Newly mastered | Words reaching five correct answers for the first time in this period |
-| Study time | Recorded active study seconds, displayed as seconds below a minute, then minutes and seconds |
-| Credits earned | Positive learning awards in the selected period, independent of spending |
+| Metric              | Definition                                                                                   |
+| ------------------- | -------------------------------------------------------------------------------------------- |
+| Questions completed | Accepted answers plus Skip & reveal; excludes pending and retired questions                  |
+| Correct answers     | Accepted correct answers; answer replay never increases the count                            |
+| Accuracy            | Correct / submitted answers, excluding reveals; display an em dash if none                   |
+| New words explored  | Distinct words with their first completed attempt in this period                             |
+| Words practised     | Distinct words with any completed attempt in this period                                     |
+| Newly mastered      | Words reaching five correct answers for the first time in this period                        |
+| Study time          | Recorded active study seconds, displayed as seconds below a minute, then minutes and seconds |
+| Credits earned      | Positive learning awards in the selected period, independent of spending                     |
 
 Use “New words explored” rather than claiming a single exposure means learned. “Mastered” retains the existing five-correct-across-types rule. Show partially learned words too: for example “12 words in progress”.
 
@@ -45,14 +47,14 @@ Existing attempt elapsed values are retained as historical recorded time, not re
 
 ## Credit rules (initial defaults)
 
-* +2 credits for each correct answer that advances a word's five-correct mastery count.
-* +5 bonus credits for every three consecutive correct answers: at streaks of 3, 6, 9 and so on. Three correct answers therefore earn 11 credits before any mastery bonus (2 + 2 + 2 + 5).
-* +10 bonus credits when that word is first mastered.
-* No credits for wrong answers, reveals, page refreshes or elapsed time; no credit deductions for mistakes.
-* Wrong answers and Skip & reveal reset the streak to zero, without taking away earned credits. Changing question types, refreshing, logging out or taking a break preserves the streak. Count consecutive accepted answers across all selected types, not consecutive days; there is no pressure to stay online.
-* Only correct answers that advance mastery count towards the streak. Retired questions and duplicate answer submissions neither advance nor reset it. Order simultaneous accepted answers by the server's transactional sequence, not client timestamps.
-* A word can earn at most 20 lifetime base/mastery credits; streak bonuses are additional awards across words. Resetting practice or switching question types does not reset award eligibility. No unlimited credit farming from already-mastered words.
-* Demo practice shows session-only stats and never earns redeemable credits.
+- +2 credits for each correct answer that advances a word's five-correct mastery count.
+- +5 bonus credits for every three consecutive correct answers: at streaks of 3, 6, 9 and so on. Three correct answers therefore earn 11 credits before any mastery bonus (2 + 2 + 2 + 5).
+- +10 bonus credits when that word is first mastered.
+- No credits for wrong answers, reveals, page refreshes or elapsed time; no credit deductions for mistakes.
+- Wrong answers and Skip & reveal reset the streak to zero, without taking away earned credits. Changing question types, refreshing, logging out or taking a break preserves the streak. Count consecutive accepted answers across all selected types, not consecutive days; there is no pressure to stay online.
+- Only correct answers that advance mastery count towards the streak. Retired questions and duplicate answer submissions neither advance nor reset it. Order simultaneous accepted answers by the server's transactional sequence, not client timestamps.
+- A word can earn at most 20 lifetime base/mastery credits; streak bonuses are additional awards across words. Resetting practice or switching question types does not reset award eligibility. No unlimited credit farming from already-mastered words.
+- Demo practice shows session-only stats and never earns redeemable credits.
 
 Show three small progress markers beside the balance: “1 of 3 towards +5”, then “2 of 3 towards +5”. On the third correct answer show “Three in a row! +5 bonus” and an award breakdown such as “+2 correct · +5 streak · +10 mastered = +17 credits”. Start the next three-answer group immediately while retaining the overall streak count (for example “6 correct in a row”). Use a brief optional animation that respects reduced-motion preferences. On a mistake, say “New streak starts with your next correct answer”; do not subtract credits or use a punishment animation.
 
@@ -66,11 +68,11 @@ For streak backfill, replay valid accepted answers in stable server order (answe
 
 Initial catalogue, stored in a small versioned application configuration:
 
-| Badge | Credit cost |
-| --- | ---: |
-| Vocabulary Spark | 20 |
-| Word Explorer | 50 |
-| Vocabulary Champion | 100 |
+| Badge               | Credit cost |
+| ------------------- | ----------: |
+| Vocabulary Spark    |          20 |
+| Word Explorer       |          50 |
+| Vocabulary Champion |         100 |
 
 Students choose a badge and see its cost and resulting balance before selecting “Redeem”. Successful redemption deducts credits and immediately adds a dated digital badge receipt to their collection. Repeat redemptions are allowed, each with its own receipt; group duplicate badges visually by quantity. A retry of the same request does not buy another badge.
 
@@ -82,14 +84,14 @@ Show two histories: learning credit transactions and redeemed badges. Each recei
 
 Extend existing tables rather than introduce another datastore. All private reads derive the user ID from the authenticated session.
 
-* `users`: add reporting timezone.
-* `progress`: add first-completed timestamp and first-mastered timestamp. Preserve existing correct/seen/retry fields.
-* `study_sessions`: user ID, start/end timestamps, last checkpoint, accepted sequence, cumulative active seconds and lease for active-tab ownership.
-* `study_intervals`: accepted time segments for attribution, with unique session/sequence; no credit awards from these events.
-* `user_daily_stats`: user/local date/timezone version, question/correct/reveal/first-exposure/mastery counts and active seconds. Rebuildable summaries, not the only source of history.
-* `credit_wallets`: one row per user, nonnegative integer balance, version, current correct streak and best correct streak. Preserve streak state across sessions.
-* `credit_transactions`: immutable ID, user ID, signed integer amount, reason, attempt/word/redemption reference, rule version, created timestamp, balance after, unique per-user event key.
-* `badge_redemptions`: immutable ID, user ID, unique request key, badge ID/version/name snapshot, cost, created timestamp and linked debit transaction ID.
+- `users`: add reporting timezone.
+- `progress`: add first-completed timestamp and first-mastered timestamp. Preserve existing correct/seen/retry fields.
+- `study_sessions`: user ID, start/end timestamps, last checkpoint, accepted sequence, cumulative active seconds and lease for active-tab ownership.
+- `study_intervals`: accepted time segments for attribution, with unique session/sequence; no credit awards from these events.
+- `user_daily_stats`: user/local date/timezone version, question/correct/reveal/first-exposure/mastery counts and active seconds. Rebuildable summaries, not the only source of history.
+- `credit_wallets`: one row per user, nonnegative integer balance, version, current correct streak and best correct streak. Preserve streak state across sessions.
+- `credit_transactions`: immutable ID, user ID, signed integer amount, reason, attempt/word/redemption reference, rule version, created timestamp, balance after, unique per-user event key.
+- `badge_redemptions`: immutable ID, user ID, unique request key, badge ID/version/name snapshot, cost, created timestamp and linked debit transaction ID.
 
 Index attempts by user and answered timestamp; histories by user and timestamp; enforce unique award keys and user/request keys. Daily and weekly dashboard queries should not scan the user's complete history on every question. All-time totals can be cached alongside the wallet or a dedicated user summary, while remaining rebuildable from events.
 

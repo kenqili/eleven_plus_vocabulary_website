@@ -109,7 +109,17 @@ The return-from-checkout URL does not grant access. Signed webhooks fetch the cu
 - Server-side scoring prevents replayed answers from increasing mastery twice.
 - Previous-word review is read-only. Optional auto-next waits briefly after a correct answer.
 - Account progress persists across devices. The sample is intentionally temporary.
-- Practice time counts visible-question time reported on answer, bounded by elapsed wall time and capped at five minutes per question. Daily totals use UTC. Closing an unanswered question does not commit that question's time.
+- The dashboard has Today, This week (Monday–Sunday), and All time. Reporting uses Europe/London, including daylight saving. It distinguishes new words explored from words mastered, and updates after every answer.
+- Active study time includes question and explanation reading. It pauses when hidden/unfocused or after 60 seconds without interaction. Authenticated practice checkpoints every 15 active seconds, on answers and on page exit where possible. Server wall-time caps, unique checkpoint IDs and a per-user tab lease prevent repeated requests or overlapping tabs from counting twice. A crash or connection loss can lose the latest unsaved interval; time is an engagement estimate. Historical answer-time records are preserved.
+
+## Credits and digital badges
+
+- Each mastery-advancing correct answer earns 2 credits; every third consecutive eligible correct answer adds 5, and a first mastery adds 10. Wrong answers/reveals reset the streak without deducting credits. Streaks persist across sessions and type changes. Demo practice has no redeemable credits.
+- Visit /rewards for the badge catalogue, collection and paginated credit history. Badges cost 20, 50 or 100 credits. Parents decide any reward at home; the site supplies only digital badges and dated receipts. Already-earned credits remain redeemable after a membership lapses.
+- D1 stores all private records. Migration 0003 adds the tables and transactional triggers. Answer awards, progress and saved answers commit in one batch; redemption debit, history and receipt commit in one statement through triggers. SQL constraints and unique event/request IDs protect retries and concurrent purchases.
+- Existing attempts are imported once per user, in batches, through the same award trigger. Re-running the importer is safe. Imported progress without supporting attempts does not fabricate historical awards. Learning history records base, streak and mastery amounts in the award event, with a combined transaction total in the ledger.
+- Apply the new migration before starting this version. The local preview has been migrated; hosted databases require the deployment migration step. Keep the full trigger statements intact (including whitespace around CASE/END for the Wrangler SQL splitter).
+- The existing salted scrypt password hashes and secure session cookies are retained. Email verification/recovery delivery and hosted authentication CPU benchmarking remain launch-configuration work; this feature does not change authentication providers.
 
 ## Checks
 

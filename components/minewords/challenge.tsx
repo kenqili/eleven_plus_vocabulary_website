@@ -102,6 +102,37 @@ export default function Challenge() {
                             : "Not quite. Let’s learn this one."}
                       </strong>
                       <WordExplanation word={feedback} />
+                      {!!feedback.award?.total && (
+                        <div className="reward-notice" key={question.id}>
+                          <strong>
+                            {feedback.award.streak
+                              ? "Three in a row! +5 bonus"
+                              : "Credits earned"}
+                          </strong>
+                          <p>
+                            {[
+                              feedback.award.base
+                                ? `+${feedback.award.base} correct`
+                                : null,
+                              feedback.award.streak
+                                ? `+${feedback.award.streak} streak`
+                                : null,
+                              feedback.award.mastery
+                                ? `+${feedback.award.mastery} mastered`
+                                : null,
+                            ]
+                              .filter(Boolean)
+                              .join(" · ")}{" "}
+                            = <b>+{feedback.award.total} credits</b>
+                          </p>
+                        </div>
+                      )}
+                      {!demo && !feedback.correct && (
+                        <small>
+                          New streak starts with your next correct answer. Your
+                          earned credits are safe.
+                        </small>
+                      )}
                       {!demo && !feedback.correct && (
                         <small>
                           This word is scheduled to return on your 15th next
@@ -189,6 +220,11 @@ export default function Challenge() {
                   : "Progress saved to your account"}
               </span>
             </div>
+            {study.timeError && (
+              <p className="error" role="status">
+                {study.timeError} We’ll retry automatically.
+              </p>
+            )}
             <details className="previous-review">
               <summary>How questions are ordered</summary>
               {demo ? (
@@ -231,7 +267,11 @@ export default function Challenge() {
               </details>
             )}
           </section>
-          <ProgressPanel stats={stats} demo={demo} />
+          <ProgressPanel
+            stats={stats}
+            demo={demo}
+            liveSeconds={study.liveSeconds}
+          />
         </div>
         <footer className="site-footer">
           <span>Small steps. Lasting knowledge.</span>

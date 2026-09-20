@@ -18,8 +18,18 @@ export type Stats = {
   correct: number;
   todaySeconds: number;
   totalSeconds: number;
+  inProgress?: number;
+  periods?: {
+    today: import("./rewards").PeriodStats;
+    week: import("./rewards").PeriodStats;
+    all: import("./rewards").PeriodStats;
+  };
+  rewards?: import("./rewards").RewardSummary;
+  dates?: { today: string; week: string };
+  timezone?: string;
 };
 export type Feedback = {
+  award?: import("./rewards").Award;
   type: QuestionType;
   answer: string;
   correct: boolean;

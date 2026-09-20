@@ -1,3 +1,5 @@
+import { initializeRewards, progressSummary, awardFor } from "./rewards";
+import { localDay } from "@/lib/challenge/rewards";
 import { chooseWord, reviewDueAt } from "@/lib/challenge/ordering";
 import { words, problems, problemById } from "@/lib/challenge/bank";
 import { choicesFor, shuffle } from "@/lib/challenge/words";
@@ -32,20 +34,17 @@ export async function statsFor(userId: string): Promise<Stats> {
   const mastered = rows.results.filter(
     (p) => ids.has(p.word_id) && p.correct >= MASTERY_TARGET,
   ).length;
-  const start = new Date();
-  start.setUTCHours(0, 0, 0, 0);
-  const totals = await database()
-    .prepare(
-      "SELECT COALESCE(SUM(is_correct),0) AS correct, COALESCE(SUM(elapsed),0) AS total, COALESCE(SUM(CASE WHEN answered_at >= ? THEN elapsed ELSE 0 END),0) AS today FROM attempts WHERE user_id = ?",
-    )
-    .bind(start.getTime(), userId)
-    .first<{ correct: number; total: number; today: number }>();
+  const summary = await progressSummary(userId);
   return {
     total: words.length,
     mastered,
-    correct: totals?.correct || 0,
-    todaySeconds: totals?.today || 0,
-    totalSeconds: totals?.total || 0,
+    correct: summary.periods.all.correct,
+    todaySeconds: summary.periods.today.seconds,
+    totalSeconds: summary.periods.all.seconds,
+    inProgress: rows.results.filter(
+      (p) => ids.has(p.word_id) && p.correct > 0 && p.correct < MASTERY_TARGET,
+    ).length,
+    ...summary,
   };
 }
 function toQuestion(attempt: Attempt, progress?: WordProgress): Question {
@@ -238,6 +237,7 @@ export async function answerQuestion(
     selected >= options.length
   )
     throw new HttpError(400, "Choose a valid answer.");
+  await initializeRewards(userId);
   const answer = attempt.answer || word.definition;
   const correct = options[selected] === answer;
   const count =
@@ -256,8 +256,28 @@ export async function answerQuestion(
       Math.floor(elapsed),
     ),
   );
-  // D1 batches are transactional: only an unanswered attempt can increment mastery.
+  const now = Date.now();
+  // Award event, progress and answer commit together; event uniqueness prevents replay.
   await db.batch([
+    db
+      .prepare(
+        `INSERT OR IGNORE INTO learning_events(attempt_id,user_id,word_id,created_at,day,correct,revealed,eligible,mastered)
+      SELECT a.id,a.user_id,a.word_id,?,?,?,?,
+        CASE WHEN ?=1 AND p.correct<5 AND (SELECT COUNT(*) FROM learning_events e WHERE e.user_id=a.user_id AND e.word_id=a.word_id AND e.eligible=1)<5 THEN 1 ELSE 0 END,
+        CASE WHEN ?=1 AND p.correct=4 AND NOT EXISTS(SELECT 1 FROM learning_events e WHERE e.user_id=a.user_id AND e.word_id=a.word_id AND e.mastered=1) THEN 1 ELSE 0 END
+      FROM attempts a JOIN progress p ON p.user_id=a.user_id AND p.word_id=a.word_id
+      WHERE a.id=? AND a.user_id=? AND a.answered_at IS NULL`,
+      )
+      .bind(
+        now,
+        localDay(now),
+        correct ? 1 : 0,
+        selected === -1 ? 1 : 0,
+        correct ? 1 : 0,
+        correct ? 1 : 0,
+        id,
+        userId,
+      ),
     db
       .prepare(
         "UPDATE progress SET correct=MIN(?,correct+?),retry_at=? WHERE user_id=? AND word_id=? AND EXISTS (SELECT 1 FROM attempts WHERE id=? AND user_id=? AND answered_at IS NULL)",
@@ -299,5 +319,6 @@ export async function answerQuestion(
     ant: word.ant,
     selected: saved?.selected ?? -1,
     word: word.word,
+    award: await awardFor(userId, id),
   };
 }

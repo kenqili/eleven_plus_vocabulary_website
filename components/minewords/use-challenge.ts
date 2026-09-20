@@ -1,6 +1,8 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "@/lib/client/api";
+import { useStudyClock } from "./use-study-clock";
+import { emptyPeriod } from "@/lib/challenge/rewards";
 import {
   QUESTION_TYPES,
   MASTERY_TARGET,
@@ -48,6 +50,7 @@ export function useChallenge() {
     ...QUESTION_TYPES,
   ]);
   const demoProgress = useRef(new Map<string, number>());
+  const demoSeen = useRef(new Set<string>());
   const demoStats = useRef(initialStats);
   const demoWords = useRef<DemoWord[]>([]),
     demoIndex = useRef(0),
@@ -55,6 +58,42 @@ export function useChallenge() {
     lock = useRef(false);
   const stateRef = useRef(state);
   stateRef.current = state;
+  const updateTime = useCallback((result: Partial<Stats>) => {
+    if (!result.periods) return;
+    setState((current) => {
+      const periods = current.stats.periods;
+      if (!periods) return current;
+      if (result.dates?.today !== current.stats.dates?.today) {
+        return {
+          ...current,
+          stats: {
+            ...current.stats,
+            ...result,
+            correct: result.periods!.all.correct,
+            todaySeconds: result.periods!.today.seconds,
+            totalSeconds: result.periods!.all.seconds,
+          },
+        };
+      }
+      const next = { ...periods };
+      for (const key of ["today", "week", "all"] as const)
+        next[key] = {
+          ...periods[key],
+          seconds: Math.max(periods[key].seconds, result.periods![key].seconds),
+        };
+      return {
+        ...current,
+        stats: {
+          ...current.stats,
+          periods: next,
+          todaySeconds: next.today.seconds,
+          totalSeconds: next.all.seconds,
+        },
+      };
+    });
+  }, []);
+  const studyClock = useStudyClock(state.question?.id, !state.demo, updateTime);
+  const flushTime = studyClock.flush;
   const demoQuestion = useCallback((index: number): Question | null => {
     const word = demoWords.current[index];
     return word
@@ -109,6 +148,24 @@ export function useChallenge() {
     void load();
   }, [load]);
   useEffect(() => {
+    const refreshStats = async () => {
+      if (stateRef.current.demo || lock.current) return;
+      try {
+        const result = await api<ChallengeState>("/api/challenge");
+        if (!result.demo && !lock.current)
+          setState((current) =>
+            result.stats.correct >= current.stats.correct
+              ? { ...current, stats: result.stats }
+              : current,
+          );
+      } catch {
+        /* Keep the saved view; the next answer refreshes it. */
+      }
+    };
+    window.addEventListener("focus", refreshStats);
+    return () => window.removeEventListener("focus", refreshStats);
+  }, []);
+  useEffect(() => {
     const interval = setInterval(() => {
       if (
         document.visibilityState === "visible" &&
@@ -126,6 +183,7 @@ export function useChallenge() {
     setBusy(true);
     setError("");
     try {
+      await flushTime();
       const current = stateRef.current;
       if (current.feedback) setPrevious(current.feedback);
       if (current.demo) {
@@ -151,39 +209,75 @@ export function useChallenge() {
       lock.current = false;
       setBusy(false);
     }
-  }, [demoQuestion, selectedTypes]);
-  const answer = useCallback(async (selected: number) => {
-    const current = stateRef.current;
-    if (lock.current || !current.question || current.feedback) return;
-    if (!Number.isInteger(selected) || selected < -1 || selected > 3)
-      throw Error("Choose an answer between 0 and 3, or -1 to reveal.");
-    lock.current = true;
-    setBusy(true);
-    setError("");
-    try {
-      if (current.demo) {
-        const word = demoWords.current[demoIndex.current];
-        const correct = word.choices[selected] === word.answer;
-        if (correct)
-          demoProgress.current.set(
-            word.wordId,
-            Math.min(
-              MASTERY_TARGET,
-              (demoProgress.current.get(word.wordId) || 0) + 1,
-            ),
-          );
-        demoStats.current = {
-          ...current.stats,
-          mastered: [...demoProgress.current.values()].filter(
-            (count) => count >= MASTERY_TARGET,
-          ).length,
-          correct: current.stats.correct + (correct ? 1 : 0),
-          todaySeconds: current.stats.todaySeconds + elapsed.current,
-          totalSeconds: current.stats.totalSeconds + elapsed.current,
-        };
-        setState({
-          ...current,
-          feedback: {
+  }, [demoQuestion, selectedTypes, flushTime]);
+  const answer = useCallback(
+    async (selected: number) => {
+      const current = stateRef.current;
+      if (lock.current || !current.question || current.feedback) return;
+      if (!Number.isInteger(selected) || selected < -1 || selected > 3)
+        throw Error("Choose an answer between 0 and 3, or -1 to reveal.");
+      lock.current = true;
+      setBusy(true);
+      setError("");
+      try {
+        await flushTime();
+        if (current.demo) {
+          const word = demoWords.current[demoIndex.current];
+          const correct = word.choices[selected] === word.answer;
+          const seenBefore = demoSeen.current.has(word.wordId);
+          demoSeen.current.add(word.wordId);
+          const justMastered =
+            correct &&
+            demoProgress.current.get(word.wordId) === MASTERY_TARGET - 1;
+          if (correct)
+            demoProgress.current.set(
+              word.wordId,
+              Math.min(
+                MASTERY_TARGET,
+                (demoProgress.current.get(word.wordId) || 0) + 1,
+              ),
+            );
+          const prior = current.stats.periods?.all || emptyPeriod();
+          const period = {
+            ...prior,
+            questions: prior.questions + 1,
+            correct: prior.correct + (correct ? 1 : 0),
+            reveals: prior.reveals + (selected === -1 ? 1 : 0),
+            newWords: prior.newWords + (seenBefore ? 0 : 1),
+            words: prior.words + (seenBefore ? 0 : 1),
+            mastered: prior.mastered + (justMastered ? 1 : 0),
+            seconds: prior.seconds + elapsed.current,
+          };
+          demoStats.current = {
+            ...current.stats,
+            mastered: [...demoProgress.current.values()].filter(
+              (count) => count >= MASTERY_TARGET,
+            ).length,
+            correct: current.stats.correct + (correct ? 1 : 0),
+            todaySeconds: current.stats.todaySeconds + elapsed.current,
+            totalSeconds: current.stats.totalSeconds + elapsed.current,
+            periods: { today: period, week: period, all: period },
+            inProgress: [...demoProgress.current.values()].filter(
+              (count) => count > 0 && count < MASTERY_TARGET,
+            ).length,
+          };
+          setState({
+            ...current,
+            feedback: {
+              type: word.type,
+              answer: word.answer,
+              correct,
+              skipped: selected === -1,
+              selected,
+              word: word.word,
+              definition: word.definition,
+              example: word.example,
+              syn: word.syn,
+              ant: word.ant,
+            },
+            stats: demoStats.current,
+          });
+          return {
             type: word.type,
             answer: word.answer,
             correct,
@@ -194,38 +288,26 @@ export function useChallenge() {
             example: word.example,
             syn: word.syn,
             ant: word.ant,
-          },
-          stats: demoStats.current,
-        });
-        return {
-          type: word.type,
-          answer: word.answer,
-          correct,
-          skipped: selected === -1,
-          selected,
-          word: word.word,
-          definition: word.definition,
-          example: word.example,
-          syn: word.syn,
-          ant: word.ant,
-        };
-      } else {
-        const result = await api<ChallengeState>("/api/challenge", {
-          action: "answer",
-          id: current.question.id,
-          selected,
-          elapsed: elapsed.current,
-        });
-        setState({ ...current, ...result });
-        return result.feedback;
+          };
+        } else {
+          const result = await api<ChallengeState>("/api/challenge", {
+            action: "answer",
+            id: current.question.id,
+            selected,
+            elapsed: elapsed.current,
+          });
+          setState({ ...current, ...result });
+          return result.feedback;
+        }
+      } catch (e) {
+        setError((e as Error).message);
+      } finally {
+        lock.current = false;
+        setBusy(false);
       }
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      lock.current = false;
-      setBusy(false);
-    }
-  }, []);
+    },
+    [flushTime],
+  );
   useEffect(() => {
     if (!autoNext || !state.feedback?.correct || busy || error) return;
     const timer = setTimeout(() => void next(), 1400);
@@ -300,6 +382,8 @@ export function useChallenge() {
   }, [answer]);
   return {
     ...state,
+    liveSeconds: studyClock.seconds,
+    timeError: studyClock.error,
     busy,
     error,
     previous,
