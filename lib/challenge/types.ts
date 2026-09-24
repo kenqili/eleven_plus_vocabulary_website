@@ -46,5 +46,13 @@ export type ChallengeState = {
   stats: Stats;
   demo: boolean;
   complete?: boolean;
+  gated?: boolean;
+  freeTier?: boolean;
+  freeWordCount?: number;
+  trial?: boolean;
+  trialExpired?: boolean;
+  trialDaysRemaining?: number;
+  trialDaysConfigured?: number;
+  trialEndsAt?: number | null;
   feedback?: Feedback;
 };

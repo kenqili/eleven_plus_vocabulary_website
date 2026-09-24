@@ -1,12 +1,17 @@
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
-import { writeFileSync, readFileSync, mkdirSync } from "node:fs";
+import { writeFileSync, mkdirSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { words } from "../scripts/load-word-bank.mjs";
+import { parseCsv } from "../lib/challenge/words.ts";
 import { problems } from "../scripts/load-problem-bank.mjs";
 const origin = process.env.TEST_ORIGIN || "http://localhost:5173";
 if (!["localhost", "127.0.0.1"].includes(new URL(origin).hostname))
   throw Error("Integration tests only run against local development.");
+const nodeDatabase = process.env.TEST_NODE_DB
+  ? new (await import("node:sqlite")).DatabaseSync(process.env.TEST_NODE_DB)
+  : null;
+nodeDatabase?.exec("PRAGMA foreign_keys = ON; PRAGMA busy_timeout = 5000;");
 const stamp = randomUUID();
 const password = `Test-only-${stamp}`;
 let cookie = "";
@@ -34,6 +39,10 @@ async function call(path, data, options = {}) {
   };
 }
 function sql(text) {
+  if (nodeDatabase) {
+    nodeDatabase.exec(text);
+    return;
+  }
   mkdirSync("work", { recursive: true });
   writeFileSync("work/integration.sql", text);
   const result = spawnSync(
@@ -59,6 +68,9 @@ function sql(text) {
 }
 let userId;
 try {
+  assert.equal((await call("/api/calendar")).status, 401);
+  assert.equal((await call("/api/words")).status, 401);
+  assert.equal((await call("/api/words/export")).status, 401);
   const demo = await call("/api/challenge?types=def");
   assert.equal(demo.status, 200);
   assert.equal(demo.data.words.length, Math.min(5, words.length));
@@ -99,6 +111,24 @@ try {
   assert.equal((await call("/api/auth/me")).data.user.id, userId);
   assert.equal((await call("/api/challenge", { action: "next" })).status, 402);
   assert.equal((await call("/api/billing/checkout", {})).status, 503);
+  const freeWords = await call("/api/words");
+  assert.equal(freeWords.status, 200);
+  assert.equal(freeWords.data.premium, false);
+  const emptyCalendar = await call("/api/calendar?month=2024-02");
+  assert.equal(emptyCalendar.status, 200);
+  assert.equal(emptyCalendar.data.days.length, 29);
+  assert.equal(emptyCalendar.data.totals.words, 0);
+  assert.equal(emptyCalendar.data.totals.seconds, 0);
+  for (const month of ["2024-13", "2024-2", "1999-12", "9999-12", ""]) {
+    assert.equal((await call(`/api/calendar?month=${month}`)).status, 400);
+  }
+  assert.ok(
+    freeWords.data.words.every(
+      (word) => word.correct === 0 && word.status === "new",
+    ),
+  );
+  assert.equal((await call("/api/words/export")).status, 402);
+  assert.equal((await call("/api/words/export?format=print")).status, 402);
   assert.equal(
     (
       await call("/api/auth/login", {
@@ -238,6 +268,82 @@ try {
   assert.equal(wrong.data.feedback.correct, false);
   assert.equal(wrong.data.feedback.answer, syn2Answer);
   assert.equal(wrong.data.stats.correct, 2);
+  const summary = await call("/api/words");
+  assert.equal(summary.data.premium, true);
+  assert.equal(summary.data.words.length, words.length);
+  assert.ok(
+    summary.data.words.every(
+      (word) =>
+        [1, 2, 3, 4, 5].includes(word.difficulty) && word.letterCount > 0,
+    ),
+  );
+  const mistaken = summary.data.words.find(
+    (word) => word.id === syn2.data.question.wordId,
+  );
+  assert.equal(mistaken.mistakes, 1);
+  assert.equal(mistaken.status, "practice");
+  assert.equal(
+    summary.data.words.reduce((sum, word) => sum + word.mistakes, 0),
+    1,
+  );
+  assert.equal(
+    summary.data.words.reduce((sum, word) => sum + word.reveals, 0),
+    0,
+  );
+  assert.equal(
+    summary.data.words.find((word) => word.id === q.wordId).correct,
+    1,
+  );
+  const exported = await fetch(origin + "/api/words/export?filter=mistakes", {
+    headers: { Cookie: cookie },
+  });
+  assert.equal(exported.status, 200);
+  assert.match(exported.headers.get("content-type"), /text\/csv/);
+  const csvRows = parseCsv((await exported.text()).replace(/^\uFEFF/, ""));
+  assert.equal(csvRows.length, 2);
+  assert.equal(csvRows[1][0], mistaken.word);
+  const printed = await fetch(
+    origin + "/api/words/export?filter=practice&format=print",
+    { headers: { Cookie: cookie } },
+  );
+  assert.equal(printed.status, 200);
+  assert.match(await printed.text(), /1 words/);
+  const escaped = await fetch(
+    origin +
+      "/api/words/export?format=print&search=" +
+      encodeURIComponent("<script>alert(1)</script>"),
+    { headers: { Cookie: cookie } },
+  );
+  const escapedHtml = await escaped.text();
+  assert.ok(!escapedHtml.includes("<script>alert(1)</script>"));
+  assert.ok(escapedHtml.includes("&lt;script&gt;"));
+  assert.equal((await call("/api/words/export?filter=unknown")).status, 400);
+  assert.equal((await call("/api/words/export?format=unknown")).status, 400);
+  assert.equal((await call("/api/words/export?level=6")).status, 400);
+  const levelExport = await fetch(origin + "/api/words/export?level=5", {
+    headers: { Cookie: cookie },
+  });
+  const levelRows = parseCsv((await levelExport.text()).replace(/^\uFEFF/, ""));
+  assert.equal(
+    levelRows.length - 1,
+    summary.data.words.filter((word) => word.difficulty === 5).length,
+  );
+  assert.ok(
+    levelRows
+      .slice(1)
+      .every((row) =>
+        row[levelRows[0].indexOf("Difficulty level")].startsWith("Level 5"),
+      ),
+  );
+  const combined = await fetch(
+    origin +
+      `/api/words/export?filter=mistakes&level=${mistaken.difficulty}&search=${encodeURIComponent(mistaken.word)}`,
+    { headers: { Cookie: cookie } },
+  );
+  assert.equal(
+    parseCsv((await combined.text()).replace(/^\uFEFF/, "")).length,
+    2,
+  );
   // Saved rewards: six fresh correct answers, replay protection and competing purchases.
   assert.equal(wrong.data.stats.rewards.streak, 0);
   let lastPractice;
@@ -414,13 +520,57 @@ try {
     true,
   );
   sql(`UPDATE subscriptions SET status='canceled' WHERE user_id='${userId}';`);
+  assert.equal((await call("/api/words/export")).status, 402);
+  assert.equal((await call("/api/words/export?format=print")).status, 402);
   assert.equal((await call("/api/challenge", { action: "next" })).status, 402);
+  // Calendar history remains available after membership lapses. Repeated words
+  // count once per day/month, and midnight study ticks split between dates.
+  const otherCalendarUser = `calendar-other-${stamp}`;
+  sql(
+    `INSERT INTO users(id,email,password,created_at,rewards_initialized) VALUES('${otherCalendarUser}','${otherCalendarUser}@example.test','unused',0,1);`,
+  );
+  try {
+    for (const [suffix, day, word, owner] of [
+      ["a", "2024-02-28", "calendar-repeat", userId],
+      ["b", "2024-02-29", "calendar-repeat", userId],
+      ["c", "2024-02-29", "calendar-repeat", userId],
+      ["d", "2024-02-29", "calendar-second", userId],
+      ["e", "2024-03-01", "outside-month", userId],
+      ["f", "2024-02-29", "other-user-word", otherCalendarUser],
+    ]) {
+      const attempt = `calendar-${stamp}-${suffix}`;
+      const time = Date.parse(`${day}T12:00:00Z`);
+      sql(`INSERT INTO attempts(id,user_id,word_id,choices,created_at,answered_at,selected,is_correct) VALUES('${attempt}','${owner}','${word}','[]',${time},${time},-1,0);
+      INSERT INTO learning_events(attempt_id,user_id,word_id,created_at,day,correct,revealed,eligible,mastered) VALUES('${attempt}','${owner}','${word}',${time},'${day}',0,1,0,0);`);
+    }
+    sql(
+      `INSERT INTO study_ticks(id,user_id,created_at,seconds,day,previous_day,since_midnight) VALUES('calendar-tick-${stamp}','${userId}',1709164830000,60,'2024-02-29','2024-02-28',30);`,
+    );
+    const calendar = await call("/api/calendar?month=2024-02");
+    assert.equal(calendar.status, 200);
+    assert.equal(calendar.data.timezone, "Europe/London");
+    assert.equal(calendar.data.days.length, 29);
+    assert.equal(calendar.data.totals.words, 2);
+    assert.equal(calendar.data.totals.questions, 4);
+    assert.equal(calendar.data.totals.seconds, 60);
+    assert.equal(calendar.data.totals.studyDays, 2);
+    assert.equal(calendar.data.days[27].words, 1);
+    assert.equal(calendar.data.days[28].words, 2);
+    assert.equal(calendar.data.days[28].questions, 3);
+    assert.equal(calendar.data.days[28].newWords, 1);
+    assert.equal(calendar.data.days[27].seconds, 30);
+    assert.equal(calendar.data.days[28].seconds, 30);
+    assert.equal(calendar.data.days[0].questions, 0);
+  } finally {
+    sql(`DELETE FROM users WHERE id='${otherCalendarUser}';`);
+  }
   console.log(
-    "PASS: accounts, CSRF, membership, all three question types, filters, replaced-question protection, correct/wrong answers, replay safety, saved progress, five-correct mastery and cancellation.",
+    "PASS: accounts, CSRF, membership, all three question types, filters, replaced-question protection, correct/wrong answers, replay safety, saved progress, five-correct mastery, calendar history and cancellation.",
   );
 } finally {
   if (userId)
     sql(
       `DELETE FROM subscriptions WHERE user_id='${userId}'; DELETE FROM users WHERE id='${userId}';`,
     );
+  nodeDatabase?.close();
 }

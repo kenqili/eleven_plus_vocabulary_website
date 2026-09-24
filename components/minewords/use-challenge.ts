@@ -1,5 +1,17 @@
 "use client";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
+import {
+  readAutoNext,
+  saveAutoNext,
+  subscribeAutoNext,
+  serverAutoNext,
+} from "@/lib/client/auto-next";
 import { api } from "@/lib/client/api";
 import { useStudyClock } from "./use-study-clock";
 import { emptyPeriod } from "@/lib/challenge/rewards";
@@ -45,7 +57,11 @@ export function useChallenge() {
   const [busy, setBusy] = useState(true),
     [error, setError] = useState("");
   const [previous, setPrevious] = useState<Feedback | null>(null);
-  const [autoNext, setAutoNext] = useState(false);
+  const autoNext = useSyncExternalStore(
+    subscribeAutoNext,
+    readAutoNext,
+    serverAutoNext,
+  );
   const [selectedTypes, setSelectedTypes] = useState<QuestionType[]>([
     ...QUESTION_TYPES,
   ]);
@@ -57,7 +73,9 @@ export function useChallenge() {
     elapsed = useRef(0),
     lock = useRef(false);
   const stateRef = useRef(state);
-  stateRef.current = state;
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
   const updateTime = useCallback((result: Partial<Stats>) => {
     if (!result.periods) return;
     setState((current) => {
@@ -114,13 +132,22 @@ export function useChallenge() {
       : null;
   }, []);
   const load = useCallback(async () => {
-    setBusy(true);
-    setError("");
     try {
       const result = await api<ChallengeState & { words?: DemoWord[] }>(
         `/api/challenge?types=${selectedTypes.join(",")}`,
       );
-      if (result.demo) {
+      if (result.gated) {
+        setState({
+          question: null,
+          feedback: undefined,
+          complete: true,
+          demo: false,
+          gated: true,
+          trialExpired: true,
+          freeTier: false,
+          stats: result.stats,
+        });
+      } else if (result.demo) {
         demoWords.current = result.words || [];
         demoIndex.current = 0;
         const question = demoQuestion(0);
@@ -130,13 +157,20 @@ export function useChallenge() {
           question,
           complete: !question,
         });
-      } else
-        setState(
-          await api<ChallengeState>("/api/challenge", {
-            action: "next",
-            types: selectedTypes,
-          }),
-        );
+      } else {
+        const next = await api<ChallengeState>("/api/challenge", {
+          action: "next",
+          types: selectedTypes,
+        });
+        setState({
+          ...next,
+          trial: result.trial,
+          trialDaysRemaining: result.trialDaysRemaining,
+          trialEndsAt: result.trialEndsAt,
+          freeTier: result.freeTier,
+          freeWordCount: result.freeWordCount,
+        });
+      }
       elapsed.current = 0;
     } catch (e) {
       setError((e as Error).message);
@@ -145,7 +179,14 @@ export function useChallenge() {
     }
   }, [demoQuestion, selectedTypes]);
   useEffect(() => {
-    void load();
+    let active = true;
+    const timer = setTimeout(() => {
+      if (active) void load();
+    }, 0);
+    return () => {
+      active = false;
+      clearTimeout(timer);
+    };
   }, [load]);
   useEffect(() => {
     const refreshStats = async () => {
@@ -195,16 +236,28 @@ export function useChallenge() {
           feedback: undefined,
           complete: !question,
         });
-      } else
+      } else {
         setState(
           await api<ChallengeState>("/api/challenge", {
             action: "next",
             types: selectedTypes,
           }),
         );
+      }
       elapsed.current = 0;
     } catch (e) {
-      setError((e as Error).message);
+      const message = (e as Error).message;
+      if (message.includes("free access has ended")) {
+        setState((current) => ({
+          ...current,
+          question: null,
+          feedback: undefined,
+          complete: true,
+          gated: true,
+          trialExpired: true,
+        }));
+        setError("");
+      } else setError(message);
     } finally {
       lock.current = false;
       setBusy(false);
@@ -300,13 +353,17 @@ export function useChallenge() {
           return result.feedback;
         }
       } catch (e) {
-        setError((e as Error).message);
+        const message = (e as Error).message;
+        if (message.startsWith("This question is outside your free collection.")) {
+          setError("");
+          await load();
+        } else setError(message);
       } finally {
         lock.current = false;
         setBusy(false);
       }
     },
-    [flushTime],
+    [flushTime, load],
   );
   useEffect(() => {
     if (!autoNext || !state.feedback?.correct || busy || error) return;
@@ -388,17 +445,22 @@ export function useChallenge() {
     error,
     previous,
     autoNext,
-    setAutoNext,
+    setAutoNext: saveAutoNext,
     selectedTypes,
     selectTypes: (types: QuestionType[]) => {
       if (!busy && !lock.current && types.length) {
         setBusy(true);
         setPrevious(null);
+        setError("");
         setSelectedTypes(types);
       }
     },
     answer,
     next,
-    reload: load,
+    reload: () => {
+      setBusy(true);
+      setError("");
+      return load();
+    },
   };
 }

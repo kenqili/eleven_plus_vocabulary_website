@@ -1,0 +1,5134 @@
+{
+  "version": 1,
+  "source": {
+    "name": "wordfreq",
+    "version": "3.1.1",
+    "author": "Robyn Speer",
+    "url": "https://github.com/rspeer/wordfreq",
+    "language": "en",
+    "wordlist": "large",
+    "license": "CC-BY-SA-4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "method": "70% rarity + 30% letter count. Rarity = 1 - clamp((Zipf - 1) / 5, 0, 1). Length = clamp((letters - 3) / 12, 0, 1). Score rounded to 4 decimals; sort by score then normalized word ID; divide into five equal bands. Levels are relative to this library, not exam grades. Phrase frequency is estimated from component words; missing frequency uses Zipf 0 and is flagged.",
+  "wordIdsSha256": "72c9364995426c0614d6dec3288509f4ab7ff67c9b3a3f70bcce9e5e3181c724",
+  "counts": {
+    "1": 146,
+    "2": 146,
+    "3": 146,
+    "4": 146,
+    "5": 146
+  },
+  "words": {
+    "abandon": {
+      "letterCount": 7,
+      "frequencyZipf": 4.02,
+      "frequencyKind": "word",
+      "score": 37.72,
+      "difficulty": 1
+    },
+    "abundance": {
+      "letterCount": 9,
+      "frequencyZipf": 3.86,
+      "frequencyKind": "word",
+      "score": 44.96,
+      "difficulty": 2
+    },
+    "affable": {
+      "letterCount": 7,
+      "frequencyZipf": 2.66,
+      "frequencyKind": "word",
+      "score": 56.76,
+      "difficulty": 5
+    },
+    "antiquity": {
+      "letterCount": 9,
+      "frequencyZipf": 3.43,
+      "frequencyKind": "word",
+      "score": 50.98,
+      "difficulty": 4
+    },
+    "arduous": {
+      "letterCount": 7,
+      "frequencyZipf": 3.18,
+      "frequencyKind": "word",
+      "score": 49.48,
+      "difficulty": 3
+    },
+    "assiduous": {
+      "letterCount": 9,
+      "frequencyZipf": 2.15,
+      "frequencyKind": "word",
+      "score": 68.9,
+      "difficulty": 5
+    },
+    "avowed": {
+      "letterCount": 6,
+      "frequencyZipf": 2.66,
+      "frequencyKind": "word",
+      "score": 54.26,
+      "difficulty": 4
+    },
+    "barren": {
+      "letterCount": 6,
+      "frequencyZipf": 3.4,
+      "frequencyKind": "word",
+      "score": 43.9,
+      "difficulty": 2
+    },
+    "belligerent": {
+      "letterCount": 11,
+      "frequencyZipf": 3.04,
+      "frequencyKind": "word",
+      "score": 61.44,
+      "difficulty": 5
+    },
+    "besieged": {
+      "letterCount": 8,
+      "frequencyZipf": 3.35,
+      "frequencyKind": "word",
+      "score": 49.6,
+      "difficulty": 3
+    },
+    "bewildered": {
+      "letterCount": 10,
+      "frequencyZipf": 3.1,
+      "frequencyKind": "word",
+      "score": 58.1,
+      "difficulty": 5
+    },
+    "choreographer": {
+      "letterCount": 13,
+      "frequencyZipf": 3.13,
+      "frequencyKind": "word",
+      "score": 65.18,
+      "difficulty": 5
+    },
+    "composition": {
+      "letterCount": 11,
+      "frequencyZipf": 4.33,
+      "frequencyKind": "word",
+      "score": 43.38,
+      "difficulty": 2
+    },
+    "comrade": {
+      "letterCount": 7,
+      "frequencyZipf": 3.55,
+      "frequencyKind": "word",
+      "score": 44.3,
+      "difficulty": 2
+    },
+    "conscience": {
+      "letterCount": 10,
+      "frequencyZipf": 3.96,
+      "frequencyKind": "word",
+      "score": 46.06,
+      "difficulty": 3
+    },
+    "contemporary": {
+      "letterCount": 12,
+      "frequencyZipf": 4.49,
+      "frequencyKind": "word",
+      "score": 43.64,
+      "difficulty": 2
+    },
+    "conventional": {
+      "letterCount": 12,
+      "frequencyZipf": 4.25,
+      "frequencyKind": "word",
+      "score": 47.0,
+      "difficulty": 3
+    },
+    "covet": {
+      "letterCount": 5,
+      "frequencyZipf": 2.82,
+      "frequencyKind": "word",
+      "score": 49.52,
+      "difficulty": 3
+    },
+    "coy": {
+      "letterCount": 3,
+      "frequencyZipf": 3.1,
+      "frequencyKind": "word",
+      "score": 40.6,
+      "difficulty": 1
+    },
+    "deceive": {
+      "letterCount": 7,
+      "frequencyZipf": 3.38,
+      "frequencyKind": "word",
+      "score": 46.68,
+      "difficulty": 3
+    },
+    "demolished": {
+      "letterCount": 10,
+      "frequencyZipf": 3.52,
+      "frequencyKind": "word",
+      "score": 52.22,
+      "difficulty": 4
+    },
+    "destitute": {
+      "letterCount": 9,
+      "frequencyZipf": 3.07,
+      "frequencyKind": "word",
+      "score": 56.02,
+      "difficulty": 4
+    },
+    "dilapidated": {
+      "letterCount": 11,
+      "frequencyZipf": 3.05,
+      "frequencyKind": "word",
+      "score": 61.3,
+      "difficulty": 5
+    },
+    "diluted": {
+      "letterCount": 7,
+      "frequencyZipf": 3.47,
+      "frequencyKind": "word",
+      "score": 45.42,
+      "difficulty": 2
+    },
+    "disarray": {
+      "letterCount": 8,
+      "frequencyZipf": 2.96,
+      "frequencyKind": "word",
+      "score": 55.06,
+      "difficulty": 4
+    },
+    "disastrous": {
+      "letterCount": 10,
+      "frequencyZipf": 3.68,
+      "frequencyKind": "word",
+      "score": 49.98,
+      "difficulty": 3
+    },
+    "dishevelled": {
+      "letterCount": 11,
+      "frequencyZipf": 2.24,
+      "frequencyKind": "word",
+      "score": 72.64,
+      "difficulty": 5
+    },
+    "dismal": {
+      "letterCount": 6,
+      "frequencyZipf": 3.26,
+      "frequencyKind": "word",
+      "score": 45.86,
+      "difficulty": 3
+    },
+    "disperse": {
+      "letterCount": 8,
+      "frequencyZipf": 3.3,
+      "frequencyKind": "word",
+      "score": 50.3,
+      "difficulty": 3
+    },
+    "drought": {
+      "letterCount": 7,
+      "frequencyZipf": 3.9,
+      "frequencyKind": "word",
+      "score": 39.4,
+      "difficulty": 1
+    },
+    "embarrass": {
+      "letterCount": 9,
+      "frequencyZipf": 3.41,
+      "frequencyKind": "word",
+      "score": 51.26,
+      "difficulty": 4
+    },
+    "endeavour": {
+      "letterCount": 9,
+      "frequencyZipf": 3.45,
+      "frequencyKind": "word",
+      "score": 50.7,
+      "difficulty": 4
+    },
+    "enterprise": {
+      "letterCount": 10,
+      "frequencyZipf": 4.38,
+      "frequencyKind": "word",
+      "score": 40.18,
+      "difficulty": 1
+    },
+    "errand": {
+      "letterCount": 6,
+      "frequencyZipf": 3.05,
+      "frequencyKind": "word",
+      "score": 48.8,
+      "difficulty": 3
+    },
+    "evident": {
+      "letterCount": 7,
+      "frequencyZipf": 3.99,
+      "frequencyKind": "word",
+      "score": 38.14,
+      "difficulty": 1
+    },
+    "explanation": {
+      "letterCount": 11,
+      "frequencyZipf": 4.44,
+      "frequencyKind": "word",
+      "score": 41.84,
+      "difficulty": 2
+    },
+    "famine": {
+      "letterCount": 6,
+      "frequencyZipf": 3.61,
+      "frequencyKind": "word",
+      "score": 40.96,
+      "difficulty": 2
+    },
+    "fatigue": {
+      "letterCount": 7,
+      "frequencyZipf": 3.86,
+      "frequencyKind": "word",
+      "score": 39.96,
+      "difficulty": 1
+    },
+    "feign": {
+      "letterCount": 5,
+      "frequencyZipf": 2.58,
+      "frequencyKind": "word",
+      "score": 52.88,
+      "difficulty": 4
+    },
+    "flamboyant": {
+      "letterCount": 10,
+      "frequencyZipf": 3.06,
+      "frequencyKind": "word",
+      "score": 58.66,
+      "difficulty": 5
+    },
+    "fleet": {
+      "letterCount": 5,
+      "frequencyZipf": 4.33,
+      "frequencyKind": "word",
+      "score": 28.38,
+      "difficulty": 1
+    },
+    "frivolous": {
+      "letterCount": 9,
+      "frequencyZipf": 3.22,
+      "frequencyKind": "word",
+      "score": 53.92,
+      "difficulty": 4
+    },
+    "gratitude": {
+      "letterCount": 9,
+      "frequencyZipf": 3.92,
+      "frequencyKind": "word",
+      "score": 44.12,
+      "difficulty": 2
+    },
+    "gregarious": {
+      "letterCount": 10,
+      "frequencyZipf": 2.71,
+      "frequencyKind": "word",
+      "score": 63.56,
+      "difficulty": 5
+    },
+    "grotesque": {
+      "letterCount": 9,
+      "frequencyZipf": 3.28,
+      "frequencyKind": "word",
+      "score": 53.08,
+      "difficulty": 4
+    },
+    "helix": {
+      "letterCount": 5,
+      "frequencyZipf": 3.26,
+      "frequencyKind": "word",
+      "score": 43.36,
+      "difficulty": 2
+    },
+    "hygienic": {
+      "letterCount": 8,
+      "frequencyZipf": 2.92,
+      "frequencyKind": "word",
+      "score": 55.62,
+      "difficulty": 4
+    },
+    "idiosyncrasy": {
+      "letterCount": 12,
+      "frequencyZipf": 1.95,
+      "frequencyKind": "word",
+      "score": 79.2,
+      "difficulty": 5
+    },
+    "immerse": {
+      "letterCount": 7,
+      "frequencyZipf": 2.94,
+      "frequencyKind": "word",
+      "score": 52.84,
+      "difficulty": 4
+    },
+    "impudent": {
+      "letterCount": 8,
+      "frequencyZipf": 2.46,
+      "frequencyKind": "word",
+      "score": 62.06,
+      "difficulty": 5
+    },
+    "inaugural": {
+      "letterCount": 9,
+      "frequencyZipf": 3.67,
+      "frequencyKind": "word",
+      "score": 47.62,
+      "difficulty": 3
+    },
+    "inconspicuous": {
+      "letterCount": 13,
+      "frequencyZipf": 2.76,
+      "frequencyKind": "word",
+      "score": 70.36,
+      "difficulty": 5
+    },
+    "innocuous": {
+      "letterCount": 9,
+      "frequencyZipf": 3.06,
+      "frequencyKind": "word",
+      "score": 56.16,
+      "difficulty": 4
+    },
+    "insolent": {
+      "letterCount": 8,
+      "frequencyZipf": 2.74,
+      "frequencyKind": "word",
+      "score": 58.14,
+      "difficulty": 5
+    },
+    "lament": {
+      "letterCount": 6,
+      "frequencyZipf": 3.25,
+      "frequencyKind": "word",
+      "score": 46.0,
+      "difficulty": 3
+    },
+    "lavish": {
+      "letterCount": 6,
+      "frequencyZipf": 3.42,
+      "frequencyKind": "word",
+      "score": 43.62,
+      "difficulty": 2
+    },
+    "malady": {
+      "letterCount": 6,
+      "frequencyZipf": 2.55,
+      "frequencyKind": "word",
+      "score": 55.8,
+      "difficulty": 4
+    },
+    "matte": {
+      "letterCount": 5,
+      "frequencyZipf": 3.52,
+      "frequencyKind": "word",
+      "score": 39.72,
+      "difficulty": 1
+    },
+    "meagre": {
+      "letterCount": 6,
+      "frequencyZipf": 2.86,
+      "frequencyKind": "word",
+      "score": 51.46,
+      "difficulty": 4
+    },
+    "melancholy": {
+      "letterCount": 10,
+      "frequencyZipf": 3.39,
+      "frequencyKind": "word",
+      "score": 54.04,
+      "difficulty": 4
+    },
+    "merchant": {
+      "letterCount": 8,
+      "frequencyZipf": 4.08,
+      "frequencyKind": "word",
+      "score": 39.38,
+      "difficulty": 1
+    },
+    "meticulous": {
+      "letterCount": 10,
+      "frequencyZipf": 3.24,
+      "frequencyKind": "word",
+      "score": 56.14,
+      "difficulty": 4
+    },
+    "nauseous": {
+      "letterCount": 8,
+      "frequencyZipf": 3.07,
+      "frequencyKind": "word",
+      "score": 53.52,
+      "difficulty": 4
+    },
+    "nimble": {
+      "letterCount": 6,
+      "frequencyZipf": 3.07,
+      "frequencyKind": "word",
+      "score": 48.52,
+      "difficulty": 3
+    },
+    "nuisance": {
+      "letterCount": 8,
+      "frequencyZipf": 3.5,
+      "frequencyKind": "word",
+      "score": 47.5,
+      "difficulty": 3
+    },
+    "obstinate": {
+      "letterCount": 9,
+      "frequencyZipf": 2.73,
+      "frequencyKind": "word",
+      "score": 60.78,
+      "difficulty": 5
+    },
+    "omen": {
+      "letterCount": 4,
+      "frequencyZipf": 3.12,
+      "frequencyKind": "word",
+      "score": 42.82,
+      "difficulty": 2
+    },
+    "oppress": {
+      "letterCount": 7,
+      "frequencyZipf": 2.88,
+      "frequencyKind": "word",
+      "score": 53.68,
+      "difficulty": 4
+    },
+    "ordeal": {
+      "letterCount": 6,
+      "frequencyZipf": 3.47,
+      "frequencyKind": "word",
+      "score": 42.92,
+      "difficulty": 2
+    },
+    "ostentatious": {
+      "letterCount": 12,
+      "frequencyZipf": 2.68,
+      "frequencyKind": "word",
+      "score": 68.98,
+      "difficulty": 5
+    },
+    "palaeontologist": {
+      "letterCount": 15,
+      "frequencyZipf": 2.11,
+      "frequencyKind": "word",
+      "score": 84.46,
+      "difficulty": 5
+    },
+    "peril": {
+      "letterCount": 5,
+      "frequencyZipf": 3.4,
+      "frequencyKind": "word",
+      "score": 41.4,
+      "difficulty": 2
+    },
+    "perish": {
+      "letterCount": 6,
+      "frequencyZipf": 3.32,
+      "frequencyKind": "word",
+      "score": 45.02,
+      "difficulty": 2
+    },
+    "pioneer": {
+      "letterCount": 7,
+      "frequencyZipf": 3.91,
+      "frequencyKind": "word",
+      "score": 39.26,
+      "difficulty": 1
+    },
+    "placid": {
+      "letterCount": 6,
+      "frequencyZipf": 3.01,
+      "frequencyKind": "word",
+      "score": 49.36,
+      "difficulty": 3
+    },
+    "polarity": {
+      "letterCount": 8,
+      "frequencyZipf": 3.06,
+      "frequencyKind": "word",
+      "score": 53.66,
+      "difficulty": 4
+    },
+    "pompous": {
+      "letterCount": 7,
+      "frequencyZipf": 3.06,
+      "frequencyKind": "word",
+      "score": 51.16,
+      "difficulty": 4
+    },
+    "precarious": {
+      "letterCount": 10,
+      "frequencyZipf": 3.27,
+      "frequencyKind": "word",
+      "score": 55.72,
+      "difficulty": 4
+    },
+    "prohibit": {
+      "letterCount": 8,
+      "frequencyZipf": 3.51,
+      "frequencyKind": "word",
+      "score": 47.36,
+      "difficulty": 3
+    },
+    "provoke": {
+      "letterCount": 7,
+      "frequencyZipf": 3.5,
+      "frequencyKind": "word",
+      "score": 45.0,
+      "difficulty": 2
+    },
+    "quaint": {
+      "letterCount": 6,
+      "frequencyZipf": 3.27,
+      "frequencyKind": "word",
+      "score": 45.72,
+      "difficulty": 2
+    },
+    "quench": {
+      "letterCount": 6,
+      "frequencyZipf": 2.89,
+      "frequencyKind": "word",
+      "score": 51.04,
+      "difficulty": 4
+    },
+    "raiment": {
+      "letterCount": 7,
+      "frequencyZipf": 2.07,
+      "frequencyKind": "word",
+      "score": 65.02,
+      "difficulty": 5
+    },
+    "reprimand": {
+      "letterCount": 9,
+      "frequencyZipf": 2.9,
+      "frequencyKind": "word",
+      "score": 58.4,
+      "difficulty": 5
+    },
+    "restrain": {
+      "letterCount": 8,
+      "frequencyZipf": 3.27,
+      "frequencyKind": "word",
+      "score": 50.72,
+      "difficulty": 4
+    },
+    "rigid": {
+      "letterCount": 5,
+      "frequencyZipf": 3.75,
+      "frequencyKind": "word",
+      "score": 36.5,
+      "difficulty": 1
+    },
+    "scanty": {
+      "letterCount": 6,
+      "frequencyZipf": 2.34,
+      "frequencyKind": "word",
+      "score": 58.74,
+      "difficulty": 5
+    },
+    "scripture": {
+      "letterCount": 9,
+      "frequencyZipf": 3.77,
+      "frequencyKind": "word",
+      "score": 46.22,
+      "difficulty": 3
+    },
+    "seize": {
+      "letterCount": 5,
+      "frequencyZipf": 3.8,
+      "frequencyKind": "word",
+      "score": 35.8,
+      "difficulty": 1
+    },
+    "sermon": {
+      "letterCount": 6,
+      "frequencyZipf": 3.59,
+      "frequencyKind": "word",
+      "score": 41.24,
+      "difficulty": 2
+    },
+    "stern": {
+      "letterCount": 5,
+      "frequencyZipf": 3.9,
+      "frequencyKind": "word",
+      "score": 34.4,
+      "difficulty": 1
+    },
+    "submissive": {
+      "letterCount": 10,
+      "frequencyZipf": 3.25,
+      "frequencyKind": "word",
+      "score": 56.0,
+      "difficulty": 4
+    },
+    "succumb": {
+      "letterCount": 7,
+      "frequencyZipf": 3.06,
+      "frequencyKind": "word",
+      "score": 51.16,
+      "difficulty": 4
+    },
+    "tempestuous": {
+      "letterCount": 11,
+      "frequencyZipf": 2.49,
+      "frequencyKind": "word",
+      "score": 69.14,
+      "difficulty": 5
+    },
+    "tranquil": {
+      "letterCount": 8,
+      "frequencyZipf": 3.14,
+      "frequencyKind": "word",
+      "score": 52.54,
+      "difficulty": 4
+    },
+    "turbulent": {
+      "letterCount": 9,
+      "frequencyZipf": 3.47,
+      "frequencyKind": "word",
+      "score": 50.42,
+      "difficulty": 3
+    },
+    "vicarious": {
+      "letterCount": 9,
+      "frequencyZipf": 2.6,
+      "frequencyKind": "word",
+      "score": 62.6,
+      "difficulty": 5
+    },
+    "virtuous": {
+      "letterCount": 8,
+      "frequencyZipf": 3.23,
+      "frequencyKind": "word",
+      "score": 51.28,
+      "difficulty": 4
+    },
+    "wither": {
+      "letterCount": 6,
+      "frequencyZipf": 3.02,
+      "frequencyKind": "word",
+      "score": 49.22,
+      "difficulty": 3
+    },
+    "wretched": {
+      "letterCount": 8,
+      "frequencyZipf": 3.37,
+      "frequencyKind": "word",
+      "score": 49.32,
+      "difficulty": 3
+    },
+    "abode": {
+      "letterCount": 5,
+      "frequencyZipf": 3.13,
+      "frequencyKind": "word",
+      "score": 45.18,
+      "difficulty": 2
+    },
+    "absurd": {
+      "letterCount": 6,
+      "frequencyZipf": 3.95,
+      "frequencyKind": "word",
+      "score": 36.2,
+      "difficulty": 1
+    },
+    "adhere": {
+      "letterCount": 6,
+      "frequencyZipf": 3.57,
+      "frequencyKind": "word",
+      "score": 41.52,
+      "difficulty": 2
+    },
+    "advice": {
+      "letterCount": 6,
+      "frequencyZipf": 4.88,
+      "frequencyKind": "word",
+      "score": 23.18,
+      "difficulty": 1
+    },
+    "ancient": {
+      "letterCount": 7,
+      "frequencyZipf": 4.68,
+      "frequencyKind": "word",
+      "score": 28.48,
+      "difficulty": 1
+    },
+    "apparent": {
+      "letterCount": 8,
+      "frequencyZipf": 4.32,
+      "frequencyKind": "word",
+      "score": 36.02,
+      "difficulty": 1
+    },
+    "banish": {
+      "letterCount": 6,
+      "frequencyZipf": 3.07,
+      "frequencyKind": "word",
+      "score": 48.52,
+      "difficulty": 3
+    },
+    "beck": {
+      "letterCount": 4,
+      "frequencyZipf": 3.71,
+      "frequencyKind": "word",
+      "score": 34.56,
+      "difficulty": 1
+    },
+    "brusque": {
+      "letterCount": 7,
+      "frequencyZipf": 2.38,
+      "frequencyKind": "word",
+      "score": 60.68,
+      "difficulty": 5
+    },
+    "calamity": {
+      "letterCount": 8,
+      "frequencyZipf": 3.22,
+      "frequencyKind": "word",
+      "score": 51.42,
+      "difficulty": 4
+    },
+    "caulk": {
+      "letterCount": 5,
+      "frequencyZipf": 2.29,
+      "frequencyKind": "word",
+      "score": 56.94,
+      "difficulty": 5
+    },
+    "clemency": {
+      "letterCount": 8,
+      "frequencyZipf": 2.97,
+      "frequencyKind": "word",
+      "score": 54.92,
+      "difficulty": 4
+    },
+    "coax": {
+      "letterCount": 4,
+      "frequencyZipf": 2.96,
+      "frequencyKind": "word",
+      "score": 45.06,
+      "difficulty": 2
+    },
+    "commence": {
+      "letterCount": 8,
+      "frequencyZipf": 3.59,
+      "frequencyKind": "word",
+      "score": 46.24,
+      "difficulty": 3
+    },
+    "complement": {
+      "letterCount": 10,
+      "frequencyZipf": 3.77,
+      "frequencyKind": "word",
+      "score": 48.72,
+      "difficulty": 3
+    },
+    "compliment": {
+      "letterCount": 10,
+      "frequencyZipf": 3.91,
+      "frequencyKind": "word",
+      "score": 46.76,
+      "difficulty": 3
+    },
+    "conceal": {
+      "letterCount": 7,
+      "frequencyZipf": 3.52,
+      "frequencyKind": "word",
+      "score": 44.72,
+      "difficulty": 2
+    },
+    "conceit": {
+      "letterCount": 7,
+      "frequencyZipf": 2.82,
+      "frequencyKind": "word",
+      "score": 54.52,
+      "difficulty": 4
+    },
+    "condemn": {
+      "letterCount": 7,
+      "frequencyZipf": 3.72,
+      "frequencyKind": "word",
+      "score": 41.92,
+      "difficulty": 2
+    },
+    "conflagration": {
+      "letterCount": 13,
+      "frequencyZipf": 2.57,
+      "frequencyKind": "word",
+      "score": 73.02,
+      "difficulty": 5
+    },
+    "controversy": {
+      "letterCount": 11,
+      "frequencyZipf": 4.26,
+      "frequencyKind": "word",
+      "score": 44.36,
+      "difficulty": 2
+    },
+    "deceit": {
+      "letterCount": 6,
+      "frequencyZipf": 3.24,
+      "frequencyKind": "word",
+      "score": 46.14,
+      "difficulty": 3
+    },
+    "deliberate": {
+      "letterCount": 10,
+      "frequencyZipf": 3.82,
+      "frequencyKind": "word",
+      "score": 48.02,
+      "difficulty": 3
+    },
+    "derelict": {
+      "letterCount": 8,
+      "frequencyZipf": 3.1,
+      "frequencyKind": "word",
+      "score": 53.1,
+      "difficulty": 4
+    },
+    "despise": {
+      "letterCount": 7,
+      "frequencyZipf": 3.5,
+      "frequencyKind": "word",
+      "score": 45.0,
+      "difficulty": 2
+    },
+    "device": {
+      "letterCount": 6,
+      "frequencyZipf": 4.67,
+      "frequencyKind": "word",
+      "score": 26.12,
+      "difficulty": 1
+    },
+    "din": {
+      "letterCount": 3,
+      "frequencyZipf": 3.56,
+      "frequencyKind": "word",
+      "score": 34.16,
+      "difficulty": 1
+    },
+    "disclose": {
+      "letterCount": 8,
+      "frequencyZipf": 3.84,
+      "frequencyKind": "word",
+      "score": 42.74,
+      "difficulty": 2
+    },
+    "dispute": {
+      "letterCount": 7,
+      "frequencyZipf": 4.27,
+      "frequencyKind": "word",
+      "score": 34.22,
+      "difficulty": 1
+    },
+    "distress": {
+      "letterCount": 8,
+      "frequencyZipf": 3.95,
+      "frequencyKind": "word",
+      "score": 41.2,
+      "difficulty": 2
+    },
+    "dwelling": {
+      "letterCount": 8,
+      "frequencyZipf": 3.74,
+      "frequencyKind": "word",
+      "score": 44.14,
+      "difficulty": 2
+    },
+    "economical": {
+      "letterCount": 10,
+      "frequencyZipf": 3.59,
+      "frequencyKind": "word",
+      "score": 51.24,
+      "difficulty": 4
+    },
+    "elude": {
+      "letterCount": 5,
+      "frequencyZipf": 2.78,
+      "frequencyKind": "word",
+      "score": 50.08,
+      "difficulty": 3
+    },
+    "emerge": {
+      "letterCount": 6,
+      "frequencyZipf": 3.89,
+      "frequencyKind": "word",
+      "score": 37.04,
+      "difficulty": 1
+    },
+    "endure": {
+      "letterCount": 6,
+      "frequencyZipf": 3.82,
+      "frequencyKind": "word",
+      "score": 38.02,
+      "difficulty": 1
+    },
+    "evaluation": {
+      "letterCount": 10,
+      "frequencyZipf": 4.21,
+      "frequencyKind": "word",
+      "score": 42.56,
+      "difficulty": 2
+    },
+    "exaggerate": {
+      "letterCount": 10,
+      "frequencyZipf": 3.19,
+      "frequencyKind": "word",
+      "score": 56.84,
+      "difficulty": 5
+    },
+    "extinction": {
+      "letterCount": 10,
+      "frequencyZipf": 3.76,
+      "frequencyKind": "word",
+      "score": 48.86,
+      "difficulty": 3
+    },
+    "factual": {
+      "letterCount": 7,
+      "frequencyZipf": 3.61,
+      "frequencyKind": "word",
+      "score": 43.46,
+      "difficulty": 2
+    },
+    "fatal": {
+      "letterCount": 5,
+      "frequencyZipf": 4.1,
+      "frequencyKind": "word",
+      "score": 31.6,
+      "difficulty": 1
+    },
+    "feeble": {
+      "letterCount": 6,
+      "frequencyZipf": 3.21,
+      "frequencyKind": "word",
+      "score": 46.56,
+      "difficulty": 3
+    },
+    "fertile": {
+      "letterCount": 7,
+      "frequencyZipf": 3.62,
+      "frequencyKind": "word",
+      "score": 43.32,
+      "difficulty": 2
+    },
+    "flourish": {
+      "letterCount": 8,
+      "frequencyZipf": 3.53,
+      "frequencyKind": "word",
+      "score": 47.08,
+      "difficulty": 3
+    },
+    "grave": {
+      "letterCount": 5,
+      "frequencyZipf": 4.31,
+      "frequencyKind": "word",
+      "score": 28.66,
+      "difficulty": 1
+    },
+    "grieve": {
+      "letterCount": 6,
+      "frequencyZipf": 3.33,
+      "frequencyKind": "word",
+      "score": 44.88,
+      "difficulty": 2
+    },
+    "harbour": {
+      "letterCount": 7,
+      "frequencyZipf": 3.98,
+      "frequencyKind": "word",
+      "score": 38.28,
+      "difficulty": 1
+    },
+    "hasty": {
+      "letterCount": 5,
+      "frequencyZipf": 3.29,
+      "frequencyKind": "word",
+      "score": 42.94,
+      "difficulty": 2
+    },
+    "hindrance": {
+      "letterCount": 9,
+      "frequencyZipf": 3.01,
+      "frequencyKind": "word",
+      "score": 56.86,
+      "difficulty": 5
+    },
+    "hoax": {
+      "letterCount": 4,
+      "frequencyZipf": 3.53,
+      "frequencyKind": "word",
+      "score": 37.08,
+      "difficulty": 1
+    },
+    "ignorant": {
+      "letterCount": 8,
+      "frequencyZipf": 4.05,
+      "frequencyKind": "word",
+      "score": 39.8,
+      "difficulty": 1
+    },
+    "imitate": {
+      "letterCount": 7,
+      "frequencyZipf": 3.29,
+      "frequencyKind": "word",
+      "score": 47.94,
+      "difficulty": 3
+    },
+    "inaugurate": {
+      "letterCount": 10,
+      "frequencyZipf": 2.57,
+      "frequencyKind": "word",
+      "score": 65.52,
+      "difficulty": 5
+    },
+    "incision": {
+      "letterCount": 8,
+      "frequencyZipf": 3.16,
+      "frequencyKind": "word",
+      "score": 52.26,
+      "difficulty": 4
+    },
+    "inferior": {
+      "letterCount": 8,
+      "frequencyZipf": 3.81,
+      "frequencyKind": "word",
+      "score": 43.16,
+      "difficulty": 2
+    },
+    "inhabitants": {
+      "letterCount": 11,
+      "frequencyZipf": 4.07,
+      "frequencyKind": "word",
+      "score": 47.02,
+      "difficulty": 3
+    },
+    "interfere": {
+      "letterCount": 9,
+      "frequencyZipf": 3.88,
+      "frequencyKind": "word",
+      "score": 44.68,
+      "difficulty": 2
+    },
+    "interrogate": {
+      "letterCount": 11,
+      "frequencyZipf": 2.9,
+      "frequencyKind": "word",
+      "score": 63.4,
+      "difficulty": 5
+    },
+    "isolation": {
+      "letterCount": 9,
+      "frequencyZipf": 4.02,
+      "frequencyKind": "word",
+      "score": 42.72,
+      "difficulty": 2
+    },
+    "lenient": {
+      "letterCount": 7,
+      "frequencyZipf": 3.13,
+      "frequencyKind": "word",
+      "score": 50.18,
+      "difficulty": 3
+    },
+    "liable": {
+      "letterCount": 6,
+      "frequencyZipf": 3.89,
+      "frequencyKind": "word",
+      "score": 37.04,
+      "difficulty": 1
+    },
+    "linger": {
+      "letterCount": 6,
+      "frequencyZipf": 3.31,
+      "frequencyKind": "word",
+      "score": 45.16,
+      "difficulty": 2
+    },
+    "lofty": {
+      "letterCount": 5,
+      "frequencyZipf": 3.34,
+      "frequencyKind": "word",
+      "score": 42.24,
+      "difficulty": 2
+    },
+    "majestic": {
+      "letterCount": 8,
+      "frequencyZipf": 3.57,
+      "frequencyKind": "word",
+      "score": 46.52,
+      "difficulty": 3
+    },
+    "margin": {
+      "letterCount": 6,
+      "frequencyZipf": 4.27,
+      "frequencyKind": "word",
+      "score": 31.72,
+      "difficulty": 1
+    },
+    "oblige": {
+      "letterCount": 6,
+      "frequencyZipf": 3.1,
+      "frequencyKind": "word",
+      "score": 48.1,
+      "difficulty": 3
+    },
+    "offend": {
+      "letterCount": 6,
+      "frequencyZipf": 3.57,
+      "frequencyKind": "word",
+      "score": 41.52,
+      "difficulty": 2
+    },
+    "opportunity": {
+      "letterCount": 11,
+      "frequencyZipf": 4.95,
+      "frequencyKind": "word",
+      "score": 34.7,
+      "difficulty": 1
+    },
+    "painstaking": {
+      "letterCount": 11,
+      "frequencyZipf": 2.93,
+      "frequencyKind": "word",
+      "score": 62.98,
+      "difficulty": 5
+    },
+    "passive": {
+      "letterCount": 7,
+      "frequencyZipf": 4.03,
+      "frequencyKind": "word",
+      "score": 37.58,
+      "difficulty": 1
+    },
+    "peculiar": {
+      "letterCount": 8,
+      "frequencyZipf": 3.67,
+      "frequencyKind": "word",
+      "score": 45.12,
+      "difficulty": 2
+    },
+    "perceive": {
+      "letterCount": 8,
+      "frequencyZipf": 3.72,
+      "frequencyKind": "word",
+      "score": 44.42,
+      "difficulty": 2
+    },
+    "perplexed": {
+      "letterCount": 9,
+      "frequencyZipf": 3.05,
+      "frequencyKind": "word",
+      "score": 56.3,
+      "difficulty": 4
+    },
+    "pigment": {
+      "letterCount": 7,
+      "frequencyZipf": 3.37,
+      "frequencyKind": "word",
+      "score": 46.82,
+      "difficulty": 3
+    },
+    "plunder": {
+      "letterCount": 7,
+      "frequencyZipf": 3.1,
+      "frequencyKind": "word",
+      "score": 50.6,
+      "difficulty": 3
+    },
+    "pretence": {
+      "letterCount": 8,
+      "frequencyZipf": 2.73,
+      "frequencyKind": "word",
+      "score": 58.28,
+      "difficulty": 5
+    },
+    "proclaim": {
+      "letterCount": 8,
+      "frequencyZipf": 3.27,
+      "frequencyKind": "word",
+      "score": 50.72,
+      "difficulty": 4
+    },
+    "prophecy": {
+      "letterCount": 8,
+      "frequencyZipf": 3.71,
+      "frequencyKind": "word",
+      "score": 44.56,
+      "difficulty": 2
+    },
+    "relevant": {
+      "letterCount": 8,
+      "frequencyZipf": 4.61,
+      "frequencyKind": "word",
+      "score": 31.96,
+      "difficulty": 1
+    },
+    "repent": {
+      "letterCount": 6,
+      "frequencyZipf": 3.35,
+      "frequencyKind": "word",
+      "score": 44.6,
+      "difficulty": 2
+    },
+    "resort to": {
+      "letterCount": 8,
+      "frequencyZipf": 4.37,
+      "frequencyKind": "phrase-estimate",
+      "score": 35.32,
+      "difficulty": 1
+    },
+    "retreat": {
+      "letterCount": 7,
+      "frequencyZipf": 4.13,
+      "frequencyKind": "word",
+      "score": 36.18,
+      "difficulty": 1
+    },
+    "rowdy": {
+      "letterCount": 5,
+      "frequencyZipf": 3.21,
+      "frequencyKind": "word",
+      "score": 44.06,
+      "difficulty": 2
+    },
+    "sanguine": {
+      "letterCount": 8,
+      "frequencyZipf": 2.74,
+      "frequencyKind": "word",
+      "score": 58.14,
+      "difficulty": 5
+    },
+    "sanitary": {
+      "letterCount": 8,
+      "frequencyZipf": 3.37,
+      "frequencyKind": "word",
+      "score": 49.32,
+      "difficulty": 3
+    },
+    "stationary": {
+      "letterCount": 10,
+      "frequencyZipf": 3.63,
+      "frequencyKind": "word",
+      "score": 50.68,
+      "difficulty": 4
+    },
+    "sturdy": {
+      "letterCount": 6,
+      "frequencyZipf": 3.44,
+      "frequencyKind": "word",
+      "score": 43.34,
+      "difficulty": 2
+    },
+    "subdued": {
+      "letterCount": 7,
+      "frequencyZipf": 3.37,
+      "frequencyKind": "word",
+      "score": 46.82,
+      "difficulty": 3
+    },
+    "subterfuge": {
+      "letterCount": 10,
+      "frequencyZipf": 2.69,
+      "frequencyKind": "word",
+      "score": 63.84,
+      "difficulty": 5
+    },
+    "subterranean": {
+      "letterCount": 12,
+      "frequencyZipf": 3.11,
+      "frequencyKind": "word",
+      "score": 62.96,
+      "difficulty": 5
+    },
+    "summit": {
+      "letterCount": 6,
+      "frequencyZipf": 4.3,
+      "frequencyKind": "word",
+      "score": 31.3,
+      "difficulty": 1
+    },
+    "superfluous": {
+      "letterCount": 11,
+      "frequencyZipf": 3.0,
+      "frequencyKind": "word",
+      "score": 62.0,
+      "difficulty": 5
+    },
+    "torment": {
+      "letterCount": 7,
+      "frequencyZipf": 3.36,
+      "frequencyKind": "word",
+      "score": 46.96,
+      "difficulty": 3
+    },
+    "trivia": {
+      "letterCount": 6,
+      "frequencyZipf": 3.47,
+      "frequencyKind": "word",
+      "score": 42.92,
+      "difficulty": 2
+    },
+    "trivial": {
+      "letterCount": 7,
+      "frequencyZipf": 3.66,
+      "frequencyKind": "word",
+      "score": 42.76,
+      "difficulty": 2
+    },
+    "unfathomable": {
+      "letterCount": 12,
+      "frequencyZipf": 2.91,
+      "frequencyKind": "word",
+      "score": 65.76,
+      "difficulty": 5
+    },
+    "unsurpassed": {
+      "letterCount": 11,
+      "frequencyZipf": 2.71,
+      "frequencyKind": "word",
+      "score": 66.06,
+      "difficulty": 5
+    },
+    "vanish": {
+      "letterCount": 6,
+      "frequencyZipf": 3.39,
+      "frequencyKind": "word",
+      "score": 44.04,
+      "difficulty": 2
+    },
+    "volatile": {
+      "letterCount": 8,
+      "frequencyZipf": 3.72,
+      "frequencyKind": "word",
+      "score": 44.42,
+      "difficulty": 2
+    },
+    "yacht": {
+      "letterCount": 5,
+      "frequencyZipf": 3.82,
+      "frequencyKind": "word",
+      "score": 35.52,
+      "difficulty": 1
+    },
+    "yield": {
+      "letterCount": 5,
+      "frequencyZipf": 4.16,
+      "frequencyKind": "word",
+      "score": 30.76,
+      "difficulty": 1
+    },
+    "tardy": {
+      "letterCount": 5,
+      "frequencyZipf": 2.69,
+      "frequencyKind": "word",
+      "score": 51.34,
+      "difficulty": 4
+    },
+    "punctual": {
+      "letterCount": 8,
+      "frequencyZipf": 2.83,
+      "frequencyKind": "word",
+      "score": 56.88,
+      "difficulty": 5
+    },
+    "deteriorate": {
+      "letterCount": 11,
+      "frequencyZipf": 3.15,
+      "frequencyKind": "word",
+      "score": 59.9,
+      "difficulty": 5
+    },
+    "thrive": {
+      "letterCount": 6,
+      "frequencyZipf": 3.73,
+      "frequencyKind": "word",
+      "score": 39.28,
+      "difficulty": 1
+    },
+    "imperative": {
+      "letterCount": 10,
+      "frequencyZipf": 3.66,
+      "frequencyKind": "word",
+      "score": 50.26,
+      "difficulty": 3
+    },
+    "lout": {
+      "letterCount": 4,
+      "frequencyZipf": 2.13,
+      "frequencyKind": "word",
+      "score": 56.68,
+      "difficulty": 5
+    },
+    "viscous": {
+      "letterCount": 7,
+      "frequencyZipf": 2.94,
+      "frequencyKind": "word",
+      "score": 52.84,
+      "difficulty": 4
+    },
+    "vicious": {
+      "letterCount": 7,
+      "frequencyZipf": 3.83,
+      "frequencyKind": "word",
+      "score": 40.38,
+      "difficulty": 1
+    },
+    "gravely": {
+      "letterCount": 7,
+      "frequencyZipf": 3.09,
+      "frequencyKind": "word",
+      "score": 50.74,
+      "difficulty": 4
+    },
+    "boldness": {
+      "letterCount": 8,
+      "frequencyZipf": 2.9,
+      "frequencyKind": "word",
+      "score": 55.9,
+      "difficulty": 4
+    },
+    "fortitude": {
+      "letterCount": 9,
+      "frequencyZipf": 3.15,
+      "frequencyKind": "word",
+      "score": 54.9,
+      "difficulty": 4
+    },
+    "grit": {
+      "letterCount": 4,
+      "frequencyZipf": 3.43,
+      "frequencyKind": "word",
+      "score": 38.48,
+      "difficulty": 1
+    },
+    "apprehension": {
+      "letterCount": 12,
+      "frequencyZipf": 3.09,
+      "frequencyKind": "word",
+      "score": 63.24,
+      "difficulty": 5
+    },
+    "rivet": {
+      "letterCount": 5,
+      "frequencyZipf": 2.69,
+      "frequencyKind": "word",
+      "score": 51.34,
+      "difficulty": 4
+    },
+    "riveting": {
+      "letterCount": 8,
+      "frequencyZipf": 2.99,
+      "frequencyKind": "word",
+      "score": 54.64,
+      "difficulty": 4
+    },
+    "tedious": {
+      "letterCount": 7,
+      "frequencyZipf": 3.5,
+      "frequencyKind": "word",
+      "score": 45.0,
+      "difficulty": 2
+    },
+    "apathy": {
+      "letterCount": 6,
+      "frequencyZipf": 3.26,
+      "frequencyKind": "word",
+      "score": 45.86,
+      "difficulty": 2
+    },
+    "veto": {
+      "letterCount": 4,
+      "frequencyZipf": 3.65,
+      "frequencyKind": "word",
+      "score": 35.4,
+      "difficulty": 1
+    },
+    "agitated": {
+      "letterCount": 8,
+      "frequencyZipf": 3.35,
+      "frequencyKind": "word",
+      "score": 49.6,
+      "difficulty": 3
+    },
+    "haughty": {
+      "letterCount": 7,
+      "frequencyZipf": 2.68,
+      "frequencyKind": "word",
+      "score": 56.48,
+      "difficulty": 4
+    },
+    "sanction": {
+      "letterCount": 8,
+      "frequencyZipf": 3.43,
+      "frequencyKind": "word",
+      "score": 48.48,
+      "difficulty": 3
+    },
+    "rectify": {
+      "letterCount": 7,
+      "frequencyZipf": 3.17,
+      "frequencyKind": "word",
+      "score": 49.62,
+      "difficulty": 3
+    },
+    "feud": {
+      "letterCount": 4,
+      "frequencyZipf": 3.62,
+      "frequencyKind": "word",
+      "score": 35.82,
+      "difficulty": 1
+    },
+    "startle": {
+      "letterCount": 7,
+      "frequencyZipf": 2.69,
+      "frequencyKind": "word",
+      "score": 56.34,
+      "difficulty": 4
+    },
+    "savage": {
+      "letterCount": 6,
+      "frequencyZipf": 4.05,
+      "frequencyKind": "word",
+      "score": 34.8,
+      "difficulty": 1
+    },
+    "ferocious": {
+      "letterCount": 9,
+      "frequencyZipf": 3.21,
+      "frequencyKind": "word",
+      "score": 54.06,
+      "difficulty": 4
+    },
+    "callous": {
+      "letterCount": 7,
+      "frequencyZipf": 3.07,
+      "frequencyKind": "word",
+      "score": 51.02,
+      "difficulty": 4
+    },
+    "demean": {
+      "letterCount": 6,
+      "frequencyZipf": 2.58,
+      "frequencyKind": "word",
+      "score": 55.38,
+      "difficulty": 4
+    },
+    "animosity": {
+      "letterCount": 9,
+      "frequencyZipf": 3.17,
+      "frequencyKind": "word",
+      "score": 54.62,
+      "difficulty": 4
+    },
+    "besotted": {
+      "letterCount": 8,
+      "frequencyZipf": 2.34,
+      "frequencyKind": "word",
+      "score": 63.74,
+      "difficulty": 5
+    },
+    "relish": {
+      "letterCount": 6,
+      "frequencyZipf": 3.32,
+      "frequencyKind": "word",
+      "score": 45.02,
+      "difficulty": 2
+    },
+    "abhor": {
+      "letterCount": 5,
+      "frequencyZipf": 2.64,
+      "frequencyKind": "word",
+      "score": 52.04,
+      "difficulty": 4
+    },
+    "loathe": {
+      "letterCount": 6,
+      "frequencyZipf": 3.11,
+      "frequencyKind": "word",
+      "score": 47.96,
+      "difficulty": 3
+    },
+    "enmity": {
+      "letterCount": 6,
+      "frequencyZipf": 3.01,
+      "frequencyKind": "word",
+      "score": 49.36,
+      "difficulty": 3
+    },
+    "steadfast": {
+      "letterCount": 9,
+      "frequencyZipf": 3.14,
+      "frequencyKind": "word",
+      "score": 55.04,
+      "difficulty": 4
+    },
+    "supple": {
+      "letterCount": 6,
+      "frequencyZipf": 2.87,
+      "frequencyKind": "word",
+      "score": 51.32,
+      "difficulty": 4
+    },
+    "potent": {
+      "letterCount": 6,
+      "frequencyZipf": 3.74,
+      "frequencyKind": "word",
+      "score": 39.14,
+      "difficulty": 1
+    },
+    "conceited": {
+      "letterCount": 9,
+      "frequencyZipf": 2.88,
+      "frequencyKind": "word",
+      "score": 58.68,
+      "difficulty": 5
+    },
+    "pretentious": {
+      "letterCount": 11,
+      "frequencyZipf": 3.17,
+      "frequencyKind": "word",
+      "score": 59.62,
+      "difficulty": 5
+    },
+    "malicious": {
+      "letterCount": 9,
+      "frequencyZipf": 3.67,
+      "frequencyKind": "word",
+      "score": 47.62,
+      "difficulty": 3
+    },
+    "foam": {
+      "letterCount": 4,
+      "frequencyZipf": 3.78,
+      "frequencyKind": "word",
+      "score": 33.58,
+      "difficulty": 1
+    },
+    "froth": {
+      "letterCount": 5,
+      "frequencyZipf": 2.75,
+      "frequencyKind": "word",
+      "score": 50.5,
+      "difficulty": 3
+    },
+    "fret": {
+      "letterCount": 4,
+      "frequencyZipf": 3.27,
+      "frequencyKind": "word",
+      "score": 40.72,
+      "difficulty": 1
+    },
+    "obscene": {
+      "letterCount": 7,
+      "frequencyZipf": 3.46,
+      "frequencyKind": "word",
+      "score": 45.56,
+      "difficulty": 2
+    },
+    "vulgar": {
+      "letterCount": 6,
+      "frequencyZipf": 3.53,
+      "frequencyKind": "word",
+      "score": 42.08,
+      "difficulty": 2
+    },
+    "cordial": {
+      "letterCount": 7,
+      "frequencyZipf": 3.1,
+      "frequencyKind": "word",
+      "score": 50.6,
+      "difficulty": 3
+    },
+    "demolish": {
+      "letterCount": 8,
+      "frequencyZipf": 3.18,
+      "frequencyKind": "word",
+      "score": 51.98,
+      "difficulty": 4
+    },
+    "facile": {
+      "letterCount": 6,
+      "frequencyZipf": 2.61,
+      "frequencyKind": "word",
+      "score": 54.96,
+      "difficulty": 4
+    },
+    "cinch": {
+      "letterCount": 5,
+      "frequencyZipf": 2.65,
+      "frequencyKind": "word",
+      "score": 51.9,
+      "difficulty": 4
+    },
+    "intricate": {
+      "letterCount": 9,
+      "frequencyZipf": 3.55,
+      "frequencyKind": "word",
+      "score": 49.3,
+      "difficulty": 3
+    },
+    "prejudice": {
+      "letterCount": 9,
+      "frequencyZipf": 3.79,
+      "frequencyKind": "word",
+      "score": 45.94,
+      "difficulty": 3
+    },
+    "bedlam": {
+      "letterCount": 6,
+      "frequencyZipf": 2.69,
+      "frequencyKind": "word",
+      "score": 53.84,
+      "difficulty": 4
+    },
+    "favoured": {
+      "letterCount": 8,
+      "frequencyZipf": 3.55,
+      "frequencyKind": "word",
+      "score": 46.8,
+      "difficulty": 3
+    },
+    "impediment": {
+      "letterCount": 10,
+      "frequencyZipf": 3.05,
+      "frequencyKind": "word",
+      "score": 58.8,
+      "difficulty": 5
+    },
+    "acrid": {
+      "letterCount": 5,
+      "frequencyZipf": 2.37,
+      "frequencyKind": "word",
+      "score": 55.82,
+      "difficulty": 4
+    },
+    "acid": {
+      "letterCount": 4,
+      "frequencyZipf": 4.45,
+      "frequencyKind": "word",
+      "score": 24.2,
+      "difficulty": 1
+    },
+    "arid": {
+      "letterCount": 4,
+      "frequencyZipf": 3.37,
+      "frequencyKind": "word",
+      "score": 39.32,
+      "difficulty": 1
+    },
+    "pungent": {
+      "letterCount": 7,
+      "frequencyZipf": 2.91,
+      "frequencyKind": "word",
+      "score": 53.26,
+      "difficulty": 4
+    },
+    "toil": {
+      "letterCount": 4,
+      "frequencyZipf": 3.03,
+      "frequencyKind": "word",
+      "score": 44.08,
+      "difficulty": 2
+    },
+    "coil": {
+      "letterCount": 4,
+      "frequencyZipf": 3.73,
+      "frequencyKind": "word",
+      "score": 34.28,
+      "difficulty": 1
+    },
+    "wholesome": {
+      "letterCount": 9,
+      "frequencyZipf": 3.51,
+      "frequencyKind": "word",
+      "score": 49.86,
+      "difficulty": 3
+    },
+    "pious": {
+      "letterCount": 5,
+      "frequencyZipf": 3.31,
+      "frequencyKind": "word",
+      "score": 42.66,
+      "difficulty": 2
+    },
+    "mellow": {
+      "letterCount": 6,
+      "frequencyZipf": 3.32,
+      "frequencyKind": "word",
+      "score": 45.02,
+      "difficulty": 2
+    },
+    "faux": {
+      "letterCount": 4,
+      "frequencyZipf": 3.55,
+      "frequencyKind": "word",
+      "score": 36.8,
+      "difficulty": 1
+    },
+    "platonic": {
+      "letterCount": 8,
+      "frequencyZipf": 3.2,
+      "frequencyKind": "word",
+      "score": 51.7,
+      "difficulty": 4
+    },
+    "fluctuate": {
+      "letterCount": 9,
+      "frequencyZipf": 2.99,
+      "frequencyKind": "word",
+      "score": 57.14,
+      "difficulty": 5
+    },
+    "concur": {
+      "letterCount": 6,
+      "frequencyZipf": 3.18,
+      "frequencyKind": "word",
+      "score": 46.98,
+      "difficulty": 3
+    },
+    "auspicious": {
+      "letterCount": 10,
+      "frequencyZipf": 3.09,
+      "frequencyKind": "word",
+      "score": 58.24,
+      "difficulty": 5
+    },
+    "wander": {
+      "letterCount": 6,
+      "frequencyZipf": 3.67,
+      "frequencyKind": "word",
+      "score": 40.12,
+      "difficulty": 1
+    },
+    "ramble": {
+      "letterCount": 6,
+      "frequencyZipf": 2.85,
+      "frequencyKind": "word",
+      "score": 51.6,
+      "difficulty": 4
+    },
+    "regal": {
+      "letterCount": 5,
+      "frequencyZipf": 3.34,
+      "frequencyKind": "word",
+      "score": 42.24,
+      "difficulty": 2
+    },
+    "submerge": {
+      "letterCount": 8,
+      "frequencyZipf": 2.6,
+      "frequencyKind": "word",
+      "score": 60.1,
+      "difficulty": 5
+    },
+    "petty": {
+      "letterCount": 5,
+      "frequencyZipf": 4.07,
+      "frequencyKind": "word",
+      "score": 32.02,
+      "difficulty": 1
+    },
+    "intentional": {
+      "letterCount": 11,
+      "frequencyZipf": 3.72,
+      "frequencyKind": "word",
+      "score": 51.92,
+      "difficulty": 4
+    },
+    "compulsory": {
+      "letterCount": 10,
+      "frequencyZipf": 3.7,
+      "frequencyKind": "word",
+      "score": 49.7,
+      "difficulty": 3
+    },
+    "voluntary": {
+      "letterCount": 9,
+      "frequencyZipf": 4.01,
+      "frequencyKind": "word",
+      "score": 42.86,
+      "difficulty": 2
+    },
+    "diminish": {
+      "letterCount": 8,
+      "frequencyZipf": 3.46,
+      "frequencyKind": "word",
+      "score": 48.06,
+      "difficulty": 3
+    },
+    "slit": {
+      "letterCount": 4,
+      "frequencyZipf": 3.47,
+      "frequencyKind": "word",
+      "score": 37.92,
+      "difficulty": 1
+    },
+    "vent": {
+      "letterCount": 4,
+      "frequencyZipf": 3.8,
+      "frequencyKind": "word",
+      "score": 33.3,
+      "difficulty": 1
+    },
+    "cork": {
+      "letterCount": 4,
+      "frequencyZipf": 3.71,
+      "frequencyKind": "word",
+      "score": 34.56,
+      "difficulty": 1
+    },
+    "rupture": {
+      "letterCount": 7,
+      "frequencyZipf": 3.28,
+      "frequencyKind": "word",
+      "score": 48.08,
+      "difficulty": 3
+    },
+    "rift": {
+      "letterCount": 4,
+      "frequencyZipf": 3.64,
+      "frequencyKind": "word",
+      "score": 35.54,
+      "difficulty": 1
+    },
+    "impervious": {
+      "letterCount": 10,
+      "frequencyZipf": 2.88,
+      "frequencyKind": "word",
+      "score": 61.18,
+      "difficulty": 5
+    },
+    "fissure": {
+      "letterCount": 7,
+      "frequencyZipf": 2.82,
+      "frequencyKind": "word",
+      "score": 54.52,
+      "difficulty": 4
+    },
+    "crevice": {
+      "letterCount": 7,
+      "frequencyZipf": 2.62,
+      "frequencyKind": "word",
+      "score": 57.32,
+      "difficulty": 5
+    },
+    "eccentric": {
+      "letterCount": 9,
+      "frequencyZipf": 3.58,
+      "frequencyKind": "word",
+      "score": 48.88,
+      "difficulty": 3
+    },
+    "authentic": {
+      "letterCount": 9,
+      "frequencyZipf": 4.04,
+      "frequencyKind": "word",
+      "score": 42.44,
+      "difficulty": 2
+    },
+    "sole": {
+      "letterCount": 4,
+      "frequencyZipf": 4.29,
+      "frequencyKind": "word",
+      "score": 26.44,
+      "difficulty": 1
+    },
+    "lucid": {
+      "letterCount": 5,
+      "frequencyZipf": 3.27,
+      "frequencyKind": "word",
+      "score": 43.22,
+      "difficulty": 2
+    },
+    "dazzling": {
+      "letterCount": 8,
+      "frequencyZipf": 3.39,
+      "frequencyKind": "word",
+      "score": 49.04,
+      "difficulty": 3
+    },
+    "splendid": {
+      "letterCount": 8,
+      "frequencyZipf": 3.75,
+      "frequencyKind": "word",
+      "score": 44.0,
+      "difficulty": 2
+    },
+    "impair": {
+      "letterCount": 6,
+      "frequencyZipf": 2.93,
+      "frequencyKind": "word",
+      "score": 50.48,
+      "difficulty": 3
+    },
+    "wreck": {
+      "letterCount": 5,
+      "frequencyZipf": 3.96,
+      "frequencyKind": "word",
+      "score": 33.56,
+      "difficulty": 1
+    },
+    "dilemma": {
+      "letterCount": 7,
+      "frequencyZipf": 3.73,
+      "frequencyKind": "word",
+      "score": 41.78,
+      "difficulty": 2
+    },
+    "unkempt": {
+      "letterCount": 7,
+      "frequencyZipf": 2.64,
+      "frequencyKind": "word",
+      "score": 57.04,
+      "difficulty": 5
+    },
+    "subordinate": {
+      "letterCount": 11,
+      "frequencyZipf": 3.45,
+      "frequencyKind": "word",
+      "score": 55.7,
+      "difficulty": 4
+    },
+    "placate": {
+      "letterCount": 7,
+      "frequencyZipf": 2.77,
+      "frequencyKind": "word",
+      "score": 55.22,
+      "difficulty": 4
+    },
+    "irritate": {
+      "letterCount": 8,
+      "frequencyZipf": 3.08,
+      "frequencyKind": "word",
+      "score": 53.38,
+      "difficulty": 4
+    },
+    "impartial": {
+      "letterCount": 9,
+      "frequencyZipf": 3.38,
+      "frequencyKind": "word",
+      "score": 51.68,
+      "difficulty": 4
+    },
+    "wax": {
+      "letterCount": 3,
+      "frequencyZipf": 3.92,
+      "frequencyKind": "word",
+      "score": 29.12,
+      "difficulty": 1
+    },
+    "wane": {
+      "letterCount": 4,
+      "frequencyZipf": 2.83,
+      "frequencyKind": "word",
+      "score": 46.88,
+      "difficulty": 3
+    },
+    "vanity": {
+      "letterCount": 6,
+      "frequencyZipf": 3.74,
+      "frequencyKind": "word",
+      "score": 39.14,
+      "difficulty": 1
+    },
+    "profligate": {
+      "letterCount": 10,
+      "frequencyZipf": 2.37,
+      "frequencyKind": "word",
+      "score": 68.32,
+      "difficulty": 5
+    },
+    "frugal": {
+      "letterCount": 6,
+      "frequencyZipf": 3.11,
+      "frequencyKind": "word",
+      "score": 47.96,
+      "difficulty": 3
+    },
+    "devout": {
+      "letterCount": 6,
+      "frequencyZipf": 3.34,
+      "frequencyKind": "word",
+      "score": 44.74,
+      "difficulty": 2
+    },
+    "dwindle": {
+      "letterCount": 7,
+      "frequencyZipf": 2.61,
+      "frequencyKind": "word",
+      "score": 57.46,
+      "difficulty": 5
+    },
+    "irate": {
+      "letterCount": 5,
+      "frequencyZipf": 2.78,
+      "frequencyKind": "word",
+      "score": 50.08,
+      "difficulty": 3
+    },
+    "furious": {
+      "letterCount": 7,
+      "frequencyZipf": 3.98,
+      "frequencyKind": "word",
+      "score": 38.28,
+      "difficulty": 1
+    },
+    "slack": {
+      "letterCount": 5,
+      "frequencyZipf": 3.71,
+      "frequencyKind": "word",
+      "score": 37.06,
+      "difficulty": 1
+    },
+    "industrious": {
+      "letterCount": 11,
+      "frequencyZipf": 2.79,
+      "frequencyKind": "word",
+      "score": 64.94,
+      "difficulty": 5
+    },
+    "diligent": {
+      "letterCount": 8,
+      "frequencyZipf": 3.23,
+      "frequencyKind": "word",
+      "score": 51.28,
+      "difficulty": 4
+    },
+    "indolent": {
+      "letterCount": 8,
+      "frequencyZipf": 2.26,
+      "frequencyKind": "word",
+      "score": 64.86,
+      "difficulty": 5
+    },
+    "lax": {
+      "letterCount": 3,
+      "frequencyZipf": 3.54,
+      "frequencyKind": "word",
+      "score": 34.44,
+      "difficulty": 1
+    },
+    "conscientious": {
+      "letterCount": 13,
+      "frequencyZipf": 3.24,
+      "frequencyKind": "word",
+      "score": 63.64,
+      "difficulty": 5
+    },
+    "prose": {
+      "letterCount": 5,
+      "frequencyZipf": 3.72,
+      "frequencyKind": "word",
+      "score": 36.92,
+      "difficulty": 1
+    },
+    "poetry": {
+      "letterCount": 6,
+      "frequencyZipf": 4.4,
+      "frequencyKind": "word",
+      "score": 29.9,
+      "difficulty": 1
+    },
+    "suppress": {
+      "letterCount": 8,
+      "frequencyZipf": 3.66,
+      "frequencyKind": "word",
+      "score": 45.26,
+      "difficulty": 2
+    },
+    "disguise": {
+      "letterCount": 8,
+      "frequencyZipf": 3.72,
+      "frequencyKind": "word",
+      "score": 44.42,
+      "difficulty": 2
+    },
+    "extinct": {
+      "letterCount": 7,
+      "frequencyZipf": 3.66,
+      "frequencyKind": "word",
+      "score": 42.76,
+      "difficulty": 2
+    },
+    "imposing": {
+      "letterCount": 8,
+      "frequencyZipf": 3.73,
+      "frequencyKind": "word",
+      "score": 44.28,
+      "difficulty": 2
+    },
+    "adolescent": {
+      "letterCount": 10,
+      "frequencyZipf": 3.58,
+      "frequencyKind": "word",
+      "score": 51.38,
+      "difficulty": 4
+    },
+    "berate": {
+      "letterCount": 6,
+      "frequencyZipf": 2.44,
+      "frequencyKind": "word",
+      "score": 57.34,
+      "difficulty": 5
+    },
+    "crave": {
+      "letterCount": 5,
+      "frequencyZipf": 3.47,
+      "frequencyKind": "word",
+      "score": 40.42,
+      "difficulty": 1
+    },
+    "yearn": {
+      "letterCount": 5,
+      "frequencyZipf": 2.97,
+      "frequencyKind": "word",
+      "score": 47.42,
+      "difficulty": 3
+    },
+    "conspicuous": {
+      "letterCount": 11,
+      "frequencyZipf": 3.35,
+      "frequencyKind": "word",
+      "score": 57.1,
+      "difficulty": 5
+    },
+    "conspiracy": {
+      "letterCount": 10,
+      "frequencyZipf": 4.26,
+      "frequencyKind": "word",
+      "score": 41.86,
+      "difficulty": 2
+    },
+    "vile": {
+      "letterCount": 4,
+      "frequencyZipf": 3.62,
+      "frequencyKind": "word",
+      "score": 35.82,
+      "difficulty": 1
+    },
+    "gratifying": {
+      "letterCount": 10,
+      "frequencyZipf": 3.07,
+      "frequencyKind": "word",
+      "score": 58.52,
+      "difficulty": 5
+    },
+    "despicable": {
+      "letterCount": 10,
+      "frequencyZipf": 3.46,
+      "frequencyKind": "word",
+      "score": 53.06,
+      "difficulty": 4
+    },
+    "adept": {
+      "letterCount": 5,
+      "frequencyZipf": 3.33,
+      "frequencyKind": "word",
+      "score": 42.38,
+      "difficulty": 2
+    },
+    "loathsome": {
+      "letterCount": 9,
+      "frequencyZipf": 2.71,
+      "frequencyKind": "word",
+      "score": 61.06,
+      "difficulty": 5
+    },
+    "repulsive": {
+      "letterCount": 9,
+      "frequencyZipf": 3.18,
+      "frequencyKind": "word",
+      "score": 54.48,
+      "difficulty": 4
+    },
+    "defy": {
+      "letterCount": 4,
+      "frequencyZipf": 3.42,
+      "frequencyKind": "word",
+      "score": 38.62,
+      "difficulty": 1
+    },
+    "domestic": {
+      "letterCount": 8,
+      "frequencyZipf": 4.69,
+      "frequencyKind": "word",
+      "score": 30.84,
+      "difficulty": 1
+    },
+    "solace": {
+      "letterCount": 6,
+      "frequencyZipf": 3.28,
+      "frequencyKind": "word",
+      "score": 45.58,
+      "difficulty": 2
+    },
+    "aggravation": {
+      "letterCount": 11,
+      "frequencyZipf": 2.76,
+      "frequencyKind": "word",
+      "score": 65.36,
+      "difficulty": 5
+    },
+    "dignify": {
+      "letterCount": 7,
+      "frequencyZipf": 2.34,
+      "frequencyKind": "word",
+      "score": 61.24,
+      "difficulty": 5
+    },
+    "inflame": {
+      "letterCount": 7,
+      "frequencyZipf": 2.58,
+      "frequencyKind": "word",
+      "score": 57.88,
+      "difficulty": 5
+    },
+    "blunt": {
+      "letterCount": 5,
+      "frequencyZipf": 3.9,
+      "frequencyKind": "word",
+      "score": 34.4,
+      "difficulty": 1
+    },
+    "thwart": {
+      "letterCount": 6,
+      "frequencyZipf": 3.06,
+      "frequencyKind": "word",
+      "score": 48.66,
+      "difficulty": 3
+    },
+    "foil": {
+      "letterCount": 4,
+      "frequencyZipf": 3.76,
+      "frequencyKind": "word",
+      "score": 33.86,
+      "difficulty": 1
+    },
+    "lea": {
+      "letterCount": 3,
+      "frequencyZipf": 3.57,
+      "frequencyKind": "word",
+      "score": 34.02,
+      "difficulty": 1
+    },
+    "meadow": {
+      "letterCount": 6,
+      "frequencyZipf": 3.6,
+      "frequencyKind": "word",
+      "score": 41.1,
+      "difficulty": 2
+    },
+    "pinnacle": {
+      "letterCount": 8,
+      "frequencyZipf": 3.45,
+      "frequencyKind": "word",
+      "score": 48.2,
+      "difficulty": 3
+    },
+    "dilate": {
+      "letterCount": 6,
+      "frequencyZipf": 2.44,
+      "frequencyKind": "word",
+      "score": 57.34,
+      "difficulty": 5
+    },
+    "oblivious": {
+      "letterCount": 9,
+      "frequencyZipf": 3.31,
+      "frequencyKind": "word",
+      "score": 52.66,
+      "difficulty": 4
+    },
+    "affluence": {
+      "letterCount": 9,
+      "frequencyZipf": 2.74,
+      "frequencyKind": "word",
+      "score": 60.64,
+      "difficulty": 5
+    },
+    "poverty": {
+      "letterCount": 7,
+      "frequencyZipf": 4.46,
+      "frequencyKind": "word",
+      "score": 31.56,
+      "difficulty": 1
+    },
+    "pivotal": {
+      "letterCount": 7,
+      "frequencyZipf": 3.5,
+      "frequencyKind": "word",
+      "score": 45.0,
+      "difficulty": 2
+    },
+    "temperate": {
+      "letterCount": 9,
+      "frequencyZipf": 3.33,
+      "frequencyKind": "word",
+      "score": 52.38,
+      "difficulty": 4
+    },
+    "humid": {
+      "letterCount": 5,
+      "frequencyZipf": 3.5,
+      "frequencyKind": "word",
+      "score": 40.0,
+      "difficulty": 1
+    },
+    "irksome": {
+      "letterCount": 7,
+      "frequencyZipf": 2.33,
+      "frequencyKind": "word",
+      "score": 61.38,
+      "difficulty": 5
+    },
+    "peddle": {
+      "letterCount": 6,
+      "frequencyZipf": 2.76,
+      "frequencyKind": "word",
+      "score": 52.86,
+      "difficulty": 4
+    },
+    "vend": {
+      "letterCount": 4,
+      "frequencyZipf": 2.0,
+      "frequencyKind": "word",
+      "score": 58.5,
+      "difficulty": 5
+    },
+    "hawk": {
+      "letterCount": 4,
+      "frequencyZipf": 3.81,
+      "frequencyKind": "word",
+      "score": 33.16,
+      "difficulty": 1
+    },
+    "miser": {
+      "letterCount": 5,
+      "frequencyZipf": 2.56,
+      "frequencyKind": "word",
+      "score": 53.16,
+      "difficulty": 4
+    },
+    "spurn": {
+      "letterCount": 5,
+      "frequencyZipf": 2.36,
+      "frequencyKind": "word",
+      "score": 55.96,
+      "difficulty": 4
+    },
+    "probate": {
+      "letterCount": 7,
+      "frequencyZipf": 3.16,
+      "frequencyKind": "word",
+      "score": 49.76,
+      "difficulty": 3
+    },
+    "probation": {
+      "letterCount": 9,
+      "frequencyZipf": 3.79,
+      "frequencyKind": "word",
+      "score": 45.94,
+      "difficulty": 3
+    },
+    "dawdle": {
+      "letterCount": 6,
+      "frequencyZipf": 1.97,
+      "frequencyKind": "word",
+      "score": 63.92,
+      "difficulty": 5
+    },
+    "refute": {
+      "letterCount": 6,
+      "frequencyZipf": 3.14,
+      "frequencyKind": "word",
+      "score": 47.54,
+      "difficulty": 3
+    },
+    "scoff": {
+      "letterCount": 5,
+      "frequencyZipf": 2.78,
+      "frequencyKind": "word",
+      "score": 50.08,
+      "difficulty": 3
+    },
+    "limp": {
+      "letterCount": 4,
+      "frequencyZipf": 3.43,
+      "frequencyKind": "word",
+      "score": 38.48,
+      "difficulty": 1
+    },
+    "floppy": {
+      "letterCount": 6,
+      "frequencyZipf": 3.25,
+      "frequencyKind": "word",
+      "score": 46.0,
+      "difficulty": 3
+    },
+    "weary": {
+      "letterCount": 5,
+      "frequencyZipf": 3.61,
+      "frequencyKind": "word",
+      "score": 38.46,
+      "difficulty": 1
+    },
+    "jaded": {
+      "letterCount": 5,
+      "frequencyZipf": 2.97,
+      "frequencyKind": "word",
+      "score": 47.42,
+      "difficulty": 3
+    },
+    "exhausted": {
+      "letterCount": 9,
+      "frequencyZipf": 4.08,
+      "frequencyKind": "word",
+      "score": 41.88,
+      "difficulty": 2
+    },
+    "drowsy": {
+      "letterCount": 6,
+      "frequencyZipf": 2.82,
+      "frequencyKind": "word",
+      "score": 52.02,
+      "difficulty": 4
+    },
+    "invigorated": {
+      "letterCount": 11,
+      "frequencyZipf": 2.47,
+      "frequencyKind": "word",
+      "score": 69.42,
+      "difficulty": 5
+    },
+    "obtuse": {
+      "letterCount": 6,
+      "frequencyZipf": 3.04,
+      "frequencyKind": "word",
+      "score": 48.94,
+      "difficulty": 3
+    },
+    "abridge": {
+      "letterCount": 7,
+      "frequencyZipf": 1.95,
+      "frequencyKind": "word",
+      "score": 66.7,
+      "difficulty": 5
+    },
+    "sullen": {
+      "letterCount": 6,
+      "frequencyZipf": 2.71,
+      "frequencyKind": "word",
+      "score": 53.56,
+      "difficulty": 4
+    },
+    "acute": {
+      "letterCount": 5,
+      "frequencyZipf": 4.0,
+      "frequencyKind": "word",
+      "score": 33.0,
+      "difficulty": 1
+    },
+    "pensive": {
+      "letterCount": 7,
+      "frequencyZipf": 2.63,
+      "frequencyKind": "word",
+      "score": 57.18,
+      "difficulty": 5
+    },
+    "impale": {
+      "letterCount": 6,
+      "frequencyZipf": 2.22,
+      "frequencyKind": "word",
+      "score": 60.42,
+      "difficulty": 5
+    },
+    "malign": {
+      "letterCount": 6,
+      "frequencyZipf": 2.59,
+      "frequencyKind": "word",
+      "score": 55.24,
+      "difficulty": 4
+    },
+    "slander": {
+      "letterCount": 7,
+      "frequencyZipf": 3.34,
+      "frequencyKind": "word",
+      "score": 47.24,
+      "difficulty": 3
+    },
+    "crooked": {
+      "letterCount": 7,
+      "frequencyZipf": 3.63,
+      "frequencyKind": "word",
+      "score": 43.18,
+      "difficulty": 2
+    },
+    "contempt": {
+      "letterCount": 8,
+      "frequencyZipf": 3.74,
+      "frequencyKind": "word",
+      "score": 44.14,
+      "difficulty": 2
+    },
+    "vapour": {
+      "letterCount": 6,
+      "frequencyZipf": 3.02,
+      "frequencyKind": "word",
+      "score": 49.22,
+      "difficulty": 3
+    },
+    "mist": {
+      "letterCount": 4,
+      "frequencyZipf": 3.67,
+      "frequencyKind": "word",
+      "score": 35.12,
+      "difficulty": 1
+    },
+    "reckless": {
+      "letterCount": 8,
+      "frequencyZipf": 3.82,
+      "frequencyKind": "word",
+      "score": 43.02,
+      "difficulty": 2
+    },
+    "enrage": {
+      "letterCount": 6,
+      "frequencyZipf": 2.38,
+      "frequencyKind": "word",
+      "score": 58.18,
+      "difficulty": 5
+    },
+    "perilous": {
+      "letterCount": 8,
+      "frequencyZipf": 3.18,
+      "frequencyKind": "word",
+      "score": 51.98,
+      "difficulty": 4
+    },
+    "overt": {
+      "letterCount": 5,
+      "frequencyZipf": 3.31,
+      "frequencyKind": "word",
+      "score": 42.66,
+      "difficulty": 2
+    },
+    "covert": {
+      "letterCount": 6,
+      "frequencyZipf": 3.54,
+      "frequencyKind": "word",
+      "score": 41.94,
+      "difficulty": 2
+    },
+    "candid": {
+      "letterCount": 6,
+      "frequencyZipf": 3.45,
+      "frequencyKind": "word",
+      "score": 43.2,
+      "difficulty": 2
+    },
+    "stingy": {
+      "letterCount": 6,
+      "frequencyZipf": 3.03,
+      "frequencyKind": "word",
+      "score": 49.08,
+      "difficulty": 3
+    },
+    "decoy": {
+      "letterCount": 5,
+      "frequencyZipf": 3.04,
+      "frequencyKind": "word",
+      "score": 46.44,
+      "difficulty": 3
+    },
+    "futile": {
+      "letterCount": 6,
+      "frequencyZipf": 3.39,
+      "frequencyKind": "word",
+      "score": 44.04,
+      "difficulty": 2
+    },
+    "impede": {
+      "letterCount": 6,
+      "frequencyZipf": 3.14,
+      "frequencyKind": "word",
+      "score": 47.54,
+      "difficulty": 3
+    },
+    "pique": {
+      "letterCount": 5,
+      "frequencyZipf": 2.93,
+      "frequencyKind": "word",
+      "score": 47.98,
+      "difficulty": 3
+    },
+    "smother": {
+      "letterCount": 7,
+      "frequencyZipf": 2.85,
+      "frequencyKind": "word",
+      "score": 54.1,
+      "difficulty": 4
+    },
+    "heed": {
+      "letterCount": 4,
+      "frequencyZipf": 3.45,
+      "frequencyKind": "word",
+      "score": 38.2,
+      "difficulty": 1
+    },
+    "exile": {
+      "letterCount": 5,
+      "frequencyZipf": 3.84,
+      "frequencyKind": "word",
+      "score": 35.24,
+      "difficulty": 1
+    },
+    "throng": {
+      "letterCount": 6,
+      "frequencyZipf": 2.8,
+      "frequencyKind": "word",
+      "score": 52.3,
+      "difficulty": 4
+    },
+    "aloof": {
+      "letterCount": 5,
+      "frequencyZipf": 2.99,
+      "frequencyKind": "word",
+      "score": 47.14,
+      "difficulty": 3
+    },
+    "congregate": {
+      "letterCount": 10,
+      "frequencyZipf": 2.92,
+      "frequencyKind": "word",
+      "score": 60.62,
+      "difficulty": 5
+    },
+    "forthwith": {
+      "letterCount": 9,
+      "frequencyZipf": 2.65,
+      "frequencyKind": "word",
+      "score": 61.9,
+      "difficulty": 5
+    },
+    "sporadically": {
+      "letterCount": 12,
+      "frequencyZipf": 2.92,
+      "frequencyKind": "word",
+      "score": 65.62,
+      "difficulty": 5
+    },
+    "intermittently": {
+      "letterCount": 14,
+      "frequencyZipf": 3.05,
+      "frequencyKind": "word",
+      "score": 68.8,
+      "difficulty": 5
+    },
+    "godsend": {
+      "letterCount": 7,
+      "frequencyZipf": 2.78,
+      "frequencyKind": "word",
+      "score": 55.08,
+      "difficulty": 4
+    },
+    "concede": {
+      "letterCount": 7,
+      "frequencyZipf": 3.48,
+      "frequencyKind": "word",
+      "score": 45.28,
+      "difficulty": 2
+    },
+    "contemplate": {
+      "letterCount": 11,
+      "frequencyZipf": 3.41,
+      "frequencyKind": "word",
+      "score": 56.26,
+      "difficulty": 4
+    },
+    "vowel": {
+      "letterCount": 5,
+      "frequencyZipf": 3.33,
+      "frequencyKind": "word",
+      "score": 42.38,
+      "difficulty": 2
+    },
+    "consonant": {
+      "letterCount": 9,
+      "frequencyZipf": 3.09,
+      "frequencyKind": "word",
+      "score": 55.74,
+      "difficulty": 4
+    },
+    "sombre": {
+      "letterCount": 6,
+      "frequencyZipf": 2.84,
+      "frequencyKind": "word",
+      "score": 51.74,
+      "difficulty": 4
+    },
+    "marquee": {
+      "letterCount": 7,
+      "frequencyZipf": 3.18,
+      "frequencyKind": "word",
+      "score": 49.48,
+      "difficulty": 3
+    },
+    "atlas": {
+      "letterCount": 5,
+      "frequencyZipf": 3.8,
+      "frequencyKind": "word",
+      "score": 35.8,
+      "difficulty": 1
+    },
+    "ingredient": {
+      "letterCount": 10,
+      "frequencyZipf": 3.74,
+      "frequencyKind": "word",
+      "score": 49.14,
+      "difficulty": 3
+    },
+    "immaculate": {
+      "letterCount": 10,
+      "frequencyZipf": 3.37,
+      "frequencyKind": "word",
+      "score": 54.32,
+      "difficulty": 4
+    },
+    "tally": {
+      "letterCount": 5,
+      "frequencyZipf": 3.62,
+      "frequencyKind": "word",
+      "score": 38.32,
+      "difficulty": 1
+    },
+    "assent": {
+      "letterCount": 6,
+      "frequencyZipf": 3.03,
+      "frequencyKind": "word",
+      "score": 49.08,
+      "difficulty": 3
+    },
+    "deprive": {
+      "letterCount": 7,
+      "frequencyZipf": 3.19,
+      "frequencyKind": "word",
+      "score": 49.34,
+      "difficulty": 3
+    },
+    "crop": {
+      "letterCount": 4,
+      "frequencyZipf": 4.15,
+      "frequencyKind": "word",
+      "score": 28.4,
+      "difficulty": 1
+    },
+    "criticism": {
+      "letterCount": 9,
+      "frequencyZipf": 4.49,
+      "frequencyKind": "word",
+      "score": 36.14,
+      "difficulty": 1
+    },
+    "glitter": {
+      "letterCount": 7,
+      "frequencyZipf": 3.56,
+      "frequencyKind": "word",
+      "score": 44.16,
+      "difficulty": 2
+    },
+    "felicitous": {
+      "letterCount": 10,
+      "frequencyZipf": 1.86,
+      "frequencyKind": "word",
+      "score": 75.46,
+      "difficulty": 5
+    },
+    "hapless": {
+      "letterCount": 7,
+      "frequencyZipf": 2.88,
+      "frequencyKind": "word",
+      "score": 53.68,
+      "difficulty": 4
+    },
+    "break a leg": {
+      "letterCount": 9,
+      "frequencyZipf": 4.55,
+      "frequencyKind": "phrase-estimate",
+      "score": 35.3,
+      "difficulty": 1
+    },
+    "rural": {
+      "letterCount": 5,
+      "frequencyZipf": 4.59,
+      "frequencyKind": "word",
+      "score": 24.74,
+      "difficulty": 1
+    },
+    "urban": {
+      "letterCount": 5,
+      "frequencyZipf": 4.65,
+      "frequencyKind": "word",
+      "score": 23.9,
+      "difficulty": 1
+    },
+    "raucous": {
+      "letterCount": 7,
+      "frequencyZipf": 2.82,
+      "frequencyKind": "word",
+      "score": 54.52,
+      "difficulty": 4
+    },
+    "dingy": {
+      "letterCount": 5,
+      "frequencyZipf": 2.82,
+      "frequencyKind": "word",
+      "score": 49.52,
+      "difficulty": 3
+    },
+    "shun": {
+      "letterCount": 4,
+      "frequencyZipf": 3.24,
+      "frequencyKind": "word",
+      "score": 41.14,
+      "difficulty": 2
+    },
+    "confront": {
+      "letterCount": 8,
+      "frequencyZipf": 3.8,
+      "frequencyKind": "word",
+      "score": 43.3,
+      "difficulty": 2
+    },
+    "forgo": {
+      "letterCount": 5,
+      "frequencyZipf": 2.99,
+      "frequencyKind": "word",
+      "score": 47.14,
+      "difficulty": 3
+    },
+    "abstain": {
+      "letterCount": 7,
+      "frequencyZipf": 3.07,
+      "frequencyKind": "word",
+      "score": 51.02,
+      "difficulty": 4
+    },
+    "club": {
+      "letterCount": 4,
+      "frequencyZipf": 5.2,
+      "frequencyKind": "word",
+      "score": 13.7,
+      "difficulty": 1
+    },
+    "baton": {
+      "letterCount": 5,
+      "frequencyZipf": 3.64,
+      "frequencyKind": "word",
+      "score": 38.04,
+      "difficulty": 1
+    },
+    "forlorn": {
+      "letterCount": 7,
+      "frequencyZipf": 2.83,
+      "frequencyKind": "word",
+      "score": 54.38,
+      "difficulty": 4
+    },
+    "implore": {
+      "letterCount": 7,
+      "frequencyZipf": 2.84,
+      "frequencyKind": "word",
+      "score": 54.24,
+      "difficulty": 4
+    },
+    "pristine": {
+      "letterCount": 8,
+      "frequencyZipf": 3.33,
+      "frequencyKind": "word",
+      "score": 49.88,
+      "difficulty": 3
+    },
+    "grime": {
+      "letterCount": 5,
+      "frequencyZipf": 3.09,
+      "frequencyKind": "word",
+      "score": 45.74,
+      "difficulty": 2
+    },
+    "filth": {
+      "letterCount": 5,
+      "frequencyZipf": 3.41,
+      "frequencyKind": "word",
+      "score": 41.26,
+      "difficulty": 2
+    },
+    "abolish": {
+      "letterCount": 7,
+      "frequencyZipf": 3.48,
+      "frequencyKind": "word",
+      "score": 45.28,
+      "difficulty": 2
+    },
+    "novice": {
+      "letterCount": 6,
+      "frequencyZipf": 3.41,
+      "frequencyKind": "word",
+      "score": 43.76,
+      "difficulty": 2
+    },
+    "urge": {
+      "letterCount": 4,
+      "frequencyZipf": 4.11,
+      "frequencyKind": "word",
+      "score": 28.96,
+      "difficulty": 1
+    },
+    "deter": {
+      "letterCount": 5,
+      "frequencyZipf": 3.48,
+      "frequencyKind": "word",
+      "score": 40.28,
+      "difficulty": 1
+    },
+    "folly": {
+      "letterCount": 5,
+      "frequencyZipf": 3.34,
+      "frequencyKind": "word",
+      "score": 42.24,
+      "difficulty": 2
+    },
+    "crease": {
+      "letterCount": 6,
+      "frequencyZipf": 3.31,
+      "frequencyKind": "word",
+      "score": 45.16,
+      "difficulty": 2
+    },
+    "shack": {
+      "letterCount": 5,
+      "frequencyZipf": 3.43,
+      "frequencyKind": "word",
+      "score": 40.98,
+      "difficulty": 2
+    },
+    "abrupt": {
+      "letterCount": 6,
+      "frequencyZipf": 3.38,
+      "frequencyKind": "word",
+      "score": 44.18,
+      "difficulty": 2
+    },
+    "opaque": {
+      "letterCount": 6,
+      "frequencyZipf": 3.37,
+      "frequencyKind": "word",
+      "score": 44.32,
+      "difficulty": 2
+    },
+    "cellar": {
+      "letterCount": 6,
+      "frequencyZipf": 3.6,
+      "frequencyKind": "word",
+      "score": 41.1,
+      "difficulty": 2
+    },
+    "chastise": {
+      "letterCount": 8,
+      "frequencyZipf": 2.53,
+      "frequencyKind": "word",
+      "score": 61.08,
+      "difficulty": 5
+    },
+    "glut": {
+      "letterCount": 4,
+      "frequencyZipf": 2.81,
+      "frequencyKind": "word",
+      "score": 47.16,
+      "difficulty": 3
+    },
+    "baffle": {
+      "letterCount": 6,
+      "frequencyZipf": 2.72,
+      "frequencyKind": "word",
+      "score": 53.42,
+      "difficulty": 4
+    },
+    "pliable": {
+      "letterCount": 7,
+      "frequencyZipf": 2.64,
+      "frequencyKind": "word",
+      "score": 57.04,
+      "difficulty": 5
+    },
+    "permeate": {
+      "letterCount": 8,
+      "frequencyZipf": 2.63,
+      "frequencyKind": "word",
+      "score": 59.68,
+      "difficulty": 5
+    },
+    "penetrate": {
+      "letterCount": 9,
+      "frequencyZipf": 3.55,
+      "frequencyKind": "word",
+      "score": 49.3,
+      "difficulty": 3
+    },
+    "ambiguous": {
+      "letterCount": 9,
+      "frequencyZipf": 3.57,
+      "frequencyKind": "word",
+      "score": 49.02,
+      "difficulty": 3
+    },
+    "equivocate": {
+      "letterCount": 10,
+      "frequencyZipf": 1.72,
+      "frequencyKind": "word",
+      "score": 77.42,
+      "difficulty": 5
+    },
+    "rigorous": {
+      "letterCount": 8,
+      "frequencyZipf": 3.68,
+      "frequencyKind": "word",
+      "score": 44.98,
+      "difficulty": 2
+    },
+    "scrupulous": {
+      "letterCount": 10,
+      "frequencyZipf": 2.57,
+      "frequencyKind": "word",
+      "score": 65.52,
+      "difficulty": 5
+    },
+    "nebulous": {
+      "letterCount": 8,
+      "frequencyZipf": 2.75,
+      "frequencyKind": "word",
+      "score": 58.0,
+      "difficulty": 5
+    },
+    "mediocre": {
+      "letterCount": 8,
+      "frequencyZipf": 3.52,
+      "frequencyKind": "word",
+      "score": 47.22,
+      "difficulty": 3
+    },
+    "intrigue": {
+      "letterCount": 8,
+      "frequencyZipf": 3.36,
+      "frequencyKind": "word",
+      "score": 49.46,
+      "difficulty": 3
+    },
+    "jeer": {
+      "letterCount": 4,
+      "frequencyZipf": 2.14,
+      "frequencyKind": "word",
+      "score": 56.54,
+      "difficulty": 4
+    },
+    "dextrous": {
+      "letterCount": 8,
+      "frequencyZipf": 1.83,
+      "frequencyKind": "word",
+      "score": 70.88,
+      "difficulty": 5
+    },
+    "thrifty": {
+      "letterCount": 7,
+      "frequencyZipf": 2.86,
+      "frequencyKind": "word",
+      "score": 53.96,
+      "difficulty": 4
+    },
+    "peckish": {
+      "letterCount": 7,
+      "frequencyZipf": 2.02,
+      "frequencyKind": "word",
+      "score": 65.72,
+      "difficulty": 5
+    },
+    "ravenous": {
+      "letterCount": 8,
+      "frequencyZipf": 2.76,
+      "frequencyKind": "word",
+      "score": 57.86,
+      "difficulty": 5
+    },
+    "sated": {
+      "letterCount": 5,
+      "frequencyZipf": 2.43,
+      "frequencyKind": "word",
+      "score": 54.98,
+      "difficulty": 4
+    },
+    "satiated": {
+      "letterCount": 8,
+      "frequencyZipf": 2.37,
+      "frequencyKind": "word",
+      "score": 63.32,
+      "difficulty": 5
+    },
+    "famished": {
+      "letterCount": 8,
+      "frequencyZipf": 2.39,
+      "frequencyKind": "word",
+      "score": 63.04,
+      "difficulty": 5
+    },
+    "replete": {
+      "letterCount": 7,
+      "frequencyZipf": 2.91,
+      "frequencyKind": "word",
+      "score": 53.26,
+      "difficulty": 4
+    },
+    "deplete": {
+      "letterCount": 7,
+      "frequencyZipf": 2.65,
+      "frequencyKind": "word",
+      "score": 56.9,
+      "difficulty": 5
+    },
+    "juvenile": {
+      "letterCount": 8,
+      "frequencyZipf": 3.88,
+      "frequencyKind": "word",
+      "score": 42.18,
+      "difficulty": 2
+    },
+    "unravel": {
+      "letterCount": 7,
+      "frequencyZipf": 3.19,
+      "frequencyKind": "word",
+      "score": 49.34,
+      "difficulty": 3
+    },
+    "tangle": {
+      "letterCount": 6,
+      "frequencyZipf": 3.1,
+      "frequencyKind": "word",
+      "score": 48.1,
+      "difficulty": 3
+    },
+    "barb": {
+      "letterCount": 4,
+      "frequencyZipf": 3.31,
+      "frequencyKind": "word",
+      "score": 40.16,
+      "difficulty": 1
+    },
+    "despair": {
+      "letterCount": 7,
+      "frequencyZipf": 3.82,
+      "frequencyKind": "word",
+      "score": 40.52,
+      "difficulty": 1
+    },
+    "anguish": {
+      "letterCount": 7,
+      "frequencyZipf": 3.37,
+      "frequencyKind": "word",
+      "score": 46.82,
+      "difficulty": 3
+    },
+    "twine": {
+      "letterCount": 5,
+      "frequencyZipf": 2.93,
+      "frequencyKind": "word",
+      "score": 47.98,
+      "difficulty": 3
+    },
+    "peripheral": {
+      "letterCount": 10,
+      "frequencyZipf": 3.66,
+      "frequencyKind": "word",
+      "score": 50.26,
+      "difficulty": 3
+    },
+    "ambulatory": {
+      "letterCount": 10,
+      "frequencyZipf": 2.85,
+      "frequencyKind": "word",
+      "score": 61.6,
+      "difficulty": 5
+    },
+    "stagnant": {
+      "letterCount": 8,
+      "frequencyZipf": 3.31,
+      "frequencyKind": "word",
+      "score": 50.16,
+      "difficulty": 3
+    },
+    "mobile": {
+      "letterCount": 6,
+      "frequencyZipf": 4.85,
+      "frequencyKind": "word",
+      "score": 23.6,
+      "difficulty": 1
+    },
+    "wary": {
+      "letterCount": 4,
+      "frequencyZipf": 3.57,
+      "frequencyKind": "word",
+      "score": 36.52,
+      "difficulty": 1
+    },
+    "gullible": {
+      "letterCount": 8,
+      "frequencyZipf": 3.1,
+      "frequencyKind": "word",
+      "score": 53.1,
+      "difficulty": 4
+    },
+    "shuffle": {
+      "letterCount": 7,
+      "frequencyZipf": 3.49,
+      "frequencyKind": "word",
+      "score": 45.14,
+      "difficulty": 2
+    },
+    "stride": {
+      "letterCount": 6,
+      "frequencyZipf": 3.43,
+      "frequencyKind": "word",
+      "score": 43.48,
+      "difficulty": 2
+    },
+    "dread": {
+      "letterCount": 5,
+      "frequencyZipf": 3.64,
+      "frequencyKind": "word",
+      "score": 38.04,
+      "difficulty": 1
+    },
+    "fable": {
+      "letterCount": 5,
+      "frequencyZipf": 3.16,
+      "frequencyKind": "word",
+      "score": 44.76,
+      "difficulty": 2
+    },
+    "myth": {
+      "letterCount": 4,
+      "frequencyZipf": 4.08,
+      "frequencyKind": "word",
+      "score": 29.38,
+      "difficulty": 1
+    },
+    "doltish": {
+      "letterCount": 7,
+      "frequencyZipf": 1.3,
+      "frequencyKind": "word",
+      "score": 75.8,
+      "difficulty": 5
+    },
+    "dopey": {
+      "letterCount": 5,
+      "frequencyZipf": 2.68,
+      "frequencyKind": "word",
+      "score": 51.48,
+      "difficulty": 4
+    },
+    "shrewd": {
+      "letterCount": 6,
+      "frequencyZipf": 3.11,
+      "frequencyKind": "word",
+      "score": 47.96,
+      "difficulty": 3
+    },
+    "astute": {
+      "letterCount": 6,
+      "frequencyZipf": 3.1,
+      "frequencyKind": "word",
+      "score": 48.1,
+      "difficulty": 3
+    },
+    "imbecile": {
+      "letterCount": 8,
+      "frequencyZipf": 2.87,
+      "frequencyKind": "word",
+      "score": 56.32,
+      "difficulty": 4
+    },
+    "inane": {
+      "letterCount": 5,
+      "frequencyZipf": 2.7,
+      "frequencyKind": "word",
+      "score": 51.2,
+      "difficulty": 4
+    },
+    "savvy": {
+      "letterCount": 5,
+      "frequencyZipf": 3.56,
+      "frequencyKind": "word",
+      "score": 39.16,
+      "difficulty": 1
+    },
+    "sage": {
+      "letterCount": 4,
+      "frequencyZipf": 3.83,
+      "frequencyKind": "word",
+      "score": 32.88,
+      "difficulty": 1
+    },
+    "subtle": {
+      "letterCount": 6,
+      "frequencyZipf": 4.08,
+      "frequencyKind": "word",
+      "score": 34.38,
+      "difficulty": 1
+    },
+    "vain": {
+      "letterCount": 4,
+      "frequencyZipf": 3.74,
+      "frequencyKind": "word",
+      "score": 34.14,
+      "difficulty": 1
+    },
+    "deficient": {
+      "letterCount": 9,
+      "frequencyZipf": 3.33,
+      "frequencyKind": "word",
+      "score": 52.38,
+      "difficulty": 4
+    },
+    "warp": {
+      "letterCount": 4,
+      "frequencyZipf": 3.63,
+      "frequencyKind": "word",
+      "score": 35.68,
+      "difficulty": 1
+    },
+    "lean": {
+      "letterCount": 4,
+      "frequencyZipf": 4.14,
+      "frequencyKind": "word",
+      "score": 28.54,
+      "difficulty": 1
+    },
+    "oodles": {
+      "letterCount": 6,
+      "frequencyZipf": 2.43,
+      "frequencyKind": "word",
+      "score": 57.48,
+      "difficulty": 5
+    },
+    "populous": {
+      "letterCount": 8,
+      "frequencyZipf": 3.41,
+      "frequencyKind": "word",
+      "score": 48.76,
+      "difficulty": 3
+    },
+    "wavy": {
+      "letterCount": 4,
+      "frequencyZipf": 3.24,
+      "frequencyKind": "word",
+      "score": 41.14,
+      "difficulty": 2
+    },
+    "taut": {
+      "letterCount": 4,
+      "frequencyZipf": 2.91,
+      "frequencyKind": "word",
+      "score": 45.76,
+      "difficulty": 2
+    },
+    "radiant": {
+      "letterCount": 7,
+      "frequencyZipf": 3.49,
+      "frequencyKind": "word",
+      "score": 45.14,
+      "difficulty": 2
+    },
+    "gulp": {
+      "letterCount": 4,
+      "frequencyZipf": 2.93,
+      "frequencyKind": "word",
+      "score": 45.48,
+      "difficulty": 2
+    },
+    "tint": {
+      "letterCount": 4,
+      "frequencyZipf": 3.22,
+      "frequencyKind": "word",
+      "score": 41.42,
+      "difficulty": 2
+    },
+    "jubilant": {
+      "letterCount": 8,
+      "frequencyZipf": 2.63,
+      "frequencyKind": "word",
+      "score": 59.68,
+      "difficulty": 5
+    },
+    "dismay": {
+      "letterCount": 6,
+      "frequencyZipf": 3.26,
+      "frequencyKind": "word",
+      "score": 45.86,
+      "difficulty": 3
+    },
+    "gleeful": {
+      "letterCount": 7,
+      "frequencyZipf": 2.43,
+      "frequencyKind": "word",
+      "score": 59.98,
+      "difficulty": 5
+    },
+    "glum": {
+      "letterCount": 4,
+      "frequencyZipf": 2.52,
+      "frequencyKind": "word",
+      "score": 51.22,
+      "difficulty": 4
+    },
+    "ajar": {
+      "letterCount": 4,
+      "frequencyZipf": 2.57,
+      "frequencyKind": "word",
+      "score": 50.52,
+      "difficulty": 3
+    },
+    "scruffy": {
+      "letterCount": 7,
+      "frequencyZipf": 2.85,
+      "frequencyKind": "word",
+      "score": 54.1,
+      "difficulty": 4
+    },
+    "legend": {
+      "letterCount": 6,
+      "frequencyZipf": 4.44,
+      "frequencyKind": "word",
+      "score": 29.34,
+      "difficulty": 1
+    },
+    "caption": {
+      "letterCount": 7,
+      "frequencyZipf": 3.72,
+      "frequencyKind": "word",
+      "score": 41.92,
+      "difficulty": 2
+    },
+    "chortle": {
+      "letterCount": 7,
+      "frequencyZipf": 2.11,
+      "frequencyKind": "word",
+      "score": 64.46,
+      "difficulty": 5
+    },
+    "exclaim": {
+      "letterCount": 7,
+      "frequencyZipf": 2.82,
+      "frequencyKind": "word",
+      "score": 54.52,
+      "difficulty": 4
+    },
+    "clamour": {
+      "letterCount": 7,
+      "frequencyZipf": 2.6,
+      "frequencyKind": "word",
+      "score": 57.6,
+      "difficulty": 5
+    },
+    "whisper": {
+      "letterCount": 7,
+      "frequencyZipf": 3.74,
+      "frequencyKind": "word",
+      "score": 41.64,
+      "difficulty": 2
+    },
+    "whimper": {
+      "letterCount": 7,
+      "frequencyZipf": 2.71,
+      "frequencyKind": "word",
+      "score": 56.06,
+      "difficulty": 4
+    },
+    "mumble": {
+      "letterCount": 6,
+      "frequencyZipf": 2.91,
+      "frequencyKind": "word",
+      "score": 50.76,
+      "difficulty": 4
+    },
+    "cackle": {
+      "letterCount": 6,
+      "frequencyZipf": 2.41,
+      "frequencyKind": "word",
+      "score": 57.76,
+      "difficulty": 5
+    },
+    "crack up": {
+      "letterCount": 7,
+      "frequencyZipf": 4.4,
+      "frequencyKind": "phrase-estimate",
+      "score": 32.4,
+      "difficulty": 1
+    },
+    "snicker": {
+      "letterCount": 7,
+      "frequencyZipf": 2.48,
+      "frequencyKind": "word",
+      "score": 59.28,
+      "difficulty": 5
+    },
+    "snivel": {
+      "letterCount": 6,
+      "frequencyZipf": 1.4,
+      "frequencyKind": "word",
+      "score": 71.9,
+      "difficulty": 5
+    },
+    "howl": {
+      "letterCount": 4,
+      "frequencyZipf": 3.18,
+      "frequencyKind": "word",
+      "score": 41.98,
+      "difficulty": 2
+    },
+    "bawl": {
+      "letterCount": 4,
+      "frequencyZipf": 2.32,
+      "frequencyKind": "word",
+      "score": 54.02,
+      "difficulty": 4
+    },
+    "absolve": {
+      "letterCount": 7,
+      "frequencyZipf": 2.83,
+      "frequencyKind": "word",
+      "score": 54.38,
+      "difficulty": 4
+    },
+    "obsolete": {
+      "letterCount": 8,
+      "frequencyZipf": 3.65,
+      "frequencyKind": "word",
+      "score": 45.4,
+      "difficulty": 2
+    },
+    "current": {
+      "letterCount": 7,
+      "frequencyZipf": 5.27,
+      "frequencyKind": "word",
+      "score": 20.22,
+      "difficulty": 1
+    },
+    "truce": {
+      "letterCount": 5,
+      "frequencyZipf": 3.52,
+      "frequencyKind": "word",
+      "score": 39.72,
+      "difficulty": 1
+    },
+    "inept": {
+      "letterCount": 5,
+      "frequencyZipf": 3.13,
+      "frequencyKind": "word",
+      "score": 45.18,
+      "difficulty": 2
+    },
+    "hinder": {
+      "letterCount": 6,
+      "frequencyZipf": 3.39,
+      "frequencyKind": "word",
+      "score": 44.04,
+      "difficulty": 2
+    },
+    "sever": {
+      "letterCount": 5,
+      "frequencyZipf": 3.15,
+      "frequencyKind": "word",
+      "score": 44.9,
+      "difficulty": 2
+    },
+    "severe": {
+      "letterCount": 6,
+      "frequencyZipf": 4.56,
+      "frequencyKind": "word",
+      "score": 27.66,
+      "difficulty": 1
+    },
+    "encompass": {
+      "letterCount": 9,
+      "frequencyZipf": 3.27,
+      "frequencyKind": "word",
+      "score": 53.22,
+      "difficulty": 4
+    },
+    "scatter": {
+      "letterCount": 7,
+      "frequencyZipf": 3.39,
+      "frequencyKind": "word",
+      "score": 46.54,
+      "difficulty": 3
+    },
+    "trickle": {
+      "letterCount": 7,
+      "frequencyZipf": 3.25,
+      "frequencyKind": "word",
+      "score": 48.5,
+      "difficulty": 3
+    },
+    "trinket": {
+      "letterCount": 7,
+      "frequencyZipf": 2.7,
+      "frequencyKind": "word",
+      "score": 56.2,
+      "difficulty": 4
+    },
+    "memoir": {
+      "letterCount": 6,
+      "frequencyZipf": 3.77,
+      "frequencyKind": "word",
+      "score": 38.72,
+      "difficulty": 1
+    },
+    "mirage": {
+      "letterCount": 6,
+      "frequencyZipf": 3.29,
+      "frequencyKind": "word",
+      "score": 45.44,
+      "difficulty": 2
+    },
+    "languid": {
+      "letterCount": 7,
+      "frequencyZipf": 2.54,
+      "frequencyKind": "word",
+      "score": 58.44,
+      "difficulty": 5
+    },
+    "austerity": {
+      "letterCount": 9,
+      "frequencyZipf": 3.41,
+      "frequencyKind": "word",
+      "score": 51.26,
+      "difficulty": 4
+    },
+    "extravagance": {
+      "letterCount": 12,
+      "frequencyZipf": 2.81,
+      "frequencyKind": "word",
+      "score": 67.16,
+      "difficulty": 5
+    },
+    "susceptible": {
+      "letterCount": 11,
+      "frequencyZipf": 3.67,
+      "frequencyKind": "word",
+      "score": 52.62,
+      "difficulty": 4
+    },
+    "dearth": {
+      "letterCount": 6,
+      "frequencyZipf": 2.92,
+      "frequencyKind": "word",
+      "score": 50.62,
+      "difficulty": 3
+    },
+    "fusion": {
+      "letterCount": 6,
+      "frequencyZipf": 4.02,
+      "frequencyKind": "word",
+      "score": 35.22,
+      "difficulty": 1
+    },
+    "cuisine": {
+      "letterCount": 7,
+      "frequencyZipf": 3.81,
+      "frequencyKind": "word",
+      "score": 40.66,
+      "difficulty": 1
+    },
+    "meld": {
+      "letterCount": 4,
+      "frequencyZipf": 2.72,
+      "frequencyKind": "word",
+      "score": 48.42,
+      "difficulty": 3
+    },
+    "molten": {
+      "letterCount": 6,
+      "frequencyZipf": 3.33,
+      "frequencyKind": "word",
+      "score": 44.88,
+      "difficulty": 2
+    },
+    "tease": {
+      "letterCount": 5,
+      "frequencyZipf": 3.59,
+      "frequencyKind": "word",
+      "score": 38.74,
+      "difficulty": 1
+    },
+    "imperious": {
+      "letterCount": 9,
+      "frequencyZipf": 2.66,
+      "frequencyKind": "word",
+      "score": 61.76,
+      "difficulty": 5
+    },
+    "meek": {
+      "letterCount": 4,
+      "frequencyZipf": 3.32,
+      "frequencyKind": "word",
+      "score": 40.02,
+      "difficulty": 1
+    },
+    "smug": {
+      "letterCount": 4,
+      "frequencyZipf": 3.31,
+      "frequencyKind": "word",
+      "score": 40.16,
+      "difficulty": 1
+    },
+    "vein": {
+      "letterCount": 4,
+      "frequencyZipf": 3.77,
+      "frequencyKind": "word",
+      "score": 33.72,
+      "difficulty": 1
+    },
+    "demure": {
+      "letterCount": 6,
+      "frequencyZipf": 2.56,
+      "frequencyKind": "word",
+      "score": 55.66,
+      "difficulty": 4
+    },
+    "boastful": {
+      "letterCount": 8,
+      "frequencyZipf": 2.5,
+      "frequencyKind": "word",
+      "score": 61.5,
+      "difficulty": 5
+    },
+    "timid": {
+      "letterCount": 5,
+      "frequencyZipf": 3.25,
+      "frequencyKind": "word",
+      "score": 43.5,
+      "difficulty": 2
+    },
+    "hallmark": {
+      "letterCount": 8,
+      "frequencyZipf": 3.37,
+      "frequencyKind": "word",
+      "score": 49.32,
+      "difficulty": 3
+    },
+    "insignia": {
+      "letterCount": 8,
+      "frequencyZipf": 3.15,
+      "frequencyKind": "word",
+      "score": 52.4,
+      "difficulty": 4
+    },
+    "ploy": {
+      "letterCount": 4,
+      "frequencyZipf": 3.22,
+      "frequencyKind": "word",
+      "score": 41.42,
+      "difficulty": 2
+    },
+    "token": {
+      "letterCount": 5,
+      "frequencyZipf": 3.82,
+      "frequencyKind": "word",
+      "score": 35.52,
+      "difficulty": 1
+    },
+    "elementary": {
+      "letterCount": 10,
+      "frequencyZipf": 4.33,
+      "frequencyKind": "word",
+      "score": 40.88,
+      "difficulty": 2
+    },
+    "potential": {
+      "letterCount": 9,
+      "frequencyZipf": 5.01,
+      "frequencyKind": "word",
+      "score": 28.86,
+      "difficulty": 1
+    },
+    "probable": {
+      "letterCount": 8,
+      "frequencyZipf": 3.79,
+      "frequencyKind": "word",
+      "score": 43.44,
+      "difficulty": 2
+    },
+    "refrain": {
+      "letterCount": 7,
+      "frequencyZipf": 3.63,
+      "frequencyKind": "word",
+      "score": 43.18,
+      "difficulty": 2
+    },
+    "myriad": {
+      "letterCount": 6,
+      "frequencyZipf": 3.49,
+      "frequencyKind": "word",
+      "score": 42.64,
+      "difficulty": 2
+    },
+    "aromatic": {
+      "letterCount": 8,
+      "frequencyZipf": 3.32,
+      "frequencyKind": "word",
+      "score": 50.02,
+      "difficulty": 3
+    },
+    "fragrant": {
+      "letterCount": 8,
+      "frequencyZipf": 3.21,
+      "frequencyKind": "word",
+      "score": 51.56,
+      "difficulty": 4
+    },
+    "vex": {
+      "letterCount": 3,
+      "frequencyZipf": 2.85,
+      "frequencyKind": "word",
+      "score": 44.1,
+      "difficulty": 2
+    },
+    "exorbitant": {
+      "letterCount": 10,
+      "frequencyZipf": 3.01,
+      "frequencyKind": "word",
+      "score": 59.36,
+      "difficulty": 5
+    },
+    "adverse": {
+      "letterCount": 7,
+      "frequencyZipf": 3.89,
+      "frequencyKind": "word",
+      "score": 39.54,
+      "difficulty": 1
+    },
+    "favourable": {
+      "letterCount": 10,
+      "frequencyZipf": 3.53,
+      "frequencyKind": "word",
+      "score": 52.08,
+      "difficulty": 4
+    },
+    "squander": {
+      "letterCount": 8,
+      "frequencyZipf": 2.74,
+      "frequencyKind": "word",
+      "score": 58.14,
+      "difficulty": 5
+    },
+    "conserve": {
+      "letterCount": 8,
+      "frequencyZipf": 3.37,
+      "frequencyKind": "word",
+      "score": 49.32,
+      "difficulty": 3
+    },
+    "solitary": {
+      "letterCount": 8,
+      "frequencyZipf": 3.73,
+      "frequencyKind": "word",
+      "score": 44.28,
+      "difficulty": 2
+    },
+    "petite": {
+      "letterCount": 6,
+      "frequencyZipf": 3.43,
+      "frequencyKind": "word",
+      "score": 43.48,
+      "difficulty": 2
+    },
+    "paltry": {
+      "letterCount": 6,
+      "frequencyZipf": 2.86,
+      "frequencyKind": "word",
+      "score": 51.46,
+      "difficulty": 4
+    },
+    "wee": {
+      "letterCount": 3,
+      "frequencyZipf": 3.87,
+      "frequencyKind": "word",
+      "score": 29.82,
+      "difficulty": 1
+    },
+    "trifling": {
+      "letterCount": 8,
+      "frequencyZipf": 2.69,
+      "frequencyKind": "word",
+      "score": 58.84,
+      "difficulty": 5
+    },
+    "tenuous": {
+      "letterCount": 7,
+      "frequencyZipf": 3.02,
+      "frequencyKind": "word",
+      "score": 51.72,
+      "difficulty": 4
+    },
+    "uniform": {
+      "letterCount": 7,
+      "frequencyZipf": 4.33,
+      "frequencyKind": "word",
+      "score": 33.38,
+      "difficulty": 1
+    },
+    "sagacious": {
+      "letterCount": 9,
+      "frequencyZipf": 1.8,
+      "frequencyKind": "word",
+      "score": 73.8,
+      "difficulty": 5
+    },
+    "snub": {
+      "letterCount": 4,
+      "frequencyZipf": 2.9,
+      "frequencyKind": "word",
+      "score": 45.9,
+      "difficulty": 3
+    },
+    "smirk": {
+      "letterCount": 5,
+      "frequencyZipf": 3.04,
+      "frequencyKind": "word",
+      "score": 46.44,
+      "difficulty": 3
+    },
+    "censure": {
+      "letterCount": 7,
+      "frequencyZipf": 2.94,
+      "frequencyKind": "word",
+      "score": 52.84,
+      "difficulty": 4
+    },
+    "royal": {
+      "letterCount": 5,
+      "frequencyZipf": 4.85,
+      "frequencyKind": "word",
+      "score": 21.1,
+      "difficulty": 1
+    },
+    "empire": {
+      "letterCount": 6,
+      "frequencyZipf": 4.54,
+      "frequencyKind": "word",
+      "score": 27.94,
+      "difficulty": 1
+    },
+    "sequence": {
+      "letterCount": 8,
+      "frequencyZipf": 4.35,
+      "frequencyKind": "word",
+      "score": 35.6,
+      "difficulty": 1
+    },
+    "evade": {
+      "letterCount": 5,
+      "frequencyZipf": 3.39,
+      "frequencyKind": "word",
+      "score": 41.54,
+      "difficulty": 2
+    },
+    "aspire": {
+      "letterCount": 6,
+      "frequencyZipf": 3.47,
+      "frequencyKind": "word",
+      "score": 42.92,
+      "difficulty": 2
+    },
+    "desire": {
+      "letterCount": 6,
+      "frequencyZipf": 4.61,
+      "frequencyKind": "word",
+      "score": 26.96,
+      "difficulty": 1
+    },
+    "naive": {
+      "letterCount": 5,
+      "frequencyZipf": 3.75,
+      "frequencyKind": "word",
+      "score": 36.5,
+      "difficulty": 1
+    },
+    "artefact": {
+      "letterCount": 8,
+      "frequencyZipf": 2.7,
+      "frequencyKind": "word",
+      "score": 58.7,
+      "difficulty": 5
+    },
+    "apprehend": {
+      "letterCount": 9,
+      "frequencyZipf": 3.02,
+      "frequencyKind": "word",
+      "score": 56.72,
+      "difficulty": 5
+    },
+    "purloin": {
+      "letterCount": 7,
+      "frequencyZipf": 1.41,
+      "frequencyKind": "word",
+      "score": 74.26,
+      "difficulty": 5
+    },
+    "impart": {
+      "letterCount": 6,
+      "frequencyZipf": 3.09,
+      "frequencyKind": "word",
+      "score": 48.24,
+      "difficulty": 3
+    },
+    "pilfer": {
+      "letterCount": 6,
+      "frequencyZipf": 2.06,
+      "frequencyKind": "word",
+      "score": 62.66,
+      "difficulty": 5
+    },
+    "resonate": {
+      "letterCount": 8,
+      "frequencyZipf": 3.19,
+      "frequencyKind": "word",
+      "score": 51.84,
+      "difficulty": 4
+    },
+    "diplomatic": {
+      "letterCount": 10,
+      "frequencyZipf": 4.11,
+      "frequencyKind": "word",
+      "score": 43.96,
+      "difficulty": 2
+    },
+    "tactful": {
+      "letterCount": 7,
+      "frequencyZipf": 2.59,
+      "frequencyKind": "word",
+      "score": 57.74,
+      "difficulty": 5
+    },
+    "sway": {
+      "letterCount": 4,
+      "frequencyZipf": 3.65,
+      "frequencyKind": "word",
+      "score": 35.4,
+      "difficulty": 1
+    },
+    "magma": {
+      "letterCount": 5,
+      "frequencyZipf": 3.19,
+      "frequencyKind": "word",
+      "score": 44.34,
+      "difficulty": 2
+    },
+    "vouch": {
+      "letterCount": 5,
+      "frequencyZipf": 3.13,
+      "frequencyKind": "word",
+      "score": 45.18,
+      "difficulty": 2
+    },
+    "attest": {
+      "letterCount": 6,
+      "frequencyZipf": 3.25,
+      "frequencyKind": "word",
+      "score": 46.0,
+      "difficulty": 3
+    },
+    "dais": {
+      "letterCount": 4,
+      "frequencyZipf": 2.62,
+      "frequencyKind": "word",
+      "score": 49.82,
+      "difficulty": 3
+    },
+    "celestial": {
+      "letterCount": 9,
+      "frequencyZipf": 3.53,
+      "frequencyKind": "word",
+      "score": 49.58,
+      "difficulty": 3
+    },
+    "vital": {
+      "letterCount": 5,
+      "frequencyZipf": 4.38,
+      "frequencyKind": "word",
+      "score": 27.68,
+      "difficulty": 1
+    },
+    "trough": {
+      "letterCount": 6,
+      "frequencyZipf": 3.43,
+      "frequencyKind": "word",
+      "score": 43.48,
+      "difficulty": 2
+    },
+    "vice": {
+      "letterCount": 4,
+      "frequencyZipf": 4.71,
+      "frequencyKind": "word",
+      "score": 20.56,
+      "difficulty": 1
+    },
+    "virtue": {
+      "letterCount": 6,
+      "frequencyZipf": 3.94,
+      "frequencyKind": "word",
+      "score": 36.34,
+      "difficulty": 1
+    },
+    "sweltering": {
+      "letterCount": 10,
+      "frequencyZipf": 2.6,
+      "frequencyKind": "word",
+      "score": 65.1,
+      "difficulty": 5
+    },
+    "scalding": {
+      "letterCount": 8,
+      "frequencyZipf": 2.61,
+      "frequencyKind": "word",
+      "score": 59.96,
+      "difficulty": 5
+    },
+    "tepid": {
+      "letterCount": 5,
+      "frequencyZipf": 2.71,
+      "frequencyKind": "word",
+      "score": 51.06,
+      "difficulty": 4
+    },
+    "frigid": {
+      "letterCount": 6,
+      "frequencyZipf": 2.98,
+      "frequencyKind": "word",
+      "score": 49.78,
+      "difficulty": 3
+    },
+    "scowl": {
+      "letterCount": 5,
+      "frequencyZipf": 2.51,
+      "frequencyKind": "word",
+      "score": 53.86,
+      "difficulty": 4
+    },
+    "frown": {
+      "letterCount": 5,
+      "frequencyZipf": 3.26,
+      "frequencyKind": "word",
+      "score": 43.36,
+      "difficulty": 2
+    },
+    "hamper": {
+      "letterCount": 6,
+      "frequencyZipf": 3.26,
+      "frequencyKind": "word",
+      "score": 45.86,
+      "difficulty": 3
+    },
+    "stroll": {
+      "letterCount": 6,
+      "frequencyZipf": 3.54,
+      "frequencyKind": "word",
+      "score": 41.94,
+      "difficulty": 2
+    },
+    "husk": {
+      "letterCount": 4,
+      "frequencyZipf": 2.84,
+      "frequencyKind": "word",
+      "score": 46.74,
+      "difficulty": 3
+    },
+    "brittle": {
+      "letterCount": 7,
+      "frequencyZipf": 3.28,
+      "frequencyKind": "word",
+      "score": 48.08,
+      "difficulty": 3
+    },
+    "shell": {
+      "letterCount": 5,
+      "frequencyZipf": 4.39,
+      "frequencyKind": "word",
+      "score": 27.54,
+      "difficulty": 1
+    },
+    "notion": {
+      "letterCount": 6,
+      "frequencyZipf": 4.17,
+      "frequencyKind": "word",
+      "score": 33.12,
+      "difficulty": 1
+    },
+    "hind": {
+      "letterCount": 4,
+      "frequencyZipf": 3.5,
+      "frequencyKind": "word",
+      "score": 37.5,
+      "difficulty": 1
+    },
+    "sedate": {
+      "letterCount": 6,
+      "frequencyZipf": 2.76,
+      "frequencyKind": "word",
+      "score": 52.86,
+      "difficulty": 4
+    },
+    "divulge": {
+      "letterCount": 7,
+      "frequencyZipf": 2.93,
+      "frequencyKind": "word",
+      "score": 52.98,
+      "difficulty": 4
+    },
+    "valour": {
+      "letterCount": 6,
+      "frequencyZipf": 2.91,
+      "frequencyKind": "word",
+      "score": 50.76,
+      "difficulty": 4
+    },
+    "midst": {
+      "letterCount": 5,
+      "frequencyZipf": 3.89,
+      "frequencyKind": "word",
+      "score": 34.54,
+      "difficulty": 1
+    },
+    "forfeit": {
+      "letterCount": 7,
+      "frequencyZipf": 3.32,
+      "frequencyKind": "word",
+      "score": 47.52,
+      "difficulty": 3
+    },
+    "inconsequential": {
+      "letterCount": 15,
+      "frequencyZipf": 2.86,
+      "frequencyKind": "word",
+      "score": 73.96,
+      "difficulty": 5
+    },
+    "superficial": {
+      "letterCount": 11,
+      "frequencyZipf": 3.56,
+      "frequencyKind": "word",
+      "score": 54.16,
+      "difficulty": 4
+    },
+    "negligible": {
+      "letterCount": 10,
+      "frequencyZipf": 3.39,
+      "frequencyKind": "word",
+      "score": 54.04,
+      "difficulty": 4
+    },
+    "substantial": {
+      "letterCount": 11,
+      "frequencyZipf": 4.33,
+      "frequencyKind": "word",
+      "score": 43.38,
+      "difficulty": 2
+    },
+    "salient": {
+      "letterCount": 7,
+      "frequencyZipf": 3.12,
+      "frequencyKind": "word",
+      "score": 50.32,
+      "difficulty": 3
+    },
+    "immaterial": {
+      "letterCount": 10,
+      "frequencyZipf": 2.89,
+      "frequencyKind": "word",
+      "score": 61.04,
+      "difficulty": 5
+    },
+    "insignificant": {
+      "letterCount": 13,
+      "frequencyZipf": 3.53,
+      "frequencyKind": "word",
+      "score": 59.58,
+      "difficulty": 5
+    },
+    "discord": {
+      "letterCount": 7,
+      "frequencyZipf": 3.45,
+      "frequencyKind": "word",
+      "score": 45.7,
+      "difficulty": 2
+    },
+    "chronicle": {
+      "letterCount": 9,
+      "frequencyZipf": 3.7,
+      "frequencyKind": "word",
+      "score": 47.2,
+      "difficulty": 3
+    },
+    "bland": {
+      "letterCount": 5,
+      "frequencyZipf": 3.5,
+      "frequencyKind": "word",
+      "score": 40.0,
+      "difficulty": 1
+    },
+    "insipid": {
+      "letterCount": 7,
+      "frequencyZipf": 2.64,
+      "frequencyKind": "word",
+      "score": 57.04,
+      "difficulty": 5
+    },
+    "whine": {
+      "letterCount": 5,
+      "frequencyZipf": 3.28,
+      "frequencyKind": "word",
+      "score": 43.08,
+      "difficulty": 2
+    },
+    "moan": {
+      "letterCount": 4,
+      "frequencyZipf": 3.37,
+      "frequencyKind": "word",
+      "score": 39.32,
+      "difficulty": 1
+    },
+    "surmise": {
+      "letterCount": 7,
+      "frequencyZipf": 2.67,
+      "frequencyKind": "word",
+      "score": 56.62,
+      "difficulty": 5
+    },
+    "deduct": {
+      "letterCount": 6,
+      "frequencyZipf": 3.09,
+      "frequencyKind": "word",
+      "score": 48.24,
+      "difficulty": 3
+    },
+    "enchant": {
+      "letterCount": 7,
+      "frequencyZipf": 2.57,
+      "frequencyKind": "word",
+      "score": 58.02,
+      "difficulty": 5
+    },
+    "skim": {
+      "letterCount": 4,
+      "frequencyZipf": 3.17,
+      "frequencyKind": "word",
+      "score": 42.12,
+      "difficulty": 2
+    },
+    "pare": {
+      "letterCount": 4,
+      "frequencyZipf": 2.79,
+      "frequencyKind": "word",
+      "score": 47.44,
+      "difficulty": 3
+    },
+    "rebuke": {
+      "letterCount": 6,
+      "frequencyZipf": 3.1,
+      "frequencyKind": "word",
+      "score": 48.1,
+      "difficulty": 3
+    },
+    "gadget": {
+      "letterCount": 6,
+      "frequencyZipf": 3.45,
+      "frequencyKind": "word",
+      "score": 43.2,
+      "difficulty": 2
+    },
+    "comprehensive": {
+      "letterCount": 13,
+      "frequencyZipf": 4.36,
+      "frequencyKind": "word",
+      "score": 47.96,
+      "difficulty": 3
+    },
+    "thorough": {
+      "letterCount": 8,
+      "frequencyZipf": 3.97,
+      "frequencyKind": "word",
+      "score": 40.92,
+      "difficulty": 2
+    },
+    "indulgent": {
+      "letterCount": 9,
+      "frequencyZipf": 3.09,
+      "frequencyKind": "word",
+      "score": 55.74,
+      "difficulty": 4
+    },
+    "prudent": {
+      "letterCount": 7,
+      "frequencyZipf": 3.41,
+      "frequencyKind": "word",
+      "score": 46.26,
+      "difficulty": 3
+    },
+    "detrimental": {
+      "letterCount": 11,
+      "frequencyZipf": 3.55,
+      "frequencyKind": "word",
+      "score": 54.3,
+      "difficulty": 4
+    },
+    "queasy": {
+      "letterCount": 6,
+      "frequencyZipf": 2.62,
+      "frequencyKind": "word",
+      "score": 54.82,
+      "difficulty": 4
+    },
+    "witty": {
+      "letterCount": 5,
+      "frequencyZipf": 3.56,
+      "frequencyKind": "word",
+      "score": 39.16,
+      "difficulty": 1
+    },
+    "chore": {
+      "letterCount": 5,
+      "frequencyZipf": 3.15,
+      "frequencyKind": "word",
+      "score": 44.9,
+      "difficulty": 2
+    },
+    "revolve": {
+      "letterCount": 7,
+      "frequencyZipf": 3.24,
+      "frequencyKind": "word",
+      "score": 48.64,
+      "difficulty": 3
+    },
+    "veteran": {
+      "letterCount": 7,
+      "frequencyZipf": 4.21,
+      "frequencyKind": "word",
+      "score": 35.06,
+      "difficulty": 1
+    },
+    "elongate": {
+      "letterCount": 8,
+      "frequencyZipf": 2.78,
+      "frequencyKind": "word",
+      "score": 57.58,
+      "difficulty": 5
+    },
+    "curtail": {
+      "letterCount": 7,
+      "frequencyZipf": 2.98,
+      "frequencyKind": "word",
+      "score": 52.28,
+      "difficulty": 4
+    },
+    "tempest": {
+      "letterCount": 7,
+      "frequencyZipf": 3.29,
+      "frequencyKind": "word",
+      "score": 47.94,
+      "difficulty": 3
+    },
+    "waver": {
+      "letterCount": 5,
+      "frequencyZipf": 2.75,
+      "frequencyKind": "word",
+      "score": 50.5,
+      "difficulty": 3
+    },
+    "ignite": {
+      "letterCount": 6,
+      "frequencyZipf": 3.35,
+      "frequencyKind": "word",
+      "score": 44.6,
+      "difficulty": 2
+    },
+    "kindle": {
+      "letterCount": 6,
+      "frequencyZipf": 3.81,
+      "frequencyKind": "word",
+      "score": 38.16,
+      "difficulty": 1
+    },
+    "docile": {
+      "letterCount": 6,
+      "frequencyZipf": 2.93,
+      "frequencyKind": "word",
+      "score": 50.48,
+      "difficulty": 3
+    },
+    "obedient": {
+      "letterCount": 8,
+      "frequencyZipf": 3.19,
+      "frequencyKind": "word",
+      "score": 51.84,
+      "difficulty": 4
+    },
+    "compliant": {
+      "letterCount": 9,
+      "frequencyZipf": 3.42,
+      "frequencyKind": "word",
+      "score": 51.12,
+      "difficulty": 4
+    },
+    "resentful": {
+      "letterCount": 9,
+      "frequencyZipf": 2.97,
+      "frequencyKind": "word",
+      "score": 57.42,
+      "difficulty": 5
+    },
+    "gloomy": {
+      "letterCount": 6,
+      "frequencyZipf": 3.39,
+      "frequencyKind": "word",
+      "score": 44.04,
+      "difficulty": 2
+    },
+    "censorious": {
+      "letterCount": 10,
+      "frequencyZipf": 1.94,
+      "frequencyKind": "word",
+      "score": 74.34,
+      "difficulty": 5
+    },
+    "decrepit": {
+      "letterCount": 8,
+      "frequencyZipf": 2.77,
+      "frequencyKind": "word",
+      "score": 57.72,
+      "difficulty": 5
+    },
+    "obliging": {
+      "letterCount": 8,
+      "frequencyZipf": 2.61,
+      "frequencyKind": "word",
+      "score": 59.96,
+      "difficulty": 5
+    },
+    "poise": {
+      "letterCount": 5,
+      "frequencyZipf": 3.04,
+      "frequencyKind": "word",
+      "score": 46.44,
+      "difficulty": 3
+    },
+    "technophobe": {
+      "letterCount": 11,
+      "frequencyZipf": 1.37,
+      "frequencyKind": "word",
+      "score": 84.82,
+      "difficulty": 5
+    },
+    "flog": {
+      "letterCount": 4,
+      "frequencyZipf": 2.7,
+      "frequencyKind": "word",
+      "score": 48.7,
+      "difficulty": 3
+    },
+    "amoral": {
+      "letterCount": 6,
+      "frequencyZipf": 2.65,
+      "frequencyKind": "word",
+      "score": 54.4,
+      "difficulty": 4
+    },
+    "stricken": {
+      "letterCount": 8,
+      "frequencyZipf": 3.52,
+      "frequencyKind": "word",
+      "score": 47.22,
+      "difficulty": 3
+    },
+    "strenuous": {
+      "letterCount": 9,
+      "frequencyZipf": 3.12,
+      "frequencyKind": "word",
+      "score": 55.32,
+      "difficulty": 4
+    },
+    "melodious": {
+      "letterCount": 9,
+      "frequencyZipf": 2.58,
+      "frequencyKind": "word",
+      "score": 62.88,
+      "difficulty": 5
+    },
+    "discordant": {
+      "letterCount": 10,
+      "frequencyZipf": 2.6,
+      "frequencyKind": "word",
+      "score": 65.1,
+      "difficulty": 5
+    },
+    "afflict": {
+      "letterCount": 7,
+      "frequencyZipf": 2.43,
+      "frequencyKind": "word",
+      "score": 59.98,
+      "difficulty": 5
+    },
+    "dictate": {
+      "letterCount": 7,
+      "frequencyZipf": 3.58,
+      "frequencyKind": "word",
+      "score": 43.88,
+      "difficulty": 2
+    },
+    "desist": {
+      "letterCount": 6,
+      "frequencyZipf": 3.05,
+      "frequencyKind": "word",
+      "score": 48.8,
+      "difficulty": 3
+    },
+    "prevalent": {
+      "letterCount": 9,
+      "frequencyZipf": 3.78,
+      "frequencyKind": "word",
+      "score": 46.08,
+      "difficulty": 3
+    },
+    "enrapt": {
+      "letterCount": 6,
+      "frequencyZipf": 0.0,
+      "frequencyKind": "unavailable",
+      "score": 77.5,
+      "difficulty": 5
+    },
+    "threadbare": {
+      "letterCount": 10,
+      "frequencyZipf": 2.43,
+      "frequencyKind": "word",
+      "score": 67.48,
+      "difficulty": 5
+    },
+    "devoted": {
+      "letterCount": 7,
+      "frequencyZipf": 4.18,
+      "frequencyKind": "word",
+      "score": 35.48,
+      "difficulty": 1
+    },
+    "stalwart": {
+      "letterCount": 8,
+      "frequencyZipf": 2.91,
+      "frequencyKind": "word",
+      "score": 55.76,
+      "difficulty": 4
+    },
+    "jovial": {
+      "letterCount": 6,
+      "frequencyZipf": 2.74,
+      "frequencyKind": "word",
+      "score": 53.14,
+      "difficulty": 4
+    },
+    "genial": {
+      "letterCount": 6,
+      "frequencyZipf": 2.72,
+      "frequencyKind": "word",
+      "score": 53.42,
+      "difficulty": 4
+    },
+    "fraught": {
+      "letterCount": 7,
+      "frequencyZipf": 3.12,
+      "frequencyKind": "word",
+      "score": 50.32,
+      "difficulty": 3
+    },
+    "fracas": {
+      "letterCount": 6,
+      "frequencyZipf": 2.38,
+      "frequencyKind": "word",
+      "score": 58.18,
+      "difficulty": 5
+    },
+    "facilitate": {
+      "letterCount": 10,
+      "frequencyZipf": 3.99,
+      "frequencyKind": "word",
+      "score": 45.64,
+      "difficulty": 2
+    },
+    "nullify": {
+      "letterCount": 7,
+      "frequencyZipf": 2.85,
+      "frequencyKind": "word",
+      "score": 54.1,
+      "difficulty": 4
+    },
+    "infamy": {
+      "letterCount": 6,
+      "frequencyZipf": 2.86,
+      "frequencyKind": "word",
+      "score": 51.46,
+      "difficulty": 4
+    },
+    "notoriety": {
+      "letterCount": 9,
+      "frequencyZipf": 3.19,
+      "frequencyKind": "word",
+      "score": 54.34,
+      "difficulty": 4
+    },
+    "rebuttal": {
+      "letterCount": 8,
+      "frequencyZipf": 3.1,
+      "frequencyKind": "word",
+      "score": 53.1,
+      "difficulty": 4
+    },
+    "fickle": {
+      "letterCount": 6,
+      "frequencyZipf": 3.12,
+      "frequencyKind": "word",
+      "score": 47.82,
+      "difficulty": 3
+    },
+    "staunch": {
+      "letterCount": 7,
+      "frequencyZipf": 3.2,
+      "frequencyKind": "word",
+      "score": 49.2,
+      "difficulty": 3
+    },
+    "virulent": {
+      "letterCount": 8,
+      "frequencyZipf": 2.88,
+      "frequencyKind": "word",
+      "score": 56.18,
+      "difficulty": 4
+    },
+    "proxy": {
+      "letterCount": 5,
+      "frequencyZipf": 3.73,
+      "frequencyKind": "word",
+      "score": 36.78,
+      "difficulty": 1
+    },
+    "fester": {
+      "letterCount": 6,
+      "frequencyZipf": 2.76,
+      "frequencyKind": "word",
+      "score": 52.86,
+      "difficulty": 4
+    },
+    "intrinsic": {
+      "letterCount": 9,
+      "frequencyZipf": 3.47,
+      "frequencyKind": "word",
+      "score": 50.42,
+      "difficulty": 3
+    },
+    "debut": {
+      "letterCount": 5,
+      "frequencyZipf": 4.52,
+      "frequencyKind": "word",
+      "score": 25.72,
+      "difficulty": 1
+    },
+    "hustle": {
+      "letterCount": 6,
+      "frequencyZipf": 3.7,
+      "frequencyKind": "word",
+      "score": 39.7,
+      "difficulty": 1
+    },
+    "chew the fat": {
+      "letterCount": 10,
+      "frequencyZipf": 3.63,
+      "frequencyKind": "phrase-estimate",
+      "score": 50.68,
+      "difficulty": 3
+    },
+    "delegate": {
+      "letterCount": 8,
+      "frequencyZipf": 3.7,
+      "frequencyKind": "word",
+      "score": 44.7,
+      "difficulty": 2
+    },
+    "procrastinate": {
+      "letterCount": 13,
+      "frequencyZipf": 2.71,
+      "frequencyKind": "word",
+      "score": 71.06,
+      "difficulty": 5
+    },
+    "fringe": {
+      "letterCount": 6,
+      "frequencyZipf": 3.86,
+      "frequencyKind": "word",
+      "score": 37.46,
+      "difficulty": 1
+    },
+    "asinine": {
+      "letterCount": 7,
+      "frequencyZipf": 2.56,
+      "frequencyKind": "word",
+      "score": 58.16,
+      "difficulty": 5
+    },
+    "bovine": {
+      "letterCount": 6,
+      "frequencyZipf": 3.01,
+      "frequencyKind": "word",
+      "score": 49.36,
+      "difficulty": 3
+    },
+    "canine": {
+      "letterCount": 6,
+      "frequencyZipf": 3.33,
+      "frequencyKind": "word",
+      "score": 44.88,
+      "difficulty": 2
+    },
+    "caprine": {
+      "letterCount": 7,
+      "frequencyZipf": 1.29,
+      "frequencyKind": "word",
+      "score": 75.94,
+      "difficulty": 5
+    },
+    "cervine": {
+      "letterCount": 7,
+      "frequencyZipf": 0.0,
+      "frequencyKind": "unavailable",
+      "score": 80.0,
+      "difficulty": 5
+    },
+    "corvine": {
+      "letterCount": 7,
+      "frequencyZipf": 0.0,
+      "frequencyKind": "unavailable",
+      "score": 80.0,
+      "difficulty": 5
+    },
+    "equine": {
+      "letterCount": 6,
+      "frequencyZipf": 3.07,
+      "frequencyKind": "word",
+      "score": 48.52,
+      "difficulty": 3
+    },
+    "feline": {
+      "letterCount": 6,
+      "frequencyZipf": 3.12,
+      "frequencyKind": "word",
+      "score": 47.82,
+      "difficulty": 3
+    },
+    "leonine": {
+      "letterCount": 7,
+      "frequencyZipf": 1.8,
+      "frequencyKind": "word",
+      "score": 68.8,
+      "difficulty": 5
+    },
+    "lupine": {
+      "letterCount": 6,
+      "frequencyZipf": 2.2,
+      "frequencyKind": "word",
+      "score": 60.7,
+      "difficulty": 5
+    },
+    "murine": {
+      "letterCount": 6,
+      "frequencyZipf": 2.55,
+      "frequencyKind": "word",
+      "score": 55.8,
+      "difficulty": 4
+    },
+    "ovine": {
+      "letterCount": 5,
+      "frequencyZipf": 1.68,
+      "frequencyKind": "word",
+      "score": 65.48,
+      "difficulty": 5
+    },
+    "piscine": {
+      "letterCount": 7,
+      "frequencyZipf": 1.92,
+      "frequencyKind": "word",
+      "score": 67.12,
+      "difficulty": 5
+    },
+    "porcine": {
+      "letterCount": 7,
+      "frequencyZipf": 2.48,
+      "frequencyKind": "word",
+      "score": 59.28,
+      "difficulty": 5
+    },
+    "serpentine": {
+      "letterCount": 10,
+      "frequencyZipf": 3.06,
+      "frequencyKind": "word",
+      "score": 58.66,
+      "difficulty": 5
+    },
+    "ursine": {
+      "letterCount": 6,
+      "frequencyZipf": 1.65,
+      "frequencyKind": "word",
+      "score": 68.4,
+      "difficulty": 5
+    },
+    "vulpine": {
+      "letterCount": 7,
+      "frequencyZipf": 1.48,
+      "frequencyKind": "word",
+      "score": 73.28,
+      "difficulty": 5
+    },
+    "settee": {
+      "letterCount": 6,
+      "frequencyZipf": 2.44,
+      "frequencyKind": "word",
+      "score": 57.34,
+      "difficulty": 5
+    },
+    "hammock": {
+      "letterCount": 7,
+      "frequencyZipf": 3.14,
+      "frequencyKind": "word",
+      "score": 50.04,
+      "difficulty": 3
+    },
+    "blot": {
+      "letterCount": 4,
+      "frequencyZipf": 3.03,
+      "frequencyKind": "word",
+      "score": 44.08,
+      "difficulty": 2
+    },
+    "jury": {
+      "letterCount": 4,
+      "frequencyZipf": 4.49,
+      "frequencyKind": "word",
+      "score": 23.64,
+      "difficulty": 1
+    }
+  }
+}

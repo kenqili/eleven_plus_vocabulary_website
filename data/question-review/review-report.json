@@ -21,16 +21,17 @@
     },
     "ant": {
       "file": "data/ant.csv",
-      "sha256": "a53d76231be9c6c92efed08040d5678fec6ca30c6a73aec4cde87360029d706a",
-      "rowsReviewed": 631,
+      "sha256": "0598d51d7b118d00608eb740e2558198e1372868b44b2b0b28bed87a1457e7ce",
+      "rowsReviewed": 630,
       "unchangedFromInitialReview": 532,
       "changedRowsRechecked": 99,
       "addedRowsReviewed": 0,
       "removedInitialRows": 30,
       "allRowsHaveFourDistinctOptionsAndOneExactAnswer": true,
-      "noRemainingKnownAlternativeCorrectOptions": true
+      "noRemainingKnownAlternativeCorrectOptions": true,
+      "removedAfterReview": 1
     },
-    "totalRows": 1361
+    "totalRows": 1360
   },
   "editorialOverrideEntries": 234,
   "editorialAntonymExclusions": [
@@ -667,5 +668,29 @@
     "Some distractors differ in part of speech; difficulty has not been psychometrically calibrated.",
     "Original source explanations remain unchanged, including relations excluded from the question bank.",
     "Any later CSV changes require renewed semantic review."
+  ],
+  "postReviewChanges": [
+    {
+      "date": "2026-09-23",
+      "reason": "User requested removal of direct dis- prefix antonym pairs.",
+      "removedPairs": [
+        {
+          "word": "obedient",
+          "answer": "disobedient"
+        }
+      ],
+      "verification": "All remaining antonym rows are identical, in the same order, to the previously reviewed CSV. No answers or distractors were added or changed.",
+      "previousAntonymReview": {
+        "file": "data/ant.csv",
+        "sha256": "a53d76231be9c6c92efed08040d5678fec6ca30c6a73aec4cde87360029d706a",
+        "rowsReviewed": 631,
+        "unchangedFromInitialReview": 532,
+        "changedRowsRechecked": 99,
+        "addedRowsReviewed": 0,
+        "removedInitialRows": 30,
+        "allRowsHaveFourDistinctOptionsAndOneExactAnswer": true,
+        "noRemainingKnownAlternativeCorrectOptions": true
+      }
+    }
   ]
 }

@@ -18,7 +18,7 @@ Add rows directly to the appropriate CSV, then run `npm run words:validate`, reb
 
 ## Generated question library
 
-The current library contains **2,091 question templates**: 730 definitions, 730 synonyms and 631 antonyms. Each word has one definition and at most one question of each relationship type. Of the 99 omitted antonyms, 69 had no supplied opposite and 30 were excluded as misleading by independent review. These exceptions are recorded in `data/question-review/generation-report.json`; the count is not padded with invented opposites.
+The current library contains **2,090 question templates**: 730 definitions, 730 synonyms and 630 antonyms. Each word has one definition and at most one question of each relationship type. Of the 100 omitted antonyms, 69 had no supplied opposite, 30 were excluded as misleading by independent review, and one direct dis- prefix pair (obedient/disobedient) was removed at user request. The generator excludes direct dis- prefix pairs in either direction. These exceptions are recorded in `data/question-review/generation-report.json`; the count is not padded with invented opposites.
 
 - `data/syn.csv` and `data/ant.csv` are the question files used by the website. The requested antonym file is named `ant.csv` consistently, rather than maintaining a duplicate `antonym.csv`.
 - Columns: `problem,options,answer,syn/ant,word`. `options` contains a CSV-escaped JSON array of four choices; `answer` is the exact correct option text, `syn/ant` is `syn` or `ant`, and `word` is the stable lowercase word ID.
@@ -50,6 +50,8 @@ Words use the three CSV files. Accounts, hashed credentials, sessions, answers a
 ## Development
 
 Requires Node 22.13+ (Node 24 recommended for the test runner) and npm.
+If you use nvm, run `nvm install` and `nvm use` to select the Node 24 version
+specified in `.nvmrc` before running the commands below.
 
 ```sh
 npm run install:ci
@@ -59,8 +61,24 @@ npm run build
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0000_gray_mandrill.sql
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0001_orange_jocasta.sql
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0002_brainy_famine.sql
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0003_ordinary_edwin_jarvis.sql
 # Apply future migrations once, in filename order.
 npm run dev
+```
+
+For a Node-only local preview (without the Cloudflare runtime), run:
+
+```sh
+npm run dev:node
+```
+
+This loads `.env`, applies all migrations automatically, and stores local data in
+`.sites-runtime/node-dev.sqlite`, separately from the Worker preview database.
+Use http://localhost:5173 to match the default `APP_ORIGIN`. To run integration
+checks against this preview:
+
+```sh
+TEST_NODE_DB=.sites-runtime/node-dev.sqlite npm run test:integration
 ```
 
 Use the local address printed by the server (normally http://localhost:5173). Local preview data persists under ignored `.wrangler/state`. Run `npm run start` to test the built Worker.
@@ -74,7 +92,7 @@ node scripts/run-framework.mjs build
 
 ## Accounts and login credentials
 
-Visit `/account`, choose **Create an account**, and register with your email and a 12–128 character password. Then use those credentials to sign in. There are no shared, default or hard-coded production credentials.
+Visit `/account`, choose **Create an account**, and register with your email and a 12–128 character password. New free accounts receive full vocabulary practice, saved progress, word summaries, revision exports and badges for the first seven days after sign-up. Configure `FREE_TRIAL_DAYS` in `.env` locally or in the hosting environment (whole number from 0 to 365; default 7; set to 0 to disable free trials). The countdown is enforced by server-side access checks. After the trial, free users keep saved access to a stable, difficulty-balanced selection of 20 words (set `FREE_WORD_LIMIT` to a whole number from 0 to 730; default 20). Signed-out visitors can try the same free collection without saved progress. Subscribing unlocks the complete library and preserves existing progress.
 
 Passwords use salted scrypt (N=16384, r=8, p=5); session tokens are random, stored only as hashes in D1, and sent in HttpOnly/SameSite cookies (Secure on HTTPS). Authentication endpoints are rate-limited, mutations check Origin, sessions expire after seven days, and logout revokes the session. Emails are normalized to lowercase.
 
@@ -82,7 +100,7 @@ This implementation does not yet provide email verification or self-service forg
 
 ## Monthly payments
 
-The monthly price and currency have not been set. The account page displays the actual amount and currency from the configured Stripe recurring Price; it never invents a price. Until all required settings exist, checkout is disabled with a clear message. The five-word sample remains available.
+The monthly price and currency have not been set. The account page displays the actual amount and currency from the configured Stripe recurring Price; it never invents a price. Until all required settings exist, checkout is disabled with a clear message. The configured free-account trial remains available; signed-out visitors can also try the configured free-word collection.
 
 1. In Stripe **test mode**, create a product and a recurring Price with interval `month` and interval count `1`.
 2. Configure `APP_ORIGIN`, `STRIPE_SECRET_KEY`, `STRIPE_PRICE_ID`, and `STRIPE_WEBHOOK_SECRET`. Use `.env` locally and the hosting secret manager for production. Never use `NEXT_PUBLIC_` for secrets.
@@ -104,13 +122,51 @@ The return-from-checkout URL does not grant access. Signed webhooks fetch the cu
 - Ordering lives in `lib/challenge/ordering.ts`: exclude the 20 most recently shown distinct eligible words (or all but one for a small pool), then choose a least-seen word with random ties. Due mistakes override this ordinary spacing, oldest due first.
 - Missed/revealed words are scheduled for the 15th next question presentation (within the requested 10–20 range). Fixed spacing avoids collisions from random review dates. Waiting mistakes are excluded from ordinary selection; if only waiting mistakes remain, they can return earlier. Retired questions count as presentations; reloading a pending question does not. Reviews require an eligible selected type. Previously queued or temporarily filtered-out reviews are served oldest-due first when eligible and may already be overdue.
 - Question types are balanced per word by completed attempts, with random ties. Five correct answers across types retire the word. Changing filters preserves progress; refreshing resumes the pending question.
-- The free sample selects five random eligible words and interleaves their question types in shuffled rounds. A new load/filter selection starts a fresh sample.
+- The free sample selects the configured number of words, balanced across difficulty levels and interleaves their question types in shuffled rounds. A new load/filter selection starts a fresh sample.
 - The current question survives refresh and sign-in; concurrent tabs share one pending question.
 - Server-side scoring prevents replayed answers from increasing mastery twice.
 - Previous-word review is read-only. Optional auto-next waits briefly after a correct answer.
-- Account progress persists across devices. The sample is intentionally temporary.
+- Account progress persists across devices. Signed-out sample answers are temporary; signed-in free collection progress is saved.
 - The dashboard has Today, This week (Monday–Sunday), and All time. Reporting uses Europe/London, including daylight saving. It distinguishes new words explored from words mastered, and updates after every answer.
 - Active study time includes question and explanation reading. It pauses when hidden/unfocused or after 60 seconds without interaction. Authenticated practice checkpoints every 15 active seconds, on answers and on page exit where possible. Server wall-time caps, unique checkpoint IDs and a per-user tab lease prevent repeated requests or overlapping tabs from counting twice. A crash or connection loss can lose the latest unsaved interval; time is an engagement estimate. Historical answer-time records are preserved.
+
+## Learning calendar
+
+Visit `/calendar` to browse your learning by month. Each day shows the number of
+distinct words answered or revealed and saved active study time. Select a day for
+new words explored, words mastered, answer counts and exact time. Repeated answers
+to one word count once per day; the monthly total also counts each word only once
+across the month. Time-only reading days still count as active days.
+
+The calendar uses the same Europe/London reporting days and midnight-split study
+checkpoints as the dashboard, including daylight saving. It includes historical
+records and remains available to signed-in accounts after premium membership ends.
+It refreshes on focus and every minute while visible. Unsaved study time appears
+after the next checkpoint. Month navigation, a month picker and This month make
+it easy to move through history; future dates are disabled.
+
+## Word summary and revision sheets
+
+Visit `/words` for your saved progress across the full library. Learning status
+is automatic: New (not shown), Learning, Needs practice (unmastered with a wrong
+answer or reveal), and Mastered (five correct answers). Retired questions do not
+count as mistakes. The Mistaken words and Revealed answers filters also include
+historical mistakes on mastered words; Needs practice focuses on unfinished work.
+Search matches words and definitions. Revision filters show the words with the
+most mistakes/reveals first, with alphabetical ties.
+
+Premium members can export every filtered result as a UTF-8 CSV or open a
+print-friendly revision sheet and save it as PDF through the browser. Both export
+formats enforce active membership on the server and include meanings, examples,
+related words and progress. The screen is paginated; exports include all matching
+words. Difficulty levels 1–5 are generated separately from learning progress. They use
+70% English frequency rarity (wordfreq 3.1.1) and 30% letter count, with five equal
+bands of 146 words. Combine a difficulty level with any progress filter, then
+export that selection. These relative difficulty estimates are not exam grades.
+See `data/word-levels/README.md` for methodology, source attribution and regeneration.
+
+Auto-next is saved in this browser across navigation and reloads, and synchronises
+between tabs. If browser storage is blocked, it is retained for the current session.
 
 ## Credits and digital badges
 
@@ -133,7 +189,7 @@ npm run test:integration
 npm run format
 ```
 
-Integration tests create a unique temporary local account, insert a local-only membership for protected-route checks, and clean up that account. Never run them against a production site. Core tests cover every word's choices, parser failures, reviewed-CSV hashes, salted passwords, and valid/forged/stale Stripe signatures. Integration checks cover CSRF, cookies, registration, wrong passwords, session revocation, paywalls, concurrent questions, all three question types, invalid filters, retired questions, answer replay, five-correct mastery, persistence and revoked access.
+Integration tests create a unique temporary local account, insert a local-only membership for protected-route checks, and clean up that account. Never run them against a production site. Core tests cover every word's choices, parser failures, reviewed-CSV hashes, salted passwords, and valid/forged/stale Stripe signatures. Integration checks cover CSRF, cookies, registration, wrong passwords, session revocation, paywalls, concurrent questions, all three question types, trial access and expiry, invalid filters, retired questions, answer replay, five-correct mastery, persistence and revoked access.
 
 A feature-detected WebMCP surface exposes the visible question and answering action. A supported WebMCP browser validation context was not available in this run; these optional tools are not browser-verified. General browser interaction/visual QA was not requested and was not run.
 

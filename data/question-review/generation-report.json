@@ -2,7 +2,7 @@
   "totalWords": 730,
   "generated": {
     "syn": 730,
-    "ant": 631
+    "ant": 630
   },
   "excluded": [
     {
@@ -394,6 +394,11 @@
       "word": "chore",
       "type": "ant",
       "reason": "Pleasure is a feeling, not the lexical opposite of a routine task."
+    },
+    {
+      "word": "obedient",
+      "type": "ant",
+      "reason": "Direct dis- prefix pair excluded from practice at user request."
     },
     {
       "word": "proxy",

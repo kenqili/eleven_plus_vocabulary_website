@@ -1,5 +1,6 @@
 import vinext from "vinext";
 import { defineConfig } from "vite";
+import { fileURLToPath } from "node:url";
 import hostingConfig from "./.openai/hosting.json";
 import { readExecutionProfile } from "./scripts/execution-profile.mjs";
 import { sites } from "./build/sites-vite-plugin";
@@ -35,7 +36,8 @@ const localBindingConfig = {
     : [],
 };
 
-export default defineConfig(async () => {
+export default defineConfig(async ({ command }) => {
+  const nodeDev = command === "serve" && process.env.MINEWORDS_NODE_DEV === "1";
   // Use Miniflare's local Request.cf placeholder unless fetching is requested.
   process.env.CLOUDFLARE_CF_FETCH_ENABLED ??= "false";
   process.env.WRANGLER_SEND_METRICS ??= "false";
@@ -48,21 +50,25 @@ export default defineConfig(async () => {
   process.env.MINIFLARE_REGISTRY_PATH ??= ".wrangler/registry";
 
   // Wrangler snapshots its log path while the Cloudflare plugin is imported.
-  const { cloudflare } = await import("@cloudflare/vite-plugin");
+  const workerPlugins = nodeDev ? [] : [(await import("@cloudflare/vite-plugin")).cloudflare({
+    viteEnvironment: { name: "rsc", childEnvironments: ["ssr"] },
+    inspectorPort: false,
+    config: localBindingConfig,
+  })];
 
   return {
+    resolve: nodeDev ? {
+      alias: { "cloudflare:workers": fileURLToPath(new URL("./scripts/node-dev-env.mjs", import.meta.url)) },
+    } : undefined,
     server: {
+      ...(nodeDev ? { host: "127.0.0.1" } : {}),
       ...(managedLinux ? { host: "0.0.0.0", allowedHosts: ["terminal.local"] } : {}),
       ...(isCodexSeatbeltSandbox ? { watch: { useFsEvents: false, usePolling: true } } : {}),
     },
     plugins: [
       vinext(),
       sites({ mockAuth: !managedLinux }),
-      cloudflare({
-        viteEnvironment: { name: "rsc", childEnvironments: ["ssr"] },
-        inspectorPort: false,
-        config: localBindingConfig,
-      }),
+      ...workerPlugins,
     ],
   };
 });

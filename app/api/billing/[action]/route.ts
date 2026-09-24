@@ -6,6 +6,8 @@ import {
   stripe,
   syncSubscription,
   checkoutSession,
+  configuredFreeWordLimit,
+  configuredFreeTrialDays,
 } from "@/lib/server/billing";
 import { boundary, HttpError, json, sameOrigin } from "@/lib/server/http";
 export async function GET(request: Request) {
@@ -24,8 +26,10 @@ export async function GET(request: Request) {
     return json({
       ...(await membership(user)),
       ready,
+      freeWordLimit: configuredFreeWordLimit(),
       price,
       canManage: Boolean(user.customer_id),
+      freeTrialDays: configuredFreeTrialDays(),
     });
   });
 }

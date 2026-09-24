@@ -1,4 +1,8 @@
 import { database } from "@/lib/server/db";
+import {
+  configuredFreeTrialDays,
+  configuredFreeWordLimit,
+} from "@/lib/server/billing";
 import { body, boundary, HttpError, json, sameOrigin } from "@/lib/server/http";
 import {
   createSession,
@@ -13,7 +17,13 @@ import {
 } from "@/lib/server/password";
 
 export async function GET(request: Request) {
-  return boundary(async () => json({ user: await currentUser(request) }));
+  return boundary(async () =>
+    json({
+      user: await currentUser(request),
+      freeTrialDays: configuredFreeTrialDays(),
+      freeWordLimit: configuredFreeWordLimit(),
+    }),
+  );
 }
 export async function POST(
   request: Request,

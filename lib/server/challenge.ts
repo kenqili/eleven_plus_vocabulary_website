@@ -25,18 +25,21 @@ type WordProgress = {
   seen: number;
   retry_at: number | null;
 };
-export async function statsFor(userId: string): Promise<Stats> {
+export async function statsFor(
+  userId: string,
+  wordIds?: ReadonlySet<string>,
+): Promise<Stats> {
   const rows = await database()
     .prepare("SELECT word_id,correct FROM progress WHERE user_id = ?")
     .bind(userId)
     .all<{ word_id: string; correct: number }>();
-  const ids = new Set(words.map((w) => w.id));
+  const ids = wordIds || new Set(words.map((w) => w.id));
   const mastered = rows.results.filter(
     (p) => ids.has(p.word_id) && p.correct >= MASTERY_TARGET,
   ).length;
   const summary = await progressSummary(userId);
   return {
-    total: words.length,
+    total: ids.size,
     mastered,
     correct: summary.periods.all.correct,
     todaySeconds: summary.periods.today.seconds,
@@ -65,7 +68,11 @@ function toQuestion(attempt: Attempt, progress?: WordProgress): Question {
     seen: progress?.seen || 0,
   };
 }
-export async function nextQuestion(userId: string, types: QuestionType[]) {
+export async function nextQuestion(
+  userId: string,
+  types: QuestionType[],
+  allowedWordIds?: ReadonlySet<string>,
+) {
   const db = database();
   const rows = (
     await db
@@ -87,6 +94,7 @@ export async function nextQuestion(userId: string, types: QuestionType[]) {
     );
     if (
       currentWord &&
+      (!allowedWordIds || allowedWordIds.has(pending.word_id)) &&
       currentProblem &&
       types.includes(pending.question_type) &&
       (pending.answer || currentWord.definition) === currentProblem.answer &&
@@ -106,6 +114,7 @@ export async function nextQuestion(userId: string, types: QuestionType[]) {
   const available = words.filter(
     (w) =>
       eligibleWordIds.has(w.id) &&
+      (!allowedWordIds || allowedWordIds.has(w.id)) &&
       (byId.get(w.id)?.correct || 0) < MASTERY_TARGET,
   );
   if (!available.length) return null;
@@ -216,6 +225,7 @@ export async function answerQuestion(
   id: string,
   selected: number,
   elapsed: number,
+  allowedWordIds?: ReadonlySet<string>,
 ) {
   const db = database();
   const attempt = await db
@@ -225,6 +235,11 @@ export async function answerQuestion(
   if (!attempt) throw new HttpError(404, "Question not found.");
   const word = words.find((w) => w.id === attempt.word_id);
   if (!word) throw new HttpError(409, "The word list changed. Please reload.");
+  if (allowedWordIds && !allowedWordIds.has(word.id))
+    throw new HttpError(
+      409,
+      "This question is outside your free collection. Loading another question.",
+    );
   const options = JSON.parse(attempt.choices) as string[];
   if (attempt.selected === -2)
     throw new HttpError(

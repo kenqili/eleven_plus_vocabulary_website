@@ -54,3 +54,11 @@ may differ in part of speech, so difficulty is not psychometrically calibrated.
 The original source CSV explanations are preserved; excluding a question does
 not remove an original relation from those source files. Future edits or
 regeneration with changed data should receive a fresh semantic review.
+
+On 2026-09-23, the user requested removal of obvious direct `dis-` prefix
+antonym pairs. The generator now excludes these pairs in either direction.
+This removed only **obedient → disobedient**, leaving 630 antonym questions.
+Every retained row was verified unchanged against the previously reviewed CSV;
+`review-report.json` preserves the earlier review metadata under
+`postReviewChanges` and records the resulting file hash. This removal is an
+editorial difficulty choice, not a claim that the pair is incorrect.

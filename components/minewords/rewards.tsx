@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import Header from "./header";
 import { api } from "@/lib/client/api";
@@ -28,8 +29,8 @@ export default function Rewards() {
   const [chosen, setChosen] = useState<string | null>(null),
     [notice, setNotice] = useState("");
   const request = useRef<{ badgeId: string; key: string } | null>(null);
-  async function refresh() {
-    setData(await api<Data>("/api/rewards"));
+  function refresh() {
+    return api<Data>("/api/rewards").then(setData);
   }
   useEffect(() => {
     void refresh().catch((e) => setError(e.message));
@@ -82,9 +83,9 @@ export default function Rewards() {
     <>
       <Header />
       <main className="workspace rewards-workspace">
-        <a className="text-button" href="/">
+        <Link className="text-button" href="/">
           ← Back to practice
-        </a>
+        </Link>
         <div className="page-heading">
           <div>
             <div className="eyebrow">YOUR EARNED REWARDS</div>
@@ -106,7 +107,7 @@ export default function Rewards() {
             {error}{" "}
             {!data && (
               <>
-                <a href="/account">Sign in</a> or{" "}
+                <Link href="/account">Sign in</Link> or{" "}
                 <button
                   className="text-button"
                   onClick={() => {

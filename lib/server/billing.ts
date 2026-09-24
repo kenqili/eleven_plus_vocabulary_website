@@ -34,15 +34,52 @@ export async function stripe<T = Record<string, unknown>>(
   }
   return response.json() as Promise<T>;
 }
+export function configuredFreeTrialDays() {
+  const configured = setting("FREE_TRIAL_DAYS");
+  if (!configured) return 7;
+  if (!/^(?:0|[1-9]\d{0,2})$/.test(configured))
+    throw new Error("FREE_TRIAL_DAYS must be a whole number from 0 to 365.");
+  const days = Number(configured);
+  if (days > 365)
+    throw new Error("FREE_TRIAL_DAYS must be a whole number from 0 to 365.");
+  return days;
+}
+export function configuredFreeWordLimit() {
+  const configured = setting("FREE_WORD_LIMIT");
+  if (!configured) return 20;
+  if (!/^(?:0|[1-9]|[1-9]\d|[1-6]\d{2}|7[0-2]\d|730)$/.test(configured))
+    throw new Error("FREE_WORD_LIMIT must be a whole number from 0 to 730.");
+  const count = Number(configured);
+  if (count > 730)
+    throw new Error("FREE_WORD_LIMIT must be a whole number from 0 to 730.");
+  return count;
+}
 export async function membership(user: User) {
-  const active = await database()
-    .prepare(
-      "SELECT id,status,period_end FROM subscriptions WHERE user_id = ? AND status IN ('active','trialing') AND period_end > ? AND price_id = ? ORDER BY period_end DESC LIMIT 1",
-    )
-    .bind(user.id, Math.floor(Date.now() / 1000), setting("STRIPE_PRICE_ID"))
-    .first<{ id: string; status: string; period_end: number }>();
+  const db = database(),
+    now = Date.now(),
+    trialDays = configuredFreeTrialDays();
+  const [active, account] = await Promise.all([
+    db
+      .prepare(
+        "SELECT id,status,period_end FROM subscriptions WHERE user_id = ? AND status IN ('active','trialing') AND period_end > ? AND price_id = ? ORDER BY period_end DESC LIMIT 1",
+      )
+      .bind(user.id, Math.floor(now / 1000), setting("STRIPE_PRICE_ID"))
+      .first<{ id: string; status: string; period_end: number }>(),
+    db
+      .prepare("SELECT created_at FROM users WHERE id=?")
+      .bind(user.id)
+      .first<{ created_at: number }>(),
+  ]);
+  const trialEndsAt = (account?.created_at || 0) + trialDays * 86_400_000;
+  const trial = !active && trialDays > 0 && now < trialEndsAt;
   return {
     active: Boolean(active),
+    access: Boolean(active) || trial,
+    trial,
+    trialDays,
+    trialDaysRemaining: trial ? Math.ceil((trialEndsAt - now) / 86_400_000) : 0,
+    trialEndsAt: account && trialDays > 0 ? trialEndsAt : null,
+    trialExpired: !active && !trial,
     status: active?.status || "inactive",
     periodEnd: active?.period_end || null,
   };

@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useEffect, useState, type FormEvent } from "react";
 import Header from "./header";
 import { api } from "@/lib/client/api";
@@ -9,6 +10,13 @@ type Billing = {
   status: string;
   periodEnd: number | null;
   canManage: boolean;
+  access: boolean;
+  trial: boolean;
+  trialDays: number;
+  freeWordLimit: number;
+  trialDaysRemaining: number;
+  trialEndsAt: number | null;
+  trialExpired: boolean;
   price: {
     unit_amount: number;
     currency: string;
@@ -22,27 +30,42 @@ export default function Account() {
     [busy, setBusy] = useState(false),
     [register, setRegister] = useState(false),
     [error, setError] = useState("");
+  const [trialDays, setTrialDays] = useState(7);
+  const [freeWordLimit, setFreeWordLimit] = useState(20);
   const [email, setEmail] = useState(""),
     [password, setPassword] = useState(""),
     [notice, setNotice] = useState("");
-  async function refresh() {
-    const result = await api<{ user: User | null }>("/api/auth/me");
-    setUser(result.user);
-    if (result.user) setBilling(await api<Billing>("/api/billing/status"));
+  function refresh() {
+    return api<{
+      user: User | null;
+      freeTrialDays: number;
+      freeWordLimit: number;
+    }>(
+      "/api/auth/me",
+    ).then(async (result) => {
+      setUser(result.user);
+      setTrialDays(result.freeTrialDays);
+      setFreeWordLimit(result.freeWordLimit);
+      setBilling(
+        result.user ? await api<Billing>("/api/billing/status") : null,
+      );
+    });
   }
   useEffect(() => {
     void refresh()
+      .then(() => {
+        const checkout = new URLSearchParams(window.location.search).get(
+          "checkout",
+        );
+        if (checkout === "success")
+          setNotice(
+            "Payment submitted. Your membership will appear after payment confirmation.",
+          );
+        if (checkout === "cancelled")
+          setNotice("Checkout cancelled. You can still try the sample words.");
+      })
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
-    const checkout = new URLSearchParams(window.location.search).get(
-      "checkout",
-    );
-    if (checkout === "success")
-      setNotice(
-        "Payment submitted. Your membership will appear after payment confirmation.",
-      );
-    if (checkout === "cancelled")
-      setNotice("Checkout cancelled. You can still try the sample words.");
   }, []);
   async function submit(event: FormEvent) {
     event.preventDefault();
@@ -90,9 +113,9 @@ export default function Account() {
     <>
       <Header />
       <main className="workspace">
-        <a className="text-button" href="/">
+        <Link className="text-button" href="/">
           ← Back to the challenge
-        </a>
+        </Link>
         <section className="account-card">
           <div className="eyebrow">YOUR MINEWORDS</div>
           {loading ? (
@@ -114,9 +137,9 @@ export default function Account() {
                     Access through{" "}
                     {new Date(billing.periodEnd! * 1000).toLocaleDateString()}.
                   </p>
-                  <a className="primary-button" href="/">
+                  <Link className="primary-button" href="/">
                     Continue practising →
-                  </a>
+                  </Link>
                 </>
               ) : (
                 <>
@@ -130,8 +153,11 @@ export default function Account() {
                     </h2>
                   )}
                   <p className="muted">
-                    Monthly subscription. Manage or cancel through your billing
-                    account.
+                    {billing?.trialExpired
+                      ? `Your full-access trial has ended. Continue with the ${freeWordLimit}-word free collection, or subscribe to unlock every word and revision export. Your saved progress is safe.`
+                      : "Your free account includes full access for " +
+                        (billing?.trialDays ?? 7) +
+                        " days after sign-up. Upgrade any time to keep practising afterwards."}
                   </p>
                   <button
                     className="primary-button"
@@ -142,8 +168,8 @@ export default function Account() {
                   </button>
                   {billing && !billing.ready && (
                     <p className="muted">
-                      Subscriptions are not open yet. You can practise with the
-                      five sample words.
+                      Subscriptions are not open yet. Your saved learning
+                      progress remains available.
                     </p>
                   )}
                 </>
@@ -182,7 +208,7 @@ export default function Account() {
               <h1>{register ? "Start your word journey." : "Welcome back."}</h1>
               <p className="muted">
                 {register
-                  ? "Create an account to subscribe and keep your learning in one place."
+                  ? `Create a free account for ${trialDays} days of full access, then subscribe to keep practising.`
                   : "Sign in to continue your vocabulary practice."}
               </p>
               <form onSubmit={submit}>

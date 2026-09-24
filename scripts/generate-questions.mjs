@@ -56,6 +56,17 @@ for (const type of ["syn", "ant"]) {
     }
     const answer =
       fix.answer || candidates.find((x) => byId.has(x)) || candidates[0];
+    if (
+      type === "ant" &&
+      (normalize(answer) === `dis${word.id}` || word.id === `dis${normalize(answer)}`)
+    ) {
+      report.excluded.push({
+        word: word.word,
+        type,
+        reason: "Direct dis- prefix pair excluded from practice at user request.",
+      });
+      continue;
+    }
     const excluded = new Set([
       ...related.get(word.id),
       answer,

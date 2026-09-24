@@ -4,7 +4,23 @@ import { readExecutionProfile } from "./execution-profile.mjs";
 
 const [command, ...args] = process.argv.slice(2);
 if (!["dev", "build"].includes(command)) throw new Error("Expected dev or build.");
+const [major, minor] = process.versions.node.split(".").map(Number);
+if (major < 22 || (major === 22 && minor < 13)) {
+  console.error(
+    `Node.js ${process.versions.node} is unsupported. Use Node.js 22.13+ (24 recommended), then rerun npm run ${command}.`,
+  );
+  process.exit(1);
+}
 const managedLinux = readExecutionProfile() === "managed-linux";
+const nodeMode = args.includes("--node");
+if (nodeMode) {
+  if (command !== "dev") throw new Error("--node is only supported for development.");
+  args.splice(args.indexOf("--node"), 1);
+  process.env.MINEWORDS_NODE_DEV = "1";
+  try { process.loadEnvFile(); } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+  }
+}
 
 if (managedLinux && command === "build") {
   const result = spawnSync("bash", [

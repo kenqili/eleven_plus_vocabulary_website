@@ -11,11 +11,13 @@ export function useStudyClock(
   const [seconds, setSeconds] = useState(0),
     [error, setError] = useState("");
   const current = useRef({ attemptId, enabled, onSaved });
-  current.current = { attemptId, enabled, onSaved };
+  useEffect(() => {
+    current.current = { attemptId, enabled, onSaved };
+  }, [attemptId, enabled, onSaved]);
   const owner = useRef(""),
     sequence = useRef(0),
     unflushed = useRef(0),
-    activity = useRef(Date.now());
+    activity = useRef(0);
   const running = useRef<Promise<void> | null>(null);
   const lastSend = useRef(0);
   const retry = useRef<{
@@ -95,6 +97,7 @@ export function useStudyClock(
         void flush();
     }, 1000);
     return () => {
+      void flush();
       clearInterval(interval);
       for (const name of ["pointerdown", "pointermove", "keydown", "scroll"])
         window.removeEventListener(name, active);

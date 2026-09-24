@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { BookOpen, ArrowRight } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -54,8 +55,28 @@ export default function Challenge() {
               </ToggleGroup>
               <span className="muted">Select one or more</span>
             </div>
+            {!demo && study.trial && (
+              <div className="trial-banner" role="status">
+                <strong>
+                  {study.trialDaysRemaining}{" "}
+                  {study.trialDaysRemaining === 1 ? "day" : "days"} left in your
+                  free trial
+                </strong>
+                <span>
+                  Full access ends{" "}
+                  {new Date(study.trialEndsAt!).toLocaleDateString()}.
+                </span>
+                <Link href="/account">See membership →</Link>
+              </div>
+            )}
             <div className="session-bar">
-              <span>{demo ? "TRY FIVE WORDS" : "YOUR PRACTICE"}</span>
+              <span>
+                {demo
+                  ? `TRY ${study.freeWordCount ?? 20} FREE WORDS`
+                  : study.freeTier
+                    ? `FREE COLLECTION · ${study.freeWordCount ?? 20} WORDS`
+                    : "YOUR PRACTICE"}
+              </span>
               <span>
                 {question ? TYPE_LABELS[question.type] : "Mixed practice"}
               </span>
@@ -173,16 +194,28 @@ export default function Challenge() {
                   <div className="eyebrow">
                     {demo ? "SAMPLE COMPLETE" : "CHALLENGE COMPLETE"}
                   </div>
-                  <h2>{demo ? "Keep discovering." : "Practice complete."}</h2>
+                  <h2>
+                    {study.gated
+                      ? "Your free access has ended."
+                      : demo
+                        ? "Keep discovering."
+                        : "Practice complete."}
+                  </h2>
                   <p>
-                    {demo
-                      ? "Make the full word collection part of your routine. Create an account to explore membership."
-                      : `Every available word in your selected practice types has been answered correctly ${MASTERY_TARGET} times. Select other types to keep practising.`}
+                    {study.gated
+                      ? "Your saved progress is safe. Subscribe to keep practising the full word collection, reviewing your progress and exporting revision sheets."
+                      : study.freeTier
+                        ? `You have answered every word in your free ${study.freeWordCount ?? 20}-word collection correctly ${MASTERY_TARGET} times. Subscribe to unlock all ${stats.total} words.`
+                        : demo
+                          ? `Create a free account for ${study.trialDaysConfigured ?? 7} days of full access to every word and practice feature.`
+                          : `Every available word in your selected practice types has been answered correctly ${MASTERY_TARGET} times. Select other types to keep practising.`}
                   </p>
-                  {demo && (
-                    <a className="primary-button" href="/account">
-                      Create your account →
-                    </a>
+                  {(demo || study.gated || study.freeTier) && (
+                    <Link className="primary-button" href="/account">
+                      {demo
+                        ? "Create your free account →"
+                        : "Upgrade to unlock all words →"}
+                    </Link>
                   )}
                 </div>
               ) : (
@@ -217,7 +250,9 @@ export default function Challenge() {
               <span className="muted">
                 {demo
                   ? "Sample progress is not saved"
-                  : "Progress saved to your account"}
+                  : study.trial
+                    ? "Your free trial saves your progress"
+                    : "Progress saved to your account"}
               </span>
             </div>
             {study.timeError && (
@@ -229,9 +264,10 @@ export default function Challenge() {
               <summary>How questions are ordered</summary>
               {demo ? (
                 <p>
-                  The sample picks five random words. Each shuffled round asks
-                  one question per word before moving to its other selected
-                  types. Reloading or changing types starts a fresh sample.
+                  The sample uses your configured, difficulty-balanced free
+                  collection. Each shuffled round asks one question per word
+                  before moving to its other selected types. Reloading or
+                  changing types starts a fresh sample.
                 </p>
               ) : (
                 <>

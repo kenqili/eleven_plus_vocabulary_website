@@ -1,17 +1,24 @@
+import Link from "next/link";
 import { BookOpen, UserRound } from "lucide-react";
 export default function Header() {
   return (
     <header className="topbar">
-      <a className="brand" href="/">
+      <Link className="brand" href="/">
         <BookOpen size={25} /> MineWords<span>LEARNING, WORD BY WORD</span>
-      </a>
+      </Link>
       <nav className="header-links" aria-label="Your learning">
-        <a className="account-link" href="/rewards">
+        <Link className="account-link" href="/words">
+          Word list
+        </Link>
+        <Link className="account-link" href="/calendar">
+          Calendar
+        </Link>
+        <Link className="account-link" href="/rewards">
           Badges
-        </a>
-        <a className="account-link" href="/account">
+        </Link>
+        <Link className="account-link" href="/account">
           <UserRound size={18} /> Your account
-        </a>
+        </Link>
       </nav>
     </header>
   );
