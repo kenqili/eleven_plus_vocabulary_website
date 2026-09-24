@@ -1,12 +1,45 @@
+"use client";
+
 import Link from "next/link";
-import { BookOpen, UserRound } from "lucide-react";
+import { useRef, useState } from "react";
+import { BookOpen, Menu, UserRound, X } from "lucide-react";
 export default function Header() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const toggle = useRef<HTMLButtonElement>(null);
   return (
-    <header className="topbar">
+    <header
+      className="topbar"
+      onKeyDown={(event) => {
+        if (event.key === "Escape" && menuOpen) {
+          setMenuOpen(false);
+          toggle.current?.focus();
+        }
+      }}
+    >
       <Link className="brand" href="/">
         <BookOpen size={25} /> MineWords<span>LEARNING, WORD BY WORD</span>
       </Link>
-      <nav className="header-links" aria-label="Your learning">
+      <button
+        ref={toggle}
+        className="header-menu-toggle"
+        type="button"
+        aria-expanded={menuOpen}
+        aria-controls="learning-navigation"
+        onClick={() => setMenuOpen((open) => !open)}
+      >
+        {menuOpen ? (
+          <X size={20} aria-hidden="true" />
+        ) : (
+          <Menu size={20} aria-hidden="true" />
+        )}
+        {menuOpen ? "Close" : "Menu"}
+      </button>
+      <nav
+        id="learning-navigation"
+        className={`header-links${menuOpen ? " is-open" : ""}`}
+        aria-label="Your learning"
+        onClick={() => setMenuOpen(false)}
+      >
         <Link className="account-link" href="/stories">
           Word Adventures
         </Link>

@@ -59,16 +59,18 @@ input:focus-visible {
   outline-offset: 4px;
 }
 .topbar {
-  height: 94px;
+  min-height: 94px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   max-width: 1280px;
-  padding: 0 52px;
+  padding: 16px 32px;
+  gap: 16px 24px;
   margin: auto;
   border-bottom: 1px solid #dce3ef;
 }
 .brand {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -80,6 +82,7 @@ input:focus-visible {
   color: #2358d5;
 }
 .brand span {
+  white-space: nowrap;
   font-size: 10px;
   letter-spacing: 1.5px;
   font-weight: 600;
@@ -419,8 +422,8 @@ h1 {
 }
 @media (max-width: 800px) {
   .topbar {
-    padding: 0 24px;
-    height: 76px;
+    padding: 12px 24px;
+    min-height: 76px;
   }
   .brand span {
     display: none;
@@ -973,8 +976,18 @@ hr {
 }
 .header-links {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 20px;
+  justify-content: flex-end;
+  gap: 4px 12px;
+}
+.header-links .account-link {
+  min-height: 44px;
+  padding: 8px 4px;
+  white-space: nowrap;
+}
+.header-menu-toggle {
+  display: none;
 }
 .badge-grid {
   display: grid;
@@ -1389,7 +1402,7 @@ hr {
 }
 .calendar-month-summary {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 14px;
 }
 .calendar-month-summary > div {
@@ -2001,7 +2014,7 @@ hr {
   background: #fff;
   color: #234f9e;
 }
-@media (max-width: 760px) {
+@media (max-width: 900px) {
   .about-hero {
     grid-template-columns: 1fr;
     gap: 10px;
@@ -2282,7 +2295,7 @@ hr {
 .howto-access .primary-button {
   border-radius: 11px;
 }
-@media (max-width: 760px) {
+@media (max-width: 900px) {
   .howto-hero {
     grid-template-columns: 1fr;
     gap: 24px;
@@ -2655,4 +2668,125 @@ hr {
   gap: 8px;
   color: #53657b;
   font-size: 13px;
+}
+
+/* Keep navigation and primary tasks comfortable in tablet and phone layouts. */
+@media (max-width: 1199px) {
+  .brand span {
+    display: none;
+  }
+}
+@media (min-width: 601px) and (max-width: 1023px) {
+  .topbar {
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 16px 24px 10px;
+  }
+  .header-links {
+    flex-basis: 100%;
+    justify-content: flex-start;
+    gap: 4px 12px;
+  }
+}
+@media (max-width: 1000px) {
+  .study-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .study-aside {
+    position: static;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .edition {
+    display: none;
+  }
+  .calendar-month-summary {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 700px) {
+  .calendar-month-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .page-heading {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+}
+@media (max-width: 600px) {
+  .topbar {
+    flex-wrap: wrap;
+    min-height: 72px;
+    padding: 12px 16px;
+    gap: 8px;
+  }
+  .header-menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 1px solid #cad7e8;
+    border-radius: 10px;
+    background: white;
+    color: #244e7c;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .header-links {
+    display: none;
+  }
+  .header-links.is-open {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    flex-basis: 100%;
+    gap: 4px 8px;
+    padding-top: 8px;
+    border-top: 1px solid #dce3ef;
+  }
+  .header-links .account-link {
+    padding: 10px;
+    border-radius: 8px;
+  }
+  .header-links .account-link:hover {
+    background: #e9f0fc;
+  }
+  .account-card {
+    padding: 24px;
+  }
+  .account-card p {
+    overflow-wrap: anywhere;
+  }
+  .about-hero,
+  .howto-hero {
+    padding-left: 22px;
+    padding-right: 22px;
+  }
+}
+@media (max-width: 560px) {
+  .study-aside {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (pointer: coarse) {
+  .text-button,
+  .status-tabs button,
+  .study-aside .status-tabs button,
+  .practice-types .practice-type,
+  .calendar-month-nav button,
+  .word-pagination button {
+    min-height: 44px;
+  }
+  .calendar-month-nav button {
+    min-width: 44px;
+  }
+  .control-row label {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .account-card input,
+  .calendar-jump input {
+    font-size: 16px;
+  }
 }
