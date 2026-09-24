@@ -59,9 +59,11 @@ export function calendarTotals(
       "mastered",
       "seconds",
       "credits",
+      "stories",
     ] as const)
       result[key] += day[key];
-    if (day.questions > 0 || day.seconds > 0) result.studyDays++;
+    if (day.questions > 0 || day.seconds > 0 || day.stories > 0)
+      result.studyDays++;
   }
   result.words = uniqueWords;
   return result;

@@ -5,6 +5,7 @@ export const BADGES = [
 ] as const;
 export const REPORTING_ZONE = "Europe/London";
 export type PeriodStats = {
+  stories: number;
   questions: number;
   correct: number;
   reveals: number;
@@ -44,6 +45,7 @@ export type Transaction = {
   mastery: number | null;
 };
 export const emptyPeriod = (): PeriodStats => ({
+  stories: 0,
   questions: 0,
   correct: 0,
   reveals: 0,

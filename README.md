@@ -74,8 +74,11 @@ npm run dev:node
 
 This loads `.env`, applies all migrations automatically, and stores local data in
 `.sites-runtime/node-dev.sqlite`, separately from the Worker preview database.
-Use http://localhost:5173 to match the default `APP_ORIGIN`. To run integration
-checks against this preview:
+The development server listens on your network interfaces. Open the printed
+Network URL on another device connected to the same Wi-Fi (or use this
+computer's LAN IP with port 5173). Keep `APP_ORIGIN` as `http://localhost:5173`
+for local account and payment callbacks. Your computer's firewall may ask you
+to allow local network connections. To run integration checks against this preview:
 
 ```sh
 TEST_NODE_DB=.sites-runtime/node-dev.sqlite npm run test:integration
@@ -202,3 +205,46 @@ A feature-detected WebMCP surface exposes the visible question and answering act
 - [Stripe subscriptions with Checkout](https://docs.stripe.com/payments/checkout/build-subscriptions)
 - [Stripe webhook signature verification](https://docs.stripe.com/webhooks/signature)
 - [OWASP password storage guidance](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)
+
+### Word Adventures
+
+`/stories` offers 50 pre-generated, original stories: ten per difficulty level.
+The source files are JSON-formatted plain text in `data/stories/level-1.txt`
+through `level-5.txt`. Each level covers all 146 of its vocabulary words;
+each story highlights 15–17 target words with `**word**` markers. Hover, keyboard
+focus or tap reveals the existing word-bank definition, synonyms and antonyms.
+There are no runtime AI calls or generation costs.
+
+Apply database migrations before starting a deployment. Node development applies
+pending migrations when it opens the local database. At server startup (the first
+page request in a Worker), the root layout validates and idempotently seeds the
+text library into the `stories` table. Story API requests also initialise the
+library, so direct API access works. Updates preserve stable IDs, reading history
+and previously earned credits. Replacing a story entirely should use a new ID and
+an explicit migration rather than silently reusing an existing reward identity.
+
+Stories are readable without signing in. Signed-in readers save active reading
+time and earn **10 credits once per story** after a minimum recorded reading time
+and one correct comprehension answer. The minimum is a modest anti-instant-click
+check, not a reading-speed target. Hidden/unfocused/idle pages do not accrue time;
+a shared study-clock lease prevents simultaneous tabs from doubling it. Reading
+time joins the learning calendar, with separate story completion totals and a
+credit-history entry. Rereading adds reading time but never repeats the credit
+award or marks vocabulary as mastered.
+
+Editorial reviews and actual revisions are documented in `data/stories/review-*.md`.
+The nine- and ten-year-old perspectives are **simulated AI editorial reviews**;
+no actual children were recruited and no real-child preference claims are made.
+
+Checks (Node 22.13+, Node 24 recommended):
+
+```bash
+npm run stories:validate
+npm test
+TEST_NODE_DB=.sites-runtime/node-dev.sqlite npm run test:stories:integration
+```
+
+The integration check only accepts a local preview origin (default
+`http://127.0.0.1:5173`), creates an isolated test reader and removes that reader
+when finished. It tests authentication, origin checks, server-bounded reading
+time, retries, concurrent awards, story navigation and calendar/reward records.

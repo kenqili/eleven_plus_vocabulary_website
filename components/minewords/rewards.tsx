@@ -201,7 +201,8 @@ export default function Rewards() {
               <h2>Credit history</h2>
               <p>
                 +2 per correct answer, +5 for every three correct in a row, +10
-                for mastering a word. Mistakes never take away credits.
+                for mastering a word, and +10 for each story’s first completion.
+                Mistakes never take away credits.
               </p>
               {!data.transactions.length ? (
                 <p>Your earned credits will appear here.</p>
@@ -212,9 +213,11 @@ export default function Rewards() {
                       <strong>
                         {item.amount > 0 ? "+" : ""}
                         {item.amount} credits ·{" "}
-                        {item.reason === "badge"
-                          ? "Badge redeemed"
-                          : "Learning award"}
+                        {item.reason === "story"
+                          ? "Story completed"
+                          : item.reason === "badge"
+                            ? "Badge redeemed"
+                            : "Learning award"}
                       </strong>
                       {item.reason === "learning" && (
                         <span>

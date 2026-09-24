@@ -57,6 +57,15 @@ export function useChallenge() {
   const [busy, setBusy] = useState(true),
     [error, setError] = useState("");
   const [previous, setPrevious] = useState<Feedback | null>(null);
+  const [history, setHistory] = useState<
+    Array<{ question: Question; feedback: Feedback }>
+  >([]);
+  const [historyView, setHistoryView] = useState<number | null>(null);
+  const historyViewRef = useRef<number | null>(null);
+  const changeHistoryView = useCallback((index: number | null) => {
+    historyViewRef.current = index;
+    setHistoryView(index);
+  }, []);
   const autoNext = useSyncExternalStore(
     subscribeAutoNext,
     readAutoNext,
@@ -219,6 +228,11 @@ export function useChallenge() {
     return () => clearInterval(interval);
   }, []);
   const next = useCallback(async () => {
+    const viewing = historyViewRef.current;
+    if (viewing !== null) {
+      changeHistoryView(viewing + 1 < history.length ? viewing + 1 : null);
+      return;
+    }
     if (lock.current) return;
     lock.current = true;
     setBusy(true);
@@ -236,13 +250,26 @@ export function useChallenge() {
           feedback: undefined,
           complete: !question,
         });
+        if (current.question && current.feedback)
+          setHistory((items) =>
+            [
+              ...items,
+              { question: current.question!, feedback: current.feedback! },
+            ].slice(-50),
+          );
       } else {
-        setState(
-          await api<ChallengeState>("/api/challenge", {
-            action: "next",
-            types: selectedTypes,
-          }),
-        );
+        const nextState = await api<ChallengeState>("/api/challenge", {
+          action: "next",
+          types: selectedTypes,
+        });
+        setState(nextState);
+        if (current.question && current.feedback)
+          setHistory((items) =>
+            [
+              ...items,
+              { question: current.question!, feedback: current.feedback! },
+            ].slice(-50),
+          );
       }
       elapsed.current = 0;
     } catch (e) {
@@ -262,11 +289,28 @@ export function useChallenge() {
       lock.current = false;
       setBusy(false);
     }
-  }, [demoQuestion, selectedTypes, flushTime]);
+  }, [
+    changeHistoryView,
+    demoQuestion,
+    history.length,
+    selectedTypes,
+    flushTime,
+  ]);
+  const goPrevious = useCallback(() => {
+    const viewing = historyViewRef.current;
+    const target = viewing === null ? history.length - 1 : viewing - 1;
+    if (target >= 0) changeHistoryView(target);
+  }, [changeHistoryView, history.length]);
   const answer = useCallback(
     async (selected: number) => {
       const current = stateRef.current;
-      if (lock.current || !current.question || current.feedback) return;
+      if (
+        historyViewRef.current !== null ||
+        lock.current ||
+        !current.question ||
+        current.feedback
+      )
+        return;
       if (!Number.isInteger(selected) || selected < -1 || selected > 3)
         throw Error("Choose an answer between 0 and 3, or -1 to reveal.");
       lock.current = true;
@@ -354,7 +398,9 @@ export function useChallenge() {
         }
       } catch (e) {
         const message = (e as Error).message;
-        if (message.startsWith("This question is outside your free collection.")) {
+        if (
+          message.startsWith("This question is outside your free collection.")
+        ) {
           setError("");
           await load();
         } else setError(message);
@@ -366,10 +412,17 @@ export function useChallenge() {
     [flushTime, load],
   );
   useEffect(() => {
-    if (!autoNext || !state.feedback?.correct || busy || error) return;
+    if (
+      !autoNext ||
+      historyView !== null ||
+      !state.feedback?.correct ||
+      busy ||
+      error
+    )
+      return;
     const timer = setTimeout(() => void next(), 1400);
     return () => clearTimeout(timer);
-  }, [autoNext, state.feedback, busy, error, next]);
+  }, [autoNext, historyView, state.feedback, busy, error, next]);
   useEffect(() => {
     const context = (
       document as Document & {
@@ -450,6 +503,8 @@ export function useChallenge() {
     selectTypes: (types: QuestionType[]) => {
       if (!busy && !lock.current && types.length) {
         setBusy(true);
+        setHistory([]);
+        changeHistoryView(null);
         setPrevious(null);
         setError("");
         setSelectedTypes(types);
@@ -457,6 +512,17 @@ export function useChallenge() {
     },
     answer,
     next,
+    goPrevious,
+    historical: historyView !== null,
+    hasPrevious: historyView === null ? history.length > 0 : historyView > 0,
+    question:
+      historyView === null
+        ? state.question
+        : history[historyView]?.question || state.question,
+    feedback:
+      historyView === null
+        ? state.feedback
+        : history[historyView]?.feedback || state.feedback,
     reload: () => {
       setBusy(true);
       setError("");

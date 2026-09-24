@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { initializeStoryLibrary } from "@/lib/server/story-library";
 
 export const metadata: Metadata = {
   title: "11+ Vocabulary Challenge",
@@ -14,11 +15,19 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Workers start on the first request; seed once per runtime, retrying failures.
+  // Keep other pages usable if storage is temporarily unavailable.
+  await initializeStoryLibrary().catch((error: unknown) => {
+    console.error(
+      "Story library startup failed",
+      error instanceof Error ? error.message : "Storage unavailable",
+    );
+  });
   return (
     <html lang="en">
       <body className="antialiased">{children}</body>

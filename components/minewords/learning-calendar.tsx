@@ -65,7 +65,9 @@ export default function LearningCalendar() {
   const selectedDay =
     data?.days.find((day) => day.day === selected) ||
     data?.days.find((day) => day.day === data.today) ||
-    data?.days.findLast((day) => day.questions > 0 || day.seconds > 0) ||
+    data?.days.findLast(
+      (day) => day.questions > 0 || day.seconds > 0 || day.stories > 0,
+    ) ||
     data?.days[0];
   function navigate(value: string) {
     setSelected("");
@@ -161,11 +163,17 @@ export default function LearningCalendar() {
                 <strong>{data.totals.mastered}</strong>
                 <span>Words mastered</span>
               </div>
+              <div>
+                <strong>{data.totals.stories}</strong>
+                <span>Stories completed</span>
+              </div>
             </div>
             <p className="muted calendar-explanation">
               Each day shows different words answered or revealed and saved
               active study time. Repeated answers to the same word count once
-              per day. All dates use London time.
+              per day. Reading time and first story completions count too;
+              reading a story does not mark its words as mastered. All dates use
+              London time.
             </p>
             <div className="learning-calendar">
               <table aria-labelledby="calendar-month-title">
@@ -199,7 +207,9 @@ export default function LearningCalendar() {
                                 ? 3
                                 : day.seconds >= 300
                                   ? 2
-                                  : day.questions > 0 || day.seconds > 0
+                                  : day.questions > 0 ||
+                                      day.seconds > 0 ||
+                                      day.stories > 0
                                     ? 1
                                     : 0;
                             return (
@@ -267,7 +277,9 @@ export default function LearningCalendar() {
               >
                 <div className="eyebrow">DAILY SUMMARY</div>
                 <h2>{dayLabel(selectedDay.day)}</h2>
-                {selectedDay.questions === 0 && selectedDay.seconds === 0 ? (
+                {selectedDay.questions === 0 &&
+                selectedDay.seconds === 0 &&
+                selectedDay.stories === 0 ? (
                   <p className="muted">
                     No learning recorded on this day.{" "}
                     <Link className="text-button" href="/">
@@ -277,6 +289,14 @@ export default function LearningCalendar() {
                 ) : (
                   <>
                     <dl className="calendar-day-stats">
+                      <div>
+                        <dt>Stories completed</dt>
+                        <dd>{selectedDay.stories}</dd>
+                      </div>
+                      <div>
+                        <dt>Credits earned</dt>
+                        <dd>{selectedDay.credits}</dd>
+                      </div>
                       <div>
                         <dt>Different words studied</dt>
                         <dd>{selectedDay.words}</dd>
@@ -306,7 +326,8 @@ export default function LearningCalendar() {
                       {selectedDay.reveals}{" "}
                       {selectedDay.reveals === 1 ? "answer" : "answers"}{" "}
                       revealed. Study time includes reading questions and
-                      explanations; it pauses while you’re away.
+                      explanations and Word Adventures; it pauses while you’re
+                      away.
                     </p>
                   </>
                 )}

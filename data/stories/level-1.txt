@@ -1,0 +1,392 @@
+[
+  {
+    "id": "level-1-01",
+    "level": 1,
+    "number": 1,
+    "title": "The Pocket-Sized Pet Shop",
+    "summary": "A toy stall becomes a surprisingly successful business.",
+    "wordIds": [
+      "enterprise",
+      "merchant",
+      "hawk",
+      "savvy",
+      "potential",
+      "opportunity",
+      "coy",
+      "naive",
+      "veto",
+      "proxy",
+      "token",
+      "desire",
+      "wee",
+      "hustle",
+      "tally"
+    ],
+    "paragraphs": [
+      "Maya's new **enterprise** sold pets that never needed feeding. Each pet was a pebble with two painted eyes. Her brother Zac wanted to be a **merchant** too, so he helped set up a stall at the school fair. Their first customer asked whether the rocks could fetch. Zac was **coy** about their talents. \"They are excellent at staying,\" he said. Maya put up a sign saying STONE PETS. NO WALKIES REQUIRED. She did not want anyone to be **naive** enough to expect an actual animal.",
+      "Dad offered to **hawk** their goods by shouting, \"Get your rocks here!\" Maya thanked him but said his voice might frighten the cakes off the next table. She had enough business **savvy** to spot a better **opportunity**. The children could make tiny beds from leftover boxes. A **wee** pebble in a matchbox looked extremely cosy. Their customers began choosing names and asking for blankets. One boy bought a grey stone called Captain Snore. Another customer had a strong **desire** for a pet that matched her socks.",
+      "The stall had **potential**, but Zac wanted to charge extra whenever a stone blinked. Maya decided to **veto** that rule. Nobody could tell whether the pets had blinked, and it would not be fair anyway. Then their friend Imran arrived as a **proxy** for his grandmother, who had asked him to choose her a pet while she helped at the tea table. He picked a large, flat one that could also hold down her knitting pattern. \"A useful member of the family,\" he said proudly.",
+      "Soon the children had to **hustle** to keep up with orders. Maya began to **tally** the sales while Zac drew adoption cards. They gave each customer a paper heart as a **token** of thanks. At closing time they had sold every stone except a lumpy one with three eyes. Dad adopted it immediately. \"At last,\" he said, \"someone who can watch both football matches and the oven.\" The money paid for plants for the school garden. Zac made one final card for Dad's new pet. It said: SPECIAL SKILL: LOVES YOU WITHOUT EVER BORROWING YOUR PHONE. Dad pinned it above the fireplace and gave the pebble the best seat in the house."
+    ],
+    "question": {
+      "prompt": "Why did Imran choose a flat stone?",
+      "options": [
+        "It could hold down his grandmother’s knitting pattern.",
+        "It had learned to fetch.",
+        "It matched his school shoes."
+      ],
+      "answer": 0
+    }
+  },
+  {
+    "id": "level-1-02",
+    "level": 1,
+    "number": 2,
+    "title": "Captain Socks and the Wobbly Regatta",
+    "summary": "Two friends rescue their model boat with a very unusual passenger.",
+    "wordIds": [
+      "harbour",
+      "fleet",
+      "yacht",
+      "current",
+      "coil",
+      "slack",
+      "rigid",
+      "stern",
+      "adverse",
+      "retreat",
+      "abandon",
+      "fatigue",
+      "endure",
+      "seize",
+      "vital"
+    ],
+    "paragraphs": [
+      "At the model-boat club, Noor and Ben had built a tiny **yacht** with a striped sail. Its captain was a clean sock wearing paper sunglasses. They called him Captain Socks because every other name felt too sensible. A **fleet** of model boats waited beside the sheltered **harbour** pool. Beyond the wall, the real sea looked much too rough for a sock. The club leader gave everyone a **stern** reminder to stay on the marked path. Today the boats would sail; the children would remain safely on land.",
+      "Ben began to **coil** the spare rope into neat rings. Noor checked the sail. One string was **slack**, so she tightened it. The mast was **rigid** and straight, and Captain Socks looked ready to give a speech about laundry. Then a gust pushed the boat sideways. The weather had become **adverse** for such little craft. The leader called the models back using their remote controls. Noor pressed RETURN, but their motor made a noise like a bee with hiccups and stopped.",
+      "A **current** carried the **yacht** towards the far corner of the pool. \"We cannot **abandon** the captain,\" said Ben. \"He has only just come out of the wash.\" The leader told them to **retreat** from the slippery edge and brought a long rescue pole. It was **vital** that nobody climbed over the rail. Ben wanted to **seize** the rope with his hand, but Noor pointed to the safe spot where the grown-up could reach it with the hook. They followed the boat along the dry path, keeping their eyes on its bright sail.",
+      "After a whole morning setting out tables, the leader was feeling **fatigue**, and he was glad when another adult helped hold the pole steady. The friends had to **endure** an anxious minute while the hook missed twice. On the third try it caught the rope. Slowly, the little boat came home. Captain Socks was damp but still smiling, which was impressive because his smile had been drawn on upside down. Back in the clubhouse, Noor found a leaf stuck around the propeller. Ben made the captain a new paper badge: SURVIVED A LEAF. They did not win the race, but they won the prize for funniest crew. Captain Socks spent the evening drying on the radiator, apparently planning an expedition to the airing cupboard."
+    ],
+    "question": {
+      "prompt": "What stopped the model boat’s propeller?",
+      "options": [
+        "The captain took off his sunglasses.",
+        "Ben tied the boat to a table.",
+        "A leaf caught around it."
+      ],
+      "answer": 2
+    }
+  },
+  {
+    "id": "level-1-03",
+    "level": 1,
+    "number": 3,
+    "title": "The Great Carrot Umbrella",
+    "summary": "A garden team discovers that plants need more than a clever hat.",
+    "wordIds": [
+      "drought",
+      "arid",
+      "crop",
+      "thrive",
+      "yield",
+      "rural",
+      "urban",
+      "lea",
+      "hind",
+      "fringe",
+      "mist",
+      "humid",
+      "wander",
+      "sole",
+      "devoted"
+    ],
+    "paragraphs": [
+      "When Asha moved from an **urban** flat to a **rural** village, she expected the school garden to be quiet. Instead she found Leo arguing with a scarecrow. \"Your hat is upside down,\" he told it. The scarecrow did not reply. It stood beside a small **crop** of carrots, holding an umbrella made from an old tablecloth. Leo explained that they had tried to protect the seedlings during a **drought**, when almost no rain had fallen for weeks. The ground had become **arid**, with dusty cracks between the beds.",
+      "Asha was the **sole** new member of the gardening team, but she had grown herbs on her old windowsill. She knew that plants needed water to **thrive**. An umbrella might keep them cooler, yet it would also block any welcome rain. She and Leo asked their teacher to help move it. Then they spread mulch over the soil to hold in moisture and watered the roots using saved rainwater. Leo wore the tablecloth as a cape until it caught on a bean pole. \"The beans have arrested me,\" he announced.",
+      "The following week brought **mist** in the mornings and warm, **humid** afternoons. Beyond the garden lay a **lea**, a green field where wild flowers grew. Asha spotted a **hind** at the **fringe** of the trees. The female deer watched them from a distance and then walked away. Their teacher reminded the class not to **wander** after wildlife. Leo stood completely still, partly to avoid frightening the animal and partly because his boot was stuck in mud. Asha helped him pull it free with a magnificent squelch.",
+      "The children became **devoted** gardeners. They checked the beds, removed weeds and kept notes about what helped. By autumn, they knew the garden would **yield** more carrots than they had expected. Some carrots were straight; others looked as if they were trying to escape in several directions at once. The class made soup with the cook and drew faces on the oddest vegetables before washing them. Asha's favourite carrot resembled a tiny dancer in enormous trousers. Leo wanted to give it the scarecrow's hat. At the harvest display, their sign read: OUR GARDEN GREW CARROTS, TEAMWORK AND ONE EXTREMELY MUDDY BOOT. The scarecrow finally had a proper hat. The umbrella became shade for the reading bench, where it was much better suited to its job."
+    ],
+    "question": {
+      "prompt": "Why did the children move the umbrella?",
+      "options": [
+        "The carrots needed to see the scarecrow’s hat.",
+        "It could block rain from reaching the carrots.",
+        "The deer wanted to borrow it."
+      ],
+      "answer": 1
+    }
+  },
+  {
+    "id": "level-1-04",
+    "level": 1,
+    "number": 4,
+    "title": "The Bubble-Powered Breakfast Machine",
+    "summary": "An invention produces a surprising result at the science fair.",
+    "wordIds": [
+      "device",
+      "pioneer",
+      "matte",
+      "foam",
+      "acid",
+      "potent",
+      "vent",
+      "cork",
+      "slit",
+      "warp",
+      "wreck",
+      "apparent",
+      "evident",
+      "advice",
+      "notion"
+    ],
+    "paragraphs": [
+      "Ellie wanted to be a **pioneer** of helpful inventions. Her first **device** was meant to deliver toast from the kitchen to the breakfast table. It was a cardboard bus on wheels, painted **matte** blue so it would not shine under the classroom lights. Her friend Sam added a sign saying TOAST EXPRESS. The wheels turned when a small balloon pushed air through a **vent** at the back. This worked beautifully until the bus delivered a rubber instead of breakfast. Sam said the service needed a better menu.",
+      "Their teacher suggested a separate bubble experiment for the science fair. Following her **advice**, they put a little bicarbonate of soda in a tray and added vinegar. The vinegar contained a weak **acid** that reacted with the powder. **Foam** rose around their cardboard model volcano. It was not dangerous lava, but the mixture could still make a mess. The teacher kept the top open and said they must never trap the gas inside a sealed bottle. Sam put the unused **cork** back in the craft box.",
+      "Ellie had a **notion**: the bubbling tray could become a pretend car wash beside the bus. Sam made a **slit** in a spare piece of card for the entrance. Unfortunately, one splash made the thin cardboard **warp**. Then another wave threatened to **wreck** the paper road. It was **apparent** that a waterproof base was needed. The effect of even that small amount of liquid was surprisingly **potent** on flimsy paper. They moved everything onto a plastic tray and replaced the soggy road with a drawing underneath it.",
+      "By lunchtime, it was **evident** that the car wash was the star of the display. Visitors laughed as a tiny toy crocodile rode through wearing a shower cap. Ellie explained the bubbles while Sam kept the pretend customers in line. The toast bus carried no food anywhere near the experiment, but it did transport a small sign: PLEASE REMOVE YOUR CROCODILE BEFORE WASHING YOUR CAR. Their teacher praised both the explanation and the changes they had made after the first test. Ellie decided that inventing meant noticing what went wrong and trying again. Sam agreed, although he still hoped their next machine would deliver breakfast. At home he put his toast on a plate and carried it to the table himself. \"Prototype two,\" he announced. \"Excellent steering. No bubbles.\""
+    ],
+    "question": {
+      "prompt": "How did Ellie and Sam protect their display from spills?",
+      "options": [
+        "They moved it onto a plastic tray.",
+        "They sealed the mixture with a cork.",
+        "They added more paper roads."
+      ],
+      "answer": 0
+    }
+  },
+  {
+    "id": "level-1-05",
+    "level": 1,
+    "number": 5,
+    "title": "The Orchestra of Unusual Noises",
+    "summary": "A nervous performer finds the perfect part in a very silly show.",
+    "wordIds": [
+      "poetry",
+      "prose",
+      "memoir",
+      "witty",
+      "debut",
+      "baton",
+      "break a leg",
+      "crack up",
+      "din",
+      "criticism",
+      "dread",
+      "meek",
+      "smug",
+      "tease",
+      "urge"
+    ],
+    "paragraphs": [
+      "Finley's stage **debut** was approaching, and he was full of **dread**. The class show needed somebody to read his story about a lost sandwich. He liked writing **prose**, with ordinary sentences and a proper plot. His friend Lila preferred **poetry** and had written a rhyme in which the sandwich married a cabbage. Neither version explained why the sandwich wore boots, but the class agreed that this detail was essential. Their teacher suggested combining both pieces with music from the school orchestra.",
+      "At rehearsal, the conductor raised her **baton**. A recorder squeaked, a drum rolled away and someone shook a tub of dried peas for much too long. The **din** sounded like a kitchen cupboard falling down the stairs. Finley gave a **meek** little cough. He could barely hear his own voice. Lila made a **witty** suggestion: perhaps the sandwich should wear ear defenders as well as boots. That made the whole orchestra **crack up**, including the drummer, who was still trying to catch his instrument.",
+      "The teacher offered useful **criticism**. They needed quieter music during the story and louder sounds only at the exciting moments. She did not **tease** anyone about mistakes. Instead, she helped each performer find a clear job. Lila would **urge** the audience to join in with one short rhyme. Finley would read the adventure slowly. A boy who had looked rather **smug** about his perfect triangle playing admitted that he had missed his cue three times because he was watching the runaway drum.",
+      "Before the curtain opened, Lila whispered, \"**Break a leg**!\" Finley knew she meant good luck, although he checked that his shoelaces were tied just in case. The show went wonderfully. When the sandwich escaped a hungry pigeon, the audience made the agreed flapping sound. When it reached home, the triangle rang at exactly the right time. Even the cabbage received applause. Afterwards Finley began a very short **memoir** about his first performance. The opening line was, \"I once shared a stage with a sandwich and survived.\" He no longer wanted to hide at the back. For the next show, he offered to write a mystery about a missing sock. Lila immediately began looking for a word that rhymed with laundry. The drummer quietly moved his drum away from the stairs."
+    ],
+    "question": {
+      "prompt": "What helped the audience hear Finley’s story?",
+      "options": [
+        "Finley stopped reading altogether.",
+        "Everyone shook tubs of peas continuously.",
+        "The music became quieter during the reading."
+      ],
+      "answer": 2
+    }
+  },
+  {
+    "id": "level-1-06",
+    "level": 1,
+    "number": 6,
+    "title": "The Dragon Who Mislaid Tuesday",
+    "summary": "A museum game sends two explorers after an extremely confused dragon.",
+    "wordIds": [
+      "royal",
+      "empire",
+      "ancient",
+      "legend",
+      "myth",
+      "sage",
+      "atlas",
+      "exile",
+      "vicious",
+      "savage",
+      "grave",
+      "fatal",
+      "severe",
+      "grit",
+      "summit"
+    ],
+    "paragraphs": [
+      "At the museum, Zara and Max joined a story game about an **ancient** **empire**. A **royal** messenger had lost the dragon's calendar, and now the creature believed every day was Tuesday. According to the **legend**, it would not open the mountain gate until someone returned the missing page. \"That is a very specific problem,\" said Max. The guide gave them an **atlas** of the imaginary kingdom. On the cover, the dragon wore a dressing gown and held a mug saying NOT BEFORE BREAKFAST.",
+      "Their first clue came from a **sage** played by a volunteer with a cotton-wool beard. He said that a false **myth** described the dragon as **savage** and cruel. Actually, the creature mostly wanted quiet mornings and correctly labelled weekdays. A second character, a baker living in **exile** after refusing to make the king's enormous birthday cake, remembered seeing a paper scrap near the bridge. Zara marked that place on their map. Max asked whether the baker had brought any samples. This was not part of the clue.",
+      "A sign beside a model ravine warned that a fall from such a height could be **fatal**. They crossed the railed bridge, following the baker's floury footprints towards another clue. In the story, the missing calendar created a **grave** problem: the dragon's Tuesday sneezes caused **severe** storms. Zara and Max needed **grit** to finish the steep pretend mountain trail, which was actually several museum staircases. Near the **summit**, a recorded growl made Max jump. \"That sounded **vicious**,\" he said. Then the recording added, \"Has anybody seen my reading glasses?\"",
+      "Behind a model rock they found the calendar page, folded around the dragon's spectacles. At the gate, Zara read the date aloud while Max held up the paper. The puppet blinked, sneezed a shower of paper leaves and announced that it was delighted to discover Wednesday. Everyone cheered. The guide asked what had helped them solve the game. Zara said they had checked the map and listened to clues instead of believing the first scary rumour. Max said he had resisted stopping for imaginary cake, which had required enormous effort. Their prize was a bookmark shaped like a dragon. On its back were the words: PLEASE RETURN BORROWED CALENDARS. Underneath, in tiny writing, the dragon had added: AND BISCUITS, IF YOU HAVE ANY."
+    ],
+    "question": {
+      "prompt": "What did Zara and Max find with the calendar page?",
+      "options": [
+        "A real dragon egg.",
+        "The dragon’s reading glasses.",
+        "The king’s birthday cake."
+      ],
+      "answer": 1
+    }
+  },
+  {
+    "id": "level-1-07",
+    "level": 1,
+    "number": 7,
+    "title": "The Soup That Needed a Name",
+    "summary": "A cooking team learns that an impressive title cannot rescue a bland soup.",
+    "wordIds": [
+      "cuisine",
+      "fusion",
+      "bland",
+      "vile",
+      "crave",
+      "moan",
+      "domestic",
+      "blunt",
+      "faux",
+      "uniform",
+      "sequence",
+      "resort to",
+      "fret",
+      "weary",
+      "lean"
+    ],
+    "paragraphs": [
+      "The school cooking club announced a contest for a new lunchtime soup. Priya loved exploring a different **cuisine** each month, and Ollie loved being first in the lunch queue. Together they planned a **fusion** of tomato soup and flavours from a mild bean stew. \"We need a grand name,\" said Ollie. He suggested Supreme Thunder Soup. Priya proposed Superpowered Sunset Soup, then laughed. Perhaps they should taste it first. They washed their hands, tied their aprons and followed the cook's instructions. Their aprons were **uniform** in colour, although Ollie's had somehow already acquired a floury handprint.",
+      "The first batch was **bland**. It tasted mostly of warm water. Ollie began to **moan**, but Priya pointed to the recipe **sequence**: vegetables first, then stock, then gentle cooking. They had forgotten half the vegetables. Nobody needed to **resort to** ordering emergency sandwiches yet. While the cook chopped the missing vegetables, Ollie used a **blunt** table knife to spread butter on bread for tasting. Ollie made a **faux** moustache from a strip of paper and pretended to be a famous food judge.",
+      "\"I **crave** a little more flavour,\" he declared. Priya was too busy stirring to **fret** about his review. She reminded him not to **lean** over the hot pan. When he complained that chopping soft herbs felt like **domestic** work, she said cooking for people was useful work anywhere. Soon both were **weary** from standing, so the cook gave them a break while the soup simmered. At the next table, a team had combined too many ingredients and called their own result **vile**. The cook helped them start again with a smaller, simpler recipe.",
+      "At tasting time, Priya and Ollie's soup smelled lovely. It needed no thunder at all. They served small bowls with bread and explained what they had changed. One younger child asked whether Supreme Thunder Soup made people rumble. Ollie removed his paper moustache before answering, because it was slipping into his bowl. \"Only if you clap very loudly afterwards,\" he said. Their entry won the prize for best teamwork, and the cook added it to the menu under a shorter name: Sunny Bean Soup. Ollie was disappointed until he learned that he could help design the menu picture. He drew a smiling tomato in sunglasses. Priya drew a spoon beside it and wrote the most important instruction of the day: TASTE IT BEFORE YOU NAME IT."
+    ],
+    "question": {
+      "prompt": "Why was the first batch of soup bland?",
+      "options": [
+        "They had forgotten many of the vegetables.",
+        "They used too many strong spices.",
+        "Ollie’s paper moustache fell into it."
+      ],
+      "answer": 0
+    }
+  },
+  {
+    "id": "level-1-08",
+    "level": 1,
+    "number": 8,
+    "title": "The Case of the Vanishing Biscuit",
+    "summary": "A classroom court discovers why a biscuit disappeared.",
+    "wordIds": [
+      "jury",
+      "dispute",
+      "feud",
+      "rift",
+      "truce",
+      "relevant",
+      "hoax",
+      "ignorant",
+      "passive",
+      "petty",
+      "furious",
+      "liable",
+      "foil",
+      "absurd",
+      "advice"
+    ],
+    "paragraphs": [
+      "The class was learning how a court considers evidence, so their teacher invented a pretend case. A giant cardboard biscuit had vanished from the display. Ella and Yusuf joined the **jury**, whose job was to listen carefully and decide what the clues showed. Nobody was truly in trouble. The teacher wanted them to practise fair thinking. Unfortunately, two puppet witnesses already had a **dispute**. The fox said the badger had taken it. The badger said the fox had eaten the moon last Thursday. Their teacher offered one piece of **advice**: look for evidence before deciding.",
+      "\"Only **relevant** information, please,\" said Ella. The moon accusation was **absurd** and had nothing to do with the missing biscuit. Yusuf asked whether the puppets had a **feud**. Apparently they had been arguing for years about a shared umbrella. That old **rift** made both witnesses quick to blame each other. The class could see why a fair decision needed more than angry guesses. Their teacher explained that being **ignorant** of a fact meant not knowing it; it did not prove someone had behaved badly.",
+      "A note appeared saying, I AM A BISCUIT THIEF. The fox looked **furious**. Then Ella noticed that the writing matched a poster from the classroom joke box. Perhaps the note was a **hoax** intended to trick them. Instead of remaining **passive**, Yusuf asked to inspect the display table. Behind it lay a long cardboard tube. A round mark in the dust showed where the biscuit had rolled. \"We are **liable** to miss clues if everyone keeps shouting,\" he said. The teacher nodded and asked the puppet witnesses for a temporary **truce**.",
+      "The search led to the reading corner, where the biscuit stood behind a cushion. A sloping shelf had allowed it to roll away during tidying. Nobody had stolen anything. The fake note was part of the teacher's planned mystery, and the class had managed to **foil** the trick by checking the evidence. The puppets agreed that their umbrella argument was **petty**. They shook paws and decided to share it. Ella announced the **jury**'s decision: no theft had happened. Yusuf gave the biscuit a safer place on a flat shelf. The teacher handed out real biscuits at snack time, and the fox puppet requested twelve. \"That,\" said Ella, \"would require a separate hearing.\" The badger offered to count them, provided there was no argument about crumbs."
+    ],
+    "question": {
+      "prompt": "What had actually happened to the cardboard biscuit?",
+      "options": [
+        "The fox ate it.",
+        "Someone hid it inside an umbrella.",
+        "It rolled from a sloping shelf."
+      ],
+      "answer": 2
+    }
+  },
+  {
+    "id": "level-1-09",
+    "level": 1,
+    "number": 9,
+    "title": "The Bandage Badge",
+    "summary": "A first-aid club solves a mystery without leaving its practice room.",
+    "wordIds": [
+      "club",
+      "veteran",
+      "mobile",
+      "wary",
+      "heed",
+      "deter",
+      "defy",
+      "lax",
+      "limp",
+      "acute",
+      "vein",
+      "shell",
+      "midst",
+      "barb",
+      "advice"
+    ],
+    "paragraphs": [
+      "At the Saturday **club**, a **veteran** first-aid trainer called Mrs Bell brought a teddy bear with a very dramatic problem. It had a bandage on its ear, a plaster on its paw and a note saying I FEEL A BIT FLUFFY. The children laughed, but Mrs Bell explained that the bear would help them practise asking clear questions. Jay and Amira were partners. Their first piece of **advice** was simple: tell a trusted adult when someone is hurt and follow that adult's instructions.",
+      "Mrs Bell showed a picture of a **vein** carrying blood back towards the heart. Then she pointed to a bicycle helmet, whose hard **shell** helped protect the head. Jay asked whether the teddy needed one. \"Only if it takes up cycling,\" she replied. At the next station, they examined pictures of a thorn with a sharp **barb** and a broken glass bottle. They learned to be **wary** of sharp objects and to **heed** warning signs. They would not touch anything dangerous or attempt difficult treatment themselves.",
+      "In the **midst** of the lesson, the bear's owner appeared in a puppet show. He claimed he had tried to **defy** a sign telling riders to slow down. **Lax** attention to the rules had led to a pretend tumble. Now the puppet had an **acute** pain in his ankle and could only **limp**. The group said he should stop and ask an adult for help, rather than keep riding. Mrs Bell praised them. The purpose of the story was to **deter** risky choices, not to make anyone frightened of bicycles.",
+      "For the final challenge, the children needed to discover why the teddy kept making a squeaking noise. They checked its toy bicycle, its little helmet and its jacket pockets. Amira eventually found a rubber duck tucked under one arm. The teddy was perfectly **mobile**, able to move about when the puppeteer lifted it; its dramatic squeak was simply an accidental duck squeeze. Jay wrote a pretend report: PATIENT CONTAINS DUCK. Mrs Bell awarded everyone a paper badge for careful listening. At home, Jay showed his badge to his younger sister and explained that it did not make him a doctor. She asked whether he could help her teddy anyway. He checked the toy's pockets first. This time he found three crayons and a biscuit, but thankfully no ducks."
+    ],
+    "question": {
+      "prompt": "What caused the teddy’s squeaking noise?",
+      "options": [
+        "A real injury to its paw.",
+        "A rubber duck tucked under its arm.",
+        "Its bicycle bell."
+      ],
+      "answer": 1
+    }
+  },
+  {
+    "id": "level-1-10",
+    "level": 1,
+    "number": 10,
+    "title": "The King of the Cardboard Castle",
+    "summary": "A proud king discovers what really makes a good ruler.",
+    "wordIds": [
+      "poverty",
+      "vanity",
+      "vain",
+      "vice",
+      "virtue",
+      "subtle",
+      "beck",
+      "sway",
+      "wax",
+      "kindle",
+      "despair",
+      "margin",
+      "emerge",
+      "absurd",
+      "opportunity"
+    ],
+    "paragraphs": [
+      "For the school play, Ruby wrote a king whose **vanity** was bigger than his cardboard castle. He was so **vain** that he ordered six portraits of his left eyebrow. His favourite **vice** was greed: whenever a plate arrived, he wanted the biggest cake. Ruby's friend Theo played the royal cook and refused to stay at the king's **beck** and call all day. \"Even pretend cooks need lunch,\" he said. The play was funny, but Ruby wanted the ending to mean something too.",
+      "In the story, families outside the castle lived in **poverty** and struggled to afford enough food. Ruby made sure this part was treated seriously. The joke was the king's **absurd** behaviour, not the families' difficulties. A wise visitor asked him which **virtue** he admired. The king answered, \"My magnificent hair.\" The audience would know that kindness or honesty was a better answer. Theo suggested a **subtle** clue: each time the king demanded something for himself, his enormous paper crown should slip over his eyes.",
+      "At rehearsal, the castle began to **sway**. The teacher steadied the panels and helped everyone secure them safely. Ruby wrote a reminder in the **margin** of her script: CHECK CASTLE BEFORE SHOW. She almost gave up when the crown tore as well, but Theo told her not to **despair**. This was an **opportunity** to improve the scene. They repaired the crown with a flap that could drop deliberately. As the king's pride began to **wax**, growing larger with every boast, his view of everyone else would disappear completely.",
+      "On performance night, the flap fell at exactly the right moment. The king bumped gently into a cushion and finally asked for help. That request allowed his kinder side to **emerge**. He listened to the visitor, shared the palace supplies and invited the villagers to help decide how the kingdom's money should be used. Ruby hoped the ending would **kindle** an interest in fairness, as well as earn a laugh. It did both. Afterwards, Theo brought out a tray of small cakes for the cast. The boy who played the king chose the smallest one. \"Learning has occurred,\" Theo announced. Then the king's repaired crown slid over his eyes once more, and he accidentally thanked a coat stand. Ruby decided that line deserved a place in the next performance."
+    ],
+    "question": {
+      "prompt": "What did the crown flap help show?",
+      "options": [
+        "The king’s pride stopped him noticing other people.",
+        "The king needed a larger castle.",
+        "The cook wanted to become a painter."
+      ],
+      "answer": 0
+    }
+  }
+]

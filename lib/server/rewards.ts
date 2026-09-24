@@ -92,7 +92,7 @@ export async function progressSummary(userId: string) {
   const rows = (
     await db
       .prepare(
-        `SELECT day,questions,correct,reveals,new_words AS newWords,mastered,seconds,credits FROM daily_stats WHERE user_id=?`,
+        `SELECT day,questions,correct,reveals,new_words AS newWords,mastered,seconds,credits,stories FROM daily_stats WHERE user_id=?`,
       )
       .bind(userId)
       .all<PeriodStats & { day: string }>()
@@ -107,6 +107,7 @@ export async function progressSummary(userId: string) {
   ).results;
   const aggregate = (start: string): PeriodStats => {
     const result: PeriodStats = {
+      stories: 0,
       questions: 0,
       correct: 0,
       reveals: 0,
@@ -126,6 +127,7 @@ export async function progressSummary(userId: string) {
           "mastered",
           "seconds",
           "credits",
+          "stories",
         ] as const)
           result[key] += row[key];
       }

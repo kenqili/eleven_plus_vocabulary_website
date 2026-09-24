@@ -23,7 +23,7 @@ export async function learningCalendar(
   const [daily, distinct, total] = await Promise.all([
     db
       .prepare(
-        `SELECT day,questions,correct,reveals,new_words AS newWords,mastered,seconds,credits
+        `SELECT day,questions,correct,reveals,new_words AS newWords,mastered,seconds,credits,stories
       FROM daily_stats WHERE user_id=? AND day>=? AND day<=? ORDER BY day`,
       )
       .bind(userId, start, end)

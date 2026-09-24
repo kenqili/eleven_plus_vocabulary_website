@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 import Link from "next/link";
 import { BookOpen, ArrowRight } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -16,6 +17,61 @@ import { useChallenge } from "./use-challenge";
 export default function Challenge() {
   const study = useChallenge();
   const { question, feedback, stats, demo, busy, error } = study;
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.altKey || event.ctrlKey || event.metaKey) return;
+      const target = event.target;
+      if (
+        target instanceof HTMLElement &&
+        target.closest("input, textarea, select, [contenteditable='true']")
+      )
+        return;
+      const key = event.key.toLowerCase();
+      const answerIndex = /^[a-d]$/.test(key)
+        ? key.charCodeAt(0) - 97
+        : /^[1-4]$/.test(key)
+          ? Number(key) - 1
+          : -1;
+      if (
+        answerIndex >= 0 &&
+        question &&
+        !feedback &&
+        !busy &&
+        !study.historical
+      ) {
+        event.preventDefault();
+        void study.answer(answerIndex);
+      } else if (key === "arrowleft" && study.hasPrevious) {
+        event.preventDefault();
+        study.goPrevious();
+      } else if (
+        key === "arrowright" &&
+        (study.historical || Boolean(feedback))
+      ) {
+        event.preventDefault();
+        void study.next();
+      } else if (
+        (key === " " || key === "enter") &&
+        (study.historical || Boolean(feedback)) &&
+        !(target instanceof HTMLElement && target.closest("button, a"))
+      ) {
+        event.preventDefault();
+        void study.next();
+      } else if (
+        key === "enter" &&
+        question &&
+        !feedback &&
+        !busy &&
+        !study.historical &&
+        !(target instanceof HTMLElement && target.closest("button, a"))
+      ) {
+        event.preventDefault();
+        void study.answer(-1);
+      }
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [study, question, feedback, busy]);
   return (
     <div className="site">
       <Header />
@@ -82,13 +138,17 @@ export default function Challenge() {
               </span>
             </div>
             <article
-              className={`question-card question-${question?.type || "def"}`}
+              className={`question-card question-${question?.type || "def"} ${feedback ? "question-answered" : ""}`}
               aria-busy={busy}
             >
               {question ? (
                 <>
                   <div className="question-meta">
-                    <span>{TYPE_LABELS[question.type].toUpperCase()}</span>
+                    <span>
+                      {study.historical
+                        ? "PREVIOUS QUESTION · REVIEW ONLY"
+                        : TYPE_LABELS[question.type].toUpperCase()}
+                    </span>
                     <span className="pill">
                       {question.seen <= 1
                         ? "New word"
@@ -103,6 +163,7 @@ export default function Challenge() {
                         key={`${question.id}-${i}`}
                         className={`answer ${feedback && choice === feedback.answer ? "correct" : ""} ${feedback && feedback.selected === i && !feedback.correct ? "incorrect" : ""}`}
                         disabled={busy || Boolean(feedback)}
+                        aria-keyshortcuts={`${String.fromCharCode(65 + i)} ${i + 1}`}
                         onClick={() => void study.answer(i)}
                       >
                         <span>{String.fromCharCode(65 + i)}</span>
@@ -122,7 +183,6 @@ export default function Challenge() {
                             ? "Take a moment to learn this one."
                             : "Not quite. Let’s learn this one."}
                       </strong>
-                      <WordExplanation word={feedback} />
                       {!!feedback.award?.total && (
                         <div className="reward-notice" key={question.id}>
                           <strong>
@@ -148,6 +208,7 @@ export default function Challenge() {
                           </p>
                         </div>
                       )}
+                      <WordExplanation word={feedback} />
                       {!demo && !feedback.correct && (
                         <small>
                           New streak starts with your next correct answer. Your
@@ -173,14 +234,17 @@ export default function Challenge() {
                     {feedback ? (
                       <button
                         className="primary-button"
+                        aria-keyshortcuts="Enter Space ArrowRight"
                         disabled={busy}
                         onClick={() => void study.next()}
                       >
-                        Next word <ArrowRight size={16} />
+                        {study.historical ? "Next question" : "Next word"}{" "}
+                        <ArrowRight size={16} />
                       </button>
                     ) : (
                       <button
                         className="text-button"
+                        aria-keyshortcuts="Enter"
                         disabled={busy}
                         onClick={() => void study.answer(-1)}
                       >
@@ -188,6 +252,11 @@ export default function Challenge() {
                       </button>
                     )}
                   </div>
+                  <p className="keyboard-hint">
+                    {feedback
+                      ? "← previous · →, Enter or Space next"
+                      : "A–D or 1–4 to answer · Enter to reveal · ← previous"}
+                  </p>
                 </>
               ) : study.complete ? (
                 <div className="empty-state">

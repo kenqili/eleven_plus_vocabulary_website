@@ -71,6 +71,7 @@ export const dailyStats = sqliteTable(
     mastered: integer("mastered").notNull().default(0),
     seconds: integer("seconds").notNull().default(0),
     credits: integer("credits").notNull().default(0),
+    stories: integer("stories").notNull().default(0),
   },
   (t) => [primaryKey({ columns: [t.userId, t.day] })],
 );
@@ -214,3 +215,53 @@ export const checkoutRequests = sqliteTable("checkout_requests", {
   createdAt: integer("created_at").notNull(),
   sessionId: text("session_id"),
 });
+
+export const stories = sqliteTable("stories", {
+  id: text("id").primaryKey(),
+  level: integer("level").notNull(),
+  number: integer("number").notNull(),
+  content: text("content").notNull(),
+});
+export const storyReads = sqliteTable(
+  "story_reads",
+  {
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    storyId: text("story_id")
+      .notNull()
+      .references(() => stories.id),
+    startedAt: integer("started_at").notNull(),
+    seconds: integer("seconds").notNull().default(0),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.storyId] })],
+);
+export const storyTicks = sqliteTable("story_ticks", {
+  id: text("id").primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  storyId: text("story_id")
+    .notNull()
+    .references(() => stories.id),
+  seconds: integer("seconds").notNull(),
+  createdAt: integer("created_at").notNull(),
+  day: text("day").notNull(),
+  previousDay: text("previous_day").notNull(),
+  sinceMidnight: integer("since_midnight").notNull(),
+});
+export const storyCompletions = sqliteTable(
+  "story_completions",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    storyId: text("story_id")
+      .notNull()
+      .references(() => stories.id),
+    createdAt: integer("created_at").notNull(),
+    day: text("day").notNull(),
+  },
+  (t) => [uniqueIndex("story_completion_once").on(t.userId, t.storyId)],
+);

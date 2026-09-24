@@ -61,7 +61,7 @@ export default defineConfig(async ({ command }) => {
       alias: { "cloudflare:workers": fileURLToPath(new URL("./scripts/node-dev-env.mjs", import.meta.url)) },
     } : undefined,
     server: {
-      ...(nodeDev ? { host: "127.0.0.1" } : {}),
+      ...(nodeDev ? { host: "0.0.0.0" } : {}),
       ...(managedLinux ? { host: "0.0.0.0", allowedHosts: ["terminal.local"] } : {}),
       ...(isCodexSeatbeltSandbox ? { watch: { useFsEvents: false, usePolling: true } } : {}),
     },
