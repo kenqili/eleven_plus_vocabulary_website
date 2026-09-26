@@ -10,7 +10,7 @@
   "final": {
     "syn": {
       "file": "data/syn.csv",
-      "sha256": "412a7f67dcc4633c2b4cb52999796be30e25a6688bdb2e08e0f22492cf72338e",
+      "sha256": "c39110b4b38dcc1bef333617285146c29359bb7a6c3c151cfa17e059e29dde27",
       "rowsReviewed": 730,
       "unchangedFromInitialReview": 628,
       "changedRowsRechecked": 99,
@@ -18,12 +18,12 @@
       "removedInitialRows": 0,
       "allRowsHaveFourDistinctOptionsAndOneExactAnswer": true,
       "noRemainingKnownAlternativeCorrectOptions": true,
-      "rowsAddedAfterReview": 99,
-      "currentRows": 829
+      "rowsAddedAfterReview": 149,
+      "currentRows": 879
     },
     "ant": {
       "file": "data/ant.csv",
-      "sha256": "6dea6a1a3ccacf3f111e31b52e4cb50bf11142eaad1e42f4ea60b75e100b51ca",
+      "sha256": "fb519f482657df8f79e9ce65b53ebe64de6bf3ba229607166f958b3a79f8a370",
       "rowsReviewed": 630,
       "unchangedFromInitialReview": 532,
       "changedRowsRechecked": 99,
@@ -32,8 +32,8 @@
       "allRowsHaveFourDistinctOptionsAndOneExactAnswer": true,
       "noRemainingKnownAlternativeCorrectOptions": true,
       "removedAfterReview": 1,
-      "rowsAddedAfterReview": 52,
-      "currentRows": 682
+      "rowsAddedAfterReview": 102,
+      "currentRows": 732
     },
     "totalRows": 1360,
     "currentTotalRows": 1511
@@ -703,8 +703,12 @@
       "level": 0,
       "curriculumWords": 117,
       "additions": {
-        "syn": { "rows": 82 },
-        "ant": { "rows": 35 }
+        "syn": {
+          "rows": 82
+        },
+        "ant": {
+          "rows": 35
+        }
       },
       "verification": "Both CSVs are purely additive against the previously reviewed versions: every earlier row is identical and in the same order, and each added row belongs to a Level 0 curriculum word. No reviewed answer, distractor or exclusion changed, so the five original levels keep their questions.",
       "reviewStatus": "The added rows come from the same reviewed generator and overrides, but they have not been through an independent semantic review. Give them that review before treating them as reviewed.",
@@ -746,8 +750,12 @@
         "adversity"
       ],
       "additions": {
-        "syn": { "rows": 17 },
-        "ant": { "rows": 17 }
+        "syn": {
+          "rows": 17
+        },
+        "ant": {
+          "rows": 17
+        }
       },
       "preferredLibraryAnswersAfterAddition": {
         "syn": 220,
@@ -802,6 +810,18 @@
           "rowsReviewed": 630
         }
       }
+    },
+    {
+      "date": "2026-09-26",
+      "change": "Added 50 words from the 11+ word list as a new vocabquest source, with bank synonyms and antonyms, and generated their synonym and antonym questions.",
+      "wordsAdded": 50,
+      "effect": "New vocabulary rows only. Every row reviewed before this change is byte-identical; no reviewed answer, distractor, option order, row type, target word, row order or removed row changed. The added rows were machine-generated from the bank synonyms and antonyms with the existing distractor exclusion rules and have not received the independent semantic review."
+    },
+    {
+      "date": "2026-09-26",
+      "change": "Tranche 1 vocabulary authored after the previous entry: definitions, examples, synonyms, antonyms and help clues were rewritten, and the tranche's question rows were regenerated from them.",
+      "wordsAdded": 0,
+      "effect": "New vocabulary rows only. Every row reviewed before this change is byte-identical; no reviewed answer, distractor, option order, row type, target word, row order or removed row changed. The added rows were machine-generated from the bank synonyms and antonyms with the existing distractor exclusion rules and have not received the independent semantic review."
     }
   ]
 }

@@ -1,4 +1,5 @@
 // Convenience bookmarks belong to this browser and account, not the credit ledger.
+import { STORY_ID } from "../challenge/stories.ts";
 export type Bookmark = {
   paragraph: number;
   fraction: number;
@@ -6,7 +7,7 @@ export type Bookmark = {
 };
 type Bookmarks = { level: number; stories: Record<string, Bookmark> };
 const empty = (): Bookmarks => ({ level: 0, stories: {} });
-const storyId = /^level-[0-5]-(0[1-9]|10)$/;
+const storyId = STORY_ID;
 export function readBookmarks(scope: string): Bookmarks {
   try {
     const value = JSON.parse(

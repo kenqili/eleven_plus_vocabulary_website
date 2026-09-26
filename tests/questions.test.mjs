@@ -123,7 +123,18 @@ test("Level 0 practises alongside levels 1-5 and only known levels are accepted"
   const counts = [0, 1, 2, 3, 4, 5].map(
     (level) => words.filter((word) => levelFor(word.id) === level).length,
   );
-  assert.deepEqual(counts, [117, 150, 149, 150, 149, 149]);
+  // Bands 1-5 are five equal slices of the non-curriculum words, so they may
+  // differ by at most one; Level 0 is exactly the curriculum extension.
+  assert.equal(counts[0], words.filter((word) => word.source === "curriculum").length);
+  const core = counts.slice(1);
+  assert.ok(
+    Math.max(...core) - Math.min(...core) <= 1,
+    `core bands should be equal within one word, got ${core.join(", ")}`,
+  );
+  assert.equal(
+    core.reduce((a, b) => a + b, 0),
+    words.filter((word) => word.source !== "curriculum").length,
+  );
   assert.equal(
     words.every(
       (word) => (levelFor(word.id) === 0) === (word.source === "curriculum"),

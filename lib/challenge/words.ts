@@ -2,6 +2,7 @@ export const SOURCE_ORDER = [
   "flash_card_1",
   "flash_card_2",
   "blue_book",
+  "vocabquest",
   "curriculum",
 ] as const;
 export type WordSource = (typeof SOURCE_ORDER)[number];
@@ -9,6 +10,7 @@ export const SOURCE_LABELS: Record<WordSource, string> = {
   flash_card_1: "Flash Card 1",
   flash_card_2: "Flash Card 2",
   blue_book: "Blue Book",
+  vocabquest: "11+ Word List",
   curriculum: "Curriculum extension",
 };
 export type Word = {
@@ -104,10 +106,14 @@ export function parseWordCsv(text: string, source: WordSource): Word[] {
 }
 
 /** First appearance wins, including every field and source of that occurrence. */
-export function mergeWordSources(sources: Record<WordSource, string>): Word[] {
+export function mergeWordSources(
+  sources: Partial<Record<WordSource, string>>,
+): Word[] {
   const merged = new Map<string, Word>();
   for (const source of SOURCE_ORDER) {
-    for (const word of parseWordCsv(sources[source], source)) {
+    const text = sources[source];
+    if (text === undefined) continue;
+    for (const word of parseWordCsv(text, source)) {
       if (!merged.has(word.id)) merged.set(word.id, word);
     }
   }

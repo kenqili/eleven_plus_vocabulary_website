@@ -16,7 +16,7 @@ const stories = parseStories(
 );
 const levels = JSON.parse(readFileSync("data/word-levels/levels.json", "utf8"));
 
-test("60 reviewed stories cover every level word with marked vocabulary and valid questions", () => {
+test("reviewed stories cover every level word with marked vocabulary and valid questions", () => {
   assert.deepEqual(validateStories(stories, words, levels.words), []);
   const broken = structuredClone(stories);
   broken[0].wordIds.pop();

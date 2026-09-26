@@ -3,6 +3,7 @@ import {
   saveReadingPreference,
 } from "@/lib/server/reading-position";
 import { getStory } from "@/lib/server/stories";
+import { STORY_ID } from "@/lib/challenge/stories";
 import { currentUser, requireUser, rateLimit } from "@/lib/server/auth";
 import { body, boundary, HttpError, json, sameOrigin } from "@/lib/server/http";
 import {
@@ -33,7 +34,7 @@ export async function POST(request: Request) {
     }
     if (
       typeof input.storyId !== "string" ||
-      !/^level-[0-5]-(0[1-9]|10)$/.test(input.storyId)
+      !STORY_ID.test(input.storyId)
     )
       throw new HttpError(400, "Choose a story from Word Adventures.");
     await rateLimit(`stories:${user.id}`, 600);

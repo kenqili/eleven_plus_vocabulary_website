@@ -34,6 +34,9 @@ async function call(path, data, headers = {}) {
     cookie: response.headers.get("set-cookie"),
   };
 }
+const stories = [0, 1, 2, 3, 4, 5].flatMap((level) =>
+  JSON.parse(readFileSync(`data/stories/level-${level}.txt`, "utf8")),
+);
 const story = JSON.parse(readFileSync("data/stories/level-1.txt", "utf8"))[0],
   storyId = story.id,
   owner = randomUUID();
@@ -42,7 +45,7 @@ const post = (data, headers) =>
 try {
   const catalog = await call("/api/stories");
   assert.equal(catalog.status, 200);
-  assert.equal(catalog.data.stories.length, 60);
+  assert.equal(catalog.data.stories.length, stories.length);
   const detail = await call(`/api/stories?id=${storyId}`);
   assert.equal(detail.status, 200);
   assert.equal("answer" in detail.data.question, false);

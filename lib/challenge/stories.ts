@@ -2,6 +2,22 @@ import type { Difficulty } from "./difficulty.ts";
 import type { Word } from "./words.ts";
 
 export const STORY_CREDITS = 10;
+/** A story marks between these many distinct vocabulary words. */
+export const MIN_STORY_TARGETS = 15;
+export const MAX_STORY_TARGETS = 30;
+/** Every level keeps at least this many stories even when it has few words. */
+export const MIN_STORIES_PER_LEVEL = 10;
+/** Story numbers are zero-padded to two digits, so 99 is the ceiling per level. */
+export const MAX_STORIES_PER_LEVEL = 99;
+/**
+ * Stories a level needs before each of its words can be marked somewhere.
+ * Derived from the word count so a bigger word bank simply needs more
+ * stories, instead of failing an exact count.
+ */
+export const storiesForWords = (wordCount: number) =>
+  Math.max(MIN_STORIES_PER_LEVEL, Math.ceil(wordCount / MAX_STORY_TARGETS));
+/** Story ids are `level-{0-5}-{01..99}`, so the API and client share one rule. */
+export const STORY_ID = /^level-[0-5]-(0[1-9]|[1-9]\d)$/;
 export type Story = {
   id: string;
   level: Difficulty;
@@ -56,13 +72,27 @@ export function validateStories(
 ): string[] {
   const errors: string[] = [];
   const bank = new Map(words.map((word) => [word.id, word]));
-  if (stories.length !== 60) errors.push("Expected 60 stories.");
+  if (stories.length < 6 * MIN_STORIES_PER_LEVEL)
+    errors.push(
+      `Expected at least ${6 * MIN_STORIES_PER_LEVEL} stories, one set per level.`,
+    );
   if (new Set(stories.map((story) => story.id)).size !== stories.length)
     errors.push("Duplicate story IDs.");
   for (let level = 0; level <= 5; level++) {
     const group = stories.filter((story) => story.level === level);
-    if (group.length !== 10)
-      errors.push(`Level ${level}: expected 10 stories.`);
+    const levelWords = words.filter(
+      (word) => levels[word.id]?.difficulty === level,
+    );
+    const required = storiesForWords(levelWords.length);
+    if (group.length < required)
+      errors.push(
+        `Level ${level}: expected at least ${required} stories to cover ${levelWords.length} words, found ${group.length}.`,
+      );
+    const numbers = group.map((story) => story.number).sort((a, b) => a - b);
+    if (!numbers.every((number, index) => number === index + 1))
+      errors.push(
+        `Level ${level}: story numbers must run 1–${group.length} with no gaps.`,
+      );
     const covered = new Set(group.flatMap((story) => story.wordIds));
     for (const word of words)
       if (levels[word.id]?.difficulty === level && !covered.has(word.id))
@@ -74,16 +104,19 @@ export function validateStories(
       story.id !==
         `level-${story.level}-${String(story.number).padStart(2, "0")}` ||
       story.number < 1 ||
-      story.number > 10
+      story.number > MAX_STORIES_PER_LEVEL
     )
       errors.push(prefix + "Invalid identity.");
     const targets = new Set(story.wordIds);
     if (
       targets.size !== story.wordIds.length ||
-      targets.size < 15 ||
-      targets.size > 30
+      targets.size < MIN_STORY_TARGETS ||
+      targets.size > MAX_STORY_TARGETS
     )
-      errors.push(prefix + "Expected 15–30 distinct target words.");
+      errors.push(
+        prefix +
+          `Expected ${MIN_STORY_TARGETS}–${MAX_STORY_TARGETS} distinct target words.`,
+      );
     const marked = [
       ...story.paragraphs.join("\n").matchAll(/\*\*([^*]+)\*\*/g),
     ].map((match) => match[1].toLowerCase());

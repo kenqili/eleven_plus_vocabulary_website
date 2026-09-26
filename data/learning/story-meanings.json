@@ -271,11 +271,6 @@
     "avowed": {
       "meaning": "Said openly and clearly."
     },
-    "antiquity": {
-      "meaning": "Ancient times, long ago.",
-      "syn": "ancient times; ancient past",
-      "ant": "modern times"
-    },
     "superficial": {
       "meaning": "Not looking carefully beyond what is easy to see."
     }
@@ -327,13 +322,6 @@
       "meaning": "Like a donkey—in this story, the ears.",
       "syn": "donkey-like",
       "ant": "—"
-    }
-  },
-  "level-5-05": {
-    "apprehend": {
-      "meaning": "To arrest someone.",
-      "syn": "arrest; capture",
-      "ant": "release"
     }
   },
   "level-5-06": {

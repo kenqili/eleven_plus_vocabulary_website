@@ -31,6 +31,6 @@ if (errors.length) {
     );
   }
   console.log(
-    "All 60 stories pass coverage, target count, level, bold marker and question validation.",
+    `All ${stories.length} stories pass coverage, target count, level, bold marker and question validation.`,
   );
 }
