@@ -1,5 +1,6 @@
 import { database, setting } from "./db";
 import { HttpError } from "./http";
+import { words } from "@/lib/challenge/bank";
 import type { User } from "./auth";
 export const billingReady = () =>
   Boolean(
@@ -47,11 +48,17 @@ export function configuredFreeTrialDays() {
 export function configuredFreeWordLimit() {
   const configured = setting("FREE_WORD_LIMIT");
   if (!configured) return 20;
-  if (!/^(?:0|[1-9]|[1-9]\d|[1-6]\d{2}|7[0-2]\d|730)$/.test(configured))
-    throw new Error("FREE_WORD_LIMIT must be a whole number from 0 to 730.");
+  // Derived from the bank so the cap cannot fall behind the word count.
+  const ceiling = words.length;
+  if (!/^(?:0|[1-9]\d*)$/.test(configured))
+    throw new Error(
+      `FREE_WORD_LIMIT must be a whole number from 0 to ${ceiling}.`,
+    );
   const count = Number(configured);
-  if (count > 730)
-    throw new Error("FREE_WORD_LIMIT must be a whole number from 0 to 730.");
+  if (count > ceiling)
+    throw new Error(
+      `FREE_WORD_LIMIT must be a whole number from 0 to ${ceiling}.`,
+    );
   return count;
 }
 export async function membership(user: User) {

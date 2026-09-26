@@ -253,11 +253,6 @@
       "meaning": "To help someone as a favour.",
       "syn": "help; accommodate",
       "ant": "refuse"
-    },
-    "torment": {
-      "meaning": "To cause someone a lot of distress.",
-      "syn": "distress; trouble",
-      "ant": "comfort; soothe"
     }
   },
   "level-3-09": {
@@ -275,68 +270,14 @@
       "meaning": "Not looking carefully beyond what is easy to see."
     }
   },
-  "level-4-02": {
-    "immerse": {
-      "meaning": "To put something completely under water.",
-      "syn": "submerge; dip",
-      "ant": "lift out; withdraw"
-    }
-  },
   "level-4-04": {
     "frivolous": {
       "meaning": "Silly rather than serious."
     }
   },
-  "level-4-07": {
-    "tardy": {
-      "meaning": "Late."
-    }
-  },
-  "level-4-08": {
-    "ramble": {
-      "meaning": "To take a walk for pleasure.",
-      "syn": "stroll; wander",
-      "ant": "—"
-    },
-    "temperate": {
-      "meaning": "Neither too hot nor too cold.",
-      "syn": "mild; moderate",
-      "ant": "extreme"
-    }
-  },
-  "level-4-10": {
-    "succumb": {
-      "meaning": "To give in to a feeling, such as the urge to cry."
-    },
-    "resonate": {
-      "meaning": "To keep having a strong meaning for someone.",
-      "syn": "strike a chord; mean something",
-      "ant": "—"
-    }
-  },
-  "level-5-01": {
-    "serpentine": {
-      "meaning": "Curving and winding like a snake."
-    },
-    "asinine": {
-      "meaning": "Like a donkey—in this story, the ears.",
-      "syn": "donkey-like",
-      "ant": "—"
-    }
-  },
-  "level-5-06": {
-    "enchant": {
-      "meaning": "To delight and hold an audience’s attention."
-    }
-  },
   "level-5-08": {
     "aggravation": {
       "meaning": "Annoyance or trouble."
-    }
-  },
-  "level-5-09": {
-    "inflame": {
-      "meaning": "To make an argument or anger worse."
     }
   }
 }

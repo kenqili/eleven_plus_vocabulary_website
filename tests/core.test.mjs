@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createHmac } from "node:crypto";
+import { readFileSync } from "node:fs";
 import {
   mergeWordSources,
   parseWordCsv,
@@ -10,6 +11,27 @@ import {
 import { words, sources } from "../scripts/load-word-bank.mjs";
 import { hashPassword, verifyPassword } from "../lib/server/password.ts";
 import { verifyStripeSignature } from "../lib/server/webhook.ts";
+test("Runtime bank feeds every source, so the served app matches the validators", () => {
+  // lib/challenge/bank.ts builds the bank the app actually serves, using Vite
+  // `?raw` imports that a plain Node test cannot evaluate. Assert instead that
+  // it names every source, so adding one to SOURCE_ORDER without wiring it here
+  // cannot silently ship a smaller bank than the scripts and tests check.
+  const runtime = readFileSync(
+    new URL("../lib/challenge/bank.ts", import.meta.url),
+    "utf8",
+  );
+  for (const source of SOURCE_ORDER) {
+    assert.match(
+      runtime,
+      new RegExp(`\\b${source}\\b`),
+      `lib/challenge/bank.ts does not reference the ${source} source`,
+    );
+    assert.ok(
+      sources[source] !== undefined && sources[source].length > 0,
+      `${source} has no CSV content for the validators to load`,
+    );
+  }
+});
 test("Merged CSV bank keeps the first occurrence and produces four distinct choices for every word", () => {
   const expected = new Map();
   for (const source of SOURCE_ORDER) {

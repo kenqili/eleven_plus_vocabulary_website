@@ -10,7 +10,7 @@
   "final": {
     "syn": {
       "file": "data/syn.csv",
-      "sha256": "c39110b4b38dcc1bef333617285146c29359bb7a6c3c151cfa17e059e29dde27",
+      "sha256": "faaab489c32bc35d2f4bf0e7d7be94040fc4b62f69a9875cb0bad8ce19428bca",
       "rowsReviewed": 730,
       "unchangedFromInitialReview": 628,
       "changedRowsRechecked": 99,
@@ -18,12 +18,12 @@
       "removedInitialRows": 0,
       "allRowsHaveFourDistinctOptionsAndOneExactAnswer": true,
       "noRemainingKnownAlternativeCorrectOptions": true,
-      "rowsAddedAfterReview": 149,
-      "currentRows": 879
+      "rowsAddedAfterReview": 1484,
+      "currentRows": 2214
     },
     "ant": {
       "file": "data/ant.csv",
-      "sha256": "fb519f482657df8f79e9ce65b53ebe64de6bf3ba229607166f958b3a79f8a370",
+      "sha256": "83cb8cc23a571b8b59eb3ea2895ce98ad51b05dff8754f1fd40149d314093f93",
       "rowsReviewed": 630,
       "unchangedFromInitialReview": 532,
       "changedRowsRechecked": 99,
@@ -32,8 +32,8 @@
       "allRowsHaveFourDistinctOptionsAndOneExactAnswer": true,
       "noRemainingKnownAlternativeCorrectOptions": true,
       "removedAfterReview": 1,
-      "rowsAddedAfterReview": 102,
-      "currentRows": 732
+      "rowsAddedAfterReview": 1437,
+      "currentRows": 2067
     },
     "totalRows": 1360,
     "currentTotalRows": 1511
@@ -821,6 +821,12 @@
       "date": "2026-09-26",
       "change": "Tranche 1 vocabulary authored after the previous entry: definitions, examples, synonyms, antonyms and help clues were rewritten, and the tranche's question rows were regenerated from them.",
       "wordsAdded": 0,
+      "effect": "New vocabulary rows only. Every row reviewed before this change is byte-identical; no reviewed answer, distractor, option order, row type, target word, row order or removed row changed. The added rows were machine-generated from the bank synonyms and antonyms with the existing distractor exclusion rules and have not received the independent semantic review."
+    },
+    {
+      "date": "2026-09-26",
+      "change": "Completed the 11+ word list: all 1385 previously missing words added to the vocabquest source, each with a definition, synonyms, antonyms, an example sentence, a help meaning and a clue, and their generated synonym and antonym questions.",
+      "wordsAdded": 1385,
       "effect": "New vocabulary rows only. Every row reviewed before this change is byte-identical; no reviewed answer, distractor, option order, row type, target word, row order or removed row changed. The added rows were machine-generated from the bank synonyms and antonyms with the existing distractor exclusion rules and have not received the independent semantic review."
     }
   ]

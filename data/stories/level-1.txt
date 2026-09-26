@@ -22,13 +22,16 @@
       "hustle",
       "tally",
       "adopt",
-      "adore"
+      "adore",
+      "famine",
+      "distress",
+      "meadow"
     ],
     "paragraphs": [
-      "Maya's new **enterprise** sold pets that never needed feeding. Each pet was a pebble with two painted eyes. Her brother Zac wanted to be a **merchant** too, so he helped set up a stall at the school fair. Their first customer asked whether the rocks could fetch. Zac was **coy** about their talents. \"They are excellent at staying,\" he said. Maya put up a sign saying STONE PETS. NO WALKIES REQUIRED. She did not want anyone to be **naive** enough to expect an actual animal.",
+      "Maya's new **enterprise** sold pets that never needed feeding. Each pet was a pebble with two painted eyes. Her brother Zac wanted to be a **merchant** too, so he helped set up a stall at the school fair. Their first customer asked whether the rocks could fetch. Zac was **coy** about their talents. \"They are excellent at staying,\" he said. Maya put up a sign saying STONE PETS. NO WALKIES REQUIRED. She did not want anyone to be **naive** enough to expect an actual animal. One customer was a boy called Nour who was revising for a history test about a **famine** that emptied an entire village. \"Pebbles feel like a holiday from real trouble,\" he said, and bought four.",
       "Dad offered to **hawk** their goods by shouting, \"Get your rocks here!\" Maya thanked him but said his voice might frighten the cakes off the next table. She had enough business **savvy** to spot a better **opportunity**. The children could make tiny beds from leftover boxes. A **wee** pebble in a matchbox looked extremely cosy. Their customers began choosing names and asking for blankets. One boy bought a grey stone called Captain Snore. Another customer had a strong **desire** for a pet that matched her socks.",
       "The stall had **potential**, but Zac wanted to charge extra whenever a stone blinked. Maya decided to **veto** that rule. Nobody could tell whether the pets had blinked, and it would not be fair anyway. Then their friend Imran arrived as a **proxy** for his grandmother, who had asked him to choose her a pet while she helped at the tea table. He picked a large, flat one that could also hold down her knitting pattern. \"A useful member of the family,\" he said proudly.",
-      "Soon the children had to **hustle** to keep up with orders. Maya began to **tally** the sales while Zac drew adoption cards. They gave each customer a paper heart as a **token** of thanks. By Friday most of the class **adore** their pebbles and bring them to school for show and tell, so Zac added a second line to every card: NO WALKING, NO FEEDING, NO GARDENING DUTY. At closing time they had sold every stone except a lumpy one with three eyes. Dad decided to **adopt** it immediately. \"At last,\" he said, \"someone who can watch both football matches and the oven.\" The money paid for plants for the school garden. Zac made one final card for Dad's new pet. It said: SPECIAL SKILL: LOVES YOU WITHOUT EVER BORROWING YOUR PHONE. Dad pinned it above the fireplace and gave the pebble the best seat in the house."
+      "Soon the children had to **hustle** to keep up with orders. Maya began to **tally** the sales while Zac drew adoption cards. One morning a grey pebble rolled behind the cash tin, and Zac was in real **distress** until Maya fished it out with a ruler. They gave each customer a paper heart as a **token** of thanks. By Friday most of the class **adore** their pebbles and bring them to school for show and tell, so Zac added a second line to every card: NO WALKING, NO FEEDING, NO GARDENING DUTY. At closing time they had sold every stone except a lumpy one with three eyes. Dad decided to **adopt** it immediately. \"At last,\" he said, \"someone who can watch both football matches and the oven.\" The money paid for plants for the school garden. Maya chose the tall ones for the **meadow** strip behind the gym, so the class would have a shady spot in which to count their takings. Zac made one final card for Dad's new pet. It said: SPECIAL SKILL: LOVES YOU WITHOUT EVER BORROWING YOUR PHONE. Dad pinned it above the fireplace and gave the pebble the best seat in the house."
     ],
     "question": {
       "prompt": "Why did Imran choose a flat stone?",
@@ -63,13 +66,16 @@
       "seize",
       "vital",
       "absence",
-      "absolute"
+      "absolute",
+      "shun",
+      "shack",
+      "cellar"
     ],
     "paragraphs": [
-      "At the model-boat club, Noor and Ben had built a tiny **yacht** with a striped sail. Its captain was a clean sock wearing paper sunglasses. They called him Captain Socks because every other name felt too sensible. A **fleet** of model boats waited beside the sheltered **harbour** pool. In the **absence** of any breeze the water lay flat and still. Beyond the wall, the real sea looked much too rough for a sock. The club leader gave everyone a **stern** reminder to stay on the marked path. Today the boats would sail; the children would remain safely on land.",
+      "At the model-boat club, Noor and Ben had built a tiny **yacht** with a striped sail. Its captain was a clean sock wearing paper sunglasses. They called him Captain Socks because every other name felt too sensible. A **fleet** of model boats waited beside the sheltered **harbour** pool. In the **absence** of any breeze the water lay flat and still. Behind the boathouse stood a rough wooden **shack** for old sails, and a **cellar** under the clubhouse kept the spare rope cool beside a crate of apples. Beyond the wall, the real sea looked much too rough for a sock. The club leader gave everyone a **stern** reminder to stay on the marked path. Today the boats would sail; the children would remain safely on land.",
       "Ben began to **coil** the spare rope into neat rings. Noor checked the sail. One string was **slack**, so she tightened it. The mast was **rigid** and straight, and Captain Socks looked ready to give a speech about laundry. Then a gust pushed the boat sideways. The weather had become **adverse** for such little craft. The leader called the models back using their remote controls. Noor pressed RETURN, but their motor made a noise like a bee with hiccups and stopped.",
       "A **current** carried the **yacht** towards the far corner of the pool. \"We cannot **abandon** the captain,\" said Ben. \"He has only just come out of the wash.\" The leader told them to **retreat** from the slippery edge and brought a long rescue pole. It was **vital** that nobody climbed over the rail. Ben wanted to **seize** the rope with his hand, but Noor pointed to the safe spot where the grown-up could reach it with the hook. They followed the boat along the dry path, keeping their eyes on its bright sail.",
-      "After a whole morning setting out tables, the leader was feeling **fatigue**, and he was glad when another adult helped hold the pole steady. The friends had to **endure** an anxious minute while the hook missed twice. On the third try it caught the rope, and for one **absolute** second the whole club stood in silence. Slowly, the little boat came home. Captain Socks was damp but still smiling, which was impressive because his smile had been drawn on upside down. Back in the clubhouse, Noor found a leaf stuck around the propeller. Ben made the captain a new paper badge: SURVIVED A LEAF. They did not win the race, but they won the prize for funniest crew. Captain Socks spent the evening drying on the radiator, apparently planning an expedition to the airing cupboard."
+      "After a whole morning setting out tables, the leader was feeling **fatigue**, and he was glad when another adult helped hold the pole steady. The friends had to **endure** an anxious minute while the hook missed twice. On the third try it caught the rope, and for one **absolute** second the whole club stood in silence. Slowly, the little boat came home. Captain Socks was damp but still smiling, which was impressive because his smile had been drawn on upside down. Back in the clubhouse, Noor found a leaf stuck around the propeller. The club voted to **shun** the deep end for the rest of the term and set up a shallow practice lane with rope markers instead. Ben made the captain a new paper badge: SURVIVED A LEAF. They did not win the race, but they won the prize for funniest crew. Captain Socks spent the evening drying on the radiator, apparently planning an expedition to the airing cupboard."
     ],
     "question": {
       "prompt": "What stopped the model boat’s propeller?",
@@ -105,13 +111,15 @@
       "devoted",
       "hostile",
       "adequate",
-      "acquire"
+      "acquire",
+      "wavy",
+      "thorough"
     ],
     "paragraphs": [
       "When Asha moved from an **urban** flat to a **rural** village, she expected the school garden to be quiet. Instead she found Leo arguing with a scarecrow. \"Your hat is upside down,\" he told it. The scarecrow did not reply. It stood beside a small **crop** of carrots, holding an umbrella made from an old tablecloth. A **hostile** crow waited on the fence, hoping to steal a seed. Leo explained that they had tried to protect the seedlings during a **drought**, when almost no rain had fallen for weeks. The ground had become **arid**, with dusty cracks between the beds.",
-      "Asha was the **sole** new member of the gardening team, but she had grown herbs on her old windowsill. She knew that plants needed water to **thrive**, and she told Leo that even **adequate** watering every evening would not stop the ground from cracking. An umbrella might keep them cooler, yet it would also block any welcome rain. She and Leo asked their teacher to help move it. Then they spread mulch over the soil to hold in moisture and watered the roots using saved rainwater. Leo wore the tablecloth as a cape until it caught on a bean pole. \"The beans have arrested me,\" he announced. When Asha asked how he had learned so much, he said that you **acquire** gardening knowledge one failed crop at a time.",
+      "Asha was the **sole** new member of the gardening team, but she had grown herbs on her old windowsill. She knew that plants needed water to **thrive**, and she told Leo that even **adequate** watering every evening would not stop the ground from cracking. An umbrella might keep them cooler, yet it would also block any welcome rain. She and Leo asked their teacher to help move it. Then they spread mulch over the soil to hold in moisture and watered the roots using saved rainwater. Asha also started a **thorough** record of every bed: what was planted, when it was watered, and exactly what the leaves looked like afterwards. Leo wore the tablecloth as a cape until it caught on a bean pole. \"The beans have arrested me,\" he announced. When Asha asked how he had learned so much, he said that you **acquire** gardening knowledge one failed crop at a time.",
       "The following week brought **mist** in the mornings and warm, **humid** afternoons. Beyond the garden lay a **lea**, a green field where wild flowers grew. Asha spotted a **hind** at the **fringe** of the trees. The female deer watched them from a distance and then walked away. Their teacher reminded the class not to **wander** after wildlife. Leo stood completely still, partly to avoid frightening the animal and partly because his boot was stuck in mud. Asha helped him pull it free with a magnificent squelch.",
-      "The children became **devoted** gardeners. They checked the beds, removed weeds and kept notes about what helped. By autumn, they knew the garden would **yield** more carrots than they had expected. Some carrots were straight; others looked as if they were trying to escape in several directions at once. The class made soup with the cook and drew faces on the oddest vegetables before washing them. Asha's favourite carrot resembled a tiny dancer in enormous trousers. Leo wanted to give it the scarecrow's hat. At the harvest display, their sign read: OUR GARDEN GREW CARROTS, TEAMWORK AND ONE EXTREMELY MUDDY BOOT. The scarecrow finally had a proper hat. The umbrella became shade for the reading bench, where it was much better suited to its job."
+      "The children became **devoted** gardeners. They checked the beds, removed weeds and kept notes about what helped. By autumn, they knew the garden would **yield** more carrots than they had expected. Above the soil, the carrot tops had grown into a **wavy** green sea that moved every time the wind touched it. Some carrots were straight; others looked as if they were trying to escape in several directions at once. The class made soup with the cook and drew faces on the oddest vegetables before washing them. Asha's favourite carrot resembled a tiny dancer in enormous trousers. Leo wanted to give it the scarecrow's hat. At the harvest display, their sign read: OUR GARDEN GREW CARROTS, TEAMWORK AND ONE EXTREMELY MUDDY BOOT. The scarecrow finally had a proper hat. The umbrella became shade for the reading bench, where it was much better suited to its job."
     ],
     "question": {
       "prompt": "Why did the children move the umbrella?",
@@ -147,11 +155,13 @@
       "notion",
       "elementary",
       "abstract",
-      "advance"
+      "advance",
+      "akin",
+      "albeit"
     ],
     "paragraphs": [
       "Ellie wanted to be a **pioneer** of helpful inventions. Her first **device** was meant to deliver toast from the kitchen to the breakfast table. It was a cardboard bus on wheels, painted **matte** blue so it would not shine under the classroom lights. Her friend Sam added a sign saying TOAST EXPRESS. The wheels turned when a small balloon pushed air through a **vent** at the back. This worked beautifully until the bus delivered a rubber instead of breakfast. Sam said the service needed a better menu.",
-      "Their teacher suggested a separate bubble experiment for the science fair. The **elementary** idea was simply to make as many bubbles as possible. Following her **advice**, they put a little bicarbonate of soda in a tray and added vinegar. The vinegar contained a weak **acid** that reacted with the powder. Ellie said the word on the bottle was **abstract**, because it named something nobody could see, only the fizz it made. **Foam** rose around their cardboard model volcano. It was not dangerous lava, but the mixture could still make a mess. The teacher kept the top open and said they must never trap the gas inside a sealed bottle. Sam put the unused **cork** back in the craft box.",
+      "Their teacher suggested a separate bubble experiment for the science fair. The **elementary** idea was simply to make as many bubbles as possible. Following her **advice**, they put a little bicarbonate of soda in a tray and added vinegar. The vinegar contained a weak **acid** that reacted with the powder. Ellie said the word on the bottle was **abstract**, because it named something nobody could see, only the fizz it made. **Foam** rose around their cardboard model volcano. The bubbles in it were **akin** to washing-up-liquid suds, **albeit** taller, faster and far more eager to escape. It was not dangerous lava, but the mixture could still make a mess. The teacher kept the top open and said they must never trap the gas inside a sealed bottle. Sam put the unused **cork** back in the craft box.",
       "Ellie had a **notion**: the bubbling tray could become a pretend car wash beside the bus. Sam made a **slit** in a spare piece of card for the entrance. Unfortunately, one splash made the thin cardboard **warp**. Then another wave threatened to **wreck** the paper road. It was **apparent** that a waterproof base was needed. The effect of even that small amount of liquid was surprisingly **potent** on flimsy paper. They moved everything onto a plastic tray and replaced the soggy road with a drawing underneath it.",
       "By lunchtime, it was **evident** that the car wash was the star of the display. Visitors laughed as a tiny toy crocodile rode through wearing a shower cap. Ellie explained the bubbles while Sam kept the pretend customers in line. The toast bus carried no food anywhere near the experiment, but it did transport a small sign: PLEASE REMOVE YOUR CROCODILE BEFORE WASHING YOUR CAR. Their teacher praised both the explanation and the changes they had made after the first test. Ellie decided that inventing meant noticing what went wrong and trying again, because every test would **advance** the next one. Sam agreed, although he still hoped their next machine would deliver breakfast. At home he put his toast on a plate and carried it to the table himself. \"Prototype two,\" he announced. \"Excellent steering. No bubbles.\""
     ],
@@ -187,13 +197,17 @@
       "smug",
       "tease",
       "urge",
-      "address"
+      "address",
+      "alert",
+      "ally",
+      "amend",
+      "ample"
     ],
     "paragraphs": [
       "Finley's stage **debut** was approaching, and he was full of **dread**. The class show needed somebody to read his story about a lost sandwich. He liked writing **prose**, with ordinary sentences and a proper plot. His friend Lila preferred **poetry** and had written a rhyme in which the sandwich married a cabbage. Neither version explained why the sandwich wore boots, but the class agreed that this detail was essential. Their teacher suggested combining both pieces with music from the school orchestra.",
       "At rehearsal, the conductor raised her **baton**. A recorder squeaked, a drum rolled away and someone shook a tub of dried peas for much too long. The **din** sounded like a kitchen cupboard falling down the stairs. Finley gave a **meek** little cough. He could barely hear his own voice. Lila made a **witty** suggestion: perhaps the sandwich should wear ear defenders as well as boots. That made the whole orchestra **crack up**, including the drummer, who was still trying to catch his instrument.",
-      "The teacher offered useful **criticism**. They needed quieter music during the story and louder sounds only at the exciting moments. She did not **tease** anyone about mistakes, and she made sure to **address** each performer by name so that nobody felt singled out. Instead, she helped each performer find a clear job. Lila would **urge** the audience to join in with one short rhyme. Finley would read the adventure slowly. A boy who had looked rather **smug** about his perfect triangle playing admitted that he had missed his cue three times because he was watching the runaway drum.",
-      "Before the curtain opened, Lila whispered, \"**Break a leg**!\" Finley knew she meant good luck, although he checked that his shoelaces were tied just in case. The show went wonderfully. When the sandwich escaped a hungry pigeon, the audience made the agreed flapping sound. When it reached home, the triangle rang at exactly the right time. Even the cabbage received applause. Afterwards Finley began a very short **memoir** about his first performance. The opening line was, \"I once shared a stage with a sandwich and survived.\" He no longer wanted to hide at the back. For the next show, he offered to write a mystery about a missing sock. Lila immediately began looking for a word that rhymed with laundry. The drummer quietly moved his drum away from the stairs."
+      "The teacher offered useful **criticism**. They needed quieter music during the story and louder sounds only at the exciting moments. She did not **tease** anyone about mistakes, and she made sure to **address** each performer by name so that nobody felt singled out. Instead, she helped each performer find a clear job. The teacher agreed to **amend** the running order so that the story came first and the loudest drum only entered later. Lila would **urge** the audience to join in with one short rhyme. Finley would read the adventure slowly. Lila became his **ally**: she stood beside him in the wings and said his opening line quietly with him, twice. A boy who had looked rather **smug** about his perfect triangle playing admitted that he had missed his cue three times because he was watching the runaway drum.",
+      "Before the curtain opened, the conductor told everyone to stay **alert** for their own cue and to watch her hands rather than their own shoes. Lila whispered, \"**Break a leg**!\" Finley knew she meant good luck, although he checked that his shoelaces were tied just in case. There had been **ample** time to run through everything twice, which meant nobody had to rush. The show went wonderfully. When the sandwich escaped a hungry pigeon, the audience made the agreed flapping sound. When it reached home, the triangle rang at exactly the right time. Even the cabbage received applause. Afterwards Finley began a very short **memoir** about his first performance. The opening line was, \"I once shared a stage with a sandwich and survived.\" He no longer wanted to hide at the back. For the next show, he offered to write a mystery about a missing sock. Lila immediately began looking for a word that rhymed with laundry. The drummer quietly moved his drum away from the stairs."
     ],
     "question": {
       "prompt": "What helped the audience hear Finley’s story?",
@@ -228,13 +242,16 @@
       "grit",
       "summit",
       "admission",
-      "adjacent"
+      "adjacent",
+      "anxious",
+      "appeal",
+      "appearance"
     ],
     "paragraphs": [
       "At the museum, Zara and Max handed in their **admission** tickets and joined a story game about an **ancient** **empire**. A **royal** messenger had lost the dragon's calendar, and now the creature believed every day was Tuesday. According to the **legend**, it would not open the mountain gate until someone returned the missing page. \"That is a very specific problem,\" said Max. The room **adjacent** to the entrance was full of models of that kingdom, and the guide gave them an **atlas** to help them. On the cover, the dragon wore a dressing gown and held a mug saying NOT BEFORE BREAKFAST.",
-      "Their first clue came from a **sage** played by a volunteer with a cotton-wool beard. He said that a false **myth** described the dragon as **savage** and cruel. Actually, the creature mostly wanted quiet mornings and correctly labelled weekdays. A second character, a baker living in **exile** after refusing to make the king's enormous birthday cake, remembered seeing a paper scrap near the bridge. Zara marked that place on their map. Max asked whether the baker had brought any samples. This was not part of the clue.",
-      "A sign beside a model ravine warned that a fall from such a height could be **fatal**. They crossed the railed bridge, following the baker's floury footprints towards another clue. In the story, the missing calendar created a **grave** problem: the dragon's Tuesday sneezes caused **severe** storms. Zara and Max needed **grit** to finish the steep pretend mountain trail, which was actually several museum staircases. Near the **summit**, a recorded growl made Max jump. \"That sounded **vicious**,\" he said. Then the recording added, \"Has anybody seen my reading glasses?\"",
-      "Behind a model rock they found the calendar page, folded around the dragon's spectacles. At the gate, Zara read the date aloud while Max held up the paper. The puppet blinked, sneezed a shower of paper leaves and announced that it was delighted to discover Wednesday. Everyone cheered. The guide asked what had helped them solve the game. Zara said they had checked the map and listened to clues instead of believing the first scary rumour. Max said he had resisted stopping for imaginary cake, which had required enormous effort. Their prize was a bookmark shaped like a dragon. On its back were the words: PLEASE RETURN BORROWED CALENDARS. Underneath, in tiny writing, the dragon had added: AND BISCUITS, IF YOU HAVE ANY."
+      "Zara wrote down the dragon's **appearance** so that the next group would recognise it: teal scales, orange wings, one striped dressing gown and a mug of tea. Their first clue came from a **sage** played by a volunteer with a cotton-wool beard. He said that a false **myth** described the dragon as **savage** and cruel. Actually, the creature mostly wanted quiet mornings and correctly labelled weekdays. A second character, a baker living in **exile** after refusing to make the king's enormous birthday cake, remembered seeing a paper scrap near the bridge. Zara marked that place on their map. Max asked whether the baker had brought any samples. This was not part of the clue.",
+      "A sign beside a model ravine warned that a fall from such a height could be **fatal**. They crossed the railed bridge, following the baker's floury footprints towards another clue. In the story, the missing calendar created a **grave** problem: the dragon's Tuesday sneezes caused **severe** storms. Zara and Max needed **grit** to finish the steep pretend mountain trail, which was actually several museum staircases. Near the **summit**, a recorded growl made Max jump, and Zara felt **anxious** in the dim corner by the model ravine, where every shadow seemed to move when you looked away. \"That sounded **vicious**,\" he said. Then the recording added, \"Has anybody seen my reading glasses?\"",
+      "Behind a model rock they found the calendar page, folded around the dragon's spectacles. At the gate, the puppet shook its head and insisted that Wednesday could not possibly be right. Zara made an **appeal** to the dragon's gate committee, asking them to look at the page once more, and then read the date aloud while Max held it up. The puppet blinked, sneezed a shower of paper leaves and announced that it was delighted to discover Wednesday. Everyone cheered. The guide asked what had helped them solve the game. Zara said they had checked the map and listened to clues instead of believing the first scary rumour. Max said he had resisted stopping for imaginary cake, which had required enormous effort. Their prize was a bookmark shaped like a dragon. On its back were the words: PLEASE RETURN BORROWED CALENDARS. Underneath, in tiny writing, the dragon had added: AND BISCUITS, IF YOU HAVE ANY."
     ],
     "question": {
       "prompt": "What did Zara and Max find with the calendar page?",
@@ -268,13 +285,17 @@
       "fret",
       "weary",
       "lean",
-      "acquire"
+      "acquire",
+      "approve",
+      "apt",
+      "argument",
+      "article"
     ],
     "paragraphs": [
-      "The school cooking club announced a contest for a new lunchtime soup. Priya loved exploring a different **cuisine** each month, and Ollie loved being first in the lunch queue. Together they planned a **fusion** of tomato soup and flavours from a mild bean stew. \"We need a grand name,\" said Ollie. He suggested Supreme Thunder Soup. Priya proposed Superpowered Sunset Soup, then laughed. Perhaps they should taste it first. They washed their hands, tied their aprons and followed the cook's instructions. Their aprons were **uniform** in colour, although Ollie's was already covered in a floury handprint.",
+      "The school cooking club announced a contest for a new lunchtime soup. Priya loved exploring a different **cuisine** each month, and Ollie loved being first in the lunch queue. Together they planned a **fusion** of tomato soup and flavours from a mild bean stew. \"We need a grand name,\" said Ollie. He suggested Supreme Thunder Soup. Priya proposed Superpowered Sunset Soup, then laughed. Perhaps they should taste it first. They washed their hands, tied their aprons and followed the cook's instructions, and the cook was happy to **approve** their plan and sign their entry card. Their aprons were **uniform** in colour, although Ollie's was already covered in a floury handprint.",
       "The first batch was **bland**. It tasted mostly of warm water. Ollie began to **moan**, but Priya pointed to the recipe **sequence**: vegetables first, then stock, then gentle cooking. They had forgotten half the vegetables. Nobody needed to **resort to** ordering emergency sandwiches yet. While the cook chopped the missing vegetables, Ollie used a **blunt** table knife to spread butter on bread for tasting. Ollie made a **faux** moustache from a strip of paper and pretended to be a famous food judge.",
-      "\"I **crave** a little more flavour,\" he declared. Priya was too busy stirring to **fret** about his review. She reminded him not to **lean** over the hot pan. When he complained that chopping soft herbs felt like **domestic** work, she said cooking for people was useful work anywhere. She also told him that you **acquire** a feel for flavour by tasting, and by getting it wrong once. Soon both were **weary** from standing, so the cook gave them a break while the soup simmered. At the next table, a team had combined too many ingredients and called their own result **vile**. The cook explained that a real shortage of food was a serious matter for many families, not a word to use for a disappointing lunch. The cook helped them start again with a smaller, simpler recipe.",
-      "At tasting time, Priya and Ollie's soup smelled lovely. It needed no thunder at all. They served small bowls with bread and explained what they had changed. One younger child asked whether Supreme Thunder Soup made people rumble. Ollie removed his paper moustache before answering, because it was slipping into his bowl. \"Only if you clap very loudly afterwards,\" he said. Their entry won the prize for best teamwork, and the cook added it to the menu under a shorter name: Sunny Bean Soup. Ollie was disappointed until he learned that he could help design the menu picture. He drew a smiling tomato in sunglasses. Priya drew a spoon beside it and wrote the most important instruction of the day: TASTE IT BEFORE YOU NAME IT."
+      "\"I **crave** a little more flavour,\" he declared. Priya was too busy stirring to **fret** about his review. She reminded him not to **lean** over the hot pan. When he complained that chopping soft herbs felt like **domestic** work, she said cooking for people was useful work anywhere. She also told him that you **acquire** a feel for flavour by tasting, and by getting it wrong once. Soon both were **weary** from standing, so the cook gave them a break while the soup simmered. At the next table, a team had combined too many ingredients and called their own result **vile**. They then had a loud **argument** about whose turn it was to open the next jar. The cook explained that a real shortage of food was a serious matter for many families, not a word to use for a disappointing lunch. She also reminded them that every **article** on the display table needed a label listing exactly what was inside it. The cook helped them start again with a smaller, simpler recipe.",
+      "At tasting time, Priya and Ollie's soup smelled lovely. It needed no thunder at all. They served small bowls with bread and explained what they had changed. One younger child asked whether Supreme Thunder Soup made people rumble. Ollie removed his paper moustache before answering, because it was slipping into his bowl. \"Only if you clap very loudly afterwards,\" he said. Their entry won the prize for best teamwork, and the cook added it to the menu under a shorter name: Sunny Bean Soup. \"That is an **apt** name,\" said the cook. \"Nothing in it rumbles.\" Ollie was disappointed until he learned that he could help design the menu picture. He drew a smiling tomato in sunglasses. Priya drew a spoon beside it and wrote the most important instruction of the day: TASTE IT BEFORE YOU NAME IT."
     ],
     "question": {
       "prompt": "Why was the first batch of soup bland?",
@@ -308,13 +329,17 @@
       "foil",
       "absurd",
       "advice",
-      "accuse"
+      "accuse",
+      "asset",
+      "assistance",
+      "attempt",
+      "avoid"
     ],
     "paragraphs": [
-      "The class was learning how a court considers evidence, so their teacher invented a pretend case. A giant cardboard biscuit had vanished from the display. Ella and Yusuf joined the **jury**, whose job was to listen carefully and decide what the clues showed. Nobody was truly in trouble. The teacher wanted them to practise fair thinking. Unfortunately, two puppet witnesses already had a **dispute**, and one of them was ready to **accuse** the other on the spot. The fox said the badger had taken it. The badger said the fox had eaten the moon last Thursday. Their teacher offered one piece of **advice**: look for evidence before deciding.",
-      "\"Only **relevant** information, please,\" said Ella. The moon accusation was **absurd** and had nothing to do with the missing biscuit. Yusuf asked whether the puppets had a **feud**. Apparently they had been arguing for years about a shared umbrella. That old **rift** made both witnesses quick to blame each other. The class could see why a fair decision needed more than angry guesses. Their teacher explained that being **ignorant** of a fact meant not knowing it; it did not prove someone had behaved badly.",
-      "A note appeared saying, I AM A BISCUIT THIEF. The fox looked **furious**. Then Ella noticed that the writing matched a poster from the classroom joke box. Perhaps the note was a **hoax** intended to trick them. Instead of remaining **passive**, Yusuf asked to inspect the display table. Behind it lay a long cardboard tube. A round mark in the dust showed where the biscuit had rolled. \"We are **liable** to miss clues if everyone keeps shouting,\" he said. The teacher nodded and asked the puppet witnesses for a temporary **truce**.",
-      "The search led to the reading corner, where the biscuit stood behind a cushion. Yusuf had searched every shelf, box and gap of the reading corner before he suggested the cushion. A sloping shelf had allowed it to roll away during tidying. Nobody had stolen anything. The fake note was part of the teacher's planned mystery, and the class had managed to **foil** the trick by checking the evidence. The puppets agreed that their umbrella argument was **petty**. They shook paws and decided to share it. Ella announced the **jury**'s decision: no theft had happened. Yusuf gave the biscuit a safer place on a flat shelf. The teacher handed out real biscuits at snack time, and the fox puppet requested twelve. \"That,\" said Ella, \"would require a separate hearing.\" The badger offered to count them, provided there was no argument about crumbs."
+      "The class was learning how a court considers evidence, so their teacher invented a pretend case. Her **attempt** to organise it had worked almost too well, because the puppets had taken the whole thing completely seriously. A giant cardboard biscuit had vanished from the display. Ella and Yusuf joined the **jury**, whose job was to listen carefully and decide what the clues showed. Nobody was truly in trouble. The teacher wanted them to practise fair thinking. Unfortunately, two puppet witnesses already had a **dispute**, and one of them was ready to **accuse** the other on the spot. The fox said the badger had taken it. The badger said the fox had eaten the moon last Thursday. Their teacher offered one piece of **advice**: look for evidence before deciding.",
+      "\"Only **relevant** information, please,\" said Ella. The moon accusation was **absurd** and had nothing to do with the missing biscuit. Yusuf asked whether the puppets had a **feud**. Apparently they had been arguing for years about a shared umbrella. That old **rift** made both witnesses quick to blame each other. The class could see why a fair decision needed more than angry guesses. \"We should **avoid** blaming each other,\" Ella said, \"and go back to the clues instead.\" Their teacher explained that being **ignorant** of a fact meant not knowing it; it did not prove someone had behaved badly.",
+      "A note appeared saying, I AM A BISCUIT THIEF. The fox looked **furious**. Then Ella noticed that the writing matched a poster from the classroom joke box. Perhaps the note was a **hoax** intended to trick them. Instead of remaining **passive**, Yusuf asked to inspect the display table. He accepted Ella's **assistance** without pretending that he had already checked every shelf himself. Behind the table lay a long cardboard tube. A round mark in the dust showed where the biscuit had rolled. \"We are **liable** to miss clues if everyone keeps shouting,\" he said. The teacher nodded and asked the puppet witnesses for a temporary **truce**.",
+      "The search led to the reading corner, where the biscuit stood behind a cushion. Yusuf had searched every shelf, box and gap of the reading corner before he suggested the cushion. A sloping shelf had allowed it to roll away during tidying. Nobody had stolen anything. The fake note was part of the teacher's planned mystery, and the class had managed to **foil** the trick by checking the evidence. The puppets agreed that their umbrella argument was **petty**. They shook paws and decided to share it. Ella announced the **jury**'s decision: no theft had happened. \"Your calm voice is a real **asset**,\" the teacher added afterwards, \"because people actually listen to you.\" Yusuf gave the biscuit a safer place on a flat shelf. The teacher handed out real biscuits at snack time, and the fox puppet requested twelve. \"That,\" said Ella, \"would require a separate hearing.\" The badger offered to count them, provided there was no argument about crumbs."
     ],
     "question": {
       "prompt": "What had actually happened to the cardboard biscuit?",
@@ -348,12 +373,16 @@
       "midst",
       "barb",
       "advice",
-      "address"
+      "address",
+      "awe",
+      "bane",
+      "benefit",
+      "biased"
     ],
     "paragraphs": [
       "At the Saturday **club**, a **veteran** first-aid trainer called Mrs Bell brought a teddy bear with a very dramatic problem. It had a bandage on its ear, a plaster on its paw and a note saying I FEEL A BIT FLUFFY. The children laughed, but Mrs Bell explained that the bear would help them practise asking clear questions. Jay and Amira were partners. Their first piece of **advice** was simple: tell a trusted adult when someone is hurt and follow that adult's instructions.",
-      "Mrs Bell showed a picture of a **vein** carrying blood back towards the heart. Then she pointed to a bicycle helmet, whose hard **shell** helped protect the head. Jay asked whether the teddy needed one. \"Only if it takes up cycling,\" she replied. At the next station, they examined pictures of a thorn with a sharp **barb** and a broken glass bottle. They learned to be **wary** of sharp objects and to **heed** warning signs, and they would not touch anything dangerous or attempt difficult treatment themselves. Mrs Bell held up a card with three headings: WHO IS HURT, WHAT HAPPENED and WHERE. \"When you **address** a grown-up like that, they can help you faster,\" she said. Jay copied the headings into his notebook.",
-      "In the **midst** of the lesson, the bear's owner appeared in a puppet show. He claimed he had tried to **defy** a sign telling riders to slow down. **Lax** attention to the rules had led to a pretend tumble. Now the puppet had an **acute** pain in his ankle and could only **limp**. The group said he should stop and ask an adult for help, rather than keep riding. Mrs Bell praised them. The purpose of the story was to **deter** risky choices, not to make anyone frightened of bicycles.",
+      "Mrs Bell showed a picture of a **vein** carrying blood back towards the heart. Then she pointed to a bicycle helmet, whose hard **shell** helped protect the head, and unrolled a poster of a real rescue crew working in a howling storm. The children looked in **awe** at the photographs. Jay asked whether the teddy needed a helmet. \"Only if it takes up cycling,\" she replied. At the next station, they examined pictures of a thorn with a sharp **barb** and a broken glass bottle. They learned to be **wary** of sharp objects and to **heed** warning signs, and they would not touch anything dangerous or attempt difficult treatment themselves. Mrs Bell held up a card with three headings: WHO IS HURT, WHAT HAPPENED and WHERE. \"When you **address** a grown-up like that, they can help you faster,\" she said. Jay copied the headings into his notebook.",
+      "In the **midst** of the lesson, the bear's owner appeared in a puppet show. He claimed he had tried to **defy** a sign telling riders to slow down. **Lax** attention to the rules had led to a pretend tumble. Now the puppet had an **acute** pain in his ankle and could only **limp**. The group said he should stop and ask an adult for help, rather than keep riding. Amira pointed out that the story was **biased**: it blamed the rider and never mentioned the sign or the wet road. Mrs Bell agreed, let them rewrite the ending so that the road was mentioned too, and then praised them. She said the real **benefit** of asking clear questions was that grown-ups act faster. The purpose of the story was to **deter** risky choices, not to make anyone frightened of bicycles. She added that lost pens had long been a **bane** in this club, so a box now sat by the door.",
       "For the final challenge, the children needed to discover why the teddy kept making a squeaking noise. They checked its toy bicycle, its little helmet and its jacket pockets. Amira eventually found a rubber duck tucked under one arm. The teddy was perfectly **mobile**, able to move about when the puppeteer lifted it; its dramatic squeak was simply an accidental duck squeeze. Jay wrote a pretend report: PATIENT CONTAINS DUCK. Mrs Bell awarded everyone a paper badge for careful listening. At home, Jay showed his badge to his younger sister and explained that it did not make him a doctor. She asked whether he could help her teddy anyway. He checked the toy's pockets first. This time he found three crayons and a biscuit, but thankfully no ducks."
     ],
     "question": {
@@ -388,13 +417,17 @@
       "emerge",
       "absurd",
       "opportunity",
-      "absolute"
+      "absolute",
+      "bleak",
+      "boon",
+      "breach",
+      "brief"
     ],
     "paragraphs": [
       "For the school play, Ruby wrote a king whose **vanity** was bigger than his cardboard castle. He was so **vain** that he ordered six portraits of his left eyebrow. His favourite **vice** was greed: whenever a plate arrived, he wanted the biggest cake. Ruby's friend Theo played the royal cook and refused to stay at the king's **beck** and call all day. \"Even pretend cooks need lunch,\" he said. The play was funny, but Ruby wanted the ending to mean something too.",
-      "In the story, families outside the castle lived in **poverty** and struggled to afford enough food. Ruby made sure this part was treated seriously. The joke was the king's **absurd** behaviour, not the families' difficulties. A wise visitor asked him which **virtue** he admired. The king answered, \"My magnificent hair.\" The audience would know that kindness or honesty was a better answer. Theo suggested a **subtle** clue: each time the king demanded something for himself, his enormous paper crown should slip over his eyes.",
+      "In the story, families outside the castle lived in **poverty** and struggled to afford enough food. At his coronation the king had promised that no family in the kingdom would ever leave his table hungry, and quietly keeping the last bread for himself was a **breach** of that promise. Ruby made sure this part was treated seriously. The joke was the king's **absurd** behaviour, not the families' difficulties. A wise visitor asked him which **virtue** he admired. The king answered, \"My magnificent hair.\" The audience would know that kindness or honesty was a better answer. Theo suggested a **subtle** clue: each time the king demanded something for himself, his enormous paper crown should slip over his eyes.",
       "At rehearsal, the castle began to **sway**. The teacher steadied the panels and helped everyone secure them safely. Ruby wrote a reminder in the **margin** of her script: CHECK CASTLE BEFORE SHOW. She almost gave up when the crown tore as well, but Theo told her not to **despair**. This was an **opportunity** to improve the scene. They repaired the crown with a flap that could drop deliberately. As the king's pride began to **wax**, growing larger with every boast, his view of everyone else would disappear completely.",
-      "On performance night, the hall settled and the silence was **absolute**. Then the flap fell at exactly the right moment. The king bumped gently into a cushion and finally asked for help. That request allowed his kinder side to **emerge**. He listened to the visitor, shared the palace supplies and invited the villagers to help decide how the kingdom's money should be used. Ruby hoped the ending would **kindle** an interest in fairness, as well as earn a laugh. It did both. Afterwards, Theo brought out a tray of small cakes for the cast. The boy who played the king chose the smallest one. \"Learning has occurred,\" Theo announced. Then the king's repaired crown slid over his eyes once more, and he accidentally thanked a coat stand. Ruby decided that line deserved a place in the next performance."
+      "On performance night, the hall settled and the silence was **absolute**. Then the flap fell at exactly the right moment. The king bumped gently into a cushion and finally asked for help. That request allowed his kinder side to **emerge**. He listened to the visitor, shared the palace supplies and invited the villagers to help decide how the kingdom's money should be used. The visit was **brief**: a greeting, a question and a walk to the kitchen. Opening the palace stores was a **boon** to the families outside the walls, who went home with full baskets. Ruby's first draft had ended far more **bleak**, with the king losing his castle and nobody ever speaking to him again. Ruby hoped the ending would **kindle** an interest in fairness, as well as earn a laugh. It did both. Afterwards, Theo brought out a tray of small cakes for the cast. The boy who played the king chose the smallest one. \"Learning has occurred,\" Theo announced. Then the king's repaired crown slid over his eyes once more, and he accidentally thanked a coat stand. Ruby decided that line deserved a place in the next performance."
     ],
     "question": {
       "prompt": "What did the crown flap help show?",
@@ -402,6 +435,529 @@
         "The king’s pride stopped him noticing other people.",
         "The king needed a larger castle.",
         "The cook wanted to become a painter."
+      ],
+      "answer": 0
+    }
+  },
+  {
+    "id": "level-1-11",
+    "level": 1,
+    "number": 11,
+    "title": "Marigold Hall and the Clock That Stopped",
+    "summary": "Two friends take on an empty village hall and learn that a promise kept is the best kind of plan.",
+    "wordIds": [
+      "burden",
+      "cache",
+      "calm",
+      "campaign",
+      "candidate",
+      "caution",
+      "cease",
+      "chaos",
+      "charming",
+      "citizen",
+      "combat",
+      "combination",
+      "commercial",
+      "commit",
+      "companion",
+      "company",
+      "complex",
+      "component",
+      "composed",
+      "consent"
+    ],
+    "paragraphs": [
+      "Marigold Hall had stood empty for two years, and most of the town had stopped mentioning it. Priya and Rory found Mr Ollery sweeping the porch anyway, because nobody had given him a day off in thirty years. \"I know every **charming** little quirk of this place,\" he said, patting the banister, \"but the **burden** of keeping it for nobody is heavier than you would think.\" Inside, rain had spoiled the parquet floor, mice had found the school cupboards, and a moth-eaten banner hung over the door. A **companion** of his own, a scruffy lurcher called Biscuit, trotted at his heel. The children had a plan. \"**Commit** us for one hour a week,\" said Priya, \"and we will bring this hall back.\" Mr Ollery said they would need **consent** from the council and from their parents, and a good deal more than good intentions.",
+      "Their **campaign** began on paper. A poster promised EVERYONE A WARM ROOM. They knocked on doors in the rain and came away with a hundred and forty **citizen**s of Nether Fen who would sign anything, and forty who would bring mugs. Two parents said no. Twenty-eight adults put their names forward as **candidate**s for the little panel of hall helpers, and the vote was held on a wet Tuesday in the school hall. Each **candidate** got thirty seconds, and when Priya and Rory started at the same moment they were told to stop overlapping. A local **company** that made school signs offered to print the posters for nothing, provided the front of the hall carried their name in big **commercial** capitals. The council sent a **caution** letter saying the roof must not be used until it had been surveyed, and the permission forms came back with two noes and a great many yeses.",
+      "The work proved **complex** on the first morning. The clock alone had nine **component** parts inside it, and Rory could not tell the escape wheel from the hour wheel. Mrs Ademola, the restorer who mends the town's clocks, laughed at that and offered to come on Thursday. Repairing a roof, she said, needs a **combination** of patience, mud, and somebody who knows what an escape wheel is. Then the weather turned, and the rain would not **cease**. Water came through the tiles into a bucket, and within ten minutes the hall was **chaos**: mops, buckets, Mrs Ademola's trays of tiny screws, and Biscuit under a coat. Mrs Ademola stayed **composed** throughout, working in the dry corner with her back to the weather, until Mr Ollery noticed and sent a squad of children to hold an umbrella over her head. \"The only trick I have is **calm**,\" she told them. \"You get annoyed on purpose, and then you do the next thing.\"",
+      "The survey came back clear, and on the first warm evening of the summer forty people came to Marigold Hall. Mrs Ademola started the clock at four minutes past six, and nobody could work out why it had never been set properly. The children had hidden a **cache** of biscuits under the new bench, which the committee pretended not to notice, and Mr Ollery stopped calling the empty building a burden. Priya wrote in the back of her notebook that the best way to **combat** loneliness is to give people somewhere to sit, and that an idea is worth a promise if you keep turning up to it. By the following Friday there was a waiting list for the seat nearest the fire. Mr Ollery says the hall has one advantage over his own kitchen, and he is right: nobody brings their own dog."
+    ],
+    "question": {
+      "prompt": "What did Priya write in the back of her notebook?",
+      "options": [
+        "That giving people somewhere to sit is the best way to combat loneliness.",
+        "That the hall clock should be wound every Friday morning.",
+        "That the council had refused to survey the roof."
+      ],
+      "answer": 0
+    }
+  },
+  {
+    "id": "level-1-12",
+    "level": 1,
+    "number": 12,
+    "title": "The Scarecrow Contest at Netherdale",
+    "summary": "A village show, a reluctant judge and one very persuasive scarecrow.",
+    "wordIds": [
+      "constant",
+      "consume",
+      "content",
+      "contest",
+      "contract",
+      "contribute",
+      "convert",
+      "convey",
+      "convince",
+      "corpse",
+      "credit",
+      "creek",
+      "crucial",
+      "curb",
+      "curious",
+      "custom",
+      "dale",
+      "daring",
+      "darn",
+      "debate"
+    ],
+    "paragraphs": [
+      "Netherdale held its Vale Show on the first Saturday of September, and its **custom** ran to a morning debate about whether to hold it at all. Nadia and Kit sat in the front row while Mr Bramley argued with the parents' group. \"The rain is coming,\" said Mr Bramley. \"The rain has not even been forecast,\" said his wife, who had brought a barometer in her handbag for exactly this purpose. The **debate** ended in a compromise that satisfied nobody: the show would go ahead and everyone would pray. Kit was **curious** about almost everything and spent the whole meeting asking whether the prize for the best scarecrow was money or a cup. Nadia had tried to **darn** the hole in her blazer that morning and had made it worse. The **constant** tapping of Mr Bramley's pencil became its own kind of weather. One thing was certain. It would be **crucial** to be standing at their scarecrow before the judge arrived at ten.",
+      "The two friends walked up the **dale** to borrow Mr Aspinall's spare straw, following the **creek** which ran beside the wall in a series of brown steps. Halfway up, they found a dead lamb lying in the grass, stiff and grey. Kit stopped walking. \"That is a **corpse**,\" he said, in the voice he kept for ghosts. Ellen Aspinall came up the path and showed them how to leave it for the beetles and the hedgehogs, and how to keep a dog away from it. Nadia wanted a closer look and Kit wanted to run, and they compromised in the end by sitting on a wall and eating rather a lot of crisps. Getting the last bale of straw into the barn needed a **daring** climb up the ladder, which Nadia did, and Kit did not, and neither of them mentioned afterwards.",
+      "Three weeks later the field filled up. The **contest** for best scarecrow was fierce, and a retired postman had built a life-size crow out of wire. Nadia's scarecrow wore a genuine shepherd's smock. To pay the entry fee, Nadia's dad ran the buffet with his neighbour, and they had a **contract** with a farm two valleys away for the flour. Every family on the lane **contribute**s something: eggs, apples, a trestle table, a hand-painted sign. The old telephone box at the end of the lane was **convert**ed into a book swap with one coat of fresh paint. Kit had to **curb** his laughter while the judge was standing three metres away. Nadia had to **convince** the judge that the smock was real and not a sheet, and then **convey** the whole story of the dale in three painted panels on the back of the barn, because the judge could not see past the crowd.",
+      "The judge wrote for a very long time. Then she said the runner-up was a wire crow, and that the **contest** had never been so close. Nadia's scarecrow came third. \"I am entirely **content** with that,\" said Nadia, meaning it, and then ate three helpings of her own cake. Mr Bramley gave the **credit** to the neighbours who had lent their tools, which is why his wife finally forgave him. They **consume**d so many scones that by four o'clock the paper plates had run out, and Kit fell asleep sitting up in the straw, beside the **corpse** of the jam tart Ellen had brought. Nobody had ever liked the jam tart. The judges admitted the mistake, wrote it out and amended the sheet. By the end of the afternoon Nadia had a third prize ribbon, a strong opinion about scones, and firm plans to beat the wire crow next year. The creek talked to itself all the way home."
+    ],
+    "question": {
+      "prompt": "What did the judge say about the scarecrow contest?",
+      "options": [
+        "It was the closest contest the village had ever had.",
+        "It was judged badly because of the rain.",
+        "The wire crow should have won outright."
+      ],
+      "answer": 0
+    }
+  },
+  {
+    "id": "level-1-13",
+    "level": 1,
+    "number": 13,
+    "title": "The Tin in the Fountain",
+    "summary": "A buried fountain is dug up for the jubilee, and a village learns where its water went.",
+    "wordIds": [
+      "debris",
+      "declare",
+      "decline",
+      "decree",
+      "deny",
+      "deploy",
+      "deposit",
+      "depot",
+      "description",
+      "determine",
+      "digest",
+      "dim",
+      "distant",
+      "distinct",
+      "diverse",
+      "divine",
+      "doctrine",
+      "drift",
+      "dumb",
+      "duration"
+    ],
+    "paragraphs": [
+      "The town council held its jubilee in the park on a Monday, which they said made it more impressive. The mayor read out a **decree**: a proper fountain, working again, before the children went back to school. A stone tablet had stood behind the old fountain since 1841, buried up to its middle by a **deposit** of soil, roots and dog mess. Mr Iyer, caretaker here since the war, wiped it with his sleeve and read the **doctrine** carved along the top. WATER FOR ALL, SIDE BY SIDE. \"There used to be a spring under here,\" he said. \"Now the old engines live in the **depot** in the engine house, and I have the only key to it.\" The park was **dim** under the elms, and somewhere **distant** a bell rang, though nobody could say which church it belonged to.",
+      "They dug on the second Tuesday, in the **duration** of one double period, with four spades and a great deal of optimism. The **debris** came up in waves: bricks, bottles, a bicycle wheel, a stone lion's head that had belonged to a pump. It also came up in a **drift** of grit that turned the whole green the colour of a chimney. Cerys, who was in charge, refused to **determine** that the dig would fail, and was proved right by a pipe. The water board agreed to **deploy** a pump within the hour, and the adults dragged a hose the length of the football pitch. When a loud click came out of the hole, everybody looked at the pipe, and the pipe did not **deny** it. Over lunch Mr Iyer told them the **distinct** sound was the old valve, and that the fountain had been silent for forty years.",
+      "The **description** on the side of the pump, painted in gold and half scraped away, said MANUFACTURED 1908. The jubilee crowd was **diverse** in the way only a small town can be: babies, farmers in wet coats, three generations of one family, and a man who had come dressed as a Roman soldier and stayed a long time. When the water finally came, with a noise like a kettle that has been patient all morning, the whole park went **dumb**. Then it roared. The smell off the wet stone had a cold penny edge to it, and the two ladies from the institute called it **divine**, which they did, and nobody argued. Sales at the cake stall began to **decline** sharply, because nobody could think about cake again.",
+      "The mayor **declare**d the fountain open, and said the plaque naming the engineer had been lost, so she read the name from a note in her pocket instead. Below the empty bracket, somebody had scratched a pencil list of dates into the stone: 1912, 1948, 1971, 2004. The fountain had been cleared four times in a century, and every child in the park began to try to be the fifth. The children ate their cake in the drizzle and had to **digest** it standing up in the wind, which is not recommended. By Monday the water was running as steadily as it had in 1908, and Mr Iyer had locked the depot door and thrown the key to Cerys, who wears it on a bootlace. The water board sent a letter about the invoice."
+    ],
+    "question": {
+      "prompt": "How many times had the fountain been cleared before this one?",
+      "options": [
+        "Four times, as the pencil list showed.",
+        "Never, because it had only just been built.",
+        "Once, in 1908."
+      ],
+      "answer": 0
+    }
+  },
+  {
+    "id": "level-1-14",
+    "level": 1,
+    "number": 14,
+    "title": "Ninety Seconds of Darkness",
+    "summary": "A school newspaper covers a solar eclipse and finds a readership.",
+    "wordIds": [
+      "dynasty",
+      "eclipse",
+      "edible",
+      "editor",
+      "elect",
+      "embrace",
+      "emphasis",
+      "employ",
+      "enormous",
+      "epic",
+      "era",
+      "erect",
+      "essence",
+      "esteem",
+      "estimate",
+      "evolve",
+      "exciting",
+      "exempt",
+      "expense",
+      "expert"
+    ],
+    "paragraphs": [
+      "The Netherfield Clarion had been printed on a single sheet in the staffroom for eleven years, and now Sana had taken over as **editor** with a plan for eight pages. For seventy years every headteacher of the school had been an Ashcombe, a **dynasty** of four, and the fourth of them, Mrs Ashcombe, gave the new intake the same **emphasis** on reading aloud that her great-grandfather gave it in the **era** when the school had four hundred pupils. On Monday she sat **erect** on the stage and told them a newspaper was not a pile of adverts but a promise. The Clarion would **employ** a printer's apprentice at three pounds a week, and the school council would pay for the ink. Sana had to **estimate** the number of copies: two hundred. The hall held two hundred and forty. She wrote that figure in her notebook in case anybody argued about it later.",
+      "The **eclipse** was on a Thursday in April, and the **expert** who was coming to speak at the astronomy evening was Mr Vardey, whose great-grandfather had made the clock in the town hall. He brought a case of viewing glasses from his own **enormous** workshop, one for every pupil, and warned them not to look at the sun with their ordinary ones. Counting the glasses took the whole of the maths register and there were four left over, which the staff used. Nobody imagined the afternoon would be **exciting**. Mr Vardey had seen eleven eclipses. \"A total eclipse is not an **epic** event,\" he said, laughing at the word, \"but if you have never seen the sun vanish, it will feel like one.\" Sana and her team painted signs for the yard. A MOMENT YOU WILL SEE TWICE.",
+      "On the day the infant classes picked blackberries in the field behind the gym. Mrs Ng, who keeps the bees, held up one berry and said it was **edible**, then held up a red one and said it was not, and one boy ate it anyway out of pure showmanship. Sana's leader explained that a good school paper **evolve**s the way a garden does, mostly by accident, and quoted her grandmother: never print a joke about a teacher without asking the teacher. The observatory visit cost six pounds, an **expense** the school agreed to waive for anybody who asked, because nobody can be made to go on a trip. Twenty children were **exempt** from the charge that term. The Clarion also reported the **elect**ion for the school council, which the campaign for a bigger library budget won by four votes.",
+      "At 1.15 the dogs began to bark, the temperature dropped, and the eclipse began. There is no drama in the first minute and enormous drama in the second, when the light goes out of the sky and the wind comes off the trees. Mr Vardey counted the seconds aloud and everybody counted with him, and then the light came back and a hundred children took off their glasses at once, which is against the rules and which nobody minded. Mrs Ashcombe says she is happy to **embrace** any idea from the pupils, and this one she took to the governors in ten minutes. Mr Iyer, the caretaker, is held in such **esteem** that a parent once apologised to him for complaining. Sana printed one line on the front page and defended it for months afterwards: the **essence** of the Clarion is small things found out properly. For the eclipse the Clarion printed a hundred and twenty copies, and they sold out by lunchtime. She printed NEWSPAPERS ARE FINISHED across the top of the next issue, with a question mark, and left it there for the headteacher to find."
+    ],
+    "question": {
+      "prompt": "How many copies of the eclipse edition did the Clarion print?",
+      "options": [
+        "A hundred and twenty.",
+        "Two hundred.",
+        "Two hundred and forty."
+      ],
+      "answer": 0
+    }
+  },
+  {
+    "id": "level-1-15",
+    "level": 1,
+    "number": 15,
+    "title": "The Label That Was Wrong for Forty Years",
+    "summary": "A museum trail sends two pupils after the truth about a famous iron hook.",
+    "wordIds": [
+      "explicit",
+      "extended",
+      "extract",
+      "fact",
+      "faint",
+      "flawed",
+      "flee",
+      "flora",
+      "forbid",
+      "forecast",
+      "forge",
+      "foster",
+      "foundation",
+      "frequent",
+      "fund",
+      "gauge",
+      "genre",
+      "glimpse",
+      "gravity",
+      "guard"
+    ],
+    "paragraphs": [
+      "On the last Tuesday of term the whole of Year Six went to Hill End Museum, which is an old smithy with a **forecast** problem: the weather promised sun and delivered drizzle. Inside, the air tasted of iron. A **faint** smell of smoke still came out of the **forge** where the village smith worked until 1961, and something green and ferny had taken the yard, where the museum's **flora** now included a hart's tongue fern the size of a school ruler. The rules were **explicit** in large letters on the wall: DO NOT TOUCH THE TOOLS. The guide was a girl called Nell with a badge the size of a dinner plate. Rufus, the museum dog, had one **frequent** job, which was to **guard** the biscuit tin against every child in Northumbria.",
+      "The centrepiece was a great iron hook mounted on a card, and the label told a **flawed** story. The **fact** the museum had printed for forty years was that the hook belonged to a robber who emptied a bank in 1789. Nell opened the ledger and read an **extract** from 1791 in careful copperplate. The smith, Abel Grice, had refused to make it, because he made only honest nails, and he had written down the name of the man who asked twice, and of the constable who came the third time. The label had the whole story the wrong way round. The trail was supposed to **foster** curiosity, Nell said, and curiosity had cost the museum its best label.",
+      "Then the **extended** rain arrived, the kind that settles in, and the class was hurried indoors in about four seconds. Rufus **flee**d up the stairs and was found asleep on a horse collar. In the long gallery they could not **gauge** how many of the visitors had come for the hook and how many for the fire, so Nell put up a new board. A **glimpse** of the old forge fire is usually enough for people to understand the work. The gallery **foundation** was a stone floor laid in 1840, and you could feel every lump of it through your socks. The trust's repair **fund** was eleven pounds short, and nobody could agree on the **gravity** of the decision about what the museum was for until Mrs Loyd said, \"A museum is not a list of things we know. It is a list of how we know them.\" The trust **forbid**s eating in the gallery, and Mrs Loyd kept to that even on a wet day.",
+      "The label was rewritten that week in the plainest English the trust could manage, and the museum changed its **genre** in the process. It had always claimed to be a room of local history. Now it was a room of evidence: what people know, what people guessed, and how you can tell the difference. Nell found Abel Grice's great-great-granddaughter in the visitors' book, aged nine, on a school visit in 1981, and wrote to her with Mrs Loyd's permission. The family brought a photograph of Abel's shop and a copy of the constable's own report, which agreed with the ledger. The **fund** received enough money to have the **forge** lit once a month by a working smith, and Rufus guarded the biscuits throughout. The iron hook stays on the wall, but the label now tells the truth, and its first sentence is this: one **fact** we are certain of is that Abel Grice made nothing for a bank robber, and his ledger of refused requests is in the next case."
+    ],
+    "question": {
+      "prompt": "Why was the old label on the iron hook wrong?",
+      "options": [
+        "It said the hook belonged to a bank robber, when the smith had refused to make it for him.",
+        "It was written in a handwriting nobody could read.",
+        "The hook had been stolen from the museum years ago."
+      ],
+      "answer": 0
+    }
+  },
+  {
+    "id": "level-1-16",
+    "level": 1,
+    "number": 16,
+    "title": "The Night the Goat Ate the Bunting",
+    "summary": "A storm wrecks a village fete, and a boy with a bucket saves the whole day.",
+    "wordIds": [
+      "habitat",
+      "halt",
+      "hardy",
+      "havoc",
+      "heroic",
+      "hilarious",
+      "hue",
+      "humane",
+      "humble",
+      "hybrid",
+      "idle",
+      "idol",
+      "implement",
+      "impose",
+      "influence",
+      "innovation",
+      "insane",
+      "insight",
+      "inspire",
+      "intact"
+    ],
+    "paragraphs": [
+      "Ferndale Fete happened once a year in the park behind the church, and this year the bunting was a new **hue** of orange, so bright that two ladies walked into the flowerbed to admire it. Next to the cake tent stood the rescue centre's stall, and behind the stall, on a scrap of rough grass, a keeper called Fatima was building a **habitat** for hedgehogs. The **hardy** blackthorn hedge had survived two floods, a motorway and a proposal to build houses. Fatima worked in a **humble** way, on her knees, saying nothing clever. A **hybrid** rescue dog called Digger, part collie and part something with far too much energy, was tied to the stall leg and **idle** only in the sense that he was not currently eating. Tickets sold, the raffle ran, and by three o'clock the field was **insane** with noise.",
+      "At 3.20 the sky opened. Rain came sideways across the park and the marquee's back wall came down with a crack like a gunshot, which caused **havoc** in about nine seconds flat. The music **halt**ed. The cake tent took twenty minutes to fill with water. Nobody was hurt, though the fire crew were quick, and the lights went out in the order they had been plugged in. Fatima did not stop; she got the hedgehog boxes under her awning and put two frightened pigeons in a box with air holes punched in it, because that is what you do. The organiser shouted at everybody to be **heroic** and calm, in that order. The only **intact** part of the fete turned out to be the pets' corner, and the most **humane** thing to do about it was to move everything with an animal in it into the church hall before dark.",
+      "The goat had been tethered in the field's corner for three fairs and had outwitted every rope in the parish. At 3.40 she went through the hedge, ate a **hilarious** quantity of bunting, and put the church hall's parish sign round her neck, which made her look like a smug mayor. Twenty-six people ran in six different directions, which was useless, until a boy called Toby, who keeps goats on his uncle's farm, had the **insight** that saved the afternoon. \"She will follow a bucket,\" he said. His first plan sounded **insane**, which is a polite word, and did not work at all. The **innovation** that worked was sunflower seeds poured along the path to the hall, and then a child leading the bucket and forty adults following the bucket and the entire village walking home behind one goat.",
+      "The fete finished on the Sunday instead, when the sky had recovered its good mood and the marquee had been mended. The council **impose**d one condition on the next fete, that every tent be pegged and every cable checked by a grown-up, and they **implement**ed it properly, with a list and two named volunteers. The goat's story travelled the length of the county. Behind the church a proper wildlife area went in over eleven weeks, and Fatima said she had learned more from Toby in one Saturday than in thirty years, and that she hoped the garden would **inspire** a few more boys like Toby. The **influence** she is proudest of belongs to him. The goat, who was called Brigadier by then, wore the parish sign for the rest of the summer and became a local **idol**, appearing on the library welcome board. Everybody agreed that a bit of weather is only ever a story about something else."
+    ],
+    "question": {
+      "prompt": "What finally helped them find the goat?",
+      "options": [
+        "Following a bucket, as Toby suggested.",
+        "A police helicopter from the next county.",
+        "A notice on every door in the village."
+      ],
+      "answer": 0
+    }
+  },
+  {
+    "id": "level-1-17",
+    "level": 1,
+    "number": 17,
+    "title": "The Lame Pony and the Complaints Committee",
+    "summary": "A village race is stopped by a hurt pony, and a long argument ends in a fair decision.",
+    "wordIds": [
+      "integral",
+      "integrity",
+      "intense",
+      "intention",
+      "intimate",
+      "invalid",
+      "ire",
+      "ironic",
+      "just",
+      "justice",
+      "keen",
+      "labour",
+      "lame",
+      "latter",
+      "liberal",
+      "liberty",
+      "lieu",
+      "limb",
+      "limit",
+      "lodge"
+    ],
+    "paragraphs": [
+      "The Dairy Field race had not been run since the war, and by March the whole of Year Six was **keen** on it. Ella had a **limit** of eleven minutes, which was **liberal** by the standards of the last one, and an **intention** of finishing in nine. The marshals were **integral** to the whole plan, in the school captain's opinion, and the captain had also written to every household on the lane about parking and about dogs. Mrs Mahon, who organised the race, sent Ella's form back with two lines in green pen and no explanation at all. The day was **intense** from the first gun: rain on the field, wind on the flat, and a farm gate that would not stay shut.",
+      "The first heat was fine. In the **latter** heat, a sycamore **limb** came down across the second fence, and a boy called Euan tried to lift it on his own, which was **ironic** given how often he was told off afterwards. The lane's pony, Sable, was tethered at the field gate by a man who should have known better. Sable went **lame** in the fetlock, the vet came out within the hour, and the race stopped. Mr Dunlop, who owned her, **lodge**d a complaint about the whole event inside forty minutes, and the **ire** of the committee was immediate and entirely justified. There was a great deal of shouting about who should pay for what.",
+      "The complaints committee met on the Tuesday and it took four hours. Bea's part was the simplest thing anybody said all day. The gate had been open, she said, and her time was **invalid** because she had run the wrong route, and she said so before she was asked. That is the **integrity** a committee needs, though nobody had thought to tell the committee that. In **lieu** of compensation, the field fence was mended at the committee's own **labour**, and the vet's bill was paid from the raffle. Mr Dunlop accepted the ruling without liking it. \"The decision is **just**,\" Ella said afterwards, \"because the same rule came out for the gate, the road and the field.\" **justice**, she added, is much duller than people expect, and usually takes four hours.",
+      "The repair took two Saturdays. On the second one, eleven people worked in the rain with mud to the ankle and called it the best meeting of the year. For the re-run every racer was given a **liberty** of ninety seconds, added to the clock at the start, so that the stopped race was not counted against anybody. Ella finished in ten minutes forty and came fourth. Bea did not run, because she was walking Sable's replacement, a grey called Marigold, along the lane, in a stable bandage she no longer needed. Afterwards the two girls had an **intimate** five-minute conversation about the vet's invoice, which settled nothing and helped enormously. The committee promised, in writing, not to happen again, and a written promise is the only kind that keeps."
+    ],
+    "question": {
+      "prompt": "How did Bea help her own case at the committee?",
+      "options": [
+        "She admitted that the gate was open and that her time was invalid.",
+        "She brought a photograph of the open gate.",
+        "She asked everyone to be quiet and to believe her."
+      ],
+      "answer": 0
+    }
+  },
+  {
+    "id": "level-1-18",
+    "level": 1,
+    "number": 18,
+    "title": "The Concert That Moved to the Kitchen",
+    "summary": "A choir loses its hall and gains something better on a night nobody planned.",
+    "wordIds": [
+      "loyal",
+      "magnetic",
+      "melody",
+      "mercy",
+      "mere",
+      "moderate",
+      "modest",
+      "mortal",
+      "muted",
+      "neat",
+      "obscure",
+      "oppose",
+      "opt",
+      "origin",
+      "pact",
+      "panic",
+      "parallel",
+      "partial",
+      "pathetic",
+      "permit"
+    ],
+    "paragraphs": [
+      "The school hall was closed for re-carpeting from the first of December, which is exactly when the choir had booked it. Parents who paid for the carpet **oppose**d the idea of a concert in a building with no chairs, and at the meeting the headteacher, Mrs Pritchard, said the concert would take place in the **partial** building or it would not take place at all. She **permit**ted the choir to use the school kitchen, on the **moderate** condition that everything came out of it afterwards and nobody touched the catering tins. The kitchen was a **neat** room with one long steel table, a hatch to the corridor and a **muted** extractor fan that sounded like a bee with an opinion. The choir leader wrote to every family. The concert moves. Come anyway.",
+      "A girl called Nadia arrived in October and within three weeks was the most **magnetic** person in Year Seven, so that people rearranged their lunch breaks around her. She was also **loyal** in a way that mattered. When a quiet boy called Kwame said he could not sing in front of people, she did not laugh, and she kept asking him to come and stand at the back with her. He knew every word of the song they sang, because he had found it. Its **origin** was a Welsh tune on a record in an **obscure** box of old broadcasts in the library, and the choir made a **pact** among themselves that nobody would ever say who had suggested it. The **melody** was eight bars long and it climbs, which is why it works and why it is hard.",
+      "At ten past six, with a **mere** twenty minutes to go, the lights in the kitchen went out and there was a **panic** of the useful kind. Mrs Pritchard found the torch. The choir found the door. Two Year Sixes carried the piano stool out of the closed hall, which nobody had told them they were allowed to do. Nadia's cousin arrived with a **pathetic** box of biscuits, only four, because he had also heard about the carpets. Everybody **opt**ed to stay, which nobody had formally asked them to do. Mrs Pritchard showed **mercy** about the rule on hot water and let the tea urn be boiled outside on the camping stove, in the rain, in her coat.",
+      "The concert lasted fifty minutes. Two long tables had been pushed together, and the audience sat in **parallel** rows on either side, close enough to pass the biscuits along. Kwame sang in the second verse, quietly, and nobody in that kitchen breathed for eight bars. When the last note finished, the room made a noise Mrs Pritchard later described as **mortal**, as if the ceiling had come in. It had not. The choir had **modest** hopes for the night and got something else entirely. Afterwards they took a bow from people sitting on upturned crates, including one parent who had forgotten her umbrella and stayed for the last song. It was the loudest thing the kitchen had ever heard. The following year the hall came back with a deep blue carpet, and the choir asked to hold the concert in the kitchen anyway."
+    ],
+    "question": {
+      "prompt": "Where did the concert eventually take place?",
+      "options": [
+        "In the school kitchen.",
+        "In the newly carpeted hall.",
+        "On the stage in the corridor."
+      ],
+      "answer": 0
+    }
+  },
+  {
+    "id": "level-1-19",
+    "level": 1,
+    "number": 19,
+    "title": "The Play at the Quarry Welfare Hall",
+    "summary": "A school play about a tyrant comes off better than anybody expected.",
+    "wordIds": [
+      "portal",
+      "practical",
+      "profit",
+      "prominent",
+      "promote",
+      "prompt",
+      "quarry",
+      "queer",
+      "rank",
+      "rant",
+      "rare",
+      "reap",
+      "receive",
+      "reel",
+      "refuse",
+      "regime",
+      "relay",
+      "release",
+      "remedy",
+      "reputation"
+    ],
+    "paragraphs": [
+      "The Netherfield school play had not been staged for eleven years, and the drama club had decided that eleven years was long enough. The hall they chose was the old quarry welfare hall, built in 1904 out of the grey stone that came out of the **quarry** behind it, with a great carved **portal** in the wall that used to be a chapel door. The play was about a governor's **regime** in a country with no name: taxes, a prison, a boy who reads a book instead of paying them. Mr Iyer, the caretaker, has a **reputation** for saying nothing in assemblies and everything afterwards. The **prominent** guest, the mayor, had agreed to come and to give a short **rant** about the state of the roof. Tickets cost a pound, and the **profit** would go to new stage curtains. The club **promote**d the play in the shop window, at the bus stop and in the parish newsletter, which is more promotion in three weeks than the club has managed in eleven years.",
+      "Prithvi and Nour took the geography group to the quarry lip in the morning, which Miss Delacroix said was **practical** in the way that everything she said was **practical**. The school had **reap**ed the apple orchard in October and sold the fruit, and the money was still in a tin, waiting to be spent on felt and paint. At the lip they found a slab of stone with the **rare** fossil of a fish in it, six hundred million years old, lying in the wall where it had fallen a century ago. It was also a **queer** spot, Prithvi said, in the sense of odd, because the wind came out of the entrance as if the hill were breathing out. A **prompt** shout from a member of staff had them all back up the path in ninety seconds, and a girl called Sian **reel**ed the whole way to the top, holding her bag.",
+      "Backstage at two o'clock, the cast was **rank**ing themselves by the size of their part, which was not a popular process. The flat-topped hats were wrong, somebody had painted the prison door green, and the boy playing the governor had decided that his character would **refuse** to wear the wig, and argued about it with a confidence that made everyone doubt their own memory. In the wings, a message had to be **relay**ed hand to hand, because the passage was dark and nobody could hear above the stamping. The **remedy**, found at 2.40 by the youngest member, was to have one person stand in the wings and speak the words plainly, twice, to the person in front of them. The wig stayed on. It was the first sensible decision of the day and nobody admitted it.",
+      "At seven the lamps came up, the hall filled, and the show was very good. The boy who had refused the wig was the best thing on the stage, because a tyrant who can refuse his own costume department is a tyrant you believe in. The prison scene did what it was supposed to do, and the last line, which the club had rewritten three times, landed exactly where they had put it. In the interval the town chose to **receive** the mayor's news about the roof with groans and a collection which came to sixty pounds, which is how this town receives everything it would rather not. When the cast came out to bow, the **release** of tension was so complete that the oldest gentleman present applauded with his umbrella. The drama club has decided that eleven years was long enough, and that eleven more would also be fine."
+    ],
+    "question": {
+      "prompt": "How did the club solve the problem of giving cues in the dark wings?",
+      "options": [
+        "One person stood in the wings and spoke the words plainly, twice, to the actor in front.",
+        "They wrote all the cues onto the back of each costume.",
+        "They turned the house lights up for the whole play."
+      ],
+      "answer": 0
+    }
+  },
+  {
+    "id": "level-1-20",
+    "level": 1,
+    "number": 20,
+    "title": "The Lantern Walk at Wraye Hall",
+    "summary": "A school visit turns into a repair, a discovery and a procession that had not happened for a hundred years.",
+    "wordIds": [
+      "reserve",
+      "reside",
+      "residence",
+      "resign",
+      "resist",
+      "resort",
+      "restore",
+      "retain",
+      "reveal",
+      "revive",
+      "rhetoric",
+      "rivalry",
+      "robust",
+      "rogue",
+      "sacred",
+      "sane",
+      "scenic",
+      "score",
+      "secure",
+      "segment"
+    ],
+    "paragraphs": [
+      "Wraye Hall is the sort of **residence** that makes visitors lower their voices, and the Dowlers had **reside**d in it for two hundred years. The third of them, Lady Dowler, was a **sane** woman in a century of fools, which is why the village trusted her with everything, including the keys. The stone is **robust**: the south wall came through the great frost of 1895 and has been mended twice. In the corner of the walled garden stands a **sacred** yew, older than the house and older than the village, and nobody may touch it. The **scenic** prize, awarded each September to the best-dressed lane, is a **rivalry** between Wraye and Netherford that has run since the war and will, the publican says, run until one of us is dead.",
+      "Year Six came in a coach with a **rhetoric** problem. The guidebook called the entrance a triumph of Jacobean ambition, and the guide, a young man in a very good coat, explained for forty minutes why that mattered and, honestly, it did not. The only **rogue** in the building was a man in the car park selling counterfeit guidebooks for three pounds, and he was doing extremely well. The class ran a quiz instead, because Mrs Askey had heard that the **score** would decide who represented the village at the **resort** by the sea for an inter-school history conference. Wraye won by four points. The last question, which nobody answered, was whose initials are carved above the front door and why there is only one set.",
+      "Over lunch in the walled garden, Mrs Askey told them the real problem. The great **restore** of the roof had stopped in March. One **segment** of the curved tiles had cracked, and instead of replacing the lot, a committee had tried to **secure** the loose ones with wire and prayer. Lady Dowler had **resign**ed from that committee in a letter of three sentences, and the builder had **resist**ed every suggestion on the grounds that the old stones were historic, which is not what historic means. Then a boy asked, quite quietly, why nobody had asked the village. Lady Dowler had **retain**ed a second copy of the 1911 survey drawing, in which every tile was numbered, and the **reserve** of good tiles in a barn since 1970 came to exactly one hundred and forty.",
+      "The repair finished in September, the new tiles numbered and matched to a drawing ninety-eight years old. At the lantern walk, somebody **reveal**ed why nobody had lit the south wing for a century: it used to be a chapel, and the yew in the garden was planted by the people who built it. The old walk was **revive**d in ten minutes of committee time and a great deal of shouting about a bell. Lady Dowler, who was eighty-one, walked it twice, and said it was the best evening of her life and that she intended to have another one next year, thank you. The village has not won the scenic prize since. Nobody minds."
+    ],
+    "question": {
+      "prompt": "Why had nobody lit the south wing at the lantern walk?",
+      "options": [
+        "It used to be a chapel, and the yew in the garden was planted by the builders.",
+        "The roof was unsafe and nobody would stand under it.",
+        "The family had fallen out with the village in 1911."
+      ],
+      "answer": 0
+    }
+  },
+  {
+    "id": "level-1-21",
+    "level": 1,
+    "number": 21,
+    "title": "The Show on Mr Dacre's Field",
+    "summary": "A farming tenant, a planned stand and a village show that has to change its mind.",
+    "wordIds": [
+      "seldom",
+      "shrink",
+      "significant",
+      "slogan",
+      "sober",
+      "specify",
+      "stability",
+      "stance",
+      "static",
+      "strive",
+      "submit",
+      "subsequent",
+      "substance",
+      "superior",
+      "surge",
+      "suspect",
+      "swallow",
+      "temper",
+      "tenant",
+      "texture"
+    ],
+    "paragraphs": [
+      "The Nether Barley Show had been held on the same field since 1951, and the field belonged to Mr Dacre, who was a **tenant** of the Fenwick estate and paid rent on every blade he grew. The show secretary, Mrs Nagle, opened the planning meeting in her usual **sober** manner, read out the insurance, reported on the **stability** of the drainage, which had been tested in March, and set out the committee's **stance** on the one question that mattered: whether to build a covered stand on ground that was not the village's. \"I am not saying no,\" she said. \"I am saying that every **slogan** on the poster needs a fact behind it.\" A **significant** number of households wrote to the estate. The estate wrote back politely and said nothing else for months.",
+      "Then a letter came from a farmer two miles away saying the stand would take the water off his land. Mrs Nagle asked him to **specify** which water. He could not, and the committee began to **suspect** that the letter was about the stand and not about drainage. The rest of the meeting was held in front of the hall's old television, which showed a weather map with a **static** hiss and did nothing whatsoever to help. Fog was **seldom** spoken of at the Barley Show and nobody could remember the last one, though the air in that hall had the **texture** of a wet glove held up to your face. Mrs Nagle wrote one line in the minutes. We will not build on Mr Dacre's land without his agreement in writing.",
+      "On the Friday morning the rain came, and then came again. The size of the crowd **shrink**ed by a third in ten minutes, and the only **surge** in the numbers was in the cake queue, which was not going to save anybody. A boy called Anwar, who had come early to put up the gazebo, began to **strive** with a screw that would not turn. Mr Dacre lost his **temper** for about four seconds and told him it was not a race, and then had to **swallow** the rest of the sentence, which took some doing. In the end the committee had to **submit** to the new fence line, which meant the finish moved ninety metres and the whole afternoon had to be re-timed. They dug one hole to test the **substance** of the ground and the stake came straight out again, so the gazebo went on the mown strip instead, where the ground was firm and the crowd was thinner.",
+      "The show went on, smaller but complete. The village hall's cake took the top ribbon, and the judge's note said it was **superior** by a clear margin, which Mrs Nagle read out to the whole tent, and which is the only thing the Dacre family mention when they talk about that year. In the **subsequent** years the estate and the committee signed an agreement, and the stand was built on the far side of the beck, on land the village actually owned. Mr Dacre kept his field and his rent, the committee kept its show, and the thing that turned out to hold this village together for eighty years was the least dramatic of all: a written plan, agreed by everybody, before anybody wanted it."
+    ],
+    "question": {
+      "prompt": "What made the committee suspicious of the farmer’s letter?",
+      "options": [
+        "He could not say which water his letter was about.",
+        "He had signed somebody else’s name to it.",
+        "It was written on the back of an old poster."
+      ],
+      "answer": 0
+    }
+  },
+  {
+    "id": "level-1-22",
+    "level": 1,
+    "number": 22,
+    "title": "The Treaty of Two Harbours",
+    "summary": "A class learns how an old treaty was agreed, then has to agree one themselves.",
+    "wordIds": [
+      "treaty",
+      "union",
+      "universal",
+      "vacant",
+      "vague",
+      "valid",
+      "vast",
+      "verify",
+      "vessel",
+      "viable",
+      "vivid",
+      "vow",
+      "worthy",
+      "zeal",
+      "campaign"
+    ],
+    "paragraphs": [
+      "The Marlow Maritime Museum has a **vast** archive, and the Year Six visit is supposed to be worth the coach. In the first room stands a model of a **vessel** the size of a bath, the Bellow, which carried grain to a town that does not have a name any more. The curator, Mrs Pryce, gives a **vivid** talk about the **treaty** of 1791, which ended sixty years of argument between the two harbours by dividing the fishing, the pilotage and the right to use the quay. Nobody has been allowed to renegotiate it since, she says, and she has checked, and the last man who tried was a schoolmaster.",
+      "Back at school, the pupils' **union** had a week to decide what to do with the old gym, which would be **vacant** from September. There is a **universal** rule in the school constitution, written on page one in 1974, that any decision about shared space must be made by a **valid** vote of the whole school and not by a committee of two, which is exactly what Mrs Ashcombe says every single time anybody tries. The plan in the minutes was **vague** in the way that plans are when nobody has counted anything: a space for wellbeing, available to all. Ilse agreed to stand for the union's chair on one condition, which was that the plan had to be **viable** on paper before anybody voted on it, and she was not entirely popular for saying so.",
+      "Which meant counting things, because a **campaign** is worth exactly as much as its numbers. The union spent two evenings **verify**ing numbers with a tape measure, two thermometers, Mrs Ashcombe's telephone bill and a borrowed calculator: the roof, the heating, the number of pupils who would actually come to a lunchtime club, asked properly and anonymously, with a box for yes and a box for no. The figure everyone had lifted from the builders' leaflet was wrong by a third, and the plan that came out the other side was smaller, cheaper and much better. On the Friday the union stood in front of eight hundred pupils and made its **vow**: whatever the vote, the garden happens, and there will be apples. Somebody cheered. Somebody else asked whether the trees would block the car park.",
+      "The vote was close, 431 to 402, which Mrs Ashcombe says is a **worthy** way for any school to decide anything, since it means both sides must have been listening. The gym became a garden in April, with a hedge, four raised beds, a bench made by the woodwork club and a sign that says EVERY DAY, IN THE PLACE WHERE IT WAS MOST NEEDED. There was more **zeal** in that first Saturday than anybody had seen in a school corridor for years, and the only casualties were a pair of secateurs and one extremely apologetic mole. Mrs Pryce came to plant the apple tree, from the same line as the Bellow, and said that her grandmother, who had been born at one of the two harbours, would have liked the vote very much."
+    ],
+    "question": {
+      "prompt": "Why did the union measure and count things before the vote?",
+      "options": [
+        "The figures they had been given were wrong by a third.",
+        "The council said numbers did not matter.",
+        "Nobody could agree what the garden was for."
       ],
       "answer": 0
     }
