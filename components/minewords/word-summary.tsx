@@ -1,7 +1,8 @@
 "use client";
 import Pronunciation from "./pronunciation";
+import ExcludeWordButton from "./exclude-word";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Header from "./header";
 import { api } from "@/lib/client/api";
 import {
@@ -29,30 +30,22 @@ export default function WordSummaryPage() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [exporting, setExporting] = useState(false);
+  const refresh = useCallback(() => {
+    void api<WordSummaryData>("/api/words")
+      .then((result) => {
+        setData(result);
+        setError("");
+      })
+      .catch((e: Error) => {
+        setError(e.message);
+        setData(null);
+      });
+  }, []);
   useEffect(() => {
-    let active = true;
-    const refresh = () => {
-      void api<WordSummaryData>("/api/words")
-        .then((result) => {
-          if (active) {
-            setData(result);
-            setError("");
-          }
-        })
-        .catch((e: Error) => {
-          if (active) {
-            setError(e.message);
-            setData(null);
-          }
-        });
-    };
     refresh();
     window.addEventListener("focus", refresh);
-    return () => {
-      active = false;
-      window.removeEventListener("focus", refresh);
-    };
-  }, []);
+    return () => window.removeEventListener("focus", refresh);
+  }, [refresh]);
   const matching = filterWords(data?.words || [], filter, search, difficulty);
   const pages = Math.max(1, Math.ceil(matching.length / pageSize));
   const currentPage = Math.min(page, pages - 1);
@@ -325,6 +318,9 @@ export default function WordSummaryPage() {
                             </strong>
                             <Pronunciation word={word.word} id={word.id} />
                             <p>{word.definition}</p>
+                            {word.custom ? (
+                              <span className="guide-chip">Added by you</span>
+                            ) : null}
                             <details>
                               <summary>Example & related words</summary>
                               {word.example && (
@@ -338,6 +334,11 @@ export default function WordSummaryPage() {
                                 <b>Antonyms:</b> {word.ant || "—"}
                               </p>
                             </details>
+                            <ExcludeWordButton
+                              wordId={word.id}
+                              word={word.word}
+                              onChanged={refresh}
+                            />
                           </td>
                           <td>
                             <span className="difficulty-tag">

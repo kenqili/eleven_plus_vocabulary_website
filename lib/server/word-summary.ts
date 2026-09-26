@@ -1,8 +1,18 @@
 import levels from "@/data/word-levels/levels.json";
 import type { DifficultyInfo } from "@/lib/challenge/difficulty";
 import { words } from "@/lib/challenge/bank";
+import type { Word } from "@/lib/challenge/words";
 import { CUMULATIVE_FLOOR, hasMastered } from "@/lib/challenge/mastery";
 import { learningStatus, type WordSummary } from "@/lib/challenge/word-summary";
+import {
+  customWordsFor,
+  excludedWordIds,
+} from "./parent-words";
+import {
+  difficultyForAddedWord,
+  isAlreadyInBank,
+  toCustomWord,
+} from "@/lib/challenge/added-words";
 import { database } from "./db";
 export async function wordSummary(
   userId: string,
@@ -32,44 +42,64 @@ export async function wordSummary(
   ]);
   const byWord = new Map(progress.results.map((row) => [row.word_id, row]));
   const byHistory = new Map(history.results.map((row) => [row.word_id, row]));
-  return words
-    .filter((word) => !wordIds || wordIds.has(word.id))
-    .map((word) => {
-      const saved = byWord.get(word.id),
-        attempts = byHistory.get(word.id);
-      const correct = Math.min(CUMULATIVE_FLOOR, saved?.correct || 0),
-        seen = saved?.seen || 0;
-      const mistakes = attempts?.mistakes || 0,
-        reveals = attempts?.reveals || 0;
-      const difficulty = (levels.words as Record<string, DifficultyInfo>)[
-        word.id
-      ];
-      if (!difficulty)
-        throw new Error(
-          `Missing difficulty for ${word.id}; regenerate word levels.`,
-        );
-      return {
-        ...difficulty,
-        id: word.id,
-        word: word.word,
-        definition: word.definition,
-        example: word.example,
-        syn: word.syn,
-        ant: word.ant,
-        correct,
-        seen,
-        mistakes,
-        reveals,
-        lastPractised: attempts?.last_practised || null,
-        status: hasMastered(saved ?? {})
-          ? "mastered"
-          : learningStatus({
-              mastered: false,
-              correct,
-              seen,
-              mistakes,
-              reveals,
-            }),
-      };
-    });
+  // A parent's own settings: words they set aside, and words they added.
+  const [excluded, added] = await Promise.all([
+    excludedWordIds(userId),
+    customWordsFor(userId),
+  ]);
+  const summarise = (word: Word, difficulty: DifficultyInfo) => {
+    const saved = byWord.get(word.id),
+      attempts = byHistory.get(word.id);
+    const correct = Math.min(CUMULATIVE_FLOOR, saved?.correct || 0),
+      seen = saved?.seen || 0;
+    const mistakes = attempts?.mistakes || 0,
+      reveals = attempts?.reveals || 0;
+    return {
+      ...difficulty,
+      id: word.id,
+      word: word.word,
+      definition: word.definition,
+      example: word.example,
+      syn: word.syn,
+      ant: word.ant,
+      correct,
+      seen,
+      mistakes,
+      reveals,
+      lastPractised: attempts?.last_practised || null,
+      ...("custom" in word ? { custom: true } : {}),
+      status: hasMastered(saved ?? {})
+        ? ("mastered" as const)
+        : learningStatus({
+            mastered: false,
+            correct,
+            seen,
+            mistakes,
+            reveals,
+          }),
+    };
+  };
+  const levelsById = levels.words as Record<string, DifficultyInfo>;
+  return [
+    ...words
+      .filter((word) => !wordIds || wordIds.has(word.id))
+      .filter((word) => !excluded.has(word.id))
+      .map((word) => {
+        const difficulty = levelsById[word.id];
+        if (!difficulty)
+          throw new Error(
+            `Missing difficulty for ${word.id}; regenerate word levels.`,
+          );
+        return summarise(word, difficulty);
+      }),
+    // A parent's own words have no level snapshot, so difficulty is estimated
+    // from length. They are not part of the free-tier selection.
+    ...(!wordIds
+      ? added
+          .filter((row) => !isAlreadyInBank(row.word, words))
+          .map(toCustomWord)
+          .filter((word) => !excluded.has(word.id))
+          .map((word) => summarise(word, difficultyForAddedWord(word.word)))
+      : []),
+  ];
 }

@@ -24,6 +24,8 @@ export type WordSummary = Omit<Word, "source"> &
     reveals: number;
     lastPractised: number | null;
     status: LearningStatus;
+    /** True for a word the parent added, so the list can label it. */
+    custom?: boolean;
   };
 export type WordSummaryData = {
   words: WordSummary[];

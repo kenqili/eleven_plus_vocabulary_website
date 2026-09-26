@@ -57,6 +57,13 @@
       "when": 1790404541571,
       "tag": "0007_long_human_torch",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1790451943346,
+      "tag": "0008_square_metal_master",
+      "breakpoints": true
     }
   ]
 }

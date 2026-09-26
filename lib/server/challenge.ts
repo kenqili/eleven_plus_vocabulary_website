@@ -14,7 +14,14 @@ import { wordClue } from "@/lib/challenge/story-meanings";
 import { missionFor } from "./mission";
 import { localDay } from "@/lib/challenge/rewards";
 import { chooseWord, reviewDueAt } from "@/lib/challenge/ordering";
-import { words, problems, problemById } from "@/lib/challenge/bank";
+import { words, problems } from "@/lib/challenge/bank";
+import { problemsForAddedWords } from "@/lib/challenge/problems";
+import {
+  customWordsFor,
+  excludedWordIds,
+  practiceWordsFor,
+} from "./parent-words";
+import { difficultyForAddedWord } from "@/lib/challenge/added-words";
 import { choicesFor, shuffle } from "@/lib/challenge/words";
 import { type QuestionType } from "@/lib/challenge/config";
 import type { Difficulty } from "@/lib/challenge/difficulty";
@@ -34,7 +41,9 @@ type Attempt = {
   prompt: string | null;
 };
 export const levelFor = (id: string) =>
-  (levels.words as Record<string, { difficulty: number }>)[id]?.difficulty ?? 1;
+  (levels.words as Record<string, { difficulty: number }>)[id]?.difficulty ??
+  // A parent's own word has no level snapshot, so fall back to its length.
+  difficultyForAddedWord(id.replace(/^own:/, "")).difficulty;
 /** Credit-bearing correct answers per word, so a mastered word cannot farm credits. */
 const ELIGIBLE_ANSWERS = 5;
 type WordProgress = {
@@ -112,6 +121,21 @@ export async function nextQuestion(
   level: Difficulty | null = null,
 ) {
   const db = database();
+  // A parent's own settings: words set aside, and words they added.
+  const [excluded, added] = await Promise.all([
+    excludedWordIds(userId),
+    customWordsFor(userId),
+  ]);
+  const pool = practiceWordsFor(added, excluded);
+  const bankWordIds = new Set(words.map((word) => word.id));
+  const poolProblems = problems.filter(
+    (problem) => !excluded.has(problem.wordId),
+  );
+  const customProblems = problemsForAddedWords(
+    pool.filter((word) => !bankWordIds.has(word.id)),
+    words,
+  );
+  const allProblems = [...poolProblems, ...customProblems];
   const rows = (
     await db
       .prepare("SELECT * FROM progress WHERE user_id = ?")
@@ -126,9 +150,10 @@ export async function nextQuestion(
     .bind(userId)
     .first<Attempt>();
   if (pending) {
-    const currentWord = words.find((w) => w.id === pending.word_id);
-    const currentProblem = problemById.get(
-      `${pending.question_type}:${pending.word_id}`,
+    const currentWord = pool.find((w) => w.id === pending.word_id);
+    const currentProblem = allProblems.find(
+      (problem) =>
+        problem.id === `${pending.question_type}:${pending.word_id}`,
     );
     if (
       currentWord &&
@@ -148,9 +173,11 @@ export async function nextQuestion(
       .bind(Date.now(), pending.id, userId)
       .run();
   }
-  const eligible = problems.filter((problem) => types.includes(problem.type));
+  const eligible = allProblems.filter((problem) =>
+    types.includes(problem.type),
+  );
   const eligibleWordIds = new Set(eligible.map((problem) => problem.wordId));
-  const available = words.filter(
+  const available = pool.filter(
     (w) =>
       eligibleWordIds.has(w.id) &&
       (level === null || levelFor(w.id) === level) &&
@@ -205,7 +232,7 @@ export async function nextQuestion(
     id: crypto.randomUUID(),
     word_id: word.id,
     choices: JSON.stringify(
-      problem.choices ? shuffle(problem.choices) : choicesFor(word, words),
+      problem.choices ? shuffle(problem.choices) : choicesFor(word, pool),
     ),
     question_type: problem.type,
     answer: problem.answer,

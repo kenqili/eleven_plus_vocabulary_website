@@ -300,3 +300,39 @@ export const dailyStoryFinishes = sqliteTable(
   },
   (t) => [primaryKey({ columns: [t.userId, t.storyId, t.day] })],
 );
+
+/** Words a parent has removed from their child's practice and word list. */
+export const wordExclusions = sqliteTable(
+  "word_exclusions",
+  {
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    wordId: text("word_id").notNull(),
+    createdAt: integer("created_at").notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.wordId] })],
+);
+
+/** Words a parent has added for their own child to practise. */
+export const customWords = sqliteTable(
+  "custom_words",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    word: text("word").notNull(),
+    definition: text("definition").notNull(),
+    example: text("example").notNull(),
+    createdAt: integer("created_at").notNull(),
+  },
+  (t) => [
+    uniqueIndex("custom_words_user_word").on(t.userId, t.word),
+    check("custom_words_word_present", sql`length(trim(${t.word})) > 0`),
+    check(
+      "custom_words_definition_present",
+      sql`length(trim(${t.definition})) > 0`,
+    ),
+  ],
+);

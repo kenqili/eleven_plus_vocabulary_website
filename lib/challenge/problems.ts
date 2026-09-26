@@ -176,7 +176,8 @@ export function pickDistractors(
   const answerTerms = answerWord
     ? context.defTerms.get(answerWord.id)!
     : new Set<string>();
-  const mine = context.defTerms.get(word.id)!;
+  const mine =
+    context.defTerms.get(word.id) ?? significantTerms(word.definition);
   const answerText = answer.toLowerCase();
   const blocked = context.blocked.get(word.id) ?? new Set<string>();
   const termsOf = (other: Word) =>
@@ -253,6 +254,66 @@ export function parseProblemCsv(
       answer,
     };
   });
+}
+
+/**
+ * The distractor pool for a set of subjects, drawn from the whole bank. Held
+ * separately so a parent's own words can be given questions without rebuilding
+ * the context, which is the expensive part.
+ */
+let sharedContext: DistractorContext | null = null;
+export function bankContext(pool: Word[]): DistractorContext {
+  sharedContext ??= buildDistractorContext(pool);
+  return sharedContext;
+}
+
+/**
+ * Questions for words that are not in the shipped bank, such as a parent's
+ * own additions. They carry no synonyms or antonyms, so they get the
+ * definition, word and cloze types only, with distractors drawn from the whole
+ * bank so the options stay plausible.
+ */
+export function problemsForAddedWords(added: Word[], pool: Word[]): Problem[] {
+  if (!added.length) return [];
+  const context = bankContext(pool);
+  const out: Problem[] = added.map((word) => ({
+    id: `def:${word.id}`,
+    wordId: word.id,
+    type: "def" as const,
+    prompt: `Choose the definition for '${word.word}'.`,
+    choices: null,
+    answer: word.definition,
+  }));
+  for (const type of ["word", "cloze"] as const)
+    for (const word of added) {
+      const text =
+        type === "word"
+          ? hasWholeWord(word.definition, word.word)
+            ? null
+            : word.definition
+          : word.example
+            ? blankExample(word.example, word.word)
+            : null;
+      if (!text) continue;
+      const key = `${type}:${word.id}`;
+      const distractors = pickDistractors(key, word, word.word, context);
+      if (distractors.length !== CHOICES_PER_PROBLEM - 1) continue;
+      const choices = [...distractors];
+      choices.splice(hash(key) % CHOICES_PER_PROBLEM, 0, word.word);
+      if (
+        new Set(choices.map((c) => c.toLowerCase())).size !== CHOICES_PER_PROBLEM
+      )
+        continue;
+      out.push({
+        id: key,
+        wordId: word.id,
+        type,
+        prompt: text,
+        choices,
+        answer: word.word,
+      });
+    }
+  return out;
 }
 
 export function createProblemBank(
