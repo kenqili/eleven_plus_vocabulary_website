@@ -169,7 +169,8 @@ related words and progress. The screen is paginated; exports include all matchin
 words. Difficulty levels are generated separately from learning progress. Level 0
 holds the 117 curriculum extension words. Levels 1–5 use 70% English frequency
 rarity (wordfreq 3.1.1) and 30% letter count, with five equal bands of 146 words
-that are unchanged by the Level 0 extension. Combine a difficulty level with any
+that are unchanged by the Level 0 extension. The six levels are labelled Start,
+Easy, Medium, Hard, Harder and Hardest. Combine a difficulty level with any
 progress filter, then export that selection. These relative difficulty estimates
 are not exam grades.
 See `data/word-levels/README.md` for methodology, source attribution and regeneration.

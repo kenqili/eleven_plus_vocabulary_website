@@ -3,7 +3,9 @@
 `levels.json` supplies every merged vocabulary word with a letter count, English
 Zipf frequency, difficulty score and level from 0 to 5. Level 0 is the
 curriculum extension; levels 1 (easier) to 5 (harder) are the original five
-bands. The source word CSVs and personal mastery records remain unchanged.
+bands. The app labels them Start, Easy, Medium, Hard, Harder and Hardest, in
+`lib/challenge/difficulty.ts`. The source word CSVs and personal mastery records
+remain unchanged.
 
 Frequency comes from **wordfreq 3.1.1 by Robyn Speer**, English large wordlist:
 https://github.com/rspeer/wordfreq. Its frequencies reflect a general-language

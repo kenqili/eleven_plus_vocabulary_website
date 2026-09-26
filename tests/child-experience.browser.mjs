@@ -174,7 +174,7 @@ try {
   await page.goto(origin + "/stories");
   await page.locator(".story-card").first().waitFor();
   await page
-    .getByRole("button", { name: "Level 3 · Intermediate", exact: true })
+    .getByRole("button", { name: "Level 3 · Hard", exact: true })
     .click();
   await page.waitForFunction(() =>
     document
@@ -212,7 +212,7 @@ try {
   await ipad.locator(".story-card").first().waitFor();
   assert.equal(
     await ipad
-      .getByRole("button", { name: "Level 3 · Intermediate", exact: true })
+      .getByRole("button", { name: "Level 3 · Hard", exact: true })
       .getAttribute("aria-pressed"),
     "true",
   );
