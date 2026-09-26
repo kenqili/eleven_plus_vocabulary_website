@@ -1,8 +1,8 @@
 {
-  "totalWords": 847,
+  "totalWords": 864,
   "generated": {
-    "syn": 812,
-    "ant": 665
+    "syn": 829,
+    "ant": 682
   },
   "excluded": [
     {
@@ -1092,7 +1092,7 @@
     }
   ],
   "preferredLibraryAnswers": {
-    "syn": 213,
-    "ant": 171
+    "syn": 220,
+    "ant": 177
   }
 }

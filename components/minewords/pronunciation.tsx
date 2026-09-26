@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { Volume2 } from "lucide-react";
+import { releaseAudio, takeAudio } from "@/lib/client/audio";
 import { pauseAutoNext } from "@/lib/client/auto-next";
 let activeAudio: HTMLAudioElement | null = null;
 let sequence = 0;
@@ -32,6 +33,9 @@ export default function Pronunciation({
   const [notice, setNotice] = useState("");
   const [playing, setPlaying] = useState(false);
   const own = useRef<HTMLAudioElement | null>(null);
+  // Kept in a ref so the shared coordinator always sees the same callback and
+  // can recognise this clip when it stops.
+  const stop = useRef<() => void>(() => {});
   const alive = useRef(true);
   useEffect(() => {
     alive.current = true;
@@ -55,10 +59,15 @@ export default function Pronunciation({
       const audio = new Audio(url);
       activeAudio = audio;
       own.current = audio;
+      // Hearing a word mid-narration should quieten the story, not talk over it.
+      stop.current = () => audio.pause();
+      takeAudio(stop.current);
       audio.onended = audio.onpause = () => {
+        releaseAudio(stop.current);
         if (alive.current) setPlaying(false);
       };
       audio.onerror = () => {
+        releaseAudio(stop.current);
         if (alive.current) {
           setPlaying(false);
           setNotice("Couldn’t play that word. Tap Hear this word to retry.");

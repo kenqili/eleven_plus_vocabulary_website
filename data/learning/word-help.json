@@ -3386,5 +3386,73 @@
   "vehicle": {
     "meaning": "Something used to transport people or goods, such as a car or bus.",
     "clue": "The delivery vehicle stopped outside the bakery."
+  },
+  "resolute": {
+    "meaning": "Continuing firmly despite difficulty.",
+    "clue": "Even when the storm made them seasick, the captain kept the boat on its course."
+  },
+  "taciturn": {
+    "meaning": "Saying very little; reserved in speech.",
+    "clue": "The old lighthouse keeper was so taciturn that he only ever answered yes or no."
+  },
+  "tenacious": {
+    "meaning": "Holding on firmly and refusing to give up.",
+    "clue": "The little plant was tenacious, holding on to the crack in the wall long after the others had died."
+  },
+  "apprehensive": {
+    "meaning": "Worried and uneasy that something bad may happen.",
+    "clue": "Nell lay in bed apprehensive about the storm she could hear outside."
+  },
+  "intrepid": {
+    "meaning": "Fearless and willing to take risks.",
+    "clue": "The young explorer was intrepid, climbing the tower in the dark to see the view."
+  },
+  "ascend": {
+    "meaning": "To go up or climb.",
+    "clue": "The kite began to ascend as the wind caught its tail."
+  },
+  "meander": {
+    "meaning": "To follow a winding course without a fixed direction.",
+    "clue": "The path meanders past the barn and the pond before it reaches the village."
+  },
+  "propel": {
+    "meaning": "To drive or push something forward.",
+    "clue": "The rocket engine will propel the balloon higher than the birds."
+  },
+  "scurry": {
+    "meaning": "To move quickly in short steps.",
+    "clue": "When the cat appeared, the mice scurry back towards their hole."
+  },
+  "trudge": {
+    "meaning": "To walk slowly with heavy steps.",
+    "clue": "The walkers had to trudge the final mile through the wet mud."
+  },
+  "abundant": {
+    "meaning": "Existing or available in large quantities.",
+    "clue": "The hedgerow was abundant with blackberries this year."
+  },
+  "opulent": {
+    "meaning": "Expensive and luxurious in a showy way.",
+    "clue": "The opulent hall had velvet curtains and a marble staircase."
+  },
+  "porous": {
+    "meaning": "Full of tiny holes that liquids or air can pass through.",
+    "clue": "Water dripped through the porous rock and gathered in the cave below."
+  },
+  "abhorrent": {
+    "meaning": "Causing disgust and loathing.",
+    "clue": "The smell from the old bin was abhorrent, so everyone shut the window."
+  },
+  "hostile": {
+    "meaning": "Unfriendly and ready to oppose.",
+    "clue": "The hostile watchdog barked at every passer-by until the postman arrived."
+  },
+  "heinous": {
+    "meaning": "Extremely wicked or odious.",
+    "clue": "Everyone was shocked by the heinous act of pulling the alarm for a joke."
+  },
+  "adversity": {
+    "meaning": "Difficulties and hardship.",
+    "clue": "Through a long winter of adversity, the family kept the fire burning."
   }
 }

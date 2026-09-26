@@ -20,8 +20,8 @@ The heuristic combines **70% rarity and 30% letter count**:
 - Length: `clamp((letters - 3) / 12, 0, 1)`; letters only, excluding spaces and punctuation.
 - Score: `100 × (0.7 × rarity + 0.3 × length)`, rounded to four decimals.
 - Sort by score, then normalized word ID to break ties; divide the
-  original-source words into five equal bands (146 words each in the current
-  730-word collection).
+  original-source words into five equal bands (149 or 150 words each in the
+  current 747-word collection: 150, 149, 150, 149, 149 from Level 1 to 5).
 
 Curriculum extension words are scored for reference but always take Level 0, so
 the five bands keep exactly the words they had before the extension was added.
@@ -42,7 +42,7 @@ Tests check complete coverage, source-word lengths, scores and band assignments.
 
 The extracted frequency data and derived level snapshot are distributed under
 [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Changes from the
-source: selected this app's 847 entries, added letter counts and derived five
+source: selected this app's 864 entries, added letter counts and derived five
 relative difficulty bands plus the Level 0 curriculum band. Credit: wordfreq by Robyn Speer, incorporating freely
 available SUBTLEX data by Marc Brysbaert and colleagues, Google Books Ngrams,
 OpenSubtitles, Wikipedia, the Leeds Internet Corpus, and ParaCrawl. See the copied

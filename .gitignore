@@ -48,5 +48,12 @@ next-env.d.ts
 /outputs/
 /work/
 
-# generated pronunciation audio; rebuild with `npm run audio:generate`
+# generated pronunciation and story audio; rebuild with `npm run audio:generate`
+# and `npm run audio:stories:generate`
 /public/audio/
+
+# local tool state used to regenerate data snapshots; never publish them.
+# Node >=22.13 to load the TypeScript sources, and wordfreq==3.1.1 for
+# scripts/generate-word-levels.py. See data/word-levels/README.md.
+/.tools/
+/.venv-wordfreq/

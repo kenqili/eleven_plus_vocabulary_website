@@ -10,7 +10,7 @@
   "final": {
     "syn": {
       "file": "data/syn.csv",
-      "sha256": "4013b93a28158876aad7b48147051898518ca0bbc5190e041197f4875466c007",
+      "sha256": "860def9e16b87d527ae2a7fb29c8ebee30fdf6ce741b6301af362d34506e1172",
       "rowsReviewed": 730,
       "unchangedFromInitialReview": 628,
       "changedRowsRechecked": 99,
@@ -18,12 +18,12 @@
       "removedInitialRows": 0,
       "allRowsHaveFourDistinctOptionsAndOneExactAnswer": true,
       "noRemainingKnownAlternativeCorrectOptions": true,
-      "rowsAddedAfterReview": 82,
-      "currentRows": 812
+      "rowsAddedAfterReview": 99,
+      "currentRows": 829
     },
     "ant": {
       "file": "data/ant.csv",
-      "sha256": "92dc88c020a12bafc406f04697f71857ba902f434ed8e287d297e8de56b21816",
+      "sha256": "95e8bdba92df71de8f5bb28894088a38e7133a50922f7944fe3cb1112fecb890",
       "rowsReviewed": 630,
       "unchangedFromInitialReview": 532,
       "changedRowsRechecked": 99,
@@ -32,11 +32,11 @@
       "allRowsHaveFourDistinctOptionsAndOneExactAnswer": true,
       "noRemainingKnownAlternativeCorrectOptions": true,
       "removedAfterReview": 1,
-      "rowsAddedAfterReview": 35,
-      "currentRows": 665
+      "rowsAddedAfterReview": 52,
+      "currentRows": 682
     },
     "totalRows": 1360,
-    "currentTotalRows": 1477
+    "currentTotalRows": 1511
   },
   "editorialOverrideEntries": 234,
   "editorialAntonymExclusions": [
@@ -717,6 +717,54 @@
         "ant": {
           "file": "data/ant.csv",
           "sha256": "0598d51d7b118d00608eb740e2558198e1372868b44b2b0b28bed87a1457e7ce",
+          "rowsReviewed": 630
+        }
+      }
+    },
+    {
+      "date": "2026-09-26",
+      "reason": "Seventeen high-utility 11+ words (GL and CEM Verbal Reasoning and Comprehension) were added to the Blue Book source. Each new word needs its own synonym and antonym question, so both CSVs gained one row per word.",
+      "source": "data/blue_book.csv",
+      "newWords": 17,
+      "words": [
+        "resolute",
+        "taciturn",
+        "tenacious",
+        "apprehensive",
+        "intrepid",
+        "ascend",
+        "meander",
+        "propel",
+        "scurry",
+        "trudge",
+        "abundant",
+        "opulent",
+        "porous",
+        "abhorrent",
+        "hostile",
+        "heinous",
+        "adversity"
+      ],
+      "additions": {
+        "syn": { "rows": 17 },
+        "ant": { "rows": 17 }
+      },
+      "preferredLibraryAnswersAfterAddition": {
+        "syn": 220,
+        "ant": 177
+      },
+      "verification": "Both CSVs are purely additive against the previously reviewed versions: every earlier row is byte-identical and in the same order, and each of the 34 added rows belongs to one of the 17 new words. No reviewed answer, distractor or exclusion changed, so the existing levels keep their questions. Every added row was checked for four distinct options and exactly one correct answer; no new generation exclusions were introduced.",
+      "reviewStatus": "The added rows come from the same reviewed generator, but they have not been through an independent semantic review. Give them that review before treating them as reviewed.",
+      "difficultyNote": "Levels are not assigned by hand. Regenerating data/word-levels/levels.json re-banded all 864 words, so the five original bands were renumbered from 146 words each to 150/149/150/149/149. The 17 new words landed in Levels 1 to 5 by the documented frequency-and-length score, not all in the last level: hostile in Level 1, abundant and porous in Level 2, ascend, propel and heinous in Level 3, resolute, tenacious, intrepid, meander, scurry, opulent and adversity in Level 4, and taciturn, apprehensive, trudge and abhorrent in Level 5.",
+      "previousReview": {
+        "syn": {
+          "file": "data/syn.csv",
+          "sha256": "4013b93a28158876aad7b48147051898518ca0bbc5190e041197f4875466c007",
+          "rowsReviewed": 730
+        },
+        "ant": {
+          "file": "data/ant.csv",
+          "sha256": "92dc88c020a12bafc406f04697f71857ba902f434ed8e287d297e8de56b21816",
           "rowsReviewed": 630
         }
       }

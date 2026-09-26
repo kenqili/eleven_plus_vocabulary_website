@@ -2995,6 +2995,29 @@ hr {
 .reading-tools details p {
   max-width: 550px;
 }
+.story-audio {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  text-align: right;
+}
+.story-audio-button {
+  min-height: 44px;
+}
+.story-audio-note {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  margin: 0;
+  color: #526981;
+  font-size: 12px;
+  text-wrap: balance;
+}
+.story-audio-note > svg {
+  flex: none;
+}
 .bookmark-status {
   display: block;
   min-height: 20px;
@@ -3104,9 +3127,22 @@ hr {
   .practice-type {
     padding: 8px;
   }
+  .reading-tools {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .story-audio {
+    align-items: flex-start;
+    text-align: left;
+  }
+  .story-audio-note {
+    justify-content: flex-start;
+  }
 }
 @media print {
-  .pronunciation {
+  .pronunciation,
+  .story-audio {
     display: none;
   }
 }

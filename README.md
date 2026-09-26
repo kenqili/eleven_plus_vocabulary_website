@@ -18,7 +18,7 @@ Add rows directly to the appropriate CSV, then run `npm run words:validate`, reb
 
 ## Generated question library
 
-The current library contains **2,324 question templates**: 847 definitions, 812 synonyms and 665 antonyms. Each word has one definition and at most one question of each relationship type. Of the 182 omitted antonyms, 151 had no supplied relation and 31 were excluded as misleading by independent review; one direct dis- prefix pair (obedient/disobedient) was removed at user request. The generator excludes direct dis- prefix pairs in either direction. These exceptions are recorded in `data/question-review/generation-report.json`; the count is not padded with invented opposites.
+The current library contains **2,375 question templates**: 864 definitions, 829 synonyms and 682 antonyms. Each word has one definition and at most one question of each relationship type. 35 synonyms were omitted for want of a supplied relation. Of the 182 omitted antonyms, 151 had no supplied relation, 30 were excluded as misleading by independent review, and one direct dis- prefix pair (obedient/disobedient) was removed at user request. The generator excludes direct dis- prefix pairs in either direction. These exceptions are recorded in `data/question-review/generation-report.json`; the count is not padded with invented opposites.
 
 - `data/syn.csv` and `data/ant.csv` are the question files used by the website. The requested antonym file is named `ant.csv` consistently, rather than maintaining a duplicate `antonym.csv`.
 - Columns: `problem,options,answer,syn/ant,word`. `options` contains a CSV-escaped JSON array of four choices; `answer` is the exact correct option text, `syn/ant` is `syn` or `ant`, and `word` is the stable lowercase word ID.
@@ -65,6 +65,7 @@ node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0004_superb_the_fallen.sql
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0005_perpetual_hercules.sql
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0006_dazzling_doctor_faustus.sql
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0007_long_human_torch.sql
 # Apply future migrations once, in filename order.
 npm run dev
 ```
@@ -207,11 +208,17 @@ A feature-detected WebMCP surface exposes the visible question and answering act
 
 ### Child learning features
 
-The daily goal is **20 attempted questions and one story**. Children can ask for a clue, hear British pronunciation for all 847 words, and choose manual, five-second or ten-second question pacing. Account reading bookmarks and level choices sync between devices; guest bookmarks stay in the browser. A qualifying reread counts towards the daily goal without repeating the story credit award. See [behaviour, verification and deployment requirements](docs/child-experience-review.md).
+The daily goal is **20 attempted questions and one story**. Children can ask for a clue, hear British pronunciation for all 864 words, listen to any story read aloud, and choose manual, five-second or ten-second question pacing. Narration uses the same British voice as the word audio and pauses between paragraphs; comprehension questions are deliberately not narrated, so listening cannot hand over the answer. One clip plays at a time, so starting a story stops a word. Account reading bookmarks and level choices sync between devices; guest bookmarks stay in the browser. A qualifying reread counts towards the daily goal without repeating the story credit award. See [behaviour, verification and deployment requirements](docs/child-experience-review.md).
 
 ## Deployment
 
 `.openai/hosting.json` identifies the Site and its logical D1 binding. Keep generated migrations in source control. Never edit a migration already applied; add another migration instead. Build output is in `dist/`, ready for the Sites packaging/deployment flow. Hosted account data is separate from local preview data.
+
+Speech audio is **not** committed: `public/audio/` is gitignored because the clips are large binaries. Generate them before packaging, with `AZURE_SPEECH_KEY` and `AZURE_SPEECH_REGION` set in the local `.env`:
+
+- `npm run audio:generate` builds word pronunciation; `npm run audio:stories:generate` builds story narration. Both write a `manifest.json` that the app fetches at runtime, and both skip work that is already current.
+- `npm run audio:validate` and `npm run audio:stories:validate` check the manifests without network access and exit non-zero when a clip is missing or no longer matches its source. A story clip counts as stale when the prose in `data/stories/level-*.txt` has changed, so re-run the generator after editing stories.
+- Deploying without running these leaves the Listen controls showing "This story is still being recorded" or a retry message rather than failing silently.
 
 ## Reference documentation
 

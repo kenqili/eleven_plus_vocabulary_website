@@ -11,6 +11,7 @@ import {
   type ReadingProgress,
 } from "@/lib/challenge/stories";
 import WordHint from "./word-hint";
+import StoryAudio from "./story-audio";
 import type { Catalog } from "./story-library";
 import { useReadingClock } from "./use-reading-clock";
 import DailyMission from "./daily-mission";
@@ -131,10 +132,11 @@ function Reading({ story }: { story: StoryDetail }) {
           <summary>Reading help</summary>
           <p>
             Tap, hover over or focus a bold word for its meaning. You can hear
-            it spoken too. Read at your own pace, then answer the question at
-            the end.
+            it spoken too. Read at your own pace, listen along, then answer the
+            question at the end.
           </p>
         </details>
+        <StoryAudio id={story.id} title={story.title} />
         <button className="text-button" onClick={bookmark.startAgain}>
           Start again
         </button>

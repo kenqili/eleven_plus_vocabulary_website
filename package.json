@@ -26,6 +26,8 @@
     "learning:validate": "node scripts/validate-learning-help.mjs",
     "audio:generate": "node scripts/generate-pronunciation.mjs --generate",
     "audio:validate": "node scripts/generate-pronunciation.mjs --check",
+    "audio:stories:generate": "node scripts/generate-story-audio.mjs --generate",
+    "audio:stories:validate": "node scripts/generate-story-audio.mjs --check",
     "test:child:integration": "node tests/child-experience.integration.mjs",
     "test:child:browser": "node tests/child-experience.browser.mjs"
   },

@@ -19,11 +19,13 @@ Implements the eight improvements from the simulated age-nine/ten usability revi
 
 Apply `drizzle/0005_perpetual_hercules.sql` before serving the updated APIs. This additive migration preserves prior reading/credit history, adds revisioned bookmarks and reading preferences, and backfills daily story finishes from existing completions. Node development applies migrations through its existing startup runner; hosted D1 must receive the new migration through the normal deployment process.
 
-The runtime never needs Azure credentials. They are used only by the explicit audio generation script. Recordings and their manifest live under `public/audio/vocabulary`; deploy these static assets with the app.
+The runtime never needs Azure credentials. They are used only by the explicit audio generation scripts. Recordings and their manifests live under `public/audio/vocabulary` for single words and `public/audio/stories` for the full narrations; deploy these static assets with the app.
 
 ```sh
 npm run audio:generate
 npm run audio:validate
+npm run audio:stories:generate
+npm run audio:stories:validate
 npm run learning:validate
 npm run stories:validate
 ```
@@ -33,6 +35,14 @@ Generation resumes from existing files. To correct a pronunciation, update `data
 ```sh
 node scripts/generate-pronunciation.mjs --generate --word=delegate --force
 ```
+
+Story narration reads the title and paragraphs at a slightly slower pace, with a pause between parts, and applies the same reviewed IPA overrides to the bold target words so a word sounds the same in a story and on its flash card. The comprehension question is never spoken, so hearing a story cannot hand over the answer. Because story prose changes as vocabulary is reviewed, the manifest records the text each recording was built from: `audio:stories:validate` fails when a recording no longer matches its story, and `audio:stories:generate` rebuilds only those files. To rerecord one story regardless of its text:
+
+```sh
+node scripts/generate-story-audio.mjs --generate --story=level-0-01 --force
+```
+
+Only one clip plays at a time. Requesting a word pronunciation stops the story narration and vice versa, so a word is never spoken over the story.
 
 ## Verification
 
@@ -52,19 +62,20 @@ Screenshots and media validation output are written to ignored `outputs/child-ex
 
 ## Requirement audit
 
-| Requested outcome                                           | Evidence                                                                                                                                                                         |
-| ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Child-friendly meanings, clues and British pronunciation    | 847 meanings, 2,324 answer-safe clues and 847 packaged MP3s; browser playback and failure/retry checks                                                                           |
-| Daily goal of 20 questions and one story                    | Unit and API tests cover mistakes, reveals, replay, the twentieth attempt and daily reset                                                                                        |
-| Comfortable question pacing                                 | Browser journey covers manual, five/ten seconds, Stay here, help/audio pauses and stopping at the daily target                                                                   |
-| Reading continuity                                          | Account isolation, revision checks and phone-to-tablet paragraph/level restoration tests; guest storage validation                                                               |
-| Engaging stories at six levels                              | 60 local text stories, 10 per level including Level 0, complete vocabulary coverage, 15–30 marked targets; independent simulated editorial reviews in `data/stories/review-*.md` |
-| Story definitions, timer, unread status and reading credits | Reader/library implementation, browser checks and story API tests for bounded time, concurrent completion and once-only awards                                                   |
-| Clear rewards and progress                                  | Collection totals across pagination, lifetime-earned totals, mastery tests and badge browser checks                                                                              |
-| Responsive pages and useful parent information              | Responsive review and browser matrices; About links to `/words` for revision exports                                                                                             |
+| Requested outcome                                           | Evidence                                                                                                                                                                                                       |
+| ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Child-friendly meanings, clues and British pronunciation    | 847 meanings, 2,324 answer-safe clues and 847 packaged MP3s; browser playback and failure/retry checks                                                                                                         |
+| Daily goal of 20 questions and one story                    | Unit and API tests cover mistakes, reveals, replay, the twentieth attempt and daily reset                                                                                                                      |
+| Comfortable question pacing                                 | Browser journey covers manual, five/ten seconds, Stay here, help/audio pauses and stopping at the daily target                                                                                                 |
+| Reading continuity                                          | Account isolation, revision checks and phone-to-tablet paragraph/level restoration tests; guest storage validation                                                                                             |
+| Engaging stories at six levels                              | 60 local text stories, 10 per level including Level 0, complete vocabulary coverage, 15–30 marked targets; independent simulated editorial reviews in `data/stories/review-*.md`                               |
+| Read-along audio for every story                            | 60 packaged narrations from `audio:stories:generate`; text-drift validation, browser playback, pause/rewind, missing and failed recording notices, single-clip playback and phone/tablet/desktop layout checks |
+| Story definitions, timer, unread status and reading credits | Reader/library implementation, browser checks and story API tests for bounded time, concurrent completion and once-only awards                                                                                 |
+| Clear rewards and progress                                  | Collection totals across pagination, lifetime-earned totals, mastery tests and badge browser checks                                                                                                            |
+| Responsive pages and useful parent information              | Responsive review and browser matrices; About links to `/words` for revision exports                                                                                                                           |
 
 ## Testing limits
 
 Phone/iPad checks use browser emulation, not a physical iPad. This Mac runs macOS 12, so current Playwright WebKit is unsupported. A separately installed Playwright 1.45.3 supplies its compatible WebKit build for additional engine coverage; it is not a substitute for current iPadOS Safari. See the [Playwright release notes](https://playwright.dev/docs/release-notes#version-145).
 
-Audio checks cover asset coverage, MP3 format/duration, pronunciation settings and browser playback/retry. They do not represent a human listening review of every recording.
+Audio checks cover asset coverage, MP3 format/duration, pronunciation settings and browser playback/retry. They do not represent a human listening review of every recording. Story narration was verified by the same automated checks plus narration length against word count, which cannot confirm a human finds every delivery natural.

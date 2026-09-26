@@ -102,20 +102,20 @@
       "intricate",
       "ajar",
       "penetrate",
-      "dismay",
       "mediocre",
       "shrewd",
       "astute",
-      "peripheral"
+      "peripheral",
+      "endeavour"
     ],
     "paragraphs": [
       "Every afternoon at three, the library cupboard snored. Not a little snore, either. It sounded like a motorbike trying to swallow a trumpet. The noise was becoming a **nuisance** during quiet reading time. Leila and Max thought the mystery would **intrigue** their detective club. Their teacher agreed, as long as their investigation did not involve crawling into any furniture.",
       "On Monday, they found a note: \"Look near the bank.\" It was annoyingly **ambiguous**. Did it mean the riverbank beside the school or the model bank in the maths corner? Max made a **feeble** suggestion that they should search both, then remembered the river was half a mile away. Leila chose the model first.",
       "Behind it lay a **tangle** of string. The **twine** wrapped around a tiny cardboard door. Leila began to **unravel** it while Max studied the **intricate** knots. Inside was another message: \"The answer has ears.\" Max looked suspiciously at the librarian, who had two. She looked back over her glasses until he inspected the model instead.",
-      "The cupboard door stood **ajar**, allowing a strip of light to **penetrate** the dusty gap. Something fluffy moved inside. Max stepped back in **dismay**. \"A cupboard bear!\" he whispered. Leila thought that was a **mediocre** theory, mainly because bears did not usually fit between spare cushions and a broken globe.",
+      "The cupboard door stood **ajar**, allowing a strip of light to **penetrate** the dusty gap. Something fluffy moved inside. Max stepped back in surprise. \"A cupboard bear!\" he whispered. Leila thought that was a **mediocre** theory, mainly because bears did not usually fit between spare cushions and a broken globe.",
       "She made a **shrewd** observation: the snore stopped whenever the radiator clicked off. Her next idea was more **astute**. Someone might have placed a toy near the warm pipes, and the vibration could be setting it off. They asked the librarian to open the door fully. Out rolled a sleepy toy rabbit with a sound button in its back.",
       "The clues, it turned out, belonged to last month's reading treasure hunt. Nobody had remembered to collect them. They were only **peripheral** to the mystery, interesting details at its edges rather than the main answer. The librarian had packed the rabbit away with the cushions, directly against a rattling pipe.",
-      "Max gently moved the toy to a shelf. The library became quiet, until a small child pressed its button and everybody jumped. Leila wrote their report: \"One rabbit. No bears. A very noisy nap.\" Max added a drawing of a bear wearing reading glasses. The librarian asked to keep it, so long as the bear promised to whisper. From then on, their detective club met beneath its solemn cardboard stare."
+      "Max gently moved the toy to a shelf. The library became quiet, until a small child pressed its button and everybody jumped. The whole **endeavour** had taken three afternoons and one damp sandwich. Leila wrote their report: \"One rabbit. No bears. A very noisy nap.\" Max added a drawing of a bear wearing reading glasses. The librarian asked to keep it, so long as the bear promised to whisper. From then on, their detective club met beneath its solemn cardboard stare."
     ],
     "question": {
       "prompt": "What was making the cupboard snore?",
@@ -149,12 +149,13 @@
       "deduct",
       "yearn",
       "waver",
-      "pinnacle"
+      "pinnacle",
+      "ascend"
     ],
     "paragraphs": [
       "The science club's cardboard spaceship had three seats, six buttons and one biscuit. \"A **dearth** of snacks,\" said captain Ruby. Her co-pilot Sam called it a crisis. They were preparing a show about **celestial** objects, including stars, moons and planets. Unfortunately, their cardboard Mars looked exactly like a squashed orange.",
       "Their teacher gave them a **comprehensive** checklist. The most **salient** point was simple: keep the wheels locked whenever somebody sat in the ship. The model had to **revolve** slowly on a turntable only when everyone had stepped out. Sam read this twice, then added \"Do not launch the teacher\" at the bottom.",
-      "The room felt **frigid** because a window had been left open. Ruby closed it while Sam repaired a **brittle** plastic antenna that had snapped in his hand. They agreed it was **prudent** to replace it with soft card. A broken point could **impair** someone's sight if it poked an eye, so an adult removed the sharp pieces.",
+      "The room felt **frigid** because a window had been left open. Outside, a paper rocket was meant to **ascend** from the playground, but its string had tangled again. Ruby closed it while Sam repaired a **brittle** plastic antenna that had snapped in his hand. They agreed it was **prudent** to replace it with soft card. A broken point could **impair** someone's sight if it poked an eye, so an adult removed the sharp pieces.",
       "Next, they needed to **conserve** their battery power. The lights were lovely but would not last all afternoon. They switched the lights off between rehearsals. Sam offered to make engine noises instead. This proved surprisingly **arduous**. By the fifth rehearsal, his cheeks ached and he sounded more like a tired duck than a rocket.",
       "Ruby kept a **chronicle** of the mission, writing down each event in order. \"Ten twenty: engine becomes duck,\" she recorded. At ten thirty, the pair had to **deduct** two pounds from their remaining budget for a replacement bulb. At ten forty, Sam began to **yearn** for the biscuit. Ruby admitted she did too.",
       "Their friendship did not **waver** over the snack problem. They broke it into equal halves. Sam inspected one loose crumb and offered it to Ruby as a bonus moon rock. Then they practised explaining why planets travel around the Sun. Sam used a tennis ball, while Ruby held a lamp that was switched off for the demonstration.",
@@ -187,19 +188,19 @@
       "compulsory",
       "concur",
       "scoff",
-      "snub",
       "smirk",
       "pigment",
       "dazzling",
       "dais",
-      "poise"
+      "poise",
+      "propel"
     ],
     "paragraphs": [
       "In the school play, Oliver was supposed to be a **majestic** dragon. Instead, he wore a green dressing gown with **floppy** cardboard ears. His first roar sounded like somebody saying \"Excuse me\" through a sock. Beside him, Zara held a glittery shield and tried not to laugh into it.",
       "Oliver looked **subdued**. He could **imitate** a kettle, a pigeon and his dad's alarm clock, but not a dragon. Zara wanted to **banish** his worry. \"Maybe your dragon is polite,\" she suggested. \"Maybe it asks before eating a castle.\" Oliver smiled, but his confidence began to **wane** again when the curtain rehearsal approached.",
       "Their teacher said it was **imperative** that every actor felt comfortable. Roaring was not **compulsory**. Zara thought the dragon could request a library card instead. \"I **concur**,\" the teacher replied. They rewrote the scene together. Oliver's dragon would enter the castle to borrow a book about how to stop burning toast.",
-      "One older pupil started to **scoff** at the idea. Zara did not **snub** him, but invited him to watch the new version before judging it. He folded his arms with a **smirk**. Then Oliver tried his kettle impression while smoke-coloured ribbons popped from his sleeves, and the boy laughed so hard that his folded arms came apart.",
-      "The scenery still needed work. Zara mixed green **pigment** into white paint to make the castle garden. Oliver helped paint a **dazzling** sun, then accidentally put his elbow in it. They turned the elbow print into a small cloud. The teacher said this was exactly how stage designers rescued mistakes, although usually with fewer paint-covered elbows.",
+      "One older pupil started to **scoff** at the idea. Zara did not ignore him rudely, but invited him to watch the new version before judging it. He folded his arms with a **smirk**. Then Oliver tried his kettle impression while smoke-coloured ribbons popped from his sleeves, and the boy laughed so hard that his folded arms came apart.",
+      "On the Saturday a cardboard tail was supposed to **propel** Oliver across the stage, but the cotton wool kept catching. The scenery still needed work. Zara mixed green **pigment** into white paint to make the castle garden. Oliver helped paint a **dazzling** sun, then accidentally put his elbow in it. They turned the elbow print into a small cloud. The teacher said this was exactly how stage designers rescued mistakes, although usually with fewer paint-covered elbows.",
       "On opening night, Oliver walked onto the little **dais** that served as the stage. He carried his library card between two enormous cardboard claws. When the knight asked why he had come, he answered, \"My toast has become a safety concern.\" The audience burst out laughing. Oliver waited with surprising **poise**, calm and steady, before delivering his next line.",
       "At the end, the older pupil clapped loudest. Oliver bowed so deeply that one ear fell off. He picked it up and said, \"My library card is fine, but my ears are overdue.\" That joke was not in the script. Zara nearly dropped her shield. The polite dragon had finally found his voice, and it turned out to be much funnier than a roar."
     ],
@@ -220,7 +221,6 @@
     "title": "The Great Pond Rescue",
     "summary": "A wildlife club discovers that saving a pond requires more than a fancy bucket.",
     "wordIds": [
-      "dismal",
       "stagnant",
       "wither",
       "flourish",
@@ -230,20 +230,22 @@
       "rectify",
       "deprive",
       "fraught",
-      "hamper",
       "impede",
       "pique",
       "pristine",
-      "intrinsic"
+      "intrinsic",
+      "restrain",
+      "proclaim",
+      "gravely"
     ],
     "paragraphs": [
-      "The little pond behind school looked **dismal**. Its water was **stagnant**, and the plants at its edge had begun to **wither**. Hana and George wanted them to **flourish** again. Their nature club teacher explained that they would need expert advice before doing anything to the pond or its wildlife.",
+      "The little pond behind school looked neglected. Its water was **stagnant**, and the plants at its edge had begun to **wither**. Hana and George wanted them to **flourish** again. Their nature club teacher explained that they would need expert advice before doing anything to the pond or its wildlife, and she spoke **gravely** about disturbing the animals that lived there.",
       "George arrived with a bucket labelled \"Emergency Frog Taxi\". Hana brought a notebook. They learned that a garden pond could support creatures threatened by habitat loss, although one pond alone could not prevent **extinction**. There were no frogs waiting for transport. George gave his empty bucket a thoughtful pat and wrote \"Taxi closed\" on the other side.",
       "The wildlife volunteer noticed a **rupture** in a pipe feeding rainwater into the pond. Only a **trickle** reached the bottom. An adult would **rectify** the broken section, but first the club needed to clear leaves from the safe, dry path. They could not **deprive** the animals of all their shelter, so some leaf piles stayed where they were.",
-      "At first, the job was **fraught** with small problems. George's coat caught on a twig. Hana dropped her pencil into his bucket. The wheelbarrow's squeaky wheel began to **hamper** their quiet observation of a bird. To avoid disturbing it, they left the noisy barrow behind and carried small loads by hand.",
+      "At first, the job was **fraught** with small problems. George's coat caught on a twig. Hana dropped her pencil into his bucket. The wheelbarrow's squeaky wheel began to hamper their quiet observation of a bird, and they had to **restrain** themselves from complaining loudly. To avoid disturbing it, they left the noisy barrow behind and carried small loads by hand.",
       "A loose tarpaulin threatened to **impede** their progress by covering the path. With an adult's help, they folded it away. Then they watched the volunteer demonstrate how rainwater flowed into a repaired channel. It was fascinating enough to **pique** George's interest in pipes, a subject he had previously ranked below plain porridge.",
       "By afternoon, the path was **pristine**, although the pond itself was left pleasantly wild. Hana realised that muddy boots were **intrinsic** to pond work: they seemed to belong to the activity as naturally as water did. George suggested muddy noses were optional. He had acquired one anyway while trying to read the tiny label on a plant.",
-      "Weeks later, new shoots appeared. When the club returned quietly, they spotted a frog sitting near the reeds. George raised the bucket, then put it down. \"No lift required,\" he whispered. \"Good public transport here already.\" Hana added the sighting to their notebook. The frog blinked at them, jumped into the water, and left them with a ripple that looked rather like a small round smile."
+      "The volunteer returned weeks later to **proclaim** good news about the repair. New shoots had appeared. When the club returned quietly, they spotted a frog sitting near the reeds. George raised the bucket, then put it down. \"No lift required,\" he whispered. \"Good public transport here already.\" Hana added the sighting to their notebook. The frog blinked at them, jumped into the water, and left them with a ripple that looked rather like a small round smile."
     ],
     "question": {
       "prompt": "Why do the children leave some leaf piles in place?",
@@ -361,7 +363,8 @@
       "slander",
       "rebuke",
       "loathe",
-      "vapour"
+      "vapour",
+      "heinous"
     ],
     "paragraphs": [
       "At the local museum, Elsie and Jay found a display labelled \"Ancient Hair Dryer\". Inside stood a clay pot. Jay was doubtful. Elsie was delighted. She thought the label might be **ambiguous**, perhaps referring to some clever ancient way of drying hair. Their guide, Mr Bell, explained that someone had mixed up the labels for a special fact-checking trail. The children needed to **refute** the wrong claims using evidence. Their challenge was to earn six evidence stamps and unlock the final mystery envelope. Jay hoped it contained treasure. Elsie suspected stickers.",
@@ -369,7 +372,7 @@
       "In the next cabinet lay a page of **scripture**, sacred writing from a religious text. They read its description respectfully. Beside it was a map showing an **obtuse** angle, wider than a right angle, where two old roads met. Jay measured it on the activity sheet, then declared his elbow was probably less reliable than a protractor.",
       "A tiny model courtroom held the next clue. Its card explained **probate**, the process of dealing with someone's will and property after their death. Another described **probation**, a period when someone's behaviour was supervised. Elsie noticed that the two cards had been swapped. \"Similar-looking words,\" she said, \"but very different jobs.\" Jay moved his pencil away from the model prisoner. \"Good. I was about to leave him my collection of football stickers.\"",
       "By now Jay felt **jaded** by reading so many labels. He wanted a snack. Mr Bell said incorrect stories were **prevalent** online too, so checking sources was a useful skill beyond the museum. Then a recorded voice accused the model judge of stealing the moon. Jay perked up. The final display was certainly unusual.",
-      "The activity card asked whether a false spoken claim that damaged a person's reputation could be **slander**. Elsie said yes, while observing that the moon had probably never fitted in a pocket. A second recording offered a sharp **rebuke** to the imaginary storyteller. Mr Bell explained that the whole scene was fictional and intended to show why words mattered.",
+      "The activity card asked whether a false spoken claim that damaged a person's reputation could be **slander**. Elsie said yes, while observing that the moon had probably never fitted in a pocket. One exhibit was a **heinous** invention that turned a harmless shadow into a monstrous creature. A second recording offered a sharp **rebuke** to the imaginary storyteller. Mr Bell explained that the whole scene was fictional and intended to show why words mattered.",
       "Jay admitted he used to **loathe** checking answers, but this had been fun. Elsie pointed at the refreshment room, where a hot drink gave off **vapour** above the cup. Its silly trail label read \"Portable Cloud Factory\". They corrected it on their sheet and earned their sixth stamp. The final envelope contained two detective stickers: Elsie had been right. They stuck them proudly on their jumpers and bought buns. Jay checked his bun very carefully. \"Definitely food,\" he announced. \"Although further evidence may be required.\""
     ],
     "question": {
@@ -401,17 +404,17 @@
       "stricken",
       "anguish",
       "prudent",
-      "hamper",
       "cordial",
-      "poise"
+      "poise",
+      "stationary"
     ],
     "paragraphs": [
       "Noah had expected a peaceful farm holiday. His cousin Priya had expected animals. Neither had expected Uncle Tim to arrive wearing a giant corn costume. He was rehearsing for the village parade, but the costume's leafy **husk**, its outer covering, kept falling over his eyes. \"Agriculture is harder than it looks,\" he said.",
-      "The farm had a small **bovine** display about cattle, an **equine** corner about horses, and several examples of **feline** laziness sleeping in the sunshine. Priya counted three cats. Noah counted four, until one turned out to be a cushion. A **docile** pony watched them with the patient expression of someone who had seen this mistake before.",
+      "The farm had a small **bovine** display about cattle, an **equine** corner about horses, and several examples of **feline** laziness sleeping in the sunshine. Priya counted three cats. Noah counted four, until one turned out to be a cushion. A **docile** pony watched them with the patient expression of someone who had seen this mistake before. The pony stayed **stationary** while Priya counted, which made her count wrong twice.",
       "Uncle Tim went inside to fetch his parade map. When he returned, the costume had vanished. He became **agitated**, searching behind buckets and under chairs. Its loss was a **nuisance**, rather than a real disaster, but he had promised to lead the parade. Noah decided to write a **comprehensive** list of places they had already checked.",
       "Priya spotted a yellow corner beneath the washing line. The corn outfit lay in a **hammock**, swinging gently beside Auntie Val's sunhat. She had moved it out of the pony's reach. Unfortunately, Uncle Tim had already become **stricken** with worry that he had let the village down. Priya hurried to explain the harmless truth.",
       "\"No need for **anguish**,\" Auntie Val said kindly. \"Your vegetable is having a nap.\" Noah tried not to laugh, then saw that Uncle Tim was laughing too. They untied the loose leaf, repaired it with fabric tape, and gave the costume a **prudent** safety check. Tim needed to see clearly and walk without tripping.",
-      "At the parade, a gust threatened to **hamper** the costume's progress. Noah and Priya carried its floppy side leaves until they reached a sheltered street. A **cordial** steward directed them to their starting place. Tim bowed to the spectators with great **poise**, then accidentally squeaked because he had stepped on a dog toy hidden inside his giant corn shoe.",
+      "At the parade, a gust threatened to hinder the costume's progress. Noah and Priya carried its floppy side leaves until they reached a sheltered street. A **cordial** steward directed them to their starting place. Tim bowed to the spectators with great **poise**, then accidentally squeaked because he had stepped on a dog toy hidden inside his giant corn shoe.",
       "That squeak became the best part of the show. People clapped whenever Tim took an especially careful step. Afterwards, the cousins sat by the pony and shared their sandwiches. Noah admitted that farm holidays were less quiet than expected. Priya said tomorrow they should investigate the vegetable garden. Uncle Tim shook his head. \"Only if the carrots promise not to borrow my trousers.\""
     ],
     "question": {

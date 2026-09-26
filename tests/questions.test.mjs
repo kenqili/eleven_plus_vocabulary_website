@@ -123,7 +123,7 @@ test("Level 0 practises alongside levels 1-5 and only known levels are accepted"
   const counts = [0, 1, 2, 3, 4, 5].map(
     (level) => words.filter((word) => levelFor(word.id) === level).length,
   );
-  assert.deepEqual(counts, [117, 146, 146, 146, 146, 146]);
+  assert.deepEqual(counts, [117, 150, 149, 150, 149, 149]);
   assert.equal(
     words.every(
       (word) => (levelFor(word.id) === 0) === (word.source === "curriculum"),
