@@ -90,7 +90,11 @@ function toQuestion(attempt: Attempt, progress?: WordProgress): Question {
       levelFor(word.id),
     ),
     word: word.word,
-    clue: wordClue(word.id, attempt.answer ?? word.definition),
+    clue: wordClue(
+      word.id,
+      attempt.answer ?? word.definition,
+      attempt.question_type,
+    ),
     wordId: word.id,
     type: attempt.question_type,
     prompt: attempt.prompt || `Choose the definition for '${word.word}'.`,
@@ -435,7 +439,7 @@ export async function answerQuestion(
     ant: word.ant,
     selected: saved?.selected ?? -1,
     word: word.word,
-    clue: wordClue(word.id, attempt.answer ?? word.definition),
+    clue: wordClue(word.id, attempt.answer ?? word.definition, attempt.question_type),
     award: await awardFor(userId, id),
   };
 }

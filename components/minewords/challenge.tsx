@@ -9,6 +9,7 @@ import { pauseAutoNext, type NextDelay } from "@/lib/client/auto-next";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
   QUESTION_TYPES,
+  TYPE_BUTTONS,
   TYPE_LABELS,
   type QuestionType,
 } from "@/lib/challenge/config";
@@ -124,11 +125,7 @@ export default function Challenge() {
                     className={`practice-type practice-type-${type}`}
                   >
                     <span>
-                      {type === "def"
-                        ? "Meanings"
-                        : type === "syn"
-                          ? "Similar words"
-                          : "Opposite words"}
+                      {TYPE_BUTTONS[type]}
                       <small>{TYPE_LABELS[type]}s</small>
                     </span>
                   </ToggleGroupItem>

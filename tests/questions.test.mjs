@@ -90,7 +90,13 @@ test("Malformed problem rows cannot enter the bank", () => {
   );
 });
 test("Type selection requires one or more known types and mastery is per-word", () => {
-  assert.deepEqual(parseQuestionTypes(undefined), ["def", "syn", "ant"]);
+  assert.deepEqual(parseQuestionTypes(undefined), [
+    "def",
+    "syn",
+    "ant",
+    "word",
+    "cloze",
+  ]);
   assert.deepEqual(parseQuestionTypes(["ant", "syn", "syn"]), ["syn", "ant"]);
   for (const value of [[], ["unknown"], "syn", [null]])
     assert.throws(() => parseQuestionTypes(value), /practice type/);

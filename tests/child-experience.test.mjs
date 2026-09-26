@@ -57,11 +57,23 @@ test("every word and problem has readable help and a clue without its exact answ
     assert.ok(help[word.id].meaning.length <= 160, word.id);
     assert.ok(storyMeaning(word));
   }
-  for (const problem of problems)
+  for (const problem of problems) {
+    // The word and cloze types ask for the word itself, so the example clue
+    // would name the answer. They must offer no hint at all rather than a
+    // leaking one.
+    if (problem.type === "word" || problem.type === "cloze") {
+      assert.equal(
+        wordClue(problem.wordId, problem.answer, problem.type),
+        "",
+        `${problem.id} must not offer a clue that names the answer`,
+      );
+      continue;
+    }
     assert.ok(
       wordClue(problem.wordId, problem.answer),
       `Missing or answer-leaking clue: ${problem.id}`,
     );
+  }
   for (const [id, meanings] of Object.entries(contexts)) {
     const story = stories.find((s) => s.id === id);
     assert.ok(story, id);

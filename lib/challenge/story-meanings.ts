@@ -16,7 +16,16 @@ export function storyMeaning(
     word.definition
   );
 }
-export function wordClue(id: string, answer: string): string {
+/**
+ * The word and cloze types ask for the word itself, and every example
+ * sentence names it or an inflection of it, so no clue can be offered for
+ * those without handing over the answer.
+ */
+export function typeAllowsClue(type: string) {
+  return type !== "word" && type !== "cloze";
+}
+export function wordClue(id: string, answer: string, type?: string): string {
+  if (type !== undefined && !typeAllowsClue(type)) return "";
   const clue = meanings[id]?.clue ?? "";
   // A contextual clue should not repeat the exact correct option as a phrase.
   const escaped = answer.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
