@@ -9,7 +9,15 @@ import {
   type Award,
 } from "@/lib/challenge/rewards";
 
-/** Replay existing attempts through the same atomic award trigger once per user. */
+/**
+ * Replay existing attempts through the same atomic award trigger once per user.
+ *
+ * The five-correct rule here is frozen history, not the current mastery algorithm in
+ * `lib/challenge/mastery.ts`. These attempts predate that algorithm and the credits they
+ * earned are already paid and aggregated into daily_stats and the calendar. Do not
+ * "fix" this to match the live rules: existing rows are INSERT OR IGNORE, so a change
+ * here would not recompute them and could pay a second time.
+ */
 export async function initializeRewards(userId: string) {
   const db = database();
   const user = await db

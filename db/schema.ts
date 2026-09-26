@@ -46,6 +46,8 @@ export const learningEvents = sqliteTable(
     revealed: integer("revealed").notNull(),
     eligible: integer("eligible").notNull(),
     mastered: integer("mastered").notNull(),
+    /** How this answer read: recalled, uncertain, assisted or missed. */
+    evidence: text("evidence"),
     baseCredits: integer("base_credits").notNull().default(0),
     streakCredits: integer("streak_credits").notNull().default(0),
     masteryCredits: integer("mastery_credits").notNull().default(0),
@@ -159,6 +161,11 @@ export const progress = sqliteTable(
     wordId: text("word_id").notNull(),
     correct: integer("correct").notNull().default(0),
     mastered: integer("mastered").notNull().default(0),
+    /** Correct answers in a row, any speed. Cleared by a mistake, reveal or clue. */
+    run: integer("run").notNull().default(0),
+    /** Correct answers in the current run that also read as real recall. */
+    recalls: integer("recalls").notNull().default(0),
+    /** Superseded by run/recalls; kept so existing deployments never rewrite the table. */
     fastStreak: integer("fast_streak").notNull().default(0),
     seen: integer("seen").notNull().default(0),
     retryAt: integer("retry_at"),

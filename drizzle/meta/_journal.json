@@ -50,6 +50,13 @@
       "when": 1790323929415,
       "tag": "0006_dazzling_doctor_faustus",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1790404541571,
+      "tag": "0007_long_human_torch",
+      "breakpoints": true
     }
   ]
 }

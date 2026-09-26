@@ -1,9 +1,13 @@
-import { MASTERY_TARGET } from "./config.ts";
 import {
   DIFFICULTY_LEVELS,
   type DifficultyInfo,
   type DifficultyFilter,
 } from "./difficulty.ts";
+import {
+  CUMULATIVE_FLOOR,
+  recallTarget,
+  runTarget,
+} from "./mastery.ts";
 import type { Word } from "./words.ts";
 export const LEARNING_STATUS = {
   new: "New",
@@ -29,15 +33,16 @@ export type WordSummaryData = {
   trialEndsAt?: number | null;
   trialExpired?: boolean;
 };
-export function learningStatus(
-  correct: number,
-  seen: number,
-  mistakes: number,
-  reveals: number,
-): LearningStatus {
-  if (correct >= MASTERY_TARGET) return "mastered";
-  if (mistakes + reveals > 0) return "practice";
-  return seen > 0 || correct > 0 ? "learning" : "new";
+export function learningStatus(progress: {
+  mastered: boolean;
+  correct: number;
+  seen: number;
+  mistakes: number;
+  reveals: number;
+}): LearningStatus {
+  if (progress.mastered) return "mastered";
+  if (progress.mistakes + progress.reveals > 0) return "practice";
+  return progress.seen > 0 || progress.correct > 0 ? "learning" : "new";
 }
 export const WORD_FILTERS = {
   all: "All words",
@@ -125,7 +130,7 @@ export function wordSummaryCsv(words: WordSummary[]) {
         word.frequencyKind,
         LEARNING_STATUS[word.status],
         word.correct,
-        MASTERY_TARGET,
+        `${recallTarget(word.difficulty)} sure recalls, ${runTarget(word.difficulty)} in a row or ${CUMULATIVE_FLOOR} correct`,
         word.seen,
         word.mistakes,
         word.reveals,

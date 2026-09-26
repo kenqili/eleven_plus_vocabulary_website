@@ -1,5 +1,14 @@
 import levels from "@/data/word-levels/levels.json";
-import { quickAnswerWindow, isQuickRecall, quickMasteryTarget } from "@/lib/challenge/mastery";
+import {
+  CUMULATIVE_FLOOR,
+  advanceMastery,
+  answerWindow,
+  classify,
+  hasMastered,
+  initialMastery,
+  masteryProgress,
+  type Evidence,
+} from "@/lib/challenge/mastery";
 import { initializeRewards, progressSummary, awardFor } from "./rewards";
 import { wordClue } from "@/lib/challenge/story-meanings";
 import { missionFor } from "./mission";
@@ -7,7 +16,7 @@ import { localDay } from "@/lib/challenge/rewards";
 import { chooseWord, reviewDueAt } from "@/lib/challenge/ordering";
 import { words, problems, problemById } from "@/lib/challenge/bank";
 import { choicesFor, shuffle } from "@/lib/challenge/words";
-import { MASTERY_TARGET, type QuestionType } from "@/lib/challenge/config";
+import { type QuestionType } from "@/lib/challenge/config";
 import type { Difficulty } from "@/lib/challenge/difficulty";
 import type { Question, Stats } from "@/lib/challenge/types";
 import { database } from "./db";
@@ -24,10 +33,14 @@ type Attempt = {
   answer: string | null;
   prompt: string | null;
 };
-export const levelFor = (id: string) => (levels.words as Record<string, {difficulty: number}>)[id]?.difficulty ?? 1;
+export const levelFor = (id: string) =>
+  (levels.words as Record<string, { difficulty: number }>)[id]?.difficulty ?? 1;
+/** Credit-bearing correct answers per word, so a mastered word cannot farm credits. */
+const ELIGIBLE_ANSWERS = 5;
 type WordProgress = {
   mastered?: number;
-  fast_streak?: number;
+  run?: number;
+  recalls?: number;
   word_id: string;
   correct: number;
   seen: number;
@@ -43,7 +56,7 @@ export async function statsFor(
     .all<{ word_id: string; correct: number; mastered: number }>();
   const ids = wordIds || new Set(words.map((w) => w.id));
   const mastered = rows.results.filter(
-    (p) => ids.has(p.word_id) && (p.mastered === 1 || p.correct >= MASTERY_TARGET),
+    (p) => ids.has(p.word_id) && hasMastered(p),
   ).length;
   const summary = await progressSummary(userId);
   return {
@@ -54,7 +67,7 @@ export async function statsFor(
     todaySeconds: summary.periods.today.seconds,
     totalSeconds: summary.periods.all.seconds,
     inProgress: rows.results.filter(
-      (p) => ids.has(p.word_id) && p.correct > 0 && p.correct < MASTERY_TARGET && !p.mastered,
+      (p) => ids.has(p.word_id) && p.correct > 0 && !hasMastered(p),
     ).length,
     ...summary,
   };
@@ -67,7 +80,15 @@ function toQuestion(attempt: Attempt, progress?: WordProgress): Question {
   return {
     id: attempt.id,
     difficulty: levelFor(word.id),
-    mastery: { correct: progress?.correct ?? 0, fastStreak: progress?.fast_streak ?? 0, mastered: Boolean(progress?.mastered || (progress?.correct ?? 0) >= 5), quickTarget: quickMasteryTarget(levelFor(word.id)) },
+    mastery: masteryProgress(
+      {
+        correct: progress?.correct ?? 0,
+        run: progress?.run ?? 0,
+        recalls: progress?.recalls ?? 0,
+        mastered: hasMastered(progress ?? initialMastery),
+      },
+      levelFor(word.id),
+    ),
     word: word.word,
     clue: wordClue(word.id, attempt.answer ?? word.definition),
     wordId: word.id,
@@ -130,7 +151,7 @@ export async function nextQuestion(
       eligibleWordIds.has(w.id) &&
       (level === null || levelFor(w.id) === level) &&
       (!allowedWordIds || allowedWordIds.has(w.id)) &&
-      (byId.get(w.id)?.correct || 0) < MASTERY_TARGET && !byId.get(w.id)?.mastered,
+      !hasMastered(byId.get(w.id) ?? initialMastery),
   );
   if (!available.length) return null;
   const count =
@@ -232,7 +253,8 @@ export async function nextQuestion(
     word_id: word.id,
     correct: prior?.correct || 0,
     mastered: prior?.mastered ?? 0,
-    fast_streak: prior?.fast_streak ?? 0,
+    run: prior?.run ?? 0,
+    recalls: prior?.recalls ?? 0,
     seen: (prior?.seen || 0) + 1,
     retry_at: null,
   });
@@ -281,25 +303,62 @@ export async function answerQuestion(
         .first<{ count: number }>()
     )?.count || 0;
   const due = reviewDueAt(count);
+  const now = Date.now();
+  const wallSeconds = (now - attempt.created_at) / 1000;
+  // The stored time is the trustworthy one, so the evidence verdict can be
+  // reproduced from this row later.
   const seconds = Math.max(
     0,
-    Math.min(
-      300,
-      Math.floor((Date.now() - attempt.created_at) / 1000),
-      Math.floor(elapsed),
-    ),
+    Math.min(300, Math.floor(wallSeconds), Math.floor(elapsed)),
   );
-  const now = Date.now();
-  const quick = correct && isQuickRecall(elapsed, quickAnswerWindow(options), assisted, (now - attempt.created_at) / 1000);
-  const quickTarget = quickMasteryTarget(levelFor(word.id));
+  const revealed = selected === -1;
+  const level = levelFor(word.id);
+  const evidence: Evidence = classify({
+    correct,
+    revealed,
+    assisted,
+    seconds,
+    wallSeconds,
+    window: answerWindow(options),
+  });
+  // Mastery is decided by the shared pure function, not by SQL. Reading the row here
+  // is safe because attempts_one_pending_per_user allows only one live question per
+  // user, so no other write to this word can interleave.
+  const prior =
+    (await db
+      .prepare(
+        "SELECT correct,run,recalls,mastered FROM progress WHERE user_id=? AND word_id=?",
+      )
+      .bind(userId, word.id)
+      .first<WordProgress>()) ?? initialMastery;
+  const mastery = advanceMastery(
+    {
+      correct: prior.correct ?? 0,
+      run: prior.run ?? 0,
+      recalls: prior.recalls ?? 0,
+      mastered: hasMastered(prior),
+    },
+    evidence,
+    level,
+  );
+  // The word is finished either way, but only a right answer may pay the mastery
+  // bonus, so a stale row that already met the floor cannot be cashed in by a miss.
+  const paidMastery = correct && mastery.newlyMastered;
   // Award event, progress and answer commit together; event uniqueness prevents replay.
   await db.batch([
+    // A missing progress row would silently drop the answer, so make sure one exists.
     db
       .prepare(
-        `INSERT OR IGNORE INTO learning_events(attempt_id,user_id,word_id,created_at,day,correct,revealed,eligible,mastered)
+        "INSERT INTO progress(user_id,word_id,correct,seen,retry_at) SELECT ?,?,0,0,NULL WHERE EXISTS(SELECT 1 FROM attempts WHERE id=? AND user_id=? AND answered_at IS NULL) ON CONFLICT(user_id,word_id) DO NOTHING",
+      )
+      .bind(userId, word.id, id, userId),
+    db
+      .prepare(
+        `INSERT OR IGNORE INTO learning_events(attempt_id,user_id,word_id,created_at,day,correct,revealed,eligible,mastered,evidence)
       SELECT a.id,a.user_id,a.word_id,?,?,?,?,
-        CASE WHEN ?=1 AND p.mastered=0 AND p.correct<5 AND (SELECT COUNT(*) FROM learning_events e WHERE e.user_id=a.user_id AND e.word_id=a.word_id AND e.eligible=1)<5 THEN 1 ELSE 0 END,
-        CASE WHEN ?=1 AND p.mastered=0 AND (p.correct>=4 OR (?=1 AND p.fast_streak+1>=?)) AND NOT EXISTS(SELECT 1 FROM learning_events e WHERE e.user_id=a.user_id AND e.word_id=a.word_id AND e.mastered=1) THEN 1 ELSE 0 END
+        CASE WHEN ?=1 AND p.mastered=0 AND p.correct<? AND (SELECT COUNT(*) FROM learning_events e WHERE e.user_id=a.user_id AND e.word_id=a.word_id AND e.eligible=1)<? THEN 1 ELSE 0 END,
+        CASE WHEN ?=1 AND NOT EXISTS(SELECT 1 FROM learning_events e WHERE e.user_id=a.user_id AND e.word_id=a.word_id AND e.mastered=1) THEN 1 ELSE 0 END,
+        ?
       FROM attempts a JOIN progress p ON p.user_id=a.user_id AND p.word_id=a.word_id
       WHERE a.id=? AND a.user_id=? AND a.answered_at IS NULL`,
       )
@@ -307,24 +366,24 @@ export async function answerQuestion(
         now,
         localDay(now),
         correct ? 1 : 0,
-        selected === -1 ? 1 : 0,
+        revealed ? 1 : 0,
         correct ? 1 : 0,
-        correct ? 1 : 0,
-        quick ? 1 : 0,
-        quickTarget,
+        CUMULATIVE_FLOOR,
+        ELIGIBLE_ANSWERS,
+        paidMastery ? 1 : 0,
+        evidence,
         id,
         userId,
       ),
     db
       .prepare(
-        "UPDATE progress SET mastered=MAX(mastered,CASE WHEN correct+? >= 5 OR EXISTS(SELECT 1 FROM learning_events WHERE attempt_id=? AND mastered=1) THEN 1 ELSE 0 END),fast_streak=CASE WHEN ?=1 THEN fast_streak+1 ELSE 0 END,correct=MIN(?,correct+?),retry_at=? WHERE user_id=? AND word_id=? AND EXISTS (SELECT 1 FROM attempts WHERE id=? AND user_id=? AND answered_at IS NULL)",
+        "UPDATE progress SET correct=?,run=?,recalls=?,mastered=?,retry_at=? WHERE user_id=? AND word_id=? AND EXISTS (SELECT 1 FROM attempts WHERE id=? AND user_id=? AND answered_at IS NULL)",
       )
       .bind(
-        correct ? 1 : 0,
-        id,
-        quick ? 1 : 0,
-        MASTERY_TARGET,
-        correct ? 1 : 0,
+        mastery.correct,
+        mastery.run,
+        mastery.recalls,
+        mastery.mastered ? 1 : 0,
         correct ? null : due,
         userId,
         word.id,
@@ -348,9 +407,24 @@ export async function answerQuestion(
       409,
       "This question was replaced in another tab. Continue with the current question.",
     );
-  const progress = await db.prepare("SELECT correct,fast_streak,mastered FROM progress WHERE user_id=? AND word_id=?").bind(userId,word.id).first<WordProgress>();
+  // Re-read after the commit so a losing tab reports the winning values.
+  const progress =
+    (await db
+      .prepare(
+        "SELECT correct,run,recalls,mastered FROM progress WHERE user_id=? AND word_id=?",
+      )
+      .bind(userId, word.id)
+      .first<WordProgress>()) ?? prior;
   return {
-    mastery: { correct: progress?.correct ?? 0, fastStreak: progress?.fast_streak ?? 0, mastered: Boolean(progress?.mastered), quickTarget },
+    mastery: masteryProgress(
+      {
+        correct: progress.correct ?? 0,
+        run: progress.run ?? 0,
+        recalls: progress.recalls ?? 0,
+        mastered: hasMastered(progress),
+      },
+      level,
+    ),
     type: attempt.question_type,
     answer,
     correct: Boolean(saved?.is_correct),

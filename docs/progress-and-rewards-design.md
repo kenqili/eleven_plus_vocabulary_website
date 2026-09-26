@@ -27,11 +27,26 @@ Use three tabs: Today, This week, All time. Default to Today. Always show the cu
 | Accuracy            | Correct / submitted answers, excluding reveals; display an em dash if none                   |
 | New words explored  | Distinct words with their first completed attempt in this period                             |
 | Words practised     | Distinct words with any completed attempt in this period                                     |
-| Newly mastered      | Words reaching five correct answers for the first time in this period                        |
+| Newly mastered      | Words meeting the evidence rule below for the first time in this period                      |
 | Study time          | Recorded active study seconds, displayed as seconds below a minute, then minutes and seconds |
 | Credits earned      | Positive learning awards in the selected period, independent of spending                     |
 
-Use “New words explored” rather than claiming a single exposure means learned. “Mastered” retains the existing five-correct-across-types rule. Show partially learned words too: for example “12 words in progress”.
+Use “New words explored” rather than claiming a single exposure means learned. “Mastered” follows the evidence rule in `lib/challenge/mastery.ts`: sure recalls scaled by word level, right answers in a row, or five correct answers whenever they come. Show partially learned words too: for example “12 words in progress”.
+
+## Mastery evidence
+
+Classify every accepted answer once, in the shared pure function, and store the verdict with the learning event so it can be audited and re-tuned later.
+
+- **recalled** — correct, no clue, and answered inside a reading budget derived from the four options, with the reported time fitting inside the wall clock.
+- **uncertain** — correct, but reflex-fast, unusually slow, or the wall clock disagrees. Positive but weak evidence.
+- **assisted** — correct after the child asked for a clue. The strongest available signal that the word was not known unaided.
+- **missed** — wrong answer or Skip & reveal.
+
+A mistake, reveal or clue clears the current run of right answers and the run of sure recalls, so an earlier right answer later shown to be a guess stops counting. A slow-but-correct answer clears neither. The cumulative correct count never decreases and mastery is never revoked.
+
+Require more evidence the less convincing the evidence is: the sure-recall target rises with word level (2 for Level 0, 3 for Levels 1–2, 4 for Levels 3–5) and is always shorter than the unbroken-run target, so timing can never be dead weight. The cumulative floor of five correct answers is the unconditional exit that guarantees the practice loop always drains.
+
+Treat answer time as supporting evidence, not proof. A child who has never met a word still reads every option before guessing, and a deliberate guesser is indistinguishable from a careful reader; the clue button is the stronger signal. Never let speed become a requirement, and never show a child a mastery number that has just gone down.
 
 Store event timestamps in UTC. Store an IANA reporting timezone per user, initially Europe/London; show it in the dashboard. Today uses local midnight; weeks run Monday to Sunday. Compute boundaries with daylight-saving-aware logic. Timezone changes rebuild daily summaries from events instead of relabelling UTC dates. Display date ranges on weekly views.
 
@@ -47,20 +62,20 @@ Existing attempt elapsed values are retained as historical recorded time, not re
 
 ## Credit rules (initial defaults)
 
-- +2 credits for each correct answer that advances a word's five-correct mastery count.
+- +2 credits for each correct answer that advances an unmastered word, capped at five such answers per word.
 - +5 bonus credits for every three consecutive correct answers: at streaks of 3, 6, 9 and so on. Three correct answers therefore earn 11 credits before any mastery bonus (2 + 2 + 2 + 5).
 - +10 bonus credits when that word is first mastered.
 - No credits for wrong answers, reveals, page refreshes or elapsed time; no credit deductions for mistakes.
 - Wrong answers and Skip & reveal reset the streak to zero, without taking away earned credits. Changing question types, refreshing, logging out or taking a break preserves the streak. Count consecutive accepted answers across all selected types, not consecutive days; there is no pressure to stay online.
 - Only correct answers that advance mastery count towards the streak. Retired questions and duplicate answer submissions neither advance nor reset it. Order simultaneous accepted answers by the server's transactional sequence, not client timestamps.
-- A word can earn at most 20 lifetime base/mastery credits; streak bonuses are additional awards across words. Resetting practice or switching question types does not reset award eligibility. No unlimited credit farming from already-mastered words.
+- A word can earn at most 20 lifetime base/mastery credits; streak bonuses are additional awards across words. Because mastery now arrives after 2–4 correct answers rather than 5, the realistic lifetime total is 14–18, so badge costs need roughly 10–30% more mastered words. Resetting practice or switching question types does not reset award eligibility. No unlimited credit farming from already-mastered words.
 - Demo practice shows session-only stats and never earns redeemable credits.
 
 Show three small progress markers beside the balance: “1 of 3 towards +5”, then “2 of 3 towards +5”. On the third correct answer show “Three in a row! +5 bonus” and an award breakdown such as “+2 correct · +5 streak · +10 mastered = +17 credits”. Start the next three-answer group immediately while retaining the overall streak count (for example “6 correct in a row”). Use a brief optional animation that respects reduced-motion preferences. On a mistake, say “New streak starts with your next correct answer”; do not subtract credits or use a punishment animation.
 
 Keep rule values in a versioned server configuration. Include the rule version and event reference on each award. The client cannot submit award amounts, balances or correctness. Replaying an answer must return its original result without additional awards.
 
-Backfill historic credits once from valid saved correct attempts: award the first five correct answers per word plus its first mastery bonus. Use deterministic unique keys so rerunning the backfill is safe. Derive historical first exposure and fifth-correct timestamps from attempts. If imported progress lacks supporting attempts, preserve its mastery count but label its date unknown and do not invent historical activity or awards.
+Backfill historic credits once from valid saved correct attempts: award the first five correct answers per word plus its first mastery bonus. This is a frozen historical rule, not the live algorithm in `lib/challenge/mastery.ts`; existing rows are `INSERT OR IGNORE`, so changing it would not recompute them and could pay twice. Use deterministic unique keys so rerunning the backfill is safe. Derive historical first exposure and fifth-correct timestamps from attempts. If imported progress lacks supporting attempts, preserve its mastery count but label its date unknown and do not invent historical activity or awards.
 
 For streak backfill, replay valid accepted answers in stable server order (answered timestamp, then stored insertion order for ties), applying the same eligibility and reset rules. Award each completed trio once, keyed by its third attempt ID, and preserve the resulting current streak. Historic and live processing use the same rule version; run the backfill before enabling live awards so they cannot overlap.
 

@@ -13,7 +13,15 @@ import {
   serverAutoNext,
 } from "@/lib/client/auto-next";
 import levels from "@/data/word-levels/levels.json";
-import { advanceMastery, quickMasteryTarget, quickAnswerWindow, isQuickRecall } from "@/lib/challenge/mastery";
+import {
+  advanceMastery,
+  answerWindow,
+  classify,
+  initialMastery,
+  masteryProgress,
+  type Evidence,
+  type MasteryState,
+} from "@/lib/challenge/mastery";
 import { wordClue } from "@/lib/challenge/story-meanings";
 import { api } from "@/lib/client/api";
 import { useStudyClock } from "./use-study-clock";
@@ -80,7 +88,7 @@ export function useChallenge() {
   // null is mixed practice across every level, which keeps levels 1-5 unchanged.
   const [level, setLevel] = useState<Difficulty | null>(null);
   const demoProgress = useRef(new Map<string, number>());
-  const demoMastery = useRef(new Map<string, ReturnType<typeof advanceMastery>>());
+  const demoMastery = useRef(new Map<string, MasteryState>());
   const assisted = useRef(false);
   const demoSeen = useRef(new Set<string>());
   const demoStats = useRef(initialStats);
@@ -130,11 +138,16 @@ export function useChallenge() {
   const flushTime = studyClock.flush;
   const demoQuestion = useCallback((index: number): Question | null => {
     const word = demoWords.current[index];
+    const difficulty = levels.words[word?.wordId as keyof typeof levels.words]
+      ?.difficulty;
     return word
       ? {
           id: word.id,
-          difficulty: levels.words[word.wordId as keyof typeof levels.words]?.difficulty ?? 1,
-          mastery: { ...(demoMastery.current.get(word.wordId) ?? {correct: 0, fastStreak: 0, mastered: false}), quickTarget: quickMasteryTarget(levels.words[word.wordId as keyof typeof levels.words]?.difficulty ?? 1) },
+          difficulty: difficulty ?? 1,
+          mastery: masteryProgress(
+            demoMastery.current.get(word.wordId) ?? initialMastery,
+            difficulty ?? 1,
+          ),
           wordId: word.wordId,
           type: word.type,
           prompt: word.prompt,
@@ -338,9 +351,19 @@ export function useChallenge() {
           const correct = word.choices[selected] === word.answer;
           const seenBefore = demoSeen.current.has(word.wordId);
           demoSeen.current.add(word.wordId);
-          const previousMastery = demoMastery.current.get(word.wordId) ?? {correct: 0, fastStreak: 0, mastered: false};
-          const mastery = advanceMastery(previousMastery, correct, isQuickRecall(elapsed.current, quickAnswerWindow(word.choices), assisted.current), levels.words[word.wordId as keyof typeof levels.words]?.difficulty ?? 1);
-          const justMastered = mastery.mastered && !previousMastery.mastered;
+          const difficulty = levels.words[word.wordId as keyof typeof levels.words]
+            ?.difficulty;
+          const evidence: Evidence = classify({
+            correct,
+            revealed: selected === -1,
+            assisted: assisted.current,
+            seconds: elapsed.current,
+            wallSeconds: elapsed.current,
+            window: answerWindow(word.choices),
+          });
+          const previousMastery = demoMastery.current.get(word.wordId) ?? initialMastery;
+          const mastery = advanceMastery(previousMastery, evidence, difficulty ?? 1);
+          const justMastered = mastery.newlyMastered;
           demoMastery.current.set(word.wordId, mastery);
           demoProgress.current.set(word.wordId, mastery.correct);
           const prior = current.stats.periods?.all || emptyPeriod();
@@ -370,7 +393,7 @@ export function useChallenge() {
           setState({
             ...current,
             feedback: {
-              mastery: {...mastery, quickTarget: quickMasteryTarget(levels.words[word.wordId as keyof typeof levels.words]?.difficulty ?? 1)},
+              mastery: masteryProgress(mastery, difficulty ?? 1),
               type: word.type,
               answer: word.answer,
               correct,

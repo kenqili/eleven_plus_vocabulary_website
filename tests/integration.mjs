@@ -616,7 +616,7 @@ try {
     sql(`DELETE FROM users WHERE id='${otherCalendarUser}';`);
   }
   console.log(
-    "PASS: accounts, CSRF, membership, all three question types, filters, replaced-question protection, correct/wrong answers, replay safety, saved progress, five-correct mastery, calendar history and cancellation.",
+    "PASS: accounts, CSRF, membership, all three question types, filters, replaced-question protection, correct/wrong answers, replay safety, saved progress, mastery evidence and per-level targets, calendar history and cancellation.",
   );
 } finally {
   if (userId)

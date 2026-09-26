@@ -121,14 +121,16 @@ The return-from-checkout URL does not grant access. Signed webhooks fetch the cu
 
 ## Practice rules
 
-- Five correct answers across selected types master a word; mastered words leave the rotation. Existing three-correct progress is preserved and now needs two more correct answers.
+- Mastery is decided in one pure function, `lib/challenge/mastery.ts`, which the authoritative server path and the signed-out demo both call. An answer is **recalled** when it is correct, unassisted and answered inside a reading budget derived from the four options (2 seconds up to that budget, with the wall clock in agreement); a clue makes it **assisted**; a correct answer outside that window is **uncertain**; a wrong answer or reveal is **missed**. Level 0 needs 2 sure recalls, Levels 1–2 need 3 and Levels 3–5 need 4, so a run without a mistake or clue is always the cheapest route. Right answers in a row also master a word — 3 for Level 0, 4 for Levels 1–2 and 5 for the hardest words — and so do 5 correct answers whenever they come, which guarantees no word is stuck in rotation. A mistake, reveal or clue clears both runs, so a correct answer later shown to be a guess stops counting. A slow answer adds no evidence but never removes any, because taking time is never penalised. The total correct count never decreases, and mastery is sticky: a mastered word leaves the rotation for good.
+- Credit rules are unchanged by this. A correct answer is credit-bearing while the word is unmastered and has fewer than five such answers, and the first mastery still pays 10 credits once. Because a word can now be mastered after 2–4 correct answers instead of 5, it pays 14–18 lifetime base-and-mastery credits rather than 20, so badge progression needs roughly 10–30% more mastered words.
+- Saved progress survives the change: existing `correct` counts and existing `mastered` flags are untouched, and the new `run`/`recalls` counters start at zero, so a half-learned word simply needs a few more answers.
 - Choose one or more practice types. Definition cards are blue, synonyms green and antonyms amber, each with a written type label. At least one type must remain selected.
 - Questions draw from the same word library. Among selected types, less-practised types for a word are preferred before repeating a type. Mastery is per word, not five for each separate type.
 - Changing types preserves mastery; a pending question outside the selection is retired without credit. Answers to a retired question are rejected, including across tabs.
 - Practice can stay on all levels or focus one difficulty level (0–5) with the "Practise level" control. A level only narrows the candidate words: selection, spacing, mastery and saved progress are identical, and "All levels" restores mixed practice. The level of the visible question is shown on its card. A pending question from another level is retired without credit.
 - Ordering lives in `lib/challenge/ordering.ts`: exclude the 20 most recently shown distinct eligible words (or all but one for a small pool), then choose a least-seen word with random ties. Due mistakes override this ordinary spacing, oldest due first.
 - Missed/revealed words are scheduled for the 15th next question presentation (within the requested 10–20 range). Fixed spacing avoids collisions from random review dates. Waiting mistakes are excluded from ordinary selection; if only waiting mistakes remain, they can return earlier. Retired questions count as presentations; reloading a pending question does not. Reviews require an eligible selected type. Previously queued or temporarily filtered-out reviews are served oldest-due first when eligible and may already be overdue.
-- Question types are balanced per word by completed attempts, with random ties. Five correct answers across types retire the word. Changing filters preserves progress; refreshing resumes the pending question.
+- Question types are balanced per word by completed attempts, with random ties. Mastery is counted across types, not per type. Changing filters preserves progress; refreshing resumes the pending question.
 - The free sample selects the configured number of words, balanced across difficulty levels and interleaves their question types in shuffled rounds. A new load/filter selection starts a fresh sample.
 - The current question survives refresh and sign-in; concurrent tabs share one pending question.
 - Server-side scoring prevents replayed answers from increasing mastery twice.
@@ -156,7 +158,7 @@ it easy to move through history; future dates are disabled.
 
 Visit `/words` for your saved progress across the full library. Learning status
 is automatic: New (not shown), Learning, Needs practice (unmastered with a wrong
-answer or reveal), and Mastered (five correct answers). Retired questions do not
+answer or reveal), and Mastered (the word met the evidence rule above). Retired questions do not
 count as mistakes. The Mistaken words and Revealed answers filters also include
 historical mistakes on mastered words; Needs practice focuses on unfinished work.
 Search matches words and definitions. Revision filters show the words with the
@@ -199,7 +201,7 @@ npm run test:integration
 npm run format
 ```
 
-Integration tests create a unique temporary local account, insert a local-only membership for protected-route checks, and clean up that account. Never run them against a production site. Core tests cover every word's choices, parser failures, reviewed-CSV hashes, salted passwords, and valid/forged/stale Stripe signatures. Integration checks cover CSRF, cookies, registration, wrong passwords, session revocation, paywalls, concurrent questions, all three question types, trial access and expiry, invalid filters, retired questions, answer replay, five-correct mastery, persistence and revoked access.
+Integration tests create a unique temporary local account, insert a local-only membership for protected-route checks, and clean up that account. Never run them against a production site. Core tests cover every word's choices, parser failures, reviewed-CSV hashes, salted passwords, and valid/forged/stale Stripe signatures. Integration checks cover CSRF, cookies, registration, wrong passwords, session revocation, paywalls, concurrent questions, all three question types, trial access and expiry, invalid filters, retired questions, answer replay, mastery evidence and per-level targets, persistence and revoked access.
 
 A feature-detected WebMCP surface exposes the visible question and answering action. A supported WebMCP browser validation context was not available in this run; these optional tools are not browser-verified. Browser interaction and responsive checks are documented in [the responsive review](docs/responsive-layout-review.md) and [the child experience review](docs/child-experience-review.md), including their device-emulation limits.
 

@@ -8,11 +8,15 @@ import { DAILY_QUESTION_TARGET } from "@/lib/challenge/mission";
 import { pauseAutoNext, type NextDelay } from "@/lib/client/auto-next";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
-  MASTERY_TARGET,
   QUESTION_TYPES,
   TYPE_LABELS,
   type QuestionType,
 } from "@/lib/challenge/config";
+import {
+  CUMULATIVE_FLOOR,
+  describeRecallTargets,
+  runTarget,
+} from "@/lib/challenge/mastery";
 import { DIFFICULTY_LEVELS, type Difficulty } from "@/lib/challenge/difficulty";
 import Header from "./header";
 import ProgressPanel from "./progress-panel";
@@ -301,19 +305,31 @@ export default function Challenge() {
                   <div className="question-footer">
                     <div className="mastery-mini">
                       <span>
-                        {mastery?.mastered ? "Word mastered!" : `${mastery?.correct ?? question.correctCount} correct so far · ${mastery?.fastStreak ?? 0}/${mastery?.quickTarget ?? 4} confident recalls`}
+                        {mastery?.mastered
+                          ? "Word mastered!"
+                          : `${mastery?.correct ?? question.correctCount} of ${CUMULATIVE_FLOOR} correct${
+                              (mastery?.recalls ?? 0) > 0
+                                ? ` · ${mastery?.recalls}/${mastery?.target ?? 2} sure recalls`
+                                : ""
+                            }`}
                       </span>
                       <span
                         className="mastery-circles"
                         role="img"
-                        aria-label={mastery?.mastered ? "Mastered" : `${mastery?.correct ?? question.correctCount} correct answers; five at any pace also masters this word`}
+                        aria-label={
+                          mastery?.mastered
+                            ? "Mastered"
+                            : `${mastery?.correct ?? question.correctCount} of ${CUMULATIVE_FLOOR} correct answers; ${mastery?.target ?? 2} sure recalls also master this word`
+                        }
                       >
-                        {Array.from({ length: MASTERY_TARGET }, (_, index) => (
+                        {Array.from({ length: CUMULATIVE_FLOOR }, (_, index) => (
                           <i
                             key={index}
                             className={
                               index <
-                              (mastery?.mastered ? 5 : mastery?.correct ?? question.correctCount)
+                              (mastery?.mastered
+                                ? CUMULATIVE_FLOOR
+                                : mastery?.correct ?? question.correctCount)
                                 ? "filled"
                                 : ""
                             }
@@ -471,11 +487,17 @@ export default function Challenge() {
                     overriding the usual 20-word gap. With very few words left,
                     they may return sooner. Keep the same practice types
                     selected to include those reviews. For each word, we favour
-                    its least-practised selected question type. Two confident recalls
-                    master Level 0 words, three master Levels 1–2, and four
-                    master Levels 3–5. Five correct answers at any pace also
-                    master a word. Clues, mistakes and reveals reset the confident-recall run.
-                    Take your time: speed is optional.
+                    its least-practised selected question type.
+                  </p>
+                  <p>
+                    <strong>How a word becomes mastered.</strong> Answering
+                    unhurried and without a clue counts as a sure recall:{" "}
+                    {describeRecallTargets()}. Right answers in a row also do it
+                    — {runTarget(0)} for Level 0 and {runTarget(5)} for the
+                    hardest words — and so do {CUMULATIVE_FLOOR} right answers
+                    whenever they come. A clue, a mistake or a reveal starts the
+                    count again. Take your time: speed is a bonus, never a
+                    requirement.
                   </p>
                   <p>
                     Reloading resumes your unanswered question. Changing types

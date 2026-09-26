@@ -5,11 +5,7 @@ import { createHash } from "node:crypto";
 import { words } from "../scripts/load-word-bank.mjs";
 import { problems, synText } from "../scripts/load-problem-bank.mjs";
 import { parseProblemCsv } from "../lib/challenge/problems.ts";
-import {
-  MASTERY_TARGET,
-  parsePracticeLevel,
-  parseQuestionTypes,
-} from "../lib/challenge/config.ts";
+import { parsePracticeLevel, parseQuestionTypes } from "../lib/challenge/config.ts";
 import { DIFFICULTY_LEVELS } from "../lib/challenge/difficulty.ts";
 test("Shipped question CSVs match the independently reviewed versions", () => {
   const review = JSON.parse(
@@ -93,8 +89,7 @@ test("Malformed problem rows cannot enter the bank", () => {
     /invalid\/duplicate/,
   );
 });
-test("Type selection requires one or more known types and mastery is per-word five", () => {
-  assert.equal(MASTERY_TARGET, 5);
+test("Type selection requires one or more known types and mastery is per-word", () => {
   assert.deepEqual(parseQuestionTypes(undefined), ["def", "syn", "ant"]);
   assert.deepEqual(parseQuestionTypes(["ant", "syn", "syn"]), ["syn", "ant"]);
   for (const value of [[], ["unknown"], "syn", [null]])

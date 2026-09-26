@@ -17,7 +17,7 @@ import {
 } from "../lib/client/auto-next.ts";
 
 test("revision filters prioritise mistakes, distinguish reveals, and keep mastered history", () => {
-  const row = (word, correct, seen, mistakes, reveals) => ({
+  const row = (word, correct, seen, mistakes, reveals, mastered = false) => ({
     difficulty: word === "revealed" ? 5 : 1,
     letterCount: word.length,
     frequencyZipf: 4,
@@ -33,18 +33,22 @@ test("revision filters prioritise mistakes, distinguish reveals, and keep master
     seen,
     mistakes,
     reveals,
-    status: learningStatus(correct, seen, mistakes, reveals),
+    // Mastery is decided by lib/challenge/mastery.ts and stored, never inferred here,
+    // so a word mastered after two sure recalls still reads as mastered.
+    status: learningStatus({ mastered, correct, seen, mistakes, reveals }),
   });
   const rows = [
     row("new", 0, 0, 0, 0),
     row("learning", 1, 1, 0, 0),
     row("mistaken", 1, 3, 2, 0),
     row("revealed", 0, 3, 0, 3),
-    row("mastered", 5, 7, 2, 0),
+    row("mastered", 5, 7, 2, 0, true),
+    // A level 0 word can now be mastered well before five correct answers.
+    row("quick", 2, 2, 0, 0, true),
   ];
   assert.deepEqual(
     rows.map((r) => r.status),
-    ["new", "learning", "practice", "practice", "mastered"],
+    ["new", "learning", "practice", "practice", "mastered", "mastered"],
   );
   assert.deepEqual(
     filterWords(rows, "practice").map((r) => r.word),

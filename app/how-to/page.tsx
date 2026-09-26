@@ -11,6 +11,10 @@ import {
   Sparkles,
 } from "lucide-react";
 import Header from "@/components/minewords/header";
+import {
+  CUMULATIVE_FLOOR,
+  describeRecallTargets,
+} from "@/lib/challenge/mastery";
 
 const steps = [
   {
@@ -127,11 +131,13 @@ export default function HowToPage() {
             <li>
               <Check size={18} />{" "}
               <span>
-                <strong>See progress build.</strong> Two confident recalls can master Level 0 words, three can master
-                Levels 1–2 and four can master Levels 3–5. Five correct answers
-                at any pace also count. A clue, mistake or reveal resets the
-                quick-recall run; there is no need to rush. This is a practice milestone;
-                keep exploring those words in reading and conversation too.
+                <strong>See progress build.</strong> Answering unhurried and without a
+                clue counts as a sure recall, and {describeRecallTargets()} master a
+                word. Right answers in a row master it too, as do {CUMULATIVE_FLOOR}
+                right answers whenever they come. A clue, a mistake or a reveal
+                starts the count again, and there is no need to rush. This is a
+                practice milestone; keep exploring those words in reading and
+                conversation too.
               </span>
             </li>
           </ul>

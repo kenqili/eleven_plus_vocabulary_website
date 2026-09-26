@@ -8,7 +8,11 @@ import {
   DIFFICULTY_LEVELS,
   type DifficultyFilter,
 } from "@/lib/challenge/difficulty";
-import { MASTERY_TARGET } from "@/lib/challenge/config";
+import {
+  CUMULATIVE_FLOOR,
+  describeRecallTargets,
+  runTarget,
+} from "@/lib/challenge/mastery";
 import {
   filterWords,
   WORD_FILTERS,
@@ -130,8 +134,10 @@ export default function WordSummaryPage() {
               ))}
             </div>
             <p className="muted word-level-help">
-              Confident recall or five correct answers at any pace master a word. Needs practice highlights
-              unmastered words with a mistake or revealed answer.
+              {describeRecallTargets()} master a word, as do {runTarget(0)}–{runTarget(5)}{" "}
+              right answers in a row or {CUMULATIVE_FLOOR} right answers whenever
+              they come. Needs practice highlights unmastered words with a mistake
+              or revealed answer.
             </p>
             <section
               className="word-tools"
@@ -357,8 +363,8 @@ export default function WordSummaryPage() {
                                 {word.correct} correct{word.status === "mastered" ? " · mastered" : ""}
                               </span>
                               <progress
-                                value={word.status === "mastered" ? MASTERY_TARGET : word.correct}
-                                max={MASTERY_TARGET}
+                                value={word.status === "mastered" ? CUMULATIVE_FLOOR : word.correct}
+                                max={CUMULATIVE_FLOOR}
                                 aria-label={`${word.word}: ${word.correct} correct, ${LEARNING_STATUS[word.status]}`}
                               />
                             </label>

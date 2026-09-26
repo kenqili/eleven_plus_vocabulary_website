@@ -1,6 +1,5 @@
 import { DIFFICULTY_LEVELS, type Difficulty } from "./difficulty.ts";
 
-export const MASTERY_TARGET = 5;
 export const QUESTION_TYPES = ["def", "syn", "ant"] as const;
 export type QuestionType = (typeof QUESTION_TYPES)[number];
 export const TYPE_LABELS: Record<QuestionType, string> = {

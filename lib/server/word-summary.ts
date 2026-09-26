@@ -1,7 +1,7 @@
 import levels from "@/data/word-levels/levels.json";
 import type { DifficultyInfo } from "@/lib/challenge/difficulty";
 import { words } from "@/lib/challenge/bank";
-import { MASTERY_TARGET } from "@/lib/challenge/config";
+import { CUMULATIVE_FLOOR, hasMastered } from "@/lib/challenge/mastery";
 import { learningStatus, type WordSummary } from "@/lib/challenge/word-summary";
 import { database } from "./db";
 export async function wordSummary(
@@ -37,7 +37,7 @@ export async function wordSummary(
     .map((word) => {
       const saved = byWord.get(word.id),
         attempts = byHistory.get(word.id);
-      const correct = Math.min(MASTERY_TARGET, saved?.correct || 0),
+      const correct = Math.min(CUMULATIVE_FLOOR, saved?.correct || 0),
         seen = saved?.seen || 0;
       const mistakes = attempts?.mistakes || 0,
         reveals = attempts?.reveals || 0;
@@ -61,7 +61,15 @@ export async function wordSummary(
         mistakes,
         reveals,
         lastPractised: attempts?.last_practised || null,
-        status: saved?.mastered ? "mastered" : learningStatus(correct, seen, mistakes, reveals),
+        status: hasMastered(saved ?? {})
+          ? "mastered"
+          : learningStatus({
+              mastered: false,
+              correct,
+              seen,
+              mistakes,
+              reveals,
+            }),
       };
     });
 }
