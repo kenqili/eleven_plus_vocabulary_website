@@ -127,18 +127,21 @@ export default function HowToPage() {
             <li>
               <Check size={18} />{" "}
               <span>
-                <strong>See progress build.</strong> Five correct answers in
-                total mark a word as mastered in MineWords. Wrong answers and
-                reveals do not add to the five. This is a practice milestone;
+                <strong>See progress build.</strong> Two confident recalls can master Level 0 words, three can master
+                Levels 1–2 and four can master Levels 3–5. Five correct answers
+                at any pace also count. A clue, mistake or reveal resets the
+                quick-recall run; there is no need to rush. This is a practice milestone;
                 keep exploring those words in reading and conversation too.
               </span>
             </li>
           </ul>
           <p className="howto-note">
-            Progress shows vocabulary practice, not exam readiness. The five
-            difficulty levels help you browse this collection by estimated word
-            rarity and length; they are not official exam grades or a setting
-            for the order of practice questions.
+            Progress shows vocabulary practice, not exam readiness. Difficulty
+            levels group vocabulary, not exam grades. Level 0 adds curriculum
+            vocabulary as its own level. Levels 1–5 combine estimated word
+            rarity and letter count. You can leave practice on all levels or
+            choose one level to focus on; either way the same words and saved
+            progress are used.
           </p>
         </section>
 

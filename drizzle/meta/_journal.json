@@ -36,6 +36,20 @@
       "when": 1790225630464,
       "tag": "0004_superb_the_fallen",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1790271902596,
+      "tag": "0005_perpetual_hercules",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1790323929415,
+      "tag": "0006_dazzling_doctor_faustus",
+      "breakpoints": true
     }
   ]
 }

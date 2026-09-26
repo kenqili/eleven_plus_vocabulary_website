@@ -12,14 +12,17 @@ import {
   subscribeAutoNext,
   serverAutoNext,
 } from "@/lib/client/auto-next";
+import levels from "@/data/word-levels/levels.json";
+import { advanceMastery, quickMasteryTarget, quickAnswerWindow, isQuickRecall } from "@/lib/challenge/mastery";
+import { wordClue } from "@/lib/challenge/story-meanings";
 import { api } from "@/lib/client/api";
 import { useStudyClock } from "./use-study-clock";
 import { emptyPeriod } from "@/lib/challenge/rewards";
 import {
   QUESTION_TYPES,
-  MASTERY_TARGET,
   type QuestionType,
 } from "@/lib/challenge/config";
+import type { Difficulty } from "@/lib/challenge/difficulty";
 import type {
   ChallengeState,
   Feedback,
@@ -74,7 +77,11 @@ export function useChallenge() {
   const [selectedTypes, setSelectedTypes] = useState<QuestionType[]>([
     ...QUESTION_TYPES,
   ]);
+  // null is mixed practice across every level, which keeps levels 1-5 unchanged.
+  const [level, setLevel] = useState<Difficulty | null>(null);
   const demoProgress = useRef(new Map<string, number>());
+  const demoMastery = useRef(new Map<string, ReturnType<typeof advanceMastery>>());
+  const assisted = useRef(false);
   const demoSeen = useRef(new Set<string>());
   const demoStats = useRef(initialStats);
   const demoWords = useRef<DemoWord[]>([]),
@@ -126,11 +133,14 @@ export function useChallenge() {
     return word
       ? {
           id: word.id,
+          difficulty: levels.words[word.wordId as keyof typeof levels.words]?.difficulty ?? 1,
+          mastery: { ...(demoMastery.current.get(word.wordId) ?? {correct: 0, fastStreak: 0, mastered: false}), quickTarget: quickMasteryTarget(levels.words[word.wordId as keyof typeof levels.words]?.difficulty ?? 1) },
           wordId: word.wordId,
           type: word.type,
           prompt: word.prompt,
           source: word.source,
           word: word.word,
+          clue: wordClue(word.wordId, word.answer),
           number: word.number,
           choices: word.choices,
           correctCount: demoProgress.current.get(word.wordId) || 0,
@@ -143,7 +153,7 @@ export function useChallenge() {
   const load = useCallback(async () => {
     try {
       const result = await api<ChallengeState & { words?: DemoWord[] }>(
-        `/api/challenge?types=${selectedTypes.join(",")}`,
+        `/api/challenge?types=${selectedTypes.join(",")}&level=${level ?? "all"}`,
       );
       if (result.gated) {
         setState({
@@ -170,6 +180,7 @@ export function useChallenge() {
         const next = await api<ChallengeState>("/api/challenge", {
           action: "next",
           types: selectedTypes,
+          level: level ?? "all",
         });
         setState({
           ...next,
@@ -181,12 +192,13 @@ export function useChallenge() {
         });
       }
       elapsed.current = 0;
+      assisted.current = false;
     } catch (e) {
       setError((e as Error).message);
     } finally {
       setBusy(false);
     }
-  }, [demoQuestion, selectedTypes]);
+  }, [demoQuestion, selectedTypes, level]);
   useEffect(() => {
     let active = true;
     const timer = setTimeout(() => {
@@ -242,7 +254,7 @@ export function useChallenge() {
       const current = stateRef.current;
       if (current.feedback) setPrevious(current.feedback);
       if (current.demo) {
-        demoIndex.current++;
+        do { demoIndex.current++; } while (demoWords.current[demoIndex.current] && demoMastery.current.get(demoWords.current[demoIndex.current].wordId)?.mastered);
         const question = demoQuestion(demoIndex.current);
         setState({
           ...current,
@@ -261,6 +273,7 @@ export function useChallenge() {
         const nextState = await api<ChallengeState>("/api/challenge", {
           action: "next",
           types: selectedTypes,
+          level: level ?? "all",
         });
         setState(nextState);
         if (current.question && current.feedback)
@@ -272,6 +285,7 @@ export function useChallenge() {
           );
       }
       elapsed.current = 0;
+      assisted.current = false;
     } catch (e) {
       const message = (e as Error).message;
       if (message.includes("free access has ended")) {
@@ -294,6 +308,7 @@ export function useChallenge() {
     demoQuestion,
     history.length,
     selectedTypes,
+    level,
     flushTime,
   ]);
   const goPrevious = useCallback(() => {
@@ -323,17 +338,11 @@ export function useChallenge() {
           const correct = word.choices[selected] === word.answer;
           const seenBefore = demoSeen.current.has(word.wordId);
           demoSeen.current.add(word.wordId);
-          const justMastered =
-            correct &&
-            demoProgress.current.get(word.wordId) === MASTERY_TARGET - 1;
-          if (correct)
-            demoProgress.current.set(
-              word.wordId,
-              Math.min(
-                MASTERY_TARGET,
-                (demoProgress.current.get(word.wordId) || 0) + 1,
-              ),
-            );
+          const previousMastery = demoMastery.current.get(word.wordId) ?? {correct: 0, fastStreak: 0, mastered: false};
+          const mastery = advanceMastery(previousMastery, correct, isQuickRecall(elapsed.current, quickAnswerWindow(word.choices), assisted.current), levels.words[word.wordId as keyof typeof levels.words]?.difficulty ?? 1);
+          const justMastered = mastery.mastered && !previousMastery.mastered;
+          demoMastery.current.set(word.wordId, mastery);
+          demoProgress.current.set(word.wordId, mastery.correct);
           const prior = current.stats.periods?.all || emptyPeriod();
           const period = {
             ...prior,
@@ -347,20 +356,21 @@ export function useChallenge() {
           };
           demoStats.current = {
             ...current.stats,
-            mastered: [...demoProgress.current.values()].filter(
-              (count) => count >= MASTERY_TARGET,
+            mastered: [...demoMastery.current.values()].filter(
+              (m) => m.mastered,
             ).length,
             correct: current.stats.correct + (correct ? 1 : 0),
             todaySeconds: current.stats.todaySeconds + elapsed.current,
             totalSeconds: current.stats.totalSeconds + elapsed.current,
             periods: { today: period, week: period, all: period },
-            inProgress: [...demoProgress.current.values()].filter(
-              (count) => count > 0 && count < MASTERY_TARGET,
+            inProgress: [...demoMastery.current.values()].filter(
+              (m) => m.correct > 0 && !m.mastered,
             ).length,
           };
           setState({
             ...current,
             feedback: {
+              mastery: {...mastery, quickTarget: quickMasteryTarget(levels.words[word.wordId as keyof typeof levels.words]?.difficulty ?? 1)},
               type: word.type,
               answer: word.answer,
               correct,
@@ -392,6 +402,7 @@ export function useChallenge() {
             id: current.question.id,
             selected,
             elapsed: elapsed.current,
+            assisted: assisted.current,
           });
           setState({ ...current, ...result });
           return result.feedback;
@@ -411,18 +422,6 @@ export function useChallenge() {
     },
     [flushTime, load],
   );
-  useEffect(() => {
-    if (
-      !autoNext ||
-      historyView !== null ||
-      !state.feedback?.correct ||
-      busy ||
-      error
-    )
-      return;
-    const timer = setTimeout(() => void next(), 1400);
-    return () => clearTimeout(timer);
-  }, [autoNext, historyView, state.feedback, busy, error, next]);
   useEffect(() => {
     const context = (
       document as Document & {
@@ -510,7 +509,19 @@ export function useChallenge() {
         setSelectedTypes(types);
       }
     },
+    level,
+    selectLevel: (value: Difficulty | null) => {
+      if (!busy && !lock.current && value !== level) {
+        setBusy(true);
+        setHistory([]);
+        changeHistoryView(null);
+        setPrevious(null);
+        setError("");
+        setLevel(value);
+      }
+    },
     answer,
+    markAssisted: () => { assisted.current = true; },
     next,
     goPrevious,
     historical: historyView !== null,

@@ -109,7 +109,7 @@ export default function ProgressPanel({
         <p className="dashboard-note">
           {liveSeconds > 0
             ? "Your learning time is being saved."
-            : "Five correct answers across your chosen types master a word."}
+            : "Confident recall can master a word sooner; five correct answers at any pace also count."}
         </p>
       </div>
     </aside>

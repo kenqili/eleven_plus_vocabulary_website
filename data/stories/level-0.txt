@@ -1,0 +1,399 @@
+[
+  {
+    "id": "level-0-01",
+    "level": 0,
+    "number": 1,
+    "title": "The Restaurant for Very Small Guests",
+    "summary": "A tiny café attracts customers with surprisingly large demands.",
+    "wordIds": [
+      "restaurant",
+      "stomach",
+      "vegetable",
+      "sufficient",
+      "vehicle",
+      "variety",
+      "convenience",
+      "available",
+      "queue",
+      "twelfth",
+      "recommend",
+      "system",
+      "temperature",
+      "guarantee",
+      "bargain"
+    ],
+    "paragraphs": [
+      "Nia and Freddie opened a pretend **restaurant** for toys in the sitting room. Their first customer was a wooden dinosaur with an enormous **stomach** painted on its front. Nia offered it a **vegetable** made from green paper. Freddie, speaking for the dinosaur, ordered twelve. “We have **sufficient** paper,” Nia said, “but I am not peeling a pretend carrot.” They agreed that all the food would stay pretend. Actual lunch belonged at the actual table.",
+      "The toy bus was their delivery **vehicle**. It brought a **variety** of paper meals from the kitchen chair. Freddie enjoyed the **convenience** of having wheels, until a table leg blocked the road. Only one route was **available**: around Dad's slippers. A soft bear joined the **queue**, followed by seven ducks. The **twelfth** customer was a plastic astronaut, who wanted soup served upside down. “I would **recommend** a sandwich,” said Nia. “It has a lid.”",
+      "Their **system** worked beautifully. Red tickets meant food; blue tickets meant drinks. Unfortunately, Freddie gave the dinosaur a blue ticket, then forgot which was which. A customer received a drawing of a puddle. Nia checked the toy cooker. Its painted **temperature** dial pointed to COLD FOREVER. She offered the unhappy customer a **guarantee**: every mistaken meal would be replaced free. At one button per sandwich, Freddie thought lunch was already a **bargain**.",
+      "Then Dad arrived with real sandwiches. Every chair was covered in toys. The dinosaur occupied his usual place, wearing a napkin made from a sock. Freddie took its order one last time. “Twelve more carrots, please.” Nia shook her head. “The kitchen is closed.” They moved the toys to a picnic blanket and made room for everyone. Dad asked whether he should leave a tip. “Yes,” said Nia. “Never open a restaurant beside a slipper road.” Freddie gave him a blue ticket. Nobody knew whether that meant thank you or a puddle, so they decided it meant both."
+    ],
+    "question": {
+      "prompt": "Why did Nia suggest a sandwich for the astronaut?",
+      "options": [
+        "It was the only real food in the café.",
+        "Its bread would hold the filling together better than upside-down soup.",
+        "The dinosaur had eaten all the soup."
+      ],
+      "answer": 1
+    }
+  },
+  {
+    "id": "level-0-02",
+    "level": 0,
+    "number": 2,
+    "title": "The Sock-Sorting Champion",
+    "summary": "Two inventors discover that a machine can follow instructions a little too well.",
+    "wordIds": [
+      "develop",
+      "neighbour",
+      "amateur",
+      "accompany",
+      "equip",
+      "equipment",
+      "equipped",
+      "attached",
+      "category",
+      "correspond",
+      "accommodate",
+      "awkward",
+      "evaluate",
+      "average",
+      "excellent",
+      "determined",
+      "necessary"
+    ],
+    "paragraphs": [
+      "Asha and Ben wanted to **develop** a machine that sorted socks. Their **neighbour**, Mrs Bell, was an **amateur** inventor who built things for fun after work. She offered to **accompany** them to the school makers' club. “First we must **equip** you properly,” she said. She brought cardboard tubes, tape and a pencil. Ben brought a biscuit. “Emergency **equipment**,” he explained. Mrs Bell agreed that inventing could make people hungry, but biscuits belonged away from the moving parts.",
+      "They built a cardboard slide **equipped** with three labelled boxes. A paper arrow was **attached** to the top. Each sock went into a **category**: short, long or mysteriously enormous. The numbers on the boxes had to **correspond** to the numbers on their chart. A wide tray would **accommodate** all the socks waiting their turn. Ben's giant football sock was **awkward** to push through the tube. “It thinks it's a sleeping bag,” Asha said.",
+      "Now they needed to **evaluate** their invention. They tried three runs. Two socks landed correctly in the first run, four in the second and six in the third. The **average** was four: twelve correct landings divided by three runs. “An **excellent** improvement,” Mrs Bell said. Ben was **determined** to reach eight next time. He widened the tube and drew a face on it for encouragement. Asha pointed out that a face was not **necessary**, but she gave it eyebrows anyway.",
+      "The next sock shot into the right box. So did the next seven. Ben raised his arms to celebrate and dropped his biscuit. It slid down the tube into MYSTERIOUSLY ENORMOUS. They stared at it. “The machine has made a decision,” Asha said. Mrs Bell suggested moving the snack table farther away. Their final demonstration went perfectly until the headteacher asked where the missing socks went. Ben pointed to a fourth box marked ASK THE WASHING MACHINE. Asha added a lid, just in case the answer tried to escape."
+    ],
+    "question": {
+      "prompt": "How did they work out the average number of correct landings?",
+      "options": [
+        "They chose the highest result.",
+        "They counted the boxes.",
+        "They added twelve correct landings and divided by three runs."
+      ],
+      "answer": 2
+    }
+  },
+  {
+    "id": "level-0-03",
+    "level": 0,
+    "number": 3,
+    "title": "The Case of the Singing Cupboard",
+    "summary": "A detective club investigates a mysterious voice before blaming anyone.",
+    "wordIds": [
+      "curiosity",
+      "amateur",
+      "analyse",
+      "evidence",
+      "inference",
+      "interpret",
+      "context",
+      "definite",
+      "familiar",
+      "recognise",
+      "existence",
+      "identity",
+      "conscious",
+      "justify",
+      "summarise"
+    ],
+    "paragraphs": [
+      "Every lunchtime, a cupboard in the school hall sang one squeaky note. Isla's **curiosity** was enormous. Her detective partner, Sam, was more interested in whether the cupboard would take requests. Isla was an **amateur** who solved mysteries for fun, but she decided they should **analyse** this one properly. Their first piece of **evidence** was a tiny feather beside the door. “My **inference** is that a bird has been here,” Isla said. “But that doesn't prove a bird is inside.” Sam crossed out PARROT KINGDOM on his notebook.",
+      "A notice on the door said: DO NOT FEED. To **interpret** it, they needed more **context**. Perhaps it meant an animal. Perhaps it meant a machine that disliked paper. They asked the caretaker rather than opening anything themselves. She said the hall was being prepared for a puppet show. That was a **definite** clue. The voice sounded **familiar** to Sam, but he could not quite **recognise** it. His sister made a noise like that when someone took the last biscuit.",
+      "The caretaker opened the cupboard. Inside stood a puppet chicken beside a speaker. “That explains the **existence** of a talking cupboard,” Isla said. But the speaker was switched off. The chicken's **identity** was Captain Cluck, a famous puppet in the school shows. Its recorded voice belonged to Sam's sister. Sam was **conscious** and perfectly awake, but for a moment he wondered whether he was dreaming. The silent chicken had sung again. “We need another clue,” he whispered.",
+      "The caretaker waited with them. Soon a trolley rolled past outside. Its wheel squeaked exactly like the chicken. Sam laughed so loudly that the trolley stopped. Now they could **justify** their answer: the noise happened whenever the wheel turned beside the cupboard. Isla wrote a short report to **summarise** their findings. The feather belonged to the puppet; the song belonged to a wheel. At assembly, the caretaker gave them badges saying EXCELLENT LISTENERS. Sam asked whether Captain Cluck could present them. His sister agreed, provided nobody mentioned biscuits. The chicken made a speech, the trolley squeaked once, and the detectives enjoyed the first duet ever performed by poultry and school furniture."
+    ],
+    "question": {
+      "prompt": "What made the mysterious singing sound?",
+      "options": [
+        "A squeaky trolley wheel.",
+        "A live chicken inside the cupboard.",
+        "A recording left playing overnight."
+      ],
+      "answer": 0
+    }
+  },
+  {
+    "id": "level-0-04",
+    "level": 0,
+    "number": 4,
+    "title": "The Great Hat Debate",
+    "summary": "A class council discovers that the best rule leaves room for other people.",
+    "wordIds": [
+      "committee",
+      "secretary",
+      "occupy",
+      "government",
+      "parliament",
+      "community",
+      "individual",
+      "persuade",
+      "interrupt",
+      "harass",
+      "bias",
+      "criticise",
+      "marvellous",
+      "perspective",
+      "sacrifice",
+      "privilege"
+    ],
+    "paragraphs": [
+      "The school **committee** had to choose a hat for the summer parade. Zoya was the **secretary**, so she organised the meeting and wrote down decisions. Her friend Max arrived wearing a cardboard tower. It was tall enough to **occupy** the entire space above his chair. “My hat should win,” he said. “It has upstairs.” Zoya wrote TOWER HAT on the list, followed by a small question mark and a very large staircase.",
+      "Their teacher explained that this was a class decision. It was not a **government** running a country, or a **parliament** debating and passing laws. Still, they could practise listening before voting. The whole school **community** would join the parade, and every **individual** deserved a voice. Max tried to **persuade** everyone by offering reasons. His tower could be seen from far away. Unfortunately, it could also knock paper birds off the ceiling. That was a less convincing point.",
+      "They agreed not to **interrupt** speakers or **harass** anyone by repeatedly demanding their vote. Choosing only your best friend's design would show **bias**. They could **criticise** a design kindly and offer repairs. A girl called Erin suggested a flat hat with folding towers. “A **marvellous** idea,” Max said, although his voice sounded like a balloon losing air. From Erin's **perspective**, seeing the parade mattered more than having the tallest hat. Max tried sitting behind his own tower. All he could see was cardboard.",
+      "He decided to **sacrifice** the top two floors. Choosing the parade music was a special **privilege** given to the design team, so Max asked everyone for suggestions. Together they made low hats shaped like little streets. When the children stood side by side, their heads became a whole town. Zoya checked her notes and announced that the vote was complete. “Any final business?” she asked. Max raised his hand. He wanted to know whether his remaining tower could have a tiny doorbell. At the parade, it rang whenever he nodded. Everyone agreed this was far more useful than upstairs."
+    ],
+    "question": {
+      "prompt": "Why did Max shorten his tower hat?",
+      "options": [
+        "He wanted it to fit inside a cupboard.",
+        "He realised it would block other people’s view.",
+        "The teacher banned all cardboard hats."
+      ],
+      "answer": 1
+    }
+  },
+  {
+    "id": "level-0-05",
+    "level": 0,
+    "number": 5,
+    "title": "The Dragon Who Needed a Rhyme",
+    "summary": "A poetry performance nearly comes undone over one very hungry dragon.",
+    "wordIds": [
+      "theme",
+      "stanza",
+      "rhyme",
+      "rhythm",
+      "alliteration",
+      "simile",
+      "metaphor",
+      "figurative",
+      "literal",
+      "personification",
+      "imagery",
+      "tone",
+      "symbol",
+      "audience",
+      "excellent"
+    ],
+    "paragraphs": [
+      "Molly and Arjun wrote a poem about a dragon who wanted to become a baker. Its main **theme** was learning to share. The dragon was bad at that. Every time it baked six buns, it ate seven and blamed the mixing bowl. Their opening **stanza** had four lines, but the last one ended with “orange”. Arjun needed a **rhyme**. Molly suggested “door hinge”. They tried saying it quickly. The dragon now appeared to be eating a door.",
+      "They changed orange to cake. That gave them bake, lake and mistake. The **rhythm** became easier to clap. For **alliteration**, they called their dragon “Big Bertie Bun-Burner”, repeating the b sound. A **simile** described him as “as warm as a toasted crumpet”. Their **metaphor**, “Bertie was a walking oven”, did not mean he had metal shelves inside. That was **figurative** language. A **literal** dragon oven, Molly pointed out, would be extremely hard to deliver.",
+      "They added **personification**: “The hungry cupboard begged for bread.” A cupboard could not really beg, but the line made them laugh. Their **imagery** included golden crumbs and the sweet smell of warm cinnamon. The cheerful **tone** suited the story. For the final performance, a paper bun became a **symbol** of sharing. The dragon would split it with a mouse. “Paper is quite chewy,” Arjun said. Molly reminded him that nobody had to eat the props.",
+      "The **audience** gathered in the library. Molly read while Arjun operated the cardboard dragon. Everything went smoothly until its mouth stuck open with the bun inside. Arjun tugged. One half of the bun flew across the stage and landed in the mouse's lap. The other half stayed in Bertie's mouth. There was a long pause. Then Molly read the final line: “And Bertie found that half was quite enough.” Everyone clapped. Their teacher called it an **excellent** performance. Afterwards, their teacher praised the clever ending. Arjun bowed carefully so his cardboard tail did not sweep away the books. “Thank you,” he said. “The dragon spent ages practising that.” Molly looked at the broken hinge and decided to keep its secret."
+    ],
+    "question": {
+      "prompt": "What was the poem mainly about?",
+      "options": [
+        "Learning to build a real oven.",
+        "Finding the world’s biggest bun.",
+        "Learning to share."
+      ],
+      "answer": 2
+    }
+  },
+  {
+    "id": "level-0-06",
+    "level": 0,
+    "number": 6,
+    "title": "The Villain with the Fluffy Slippers",
+    "summary": "A writing club rescues a story from its very unconvincing villain.",
+    "wordIds": [
+      "narrative",
+      "structure",
+      "purpose",
+      "characterisation",
+      "contrast",
+      "comparison",
+      "especially",
+      "dictionary",
+      "connotation",
+      "atmosphere",
+      "mischievous",
+      "frequently",
+      "suggest",
+      "sincere",
+      "sincerely",
+      "appreciate"
+    ],
+    "paragraphs": [
+      "At writing club, Theo wanted to create the most frightening villain ever. His **narrative** began with a dark castle, a locked gate and a man wearing fluffy duck slippers. “The slippers are a problem,” said Priya. Theo disagreed. “Nobody expects the ducks.” They looked at the story's **structure**: first the visitor arrived, then the villain made a threat, and finally someone escaped. The **purpose** was to give readers an exciting adventure with a funny surprise at the end.",
+      "Priya checked the **characterisation**. The villain's actions made him seem kind: he offered visitors biscuits and warmed their gloves. There was a strong **contrast** between his scary castle and his helpful behaviour. Their **comparison** of two possible openings made the choice clear. In one, he roared. In the other, he asked whether anyone needed a cushion. “The second one is funnier,” Theo said. Priya agreed, **especially** when the cushion had little ducks on it too.",
+      "They opened a **dictionary** to choose a better name. “Lord Gloom has a gloomy **connotation**,” Priya said. “It makes me think of darkness and sadness.” Lord Snuggle did not create the same **atmosphere**. They decided that Lord Gloom was trying desperately to seem scary, although he really wanted to run a cosy hotel. His **mischievous** pet duck kept spoiling his speeches. Whenever he said “Beware!”, the duck rang a dinner bell. Guests **frequently** arrived carrying hungry toddlers instead of swords.",
+      "“I **suggest** the duck becomes the manager,” Priya said. Theo liked that. They wrote a **sincere** apology from Lord Gloom to the frightened villagers, followed by an invitation to tea. “I **sincerely** hope you like biscuits,” it read. Priya added, “We **appreciate** visitors who wipe their feet.” At the club reading, everyone laughed when a knight marched in to fight evil and was handed clean slippers. Theo had worried that a kind villain would ruin his story. Instead, Lord Gloom became the character everyone remembered. The duck received three fan letters and one booking for Sunday lunch. Theo began the next chapter immediately: The Terrible Trouble with Table Seven."
+    ],
+    "question": {
+      "prompt": "Why did Theo and Priya change their villain?",
+      "options": [
+        "His kind actions made a funny hotel-owner story work better.",
+        "They discovered that ducks could not appear in stories.",
+        "The writing club only allowed stories about hotels."
+      ],
+      "answer": 0
+    }
+  },
+  {
+    "id": "level-0-07",
+    "level": 0,
+    "number": 7,
+    "title": "The Backwards Sports Day",
+    "summary": "A team finds a better way to win than rushing through every event.",
+    "wordIds": [
+      "achieve",
+      "competition",
+      "programme",
+      "physical",
+      "muscle",
+      "bruise",
+      "forty",
+      "according",
+      "communicate",
+      "desperate",
+      "aggressive",
+      "lightning",
+      "immediate",
+      "immediately",
+      "occur",
+      "shoulder"
+    ],
+    "paragraphs": [
+      "Finn wanted to **achieve** something amazing at sports day. He planned to win the backwards obstacle **competition**. His friend Eva preferred finishing with both shoes still on. The **programme** began with a gentle warm-up. Their teacher explained that this was **physical** activity, so everyone needed enough space. Finn felt a **muscle** in his leg stretch as he bent carefully. Eva touched the old **bruise** on her knee from bumping a table. Today she intended to avoid all furniture, including imaginary furniture.",
+      "There were **forty** children in four groups of ten. Each group, **according** to the rules, would travel backwards along a clear lane while a partner gave directions. They had to **communicate** clearly. Shouting “That way!” was not useful when nobody could see which way a finger pointed. Eva practised “Two small steps left.” Finn practised “Do not step on my foot.” The teacher said this was clear, although hopefully unnecessary. Nobody had to race faster than felt comfortable.",
+      "Finn grew **desperate** to catch the leading pair and began taking huge steps. Eva told him to slow down. An **aggressive** shove would never be acceptable, and even rushing could cause a bump. Suddenly they heard thunder and saw **lightning** beyond the field. The teacher's response was **immediate**. Everyone stopped and went **immediately** into the school building with the adults. They would not return until it was safe. Finn's winning plan now had a roof over it.",
+      "The teacher explained that storms can **occur** unexpectedly, so the final event would be a seated instruction challenge indoors. Eva described a shape; Finn drew it without seeing her paper. “A circle, then two long ears,” she said. Finn drew a rabbit. The next instruction added six tiny shoes. By the end, their rabbit looked like a very tired caterpillar. They did not win fastest team, but they won clearest instructions. Finn held the certificate at his **shoulder** while Eva took a photograph. “I achieved something amazing,” he said. “A rabbit that needs three pairs of trainers.”"
+    ],
+    "question": {
+      "prompt": "Why did the sports day move indoors?",
+      "options": [
+        "The children had finished every event.",
+        "A thunderstorm made outdoor activities unsafe.",
+        "Finn lost one of his trainers."
+      ],
+      "answer": 1
+    }
+  },
+  {
+    "id": "level-0-08",
+    "level": 0,
+    "number": 8,
+    "title": "The Statue’s Missing Moustache",
+    "summary": "A family history walk turns into a search for an important piece of cardboard.",
+    "wordIds": [
+      "leisure",
+      "soldier",
+      "cemetery",
+      "purpose",
+      "profession",
+      "foreign",
+      "recognise",
+      "familiar",
+      "excellent",
+      "evidence",
+      "environment",
+      "attached",
+      "signature",
+      "marvellous",
+      "community"
+    ],
+    "paragraphs": [
+      "Leah and Omar joined a local history walk with Gran. During her **leisure** time, Gran photographed old buildings. Today she wanted a picture beside a statue of a **soldier**. First they visited the **cemetery** to place flowers at her grandfather's grave. Everyone spoke quietly there. Gran shared a happy memory of him making pancakes shaped like shoes. Leah liked hearing about someone who had lived before she was born. Afterwards, they walked on to the busy town square.",
+      "A history stall stood beside the statue. Its **purpose** was to help visitors learn about different jobs in the town's past. One card described teaching as a **profession** needing special training. Another showed an old market. A **foreign** coin from France lay safely inside a clear display case. Omar could **recognise** a **familiar** tower in one photograph: it was above the bakery where Gran bought buns. The square looked different, but the tower had kept its pointy hat.",
+      "The stall offered a cardboard picture frame with pretend whiskers dangling from it. Visitors could stand behind it for photographs. Leah's moustache fell off before Gran pressed the button. “A missing moustache!” Omar announced. “An **excellent** case for a detective.” He checked the table. Leah checked the pavement. Gran checked Omar's coat, which had already collected two leaves and a biscuit crumb. Nobody could find any **evidence** of the lost whiskers. A nearby pigeon looked extremely innocent.",
+      "They asked a volunteer, who explained that caring for the town's **environment** included keeping the square free of dropped materials. They searched again rather than leaving the cardboard behind. Leah finally spotted it **attached** to the back of Gran's cardigan. It had caught on a button when she bent down. Gran turned slowly while Omar laughed into his scarf. “A back moustache,” he said. “Very fashionable.” They returned it to the frame and took their photograph. Then Gran wrote her **signature** in the visitors' book. Under comments, she added, “Lovely walk. Unexpected facial hair.” Leah thought it was a **marvellous** day, and Gran agreed that their whole **community** had plenty of stories worth remembering."
+    ],
+    "question": {
+      "prompt": "Where did they find the cardboard moustache?",
+      "options": [
+        "Inside the coin display case.",
+        "On the statue’s face.",
+        "Caught on Gran’s cardigan."
+      ],
+      "answer": 2
+    }
+  },
+  {
+    "id": "level-0-09",
+    "level": 0,
+    "number": 9,
+    "title": "The Alien Welcome Desk",
+    "summary": "Two friends make a welcome guide for a visitor who takes every instruction literally.",
+    "wordIds": [
+      "language",
+      "dictionary",
+      "pronunciation",
+      "identity",
+      "vehicle",
+      "accompany",
+      "interpret",
+      "necessary",
+      "symbol",
+      "context",
+      "queue",
+      "literal",
+      "figurative",
+      "evaluate",
+      "communicate",
+      "appreciate"
+    ],
+    "paragraphs": [
+      "Ravi and Elsie designed a welcome desk for an imaginary alien visiting their school. The visitor spoke a **language** they invented together. “Blip” meant hello. “Bloop” meant goodbye. “Blop” meant someone had sat on your sandwich. Elsie made a **dictionary** to prevent confusion. Ravi practised the **pronunciation** of each word. He greeted the teacher with a cheerful “Blop!” She looked at her chair. They decided the guide needed pictures as well as words.",
+      "The alien's **identity** was Captain Pea, explorer of Planet Lunchbox. His **vehicle** was a painted carton with two bottle-top wheels. Their teacher offered to **accompany** visitors to the desk. They had to **interpret** ordinary school phrases from a visitor's point of view. “Keep an eye on your bag” sounded alarming. “Put your hand up” sounded easier, until Captain Pea asked which of his seventeen hands was **necessary**. Elsie drew a **symbol** showing one raised hand. Ravi added a note: ANY ONE WILL DO.",
+      "For **context**, each instruction came with a small scene. In the lunch hall, “join the line” meant stand in the **queue**. It did not mean glue yourself to a stripe on the floor. The **literal** meaning of “break the ice” involved frozen water, but its **figurative** meaning was to help people feel relaxed together. Captain Pea had brought a tiny cardboard hammer. Elsie replaced it with a greeting card. She felt this was kinder to both visitors and ice.",
+      "Their classmates came to **evaluate** the welcome desk. One child acted as Captain Pea and asked whether the library books needed watering. Ravi explained that they were made from paper, although some contained gardens. Another asked where to park a spaceship. Elsie pointed to a box labelled SPARE SHOES AND SMALL SPACECRAFT. By the end, everyone could say hello without accusing anyone of sitting on lunch. The teacher said the guide would help a new visitor **communicate**. Ravi put a final notice above the desk: We **appreciate** questions. Underneath, Elsie added a picture of a sandwich with a very worried face."
+    ],
+    "question": {
+      "prompt": "Why did Ravi and Elsie add pictures and example scenes?",
+      "options": [
+        "To help explain what their instructions meant.",
+        "To hide the words from Captain Pea.",
+        "To show that real aliens had visited school."
+      ],
+      "answer": 0
+    }
+  },
+  {
+    "id": "level-0-10",
+    "level": 0,
+    "number": 10,
+    "title": "The Fair That Sold Fresh Air",
+    "summary": "A school stall becomes successful when its owners change what they are selling.",
+    "wordIds": [
+      "determined",
+      "justify",
+      "committee",
+      "definite",
+      "guarantee",
+      "bargain",
+      "accommodate",
+      "sufficient",
+      "available",
+      "category",
+      "sincere",
+      "analyse",
+      "individual",
+      "persuade",
+      "interrupt",
+      "recommend"
+    ],
+    "paragraphs": [
+      "Holly and Yusuf had one table at the school fair and nothing to sell. All the good ideas seemed taken. There was a cake stall, a book stall and a stall offering portraits of your pet as a potato. Holly was **determined** to find something different. Yusuf suggested fresh air in empty jars. Holly asked him to **justify** charging for something everyone already had. “The lids are quite nice,” he said. Even he sounded unconvinced.",
+      "Their **committee** of two held a meeting beneath the table. They wanted a **definite** plan before the first customers arrived. They could not **guarantee** magical air, and they would not pretend ordinary air had special powers. Instead, Holly had an idea: each empty jar could hold a tiny folded joke. People could open one whenever they needed cheering up. The joke jars would cost less than plain jars at the shop, making them a **bargain**. Yusuf began writing immediately.",
+      "They needed to **accommodate** the jars safely in a tray so none rolled away. Their teacher helped them choose sturdy plastic ones from the craft cupboard. Holly checked that **sufficient** lids were **available**. Yusuf wrote jokes for each **category**: animals, food and school. “Why did the pencil wear a coat? It was drawing a blank-et.” Holly stared at him. He offered a **sincere** apology to pencils everywhere. They decided to **analyse** which jokes actually made their classmates laugh before selling them.",
+      "The first customer chose a food joke and snorted so hard that her paper crown slipped. Soon every **individual** at the table was trying to **persuade** a friend to choose a favourite jar. Holly asked them not to **interrupt** one another, because three jokes shouted at once sounded like a confused sandwich. Their teacher offered to **recommend** the stall over the school speaker. By closing time, the tray was empty. Yusuf counted the coins for the school garden fund. “We did sell fresh air,” he said. “We just included a free joke.” Holly shook the last jar beside her ear. It was completely silent. “This one contains your pencil joke,” she said. “Nobody can hear it recovering.”"
+    ],
+    "question": {
+      "prompt": "Why did Holly and Yusuf test their jokes before selling the jars?",
+      "options": [
+        "They wanted to see which lids made the most noise.",
+        "They wanted to choose jokes that made people laugh.",
+        "They wanted to prove that the air was magical."
+      ],
+      "answer": 1
+    }
+  }
+]

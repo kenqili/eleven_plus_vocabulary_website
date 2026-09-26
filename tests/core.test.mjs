@@ -5,13 +5,14 @@ import {
   mergeWordSources,
   parseWordCsv,
   choicesFor,
+  SOURCE_ORDER,
 } from "../lib/challenge/words.ts";
 import { words, sources } from "../scripts/load-word-bank.mjs";
 import { hashPassword, verifyPassword } from "../lib/server/password.ts";
 import { verifyStripeSignature } from "../lib/server/webhook.ts";
 test("Merged CSV bank keeps the first occurrence and produces four distinct choices for every word", () => {
   const expected = new Map();
-  for (const source of ["flash_card_1", "flash_card_2", "blue_book"]) {
+  for (const source of SOURCE_ORDER) {
     for (const word of parseWordCsv(sources[source], source))
       if (!expected.has(word.id)) expected.set(word.id, word);
   }
@@ -25,6 +26,7 @@ test("Merged CSV bank keeps the first occurrence and produces four distinct choi
 });
 test("First-wins deduplication retains source and all fields, including within a file", () => {
   const merged = mergeWordSources({
+    curriculum: "word,def\n",
     blue_book: "word,def\nALPHA,discarded\ndelta,fourth",
     flash_card_2: "word,def\nbeta,discarded\ngamma,third",
     flash_card_1:

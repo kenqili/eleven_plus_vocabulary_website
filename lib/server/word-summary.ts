@@ -11,9 +11,9 @@ export async function wordSummary(
   const db = database();
   const [progress, history] = await Promise.all([
     db
-      .prepare("SELECT word_id,correct,seen FROM progress WHERE user_id=?")
+      .prepare("SELECT word_id,correct,seen,mastered FROM progress WHERE user_id=?")
       .bind(userId)
-      .all<{ word_id: string; correct: number; seen: number }>(),
+      .all<{ word_id: string; correct: number; mastered: number; seen: number }>(),
     db
       .prepare(
         `SELECT word_id,
@@ -61,7 +61,7 @@ export async function wordSummary(
         mistakes,
         reveals,
         lastPractised: attempts?.last_practised || null,
-        status: learningStatus(correct, seen, mistakes, reveals),
+        status: saved?.mastered ? "mastered" : learningStatus(correct, seen, mistakes, reveals),
       };
     });
 }

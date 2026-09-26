@@ -1,3 +1,4 @@
+import level0 from "@/data/stories/level-0.txt?raw";
 import level1 from "@/data/stories/level-1.txt?raw";
 import level2 from "@/data/stories/level-2.txt?raw";
 import level3 from "@/data/stories/level-3.txt?raw";
@@ -9,7 +10,7 @@ import { parseStories, validateStories } from "@/lib/challenge/stories";
 import { database } from "./db";
 import { seedStories } from "./story-store";
 
-const stories = parseStories([level1, level2, level3, level4, level5]);
+const stories = parseStories([level0, level1, level2, level3, level4, level5]);
 const errors = validateStories(stories, words, levels.words);
 if (errors.length)
   throw new Error(`Invalid story library: ${errors.join(" ")}`);

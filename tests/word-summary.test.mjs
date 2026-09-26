@@ -117,20 +117,29 @@ test("auto-next survives remounts, synchronises tabs and tolerates unavailable s
     },
   });
   try {
-    assert.equal(serverAutoNext(), false);
+    assert.equal(serverAutoNext(), 0);
+    values.set("minewords.auto-next", "true");
+    assert.equal(
+      readAutoNext(),
+      5,
+      "legacy enabled preference becomes five seconds",
+    );
+    values.delete("minewords.auto-next");
+    saveAutoNext(10);
+    assert.equal(readAutoNext(), 10);
     let changes = 0;
     const unsubscribe = subscribeAutoNext(() => changes++);
-    saveAutoNext(true);
-    assert.equal(readAutoNext(), true);
+    saveAutoNext(5);
+    assert.equal(readAutoNext(), 5);
     assert.equal(changes, 1);
     unsubscribe();
     const remount = subscribeAutoNext(() => changes++);
-    assert.equal(readAutoNext(), true);
-    values.set("minewords.auto-next", "false");
+    assert.equal(readAutoNext(), 5);
+    values.set("minewords.next-delay", "0");
     const event = new Event("storage");
-    Object.defineProperty(event, "key", { value: "minewords.auto-next" });
+    Object.defineProperty(event, "key", { value: "minewords.next-delay" });
     events.dispatchEvent(event);
-    assert.equal(readAutoNext(), false);
+    assert.equal(readAutoNext(), 0);
     assert.equal(changes, 2);
     remount();
     Object.defineProperty(globalThis, "localStorage", {
@@ -139,10 +148,10 @@ test("auto-next survives remounts, synchronises tabs and tolerates unavailable s
         throw new Error("Blocked");
       },
     });
-    saveAutoNext(true);
-    assert.equal(readAutoNext(), true);
-    saveAutoNext(false);
-    assert.equal(readAutoNext(), false);
+    saveAutoNext(5);
+    assert.equal(readAutoNext(), 5);
+    saveAutoNext(0);
+    assert.equal(readAutoNext(), 0);
   } finally {
     if (oldWindow) Object.defineProperty(globalThis, "window", oldWindow);
     else delete globalThis.window;
@@ -180,7 +189,7 @@ test("difficulty snapshot covers the word bank with reproducible length/frequenc
         info.frequencyZipf >= 0 &&
         info.frequencyZipf <= 8,
     );
-    assert.ok([1, 2, 3, 4, 5].includes(info.difficulty));
+    assert.ok([0, 1, 2, 3, 4, 5].includes(info.difficulty));
     const rarity = 1 - Math.min(1, Math.max(0, (info.frequencyZipf - 1) / 5));
     const length = Math.min(1, Math.max(0, (info.letterCount - 3) / 12));
     assert.equal(
@@ -195,13 +204,10 @@ test("difficulty snapshot covers the word bank with reproducible length/frequenc
   const sorted = Object.entries(snapshot.words).sort(
     ([a, x], [b, y]) => x.score - y.score || (a < b ? -1 : a > b ? 1 : 0),
   );
-  sorted.forEach(([, row], index) =>
-    assert.equal(
-      row.difficulty,
-      Math.min(5, Math.floor((index * 5) / sorted.length) + 1),
-    ),
-  );
-  for (let level = 1; level <= 5; level++)
+  const core = sorted.filter(([, row]) => row.difficulty !== 0);
+  core.forEach(([, row], index) => assert.equal(row.difficulty, Math.min(5, Math.floor(index * 5 / core.length) + 1)));
+  for (const word of words) assert.equal(snapshot.words[word.id].difficulty === 0, word.source === "curriculum");
+  for (let level = 0; level <= 5; level++)
     assert.equal(
       sorted.filter(([, row]) => row.difficulty === level).length,
       snapshot.counts[level],

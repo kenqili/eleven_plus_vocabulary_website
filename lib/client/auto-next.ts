@@ -1,26 +1,35 @@
-const key = "minewords.auto-next";
-let fallback = false;
+const key = "minewords.next-delay";
+export type NextDelay = 0 | 5 | 10;
+let fallback: NextDelay = 0;
 const listeners = new Set<() => void>();
-export function readAutoNext() {
+export function readAutoNext(): NextDelay {
   try {
-    return localStorage.getItem(key) === "true";
+    const stored = localStorage.getItem(key);
+    if (stored === null)
+      return localStorage.getItem("minewords.auto-next") === "true" ? 5 : 0;
+    return stored === "5" ? 5 : stored === "10" ? 10 : 0;
   } catch {
     return fallback;
   }
 }
-export function saveAutoNext(value: boolean) {
+export function saveAutoNext(value: NextDelay) {
   fallback = value;
   try {
     localStorage.setItem(key, String(value));
   } catch {
-    // Keep the preference for this session when browser storage is unavailable.
+    /* Keep the session preference. */
   }
   listeners.forEach((notify) => notify());
 }
 export function subscribeAutoNext(notify: () => void) {
   listeners.add(notify);
   const changed = (event: StorageEvent) => {
-    if (event.key === key || event.key === null) notify();
+    if (
+      event.key === key ||
+      event.key === "minewords.auto-next" ||
+      event.key === null
+    )
+      notify();
   };
   window.addEventListener("storage", changed);
   return () => {
@@ -28,4 +37,7 @@ export function subscribeAutoNext(notify: () => void) {
     window.removeEventListener("storage", changed);
   };
 }
-export const serverAutoNext = () => false;
+export const serverAutoNext = (): NextDelay => 0;
+export function pauseAutoNext() {
+  window.dispatchEvent(new Event("minewords:pause-auto-next"));
+}

@@ -12,7 +12,7 @@ const levels = JSON.parse(
   ),
 );
 const stories = parseStories(
-  [1, 2, 3, 4, 5].map((level) =>
+  [0, 1, 2, 3, 4, 5].map((level) =>
     readFileSync(
       new URL(`../data/stories/level-${level}.txt`, import.meta.url),
       "utf8",
@@ -24,13 +24,13 @@ if (errors.length) {
   console.error(errors.join("\n"));
   process.exitCode = 1;
 } else {
-  for (let level = 1; level <= 5; level++) {
+  for (let level = 0; level <= 5; level++) {
     const group = stories.filter((story) => story.level === level);
     console.log(
       `Level ${level}: ${group.length} stories, ${new Set(group.flatMap((s) => s.wordIds)).size} vocabulary words, ${Math.min(...group.map(storyLength))}–${Math.max(...group.map(storyLength))} words per story.`,
     );
   }
   console.log(
-    "All 50 stories pass coverage, target count, level, bold marker and question validation.",
+    "All 60 stories pass coverage, target count, level, bold marker and question validation.",
   );
 }

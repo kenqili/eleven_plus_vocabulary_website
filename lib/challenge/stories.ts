@@ -23,11 +23,15 @@ export type StoryCard = Pick<
   wordCount: number;
   minutes: number;
   completed: boolean;
+  started: boolean;
+  bookmark: import("../server/reading-position").ReadingBookmark | null;
 };
 export type StoryDetail = Omit<Story, "question"> & {
   question: Omit<Story["question"], "answer">;
   vocabulary: Word[];
   signedIn: boolean;
+  bookmarkScope: string;
+  bookmark: import("../server/reading-position").ReadingBookmark | null;
   progress: ReadingProgress;
   minimumSeconds: number;
 };
@@ -52,10 +56,10 @@ export function validateStories(
 ): string[] {
   const errors: string[] = [];
   const bank = new Map(words.map((word) => [word.id, word]));
-  if (stories.length !== 50) errors.push("Expected 50 stories.");
+  if (stories.length !== 60) errors.push("Expected 60 stories.");
   if (new Set(stories.map((story) => story.id)).size !== stories.length)
     errors.push("Duplicate story IDs.");
-  for (let level = 1; level <= 5; level++) {
+  for (let level = 0; level <= 5; level++) {
     const group = stories.filter((story) => story.level === level);
     if (group.length !== 10)
       errors.push(`Level ${level}: expected 10 stories.`);

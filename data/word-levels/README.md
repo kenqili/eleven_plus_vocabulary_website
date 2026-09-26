@@ -1,8 +1,9 @@
-# Five vocabulary difficulty levels
+# Vocabulary difficulty levels
 
 `levels.json` supplies every merged vocabulary word with a letter count, English
-Zipf frequency, difficulty score and level from 1 (easier) to 5 (harder).
-The source word CSVs and personal mastery records remain unchanged.
+Zipf frequency, difficulty score and level from 0 to 5. Level 0 is the
+curriculum extension; levels 1 (easier) to 5 (harder) are the original five
+bands. The source word CSVs and personal mastery records remain unchanged.
 
 Frequency comes from **wordfreq 3.1.1 by Robyn Speer**, English large wordlist:
 https://github.com/rspeer/wordfreq. Its frequencies reflect a general-language
@@ -16,8 +17,12 @@ The heuristic combines **70% rarity and 30% letter count**:
 - Rarity: `1 - clamp((Zipf - 1) / 5, 0, 1)`.
 - Length: `clamp((letters - 3) / 12, 0, 1)`; letters only, excluding spaces and punctuation.
 - Score: `100 × (0.7 × rarity + 0.3 × length)`, rounded to four decimals.
-- Sort by score, then normalized word ID to break ties; divide into five equal
-  bands (146 words each in the current 730-word collection).
+- Sort by score, then normalized word ID to break ties; divide the
+  original-source words into five equal bands (146 words each in the current
+  730-word collection).
+
+Curriculum extension words are scored for reference but always take Level 0, so
+the five bands keep exactly the words they had before the extension was added.
 
 These are estimated, relative difficulty levels for this collection. They do not
 measure meaning complexity, exam grades, or the learner's personal progress.
@@ -35,8 +40,8 @@ Tests check complete coverage, source-word lengths, scores and band assignments.
 
 The extracted frequency data and derived level snapshot are distributed under
 [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Changes from the
-source: selected this app's 730 entries, added letter counts and derived five
-relative difficulty bands. Credit: wordfreq by Robyn Speer, incorporating freely
+source: selected this app's 847 entries, added letter counts and derived five
+relative difficulty bands plus the Level 0 curriculum band. Credit: wordfreq by Robyn Speer, incorporating freely
 available SUBTLEX data by Marc Brysbaert and colleagues, Google Books Ngrams,
 OpenSubtitles, Wikipedia, the Leeds Internet Corpus, and ParaCrawl. See the copied
 upstream `NOTICE.md` for full source attribution. This data licence applies to

@@ -1,6 +1,6 @@
 import { writeFileSync, readFileSync, existsSync, mkdirSync } from "node:fs";
 import { words } from "./load-word-bank.mjs";
-import { similarDefinitions } from "../lib/challenge/words.ts";
+import { similarDefinitions, parseCsv } from "../lib/challenge/words.ts";
 
 const normalize = (value) => value.normalize("NFKC").trim().toLowerCase();
 const terms = (value) =>
@@ -41,8 +41,18 @@ const report = {
 mkdirSync("data/question-review", { recursive: true });
 for (const type of ["syn", "ant"]) {
   const rows = [];
+  // Add new vocabulary without changing questions already reviewed and in use.
+  const retained = process.argv.includes("--append")
+    ? new Map(parseCsv(readFileSync(`data/${type}.csv`, "utf8")).slice(1).map((row) => [row[4], row]))
+    : new Map();
   let libraryAnswers = 0;
   for (const word of words) {
+    if (retained.has(word.id)) {
+      const row = retained.get(word.id);
+      rows.push(row);
+      if (byId.has(normalize(row[2]))) libraryAnswers++;
+      continue;
+    }
     const key = `${type}:${word.id}`;
     const fix = overrides[key] || {};
     const candidates = terms(word[type]).filter((x) => x !== word.id);

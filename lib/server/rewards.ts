@@ -142,7 +142,14 @@ export async function progressSummary(userId: string) {
     )
     .bind(userId)
     .first<{ balance: number; streak: number; bestStreak: number }>();
+  const earned = await db
+    .prepare(
+      "SELECT COALESCE(SUM(amount),0) AS total FROM credit_transactions WHERE user_id=? AND amount>0",
+    )
+    .bind(userId)
+    .first<{ total: number }>();
   return {
+    totalEarned: earned?.total ?? 0,
     periods: {
       today: aggregate(today),
       week: aggregate(monday),
@@ -170,6 +177,15 @@ export async function awardFor(
 }
 
 export async function rewardHistory(userId: string, before = 0) {
+  const collection = (
+    await database()
+      .prepare(
+        "SELECT badge_id,COUNT(*) AS count FROM badge_redemptions WHERE user_id=? GROUP BY badge_id",
+      )
+      .bind(userId)
+      .all<{ badge_id: string; count: number }>()
+  ).results;
+
   await initializeRewards(userId);
   const db = database();
   // Offset pagination uses the immutable ledger insertion order, not timestamps with ties.
@@ -193,6 +209,9 @@ export async function rewardHistory(userId: string, before = 0) {
       .all()
   ).results;
   return {
+    collection: Object.fromEntries(
+      collection.map((item) => [item.badge_id, item.count]),
+    ),
     transactions: transactions.slice(0, 30),
     receipts: receipts.slice(0, 30),
     more: transactions.length > 30 || receipts.length > 30,

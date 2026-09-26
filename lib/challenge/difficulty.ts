@@ -1,4 +1,5 @@
 export const DIFFICULTY_LEVELS = {
+  0: "Level 0 · Curriculum bridge",
   1: "Level 1 · Foundation",
   2: "Level 2 · Developing",
   3: "Level 3 · Intermediate",

@@ -2,12 +2,14 @@ export const SOURCE_ORDER = [
   "flash_card_1",
   "flash_card_2",
   "blue_book",
+  "curriculum",
 ] as const;
 export type WordSource = (typeof SOURCE_ORDER)[number];
 export const SOURCE_LABELS: Record<WordSource, string> = {
   flash_card_1: "Flash Card 1",
   flash_card_2: "Flash Card 2",
   blue_book: "Blue Book",
+  curriculum: "Curriculum extension",
 };
 export type Word = {
   id: string;

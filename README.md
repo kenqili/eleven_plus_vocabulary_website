@@ -18,7 +18,7 @@ Add rows directly to the appropriate CSV, then run `npm run words:validate`, reb
 
 ## Generated question library
 
-The current library contains **2,090 question templates**: 730 definitions, 730 synonyms and 630 antonyms. Each word has one definition and at most one question of each relationship type. Of the 100 omitted antonyms, 69 had no supplied opposite, 30 were excluded as misleading by independent review, and one direct dis- prefix pair (obedient/disobedient) was removed at user request. The generator excludes direct dis- prefix pairs in either direction. These exceptions are recorded in `data/question-review/generation-report.json`; the count is not padded with invented opposites.
+The current library contains **2,324 question templates**: 847 definitions, 812 synonyms and 665 antonyms. Each word has one definition and at most one question of each relationship type. Of the 182 omitted antonyms, 151 had no supplied relation and 31 were excluded as misleading by independent review; one direct dis- prefix pair (obedient/disobedient) was removed at user request. The generator excludes direct dis- prefix pairs in either direction. These exceptions are recorded in `data/question-review/generation-report.json`; the count is not padded with invented opposites.
 
 - `data/syn.csv` and `data/ant.csv` are the question files used by the website. The requested antonym file is named `ant.csv` consistently, rather than maintaining a duplicate `antonym.csv`.
 - Columns: `problem,options,answer,syn/ant,word`. `options` contains a CSV-escaped JSON array of four choices; `answer` is the exact correct option text, `syn/ant` is `syn` or `ant`, and `word` is the stable lowercase word ID.
@@ -62,6 +62,9 @@ node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0001_orange_jocasta.sql
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0002_brainy_famine.sql
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0003_ordinary_edwin_jarvis.sql
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0004_superb_the_fallen.sql
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0005_perpetual_hercules.sql
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0006_dazzling_doctor_faustus.sql
 # Apply future migrations once, in filename order.
 npm run dev
 ```
@@ -122,6 +125,7 @@ The return-from-checkout URL does not grant access. Signed webhooks fetch the cu
 - Choose one or more practice types. Definition cards are blue, synonyms green and antonyms amber, each with a written type label. At least one type must remain selected.
 - Questions draw from the same word library. Among selected types, less-practised types for a word are preferred before repeating a type. Mastery is per word, not five for each separate type.
 - Changing types preserves mastery; a pending question outside the selection is retired without credit. Answers to a retired question are rejected, including across tabs.
+- Practice can stay on all levels or focus one difficulty level (0–5) with the "Practise level" control. A level only narrows the candidate words: selection, spacing, mastery and saved progress are identical, and "All levels" restores mixed practice. The level of the visible question is shown on its card. A pending question from another level is retired without credit.
 - Ordering lives in `lib/challenge/ordering.ts`: exclude the 20 most recently shown distinct eligible words (or all but one for a small pool), then choose a least-seen word with random ties. Due mistakes override this ordinary spacing, oldest due first.
 - Missed/revealed words are scheduled for the 15th next question presentation (within the requested 10–20 range). Fixed spacing avoids collisions from random review dates. Waiting mistakes are excluded from ordinary selection; if only waiting mistakes remain, they can return earlier. Retired questions count as presentations; reloading a pending question does not. Reviews require an eligible selected type. Previously queued or temporarily filtered-out reviews are served oldest-due first when eligible and may already be overdue.
 - Question types are balanced per word by completed attempts, with random ties. Five correct answers across types retire the word. Changing filters preserves progress; refreshing resumes the pending question.
@@ -162,10 +166,12 @@ Premium members can export every filtered result as a UTF-8 CSV or open a
 print-friendly revision sheet and save it as PDF through the browser. Both export
 formats enforce active membership on the server and include meanings, examples,
 related words and progress. The screen is paginated; exports include all matching
-words. Difficulty levels 1–5 are generated separately from learning progress. They use
-70% English frequency rarity (wordfreq 3.1.1) and 30% letter count, with five equal
-bands of 146 words. Combine a difficulty level with any progress filter, then
-export that selection. These relative difficulty estimates are not exam grades.
+words. Difficulty levels are generated separately from learning progress. Level 0
+holds the 117 curriculum extension words. Levels 1–5 use 70% English frequency
+rarity (wordfreq 3.1.1) and 30% letter count, with five equal bands of 146 words
+that are unchanged by the Level 0 extension. Combine a difficulty level with any
+progress filter, then export that selection. These relative difficulty estimates
+are not exam grades.
 See `data/word-levels/README.md` for methodology, source attribution and regeneration.
 
 Auto-next is saved in this browser across navigation and reloads, and synchronises
@@ -194,7 +200,11 @@ npm run format
 
 Integration tests create a unique temporary local account, insert a local-only membership for protected-route checks, and clean up that account. Never run them against a production site. Core tests cover every word's choices, parser failures, reviewed-CSV hashes, salted passwords, and valid/forged/stale Stripe signatures. Integration checks cover CSRF, cookies, registration, wrong passwords, session revocation, paywalls, concurrent questions, all three question types, trial access and expiry, invalid filters, retired questions, answer replay, five-correct mastery, persistence and revoked access.
 
-A feature-detected WebMCP surface exposes the visible question and answering action. A supported WebMCP browser validation context was not available in this run; these optional tools are not browser-verified. General browser interaction/visual QA was not requested and was not run.
+A feature-detected WebMCP surface exposes the visible question and answering action. A supported WebMCP browser validation context was not available in this run; these optional tools are not browser-verified. Browser interaction and responsive checks are documented in [the responsive review](docs/responsive-layout-review.md) and [the child experience review](docs/child-experience-review.md), including their device-emulation limits.
+
+### Child learning features
+
+The daily goal is **20 attempted questions and one story**. Children can ask for a clue, hear British pronunciation for all 847 words, and choose manual, five-second or ten-second question pacing. Account reading bookmarks and level choices sync between devices; guest bookmarks stay in the browser. A qualifying reread counts towards the daily goal without repeating the story credit award. See [behaviour, verification and deployment requirements](docs/child-experience-review.md).
 
 ## Deployment
 
@@ -208,10 +218,11 @@ A feature-detected WebMCP surface exposes the visible question and answering act
 
 ### Word Adventures
 
-`/stories` offers 50 pre-generated, original stories: ten per difficulty level.
-The source files are JSON-formatted plain text in `data/stories/level-1.txt`
-through `level-5.txt`. Each level covers all 146 of its vocabulary words;
-each story highlights 15–17 target words with `**word**` markers. Hover, keyboard
+`/stories` offers 60 pre-generated, original stories: ten per difficulty level,
+including Level 0. The source files are JSON-formatted plain text in
+`data/stories/level-0.txt` through `level-5.txt`. Each level covers all of its
+vocabulary words; each story highlights 15–17 target words with `**word**`
+markers. Hover, keyboard
 focus or tap reveals the existing word-bank definition, synonyms and antonyms.
 There are no runtime AI calls or generation costs.
 

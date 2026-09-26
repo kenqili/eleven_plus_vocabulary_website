@@ -27,14 +27,19 @@ for word in words:
         "score": round(100 * (0.7 * rarity + 0.3 * length_score), 4),
     }
 ordered = sorted(entries, key=lambda key: (entries[key]["score"], key))
-for index, key in enumerate(ordered):
-    entries[key]["difficulty"] = min(5, math.floor(index * 5 / len(ordered)) + 1)
+# Curriculum extension is a separate Level 0; the original five bands stay unchanged.
+core = [key for key in ordered if next(w for w in words if w["id"] == key)["source"] != "curriculum"]
+for index, key in enumerate(core):
+    entries[key]["difficulty"] = min(5, math.floor(index * 5 / len(core)) + 1)
+for word in words:
+    if word["source"] == "curriculum":
+        entries[word["id"]]["difficulty"] = 0
 result = {
-    "version": 1,
+    "version": 2,
     "source": {"name": "wordfreq", "version": "3.1.1", "author": "Robyn Speer", "url": "https://github.com/rspeer/wordfreq", "language": "en", "wordlist": "large", "license": "CC-BY-SA-4.0", "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"},
-    "method": "70% rarity + 30% letter count. Rarity = 1 - clamp((Zipf - 1) / 5, 0, 1). Length = clamp((letters - 3) / 12, 0, 1). Score rounded to 4 decimals; sort by score then normalized word ID; divide into five equal bands. Levels are relative to this library, not exam grades. Phrase frequency is estimated from component words; missing frequency uses Zipf 0 and is flagged.",
+    "method": "70% rarity + 30% letter count. Rarity = 1 - clamp((Zipf - 1) / 5, 0, 1). Length = clamp((letters - 3) / 12, 0, 1). Score rounded to 4 decimals; sort original-source words by score then normalized word ID into five equal bands. Curriculum extension words use Level 0 independently, preserving the original five bands. Levels are estimates, not exam grades. Phrase frequency is estimated; missing frequency uses Zipf 0 and is flagged.",
     "wordIdsSha256": hashlib.sha256("\n".join(word["id"] for word in words).encode()).hexdigest(),
-    "counts": {str(level): sum(row["difficulty"] == level for row in entries.values()) for level in range(1, 6)},
+    "counts": {str(level): sum(row["difficulty"] == level for row in entries.values()) for level in range(0, 6)},
     "words": entries,
 }
 (ROOT / "data/word-levels/levels.json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")

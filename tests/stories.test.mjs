@@ -10,13 +10,13 @@ import {
 } from "../lib/challenge/stories.ts";
 import { words } from "../scripts/load-word-bank.mjs";
 const stories = parseStories(
-  [1, 2, 3, 4, 5].map((level) =>
+  [0, 1, 2, 3, 4, 5].map((level) =>
     readFileSync(`data/stories/level-${level}.txt`, "utf8"),
   ),
 );
 const levels = JSON.parse(readFileSync("data/word-levels/levels.json", "utf8"));
 
-test("50 reviewed stories cover every level word with marked vocabulary and valid questions", () => {
+test("60 reviewed stories cover every level word with marked vocabulary and valid questions", () => {
   assert.deepEqual(validateStories(stories, words, levels.words), []);
   const broken = structuredClone(stories);
   broken[0].wordIds.pop();
@@ -117,7 +117,7 @@ test("startup seeding preserves progress, completion awards once, rereading adds
     await seedStories(db, revised);
     assert.equal(
       (await db.prepare("SELECT COUNT(*) AS n FROM stories").first()).n,
-      50,
+      stories.length,
     );
     assert.equal(
       JSON.parse(

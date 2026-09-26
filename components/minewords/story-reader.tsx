@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CheckCircle2, Clock3 } from "lucide-react";
 import Header from "./header";
 import { api } from "@/lib/client/api";
@@ -10,85 +10,12 @@ import {
   type StoryDetail,
   type ReadingProgress,
 } from "@/lib/challenge/stories";
-import type { Word } from "@/lib/challenge/words";
+import WordHint from "./word-hint";
+import type { Catalog } from "./story-library";
 import { useReadingClock } from "./use-reading-clock";
+import DailyMission from "./daily-mission";
+import { useReadingBookmark } from "./use-reading-bookmark";
 
-function WordHint({ text, word }: { text: string; word: Word }) {
-  const id = useId(),
-    button = useRef<HTMLButtonElement>(null);
-  const [position, setPosition] = useState<{
-    top: number;
-    left: number;
-  } | null>(null);
-  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  function show() {
-    clearTimeout(timer.current);
-    const rect = button.current?.getBoundingClientRect();
-    if (rect)
-      setPosition({
-        top: Math.min(rect.bottom + 8, window.innerHeight - 230),
-        left: Math.max(12, Math.min(rect.left, window.innerWidth - 312)),
-      });
-  }
-  function hide() {
-    timer.current = setTimeout(() => setPosition(null), 120);
-  }
-  useEffect(() => {
-    const dismiss = () => setPosition(null);
-    const escape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") dismiss();
-    };
-    window.addEventListener("scroll", dismiss, { passive: true });
-    window.addEventListener("resize", dismiss);
-    window.addEventListener("keydown", escape);
-    return () => {
-      clearTimeout(timer.current);
-      window.removeEventListener("scroll", dismiss);
-      window.removeEventListener("resize", dismiss);
-      window.removeEventListener("keydown", escape);
-    };
-  }, []);
-  return (
-    <span className="story-word-wrap" onMouseEnter={show} onMouseLeave={hide}>
-      <button
-        ref={button}
-        type="button"
-        className="story-word"
-        aria-describedby={position ? id : undefined}
-        onFocus={show}
-        onBlur={hide}
-        onClick={show}
-      >
-        <strong>{text}</strong>
-      </button>
-      {position && (
-        <span
-          className="story-word-note"
-          id={id}
-          role="tooltip"
-          style={position}
-          onMouseEnter={() => clearTimeout(timer.current)}
-          onMouseLeave={hide}
-        >
-          <strong>{word.word}</strong>
-          <span>{word.definition}</span>
-          <span>
-            <b>Synonyms (similar):</b>{" "}
-            {word.syn && word.syn !== "—"
-              ? word.syn
-              : "No close synonym listed"}
-          </span>
-          <span>
-            <b>Antonyms (opposite):</b>{" "}
-            {word.ant && word.ant !== "—"
-              ? word.ant
-              : "No direct opposite listed"}
-          </span>
-        </span>
-      )}
-    </span>
-  );
-}
 function Reading({ story }: { story: StoryDetail }) {
   const [progress, setProgress] = useState(story.progress);
   const [answer, setAnswer] = useState<number | null>(null);
@@ -96,6 +23,41 @@ function Reading({ story }: { story: StoryDetail }) {
     [notice, setNotice] = useState(""),
     [error, setError] = useState("");
   const clock = useReadingClock(story.id, story.signedIn, setProgress);
+  const prose = useRef<HTMLElement>(null);
+  const bookmark = useReadingBookmark(story, prose);
+  const [finishedVisit, setFinishedVisit] = useState(false);
+  const savedLevel = useRef(false);
+  const [catalog, setCatalog] = useState<Catalog | null>(null);
+  useEffect(() => {
+    let alive = true;
+    void api<Catalog>("/api/stories")
+      .then((value) => {
+        if (alive) setCatalog(value);
+        if (alive && story.signedIn && !savedLevel.current) {
+          savedLevel.current = true;
+          if (value.preference.level !== story.level)
+            void api("/api/stories", {
+              action: "level",
+              level: story.level,
+              revision: value.preference.revision,
+            }).catch(() => {});
+        }
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, [finishedVisit, story.signedIn, story.level]);
+  const nextStory = catalog?.stories
+    .filter(
+      (item) =>
+        item.level === story.level && item.id !== story.id && !item.completed,
+    )
+    .sort(
+      (a, b) =>
+        ((a.number - story.number + 10) % 10) -
+        ((b.number - story.number + 10) % 10),
+    )[0];
   const vocabulary = new Map(story.vocabulary.map((word) => [word.id, word]));
   async function finish() {
     if (busy || answer === null) return;
@@ -108,10 +70,11 @@ function Reading({ story }: { story: StoryDetail }) {
         { action: "complete", storyId: story.id, answer },
       );
       setProgress(result.progress);
+      setFinishedVisit(true);
       setNotice(
         result.credits
           ? `Adventure complete! You earned ${result.credits} credits.`
-          : "You’ve already earned this adventure’s credits. Enjoy reading it again!",
+          : "Adventure complete! Your reread counts towards today’s mission. You’ve already earned this story’s credits.",
       );
     } catch (e) {
       setError((e as Error).message);
@@ -126,10 +89,10 @@ function Reading({ story }: { story: StoryDetail }) {
           {DIFFICULTY_LEVELS[story.level]} · ADVENTURE {story.number}
         </div>
         <h1>{story.title}</h1>
-        <p>{story.summary}</p>
+
         <p className="stories-help">
-          {story.wordIds.length} words to discover. Hover, tap or use Tab to
-          explore the <strong>bold words</strong>.
+          {story.wordIds.length} words to discover. Tap a{" "}
+          <strong>bold word</strong> for help.
         </p>
         {progress.completedAt && (
           <span className="story-completed">
@@ -140,8 +103,8 @@ function Reading({ story }: { story: StoryDetail }) {
       </header>
       {!story.signedIn && (
         <p className="story-signin">
-          Enjoy the story! <Link href="/account">Sign in</Link> to save reading
-          time and earn credits.
+          <Link href="/account">Sign in</Link> to save your progress and earn
+          credits.
         </p>
       )}
       <div className="story-reading-timer">
@@ -163,15 +126,38 @@ function Reading({ story }: { story: StoryDetail }) {
           {clock.isRunning ? "Reading" : "Paused"}
         </span>
       </div>
-      <article className="story-prose" aria-label={story.title}>
+      <div className="reading-tools">
+        <details>
+          <summary>Reading help</summary>
+          <p>
+            Tap, hover over or focus a bold word for its meaning. You can hear
+            it spoken too. Read at your own pace, then answer the question at
+            the end.
+          </p>
+        </details>
+        <button className="text-button" onClick={bookmark.startAgain}>
+          Start again
+        </button>
+      </div>
+      {bookmark.status && (
+        <small className="bookmark-status" role="status">
+          {bookmark.status}
+        </small>
+      )}
+      <article ref={prose} className="story-prose" aria-label={story.title}>
         {story.paragraphs.map((paragraph, p) => (
-          <p key={p}>
+          <p key={p} data-reading-paragraph={p}>
             {paragraph.split(/(\*\*[^*]+\*\*)/g).map((part, i) => {
               if (!part.startsWith("**")) return part;
               const text = part.slice(2, -2),
                 word = vocabulary.get(text.toLowerCase());
               return word ? (
-                <WordHint key={`${p}-${i}`} text={text} word={word} />
+                <WordHint
+                  key={`${p}-${i}`}
+                  text={text}
+                  word={word}
+                  storyId={story.id}
+                />
               ) : (
                 text
               );
@@ -179,6 +165,10 @@ function Reading({ story }: { story: StoryDetail }) {
           </p>
         ))}
       </article>
+      <DailyMission
+        signedIn={story.signedIn}
+        refreshKey={finishedVisit ? "finished" : "reading"}
+      />
       <section className="story-finish" aria-labelledby="story-question-title">
         <div className="eyebrow">ONE LAST LITTLE ADVENTURE</div>
         <h2 id="story-question-title">{story.question.prompt}</h2>
@@ -186,7 +176,7 @@ function Reading({ story }: { story: StoryDetail }) {
           Read at your own pace, then answer to finish. Your first completion
           earns {STORY_CREDITS} credits.
         </p>
-        <fieldset disabled={busy || Boolean(progress.completedAt)}>
+        <fieldset disabled={busy || finishedVisit}>
           <legend>Choose your answer</legend>
           {story.question.options.map((option, index) => (
             <label key={option}>
@@ -203,10 +193,10 @@ function Reading({ story }: { story: StoryDetail }) {
         {story.signedIn ? (
           <button
             className="primary-button"
-            disabled={busy || answer === null || Boolean(progress.completedAt)}
+            disabled={busy || answer === null || finishedVisit}
             onClick={() => void finish()}
           >
-            {progress.completedAt
+            {finishedVisit
               ? "Adventure completed ✓"
               : busy
                 ? "Saving your adventure…"
@@ -219,8 +209,8 @@ function Reading({ story }: { story: StoryDetail }) {
         )}
         {story.signedIn && (
           <p className="muted">
-            Reading time saves while you’re active on this page. Rereading adds
-            time, but each story awards credits once.
+            Reading time saves while you’re active. A reread counts towards your
+            daily mission, but each story awards credits once.
           </p>
         )}
         {(error || clock.error) && (
@@ -233,6 +223,18 @@ function Reading({ story }: { story: StoryDetail }) {
             {notice} <Link href="/rewards">See your badges →</Link>
           </p>
         )}
+        {nextStory ? (
+          <Link
+            className="primary-button next-adventure"
+            href={`/stories/${nextStory.id}${nextStory.started ? "?resume=1" : ""}`}
+          >
+            Next unread adventure: {nextStory.title} →
+          </Link>
+        ) : catalog && (progress.completedAt || finishedVisit) ? (
+          <p className="reward-notice">
+            Level complete! Choose another level or revisit a favourite.
+          </p>
+        ) : null}
         <div className="control-row">
           <Link className="text-button" href="/stories">
             Choose another adventure →

@@ -5,7 +5,7 @@ import { configuredFreeWordLimit } from "./billing";
 
 /** Return a stable, difficulty-balanced selection for signed-out and post-trial access. */
 export function freeWords(limit = configuredFreeWordLimit()): Word[] {
-  const buckets = [1, 2, 3, 4, 5].map((difficulty) =>
+  const buckets = [0, 1, 2, 3, 4, 5].map((difficulty) =>
     words
       .filter(
         (word) =>

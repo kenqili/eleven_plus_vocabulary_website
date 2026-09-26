@@ -1,6 +1,9 @@
 import type { WordSource } from "./words";
 import type { QuestionType } from "./config";
 export type Question = {
+  mastery?: import("./mastery").MasteryProgress;
+  difficulty?: number;
+  clue: string;
   id: string;
   word: string;
   wordId: string;
@@ -13,6 +16,7 @@ export type Question = {
   seen: number;
 };
 export type Stats = {
+  mission?: import("./mission").Mission;
   total: number;
   mastered: number;
   correct: number;
@@ -29,6 +33,7 @@ export type Stats = {
   timezone?: string;
 };
 export type Feedback = {
+  mastery?: import("./mastery").MasteryProgress;
   award?: import("./rewards").Award;
   type: QuestionType;
   answer: string;

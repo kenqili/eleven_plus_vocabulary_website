@@ -572,6 +572,39 @@ hr {
   background: #ffe5bd;
   color: #864706;
 }
+.question-badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.question-card .level-pill {
+  background: #e6edf6;
+  color: #324e6c;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.practice-level {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: -10px 0 22px;
+}
+.practice-level label {
+  font-weight: 700;
+  font-size: 14px;
+}
+.practice-level select {
+  min-height: 42px;
+  padding: 8px 10px;
+  border: 1px solid #b5c6d9;
+  border-radius: 8px;
+  background: white;
+  color: #324e6c;
+  font-size: 16px;
+}
 .practice-types {
   display: flex;
   flex-wrap: wrap;
@@ -2773,6 +2806,7 @@ hr {
   .status-tabs button,
   .study-aside .status-tabs button,
   .practice-types .practice-type,
+  .practice-level select,
   .calendar-month-nav button,
   .word-pagination button {
     min-height: 44px;
@@ -2788,5 +2822,291 @@ hr {
   .account-card input,
   .calendar-jump input {
     font-size: 16px;
+  }
+}
+
+.daily-mission,
+.continue-reading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 24px;
+  padding: 18px 20px;
+  margin: 20px 0;
+  border: 1px solid #cbdcf0;
+  border-radius: 16px;
+  background: #eef6ff;
+  color: #173a5a;
+}
+.daily-mission > div:first-child,
+.continue-reading > div {
+  flex: 1 1 260px;
+}
+.daily-mission strong,
+.continue-reading strong {
+  font-size: 1.1rem;
+}
+.daily-mission p,
+.continue-reading p {
+  margin: 5px 0;
+}
+.daily-mission small {
+  flex-basis: 100%;
+}
+.mission-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.mission-steps a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid #bad0e8;
+  border-radius: 12px;
+  background: white;
+  font-weight: 650;
+}
+.story-started {
+  margin-left: auto;
+  font-size: 0.8rem;
+  color: #366086;
+}
+.story-word-note {
+  max-height: calc(100dvh - 24px);
+  overflow-y: auto;
+}
+@media (max-width: 600px) {
+  .daily-mission,
+  .continue-reading {
+    padding: 14px;
+    gap: 10px;
+  }
+  .mission-steps {
+    width: 100%;
+  }
+  .mission-steps a {
+    flex: 1 1 130px;
+  }
+}
+
+.practice-type small {
+  display: block;
+  font-size: 11px;
+  font-weight: 400;
+}
+.question-word {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+.question-word h2 {
+  margin-bottom: 0;
+}
+.pronunciation {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+}
+.pronunciation-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+}
+.pronunciation > [role="status"] {
+  max-width: 250px;
+  font-size: 12px;
+}
+.question-clue {
+  margin: 12px 0;
+}
+.question-clue > button,
+.answer-pacing button {
+  min-height: 44px;
+}
+.question-clue p {
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: #edf6ff;
+}
+.mastery-mini {
+  display: grid;
+  gap: 8px;
+  font-size: 13px;
+}
+.mastery-circles {
+  display: flex;
+  gap: 6px;
+}
+.mastery-circles i {
+  width: 12px;
+  height: 12px;
+  border: 1px solid #6e89a4;
+  border-radius: 50%;
+}
+.mastery-circles i.filled {
+  background: #287450;
+  border-color: #287450;
+}
+.next-word-setting {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.next-word-setting select {
+  min-height: 44px;
+  padding: 8px;
+  border: 1px solid #b5c6d9;
+  border-radius: 8px;
+  background: white;
+  font-size: 16px;
+}
+.answer-pacing {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 13px;
+  margin-top: 12px;
+}
+.reading-tools {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  margin: 8px 0;
+  font-size: 13px;
+}
+.reading-tools > details {
+  flex: 1;
+}
+.reading-tools summary,
+.reading-tools button {
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.reading-tools details p {
+  max-width: 550px;
+}
+.bookmark-status {
+  display: block;
+  min-height: 20px;
+  margin: 4px 0;
+  color: #526981;
+}
+.story-title {
+  margin: 18px 0 12px;
+}
+.story-title h1 {
+  margin: 8px 0;
+}
+.story-title > p {
+  margin: 6px 0;
+}
+.story-signin {
+  background: transparent;
+  padding: 0;
+  margin: 8px 0;
+  font-size: 13px;
+}
+.story-reading-timer {
+  padding: 8px 12px;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.story-reading-timer [role="timer"] {
+  font-size: 20px;
+}
+.story-word-note {
+  width: 320px;
+  max-height: min(520px, calc(100dvh - 24px));
+  overscroll-behavior: contain;
+}
+.story-word-note .text-button {
+  color: #e8f4ff;
+}
+.word-note-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.word-note-heading strong {
+  font-size: 18px;
+}
+.word-note-heading button {
+  min-height: 44px;
+  min-width: 44px;
+  border: 0;
+  background: transparent;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
+.story-word-note summary {
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  text-decoration: underline;
+}
+.next-adventure {
+  display: inline-flex;
+  white-space: normal;
+  margin-top: 20px;
+}
+.credit-balance small {
+  display: block;
+  font-size: 13px;
+  font-weight: 400;
+}
+.collection-goal {
+  padding: 16px;
+  margin: 16px 0;
+  border-radius: 12px;
+  background: #eaf5ee;
+  color: #215c3e;
+}
+.badge-uncollected .badge-symbol {
+  filter: grayscale(1);
+  opacity: 0.35;
+}
+.badge-collected {
+  border-color: #75aa8a;
+}
+.history-panel > summary {
+  cursor: pointer;
+  min-height: 44px;
+  font-weight: 650;
+}
+@media (max-width: 600px) {
+  .story-reader .story-prose {
+    padding: 18px 20px;
+  }
+  .story-title h1 {
+    font-size: 28px;
+  }
+  .story-reading-timer {
+    width: auto;
+  }
+  .question-word {
+    display: block;
+  }
+  .practice-types {
+    align-items: stretch;
+  }
+  .practice-type {
+    padding: 8px;
+  }
+}
+@media print {
+  .pronunciation {
+    display: none;
   }
 }

@@ -1,10 +1,185 @@
 {
-  "totalWords": 730,
+  "totalWords": 847,
   "generated": {
-    "syn": 730,
-    "ant": 630
+    "syn": 812,
+    "ant": 665
   },
   "excluded": [
+    {
+      "word": "according",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "alliteration",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "bruise",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "characterisation",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "community",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "comparison",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "context",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "dictionary",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "evidence",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "existence",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "forty",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "identity",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "imagery",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "individual",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "language",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "lightning",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "metaphor",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "muscle",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "neighbour",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "parliament",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "personification",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "pronunciation",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "restaurant",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "rhyme",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "rhythm",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "secretary",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "shoulder",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "simile",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "soldier",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "stomach",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "system",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "temperature",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "twelfth",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "vegetable",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "vehicle",
+      "type": "syn",
+      "reason": "No supplied relation"
+    },
     {
       "word": "choreographer",
       "type": "ant",
@@ -504,10 +679,420 @@
       "word": "jury",
       "type": "ant",
       "reason": "No supplied relation"
+    },
+    {
+      "word": "accommodate",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "according",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "alliteration",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "analyse",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "appreciate",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "atmosphere",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "audience",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "average",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "bargain",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "bruise",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "category",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "cemetery",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "characterisation",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "committee",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "communicate",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "community",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "comparison",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "competition",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "connotation",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "context",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "desperate",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "develop",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "dictionary",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "environment",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "equip",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "equipment",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "equipped",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "especially",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "evaluate",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "evidence",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "existence",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "forty",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "government",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "guarantee",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "identity",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "imagery",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "individual",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "inference",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "interpret",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "interrupt",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "justify",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "language",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "leisure",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "lightning",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "metaphor",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "muscle",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "narrative",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "neighbour",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "occur",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "parliament",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "personification",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "perspective",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "persuade",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "privilege",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "profession",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "programme",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "pronunciation",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "purpose",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "queue",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "recognise",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "recommend",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "restaurant",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "rhyme",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "rhythm",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "secretary",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "shoulder",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "signature",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "simile",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "soldier",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "stanza",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "stomach",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "structure",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "suggest",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "summarise",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "symbol",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "system",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "temperature",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "theme",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "tone",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "twelfth",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "vegetable",
+      "type": "ant",
+      "reason": "No supplied relation"
+    },
+    {
+      "word": "vehicle",
+      "type": "ant",
+      "reason": "No supplied relation"
     }
   ],
   "preferredLibraryAnswers": {
-    "syn": 204,
-    "ant": 166
+    "syn": 213,
+    "ant": 171
   }
 }

@@ -13,7 +13,7 @@
     "start": "node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js dev --config dist/server/wrangler.json --local --persist-to .wrangler/state --ip 0.0.0.0 --inspector-port 0",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate",
-    "test": "node --test tests/core.test.mjs tests/questions.test.mjs tests/ordering.test.mjs tests/rewards.test.mjs tests/word-summary.test.mjs tests/calendar.test.mjs tests/stories.test.mjs",
+    "test": "node --test tests/core.test.mjs tests/questions.test.mjs tests/ordering.test.mjs tests/rewards.test.mjs tests/word-summary.test.mjs tests/calendar.test.mjs tests/stories.test.mjs tests/child-experience.test.mjs",
     "test:integration": "node tests/integration.mjs",
     "typecheck": "tsc --noEmit",
     "words:validate": "node scripts/validate-words.mjs",
@@ -21,7 +21,12 @@
     "questions:generate": "node scripts/generate-questions.mjs",
     "questions:validate": "node scripts/validate-questions.mjs",
     "stories:validate": "node scripts/validate-stories.mjs",
-    "test:stories:integration": "node tests/stories.integration.mjs"
+    "test:stories:integration": "node tests/stories.integration.mjs",
+    "learning:validate": "node scripts/validate-learning-help.mjs",
+    "audio:generate": "node scripts/generate-pronunciation.mjs --generate",
+    "audio:validate": "node scripts/generate-pronunciation.mjs --check",
+    "test:child:integration": "node tests/child-experience.integration.mjs",
+    "test:child:browser": "node tests/child-experience.browser.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

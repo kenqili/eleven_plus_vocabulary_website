@@ -851,5 +851,1175 @@
   },
   "ant:virulent": {
     "sense": "of a disease"
+  },
+  "syn:accommodate": {
+    "answer": "house",
+    "distractors": [
+      "kneel",
+      "float",
+      "hatch"
+    ],
+    "sense": "To provide enough space for someone or something.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:accompany": {
+    "answer": "go with",
+    "distractors": [
+      "kneel",
+      "float",
+      "hatch"
+    ],
+    "sense": "To go somewhere with someone.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:accompany": {
+    "answer": "leave behind",
+    "distractors": [
+      "kneel",
+      "float",
+      "hatch"
+    ],
+    "sense": "To go somewhere with someone.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:achieve": {
+    "answer": "accomplish",
+    "distractors": [
+      "kneel",
+      "float",
+      "hatch"
+    ],
+    "sense": "To succeed in doing something you worked towards.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:achieve": {
+    "answer": "fail at",
+    "distractors": [
+      "kneel",
+      "float",
+      "hatch"
+    ],
+    "sense": "To succeed in doing something you worked towards.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:aggressive": {
+    "answer": "hostile",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Ready to attack or argue in a forceful way.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:aggressive": {
+    "answer": "peaceful",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Ready to attack or argue in a forceful way.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:amateur": {
+    "answer": "hobbyist",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "Someone who does an activity for enjoyment rather than as a paid job.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:amateur": {
+    "answer": "professional",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "Someone who does an activity for enjoyment rather than as a paid job.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:analyse": {
+    "answer": "examine",
+    "distractors": [
+      "kneel",
+      "float",
+      "hatch"
+    ],
+    "sense": "To examine something carefully to understand its parts and how they work.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:appreciate": {
+    "answer": "value",
+    "distractors": [
+      "kneel",
+      "float",
+      "hatch"
+    ],
+    "sense": "To recognise the value of something and feel thankful for it.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:atmosphere": {
+    "answer": "mood",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "The feeling or mood of a place or situation.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:attached": {
+    "answer": "fastened",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Joined or fastened to something.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:attached": {
+    "answer": "detached",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Joined or fastened to something.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:audience": {
+    "answer": "spectators",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "The people who watch or listen to a performance or talk.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:available": {
+    "answer": "obtainable",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Ready for someone to use or obtain.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:available": {
+    "answer": "unavailable",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Ready for someone to use or obtain.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:average": {
+    "answer": "mean",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "A value found by adding quantities and dividing by how many there are.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:awkward": {
+    "answer": "unwieldy",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Difficult to move, use or deal with.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:awkward": {
+    "answer": "manageable",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Difficult to move, use or deal with.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:bargain": {
+    "answer": "good deal",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "Something bought for less than its usual price.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:bias": {
+    "answer": "prejudice",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "An unfair preference for or against someone or something.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:bias": {
+    "answer": "impartiality",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "An unfair preference for or against someone or something.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:category": {
+    "answer": "class",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "A group of things that share a feature.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:cemetery": {
+    "answer": "burial ground",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "A place where people who have died are buried.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:committee": {
+    "answer": "panel",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "A group chosen to organise something or make decisions.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:communicate": {
+    "answer": "convey",
+    "distractors": [
+      "kneel",
+      "float",
+      "hatch"
+    ],
+    "sense": "To share information, thoughts or feelings.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:competition": {
+    "answer": "contest",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "An event in which people try to win by doing something best.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:connotation": {
+    "answer": "association",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "An idea or feeling a word suggests beyond its basic meaning.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:conscious": {
+    "answer": "awake",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Awake and aware of what is happening.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:conscious": {
+    "answer": "unconscious",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Awake and aware of what is happening.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:contrast": {
+    "answer": "difference",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "A noticeable difference between things.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:contrast": {
+    "answer": "similarity",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "A noticeable difference between things.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:convenience": {
+    "answer": "usefulness",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "The quality of being easy or useful for someone's needs.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:convenience": {
+    "answer": "inconvenience",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "The quality of being easy or useful for someone's needs.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:correspond": {
+    "answer": "match",
+    "distractors": [
+      "kneel",
+      "float",
+      "hatch"
+    ],
+    "sense": "To match or agree with something.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:correspond": {
+    "answer": "differ",
+    "distractors": [
+      "kneel",
+      "float",
+      "hatch"
+    ],
+    "sense": "To match or agree with something.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:criticise": {
+    "answer": "find fault with",
+    "distractors": [
+      "kneel",
+      "float",
+      "hatch"
+    ],
+    "sense": "To point out faults in someone or something.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:criticise": {
+    "answer": "praise",
+    "distractors": [
+      "kneel",
+      "float",
+      "hatch"
+    ],
+    "sense": "To point out faults in someone or something.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:curiosity": {
+    "answer": "inquisitiveness",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "A strong wish to find out about something.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:curiosity": {
+    "answer": "indifference",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "A strong wish to find out about something.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:definite": {
+    "answer": "certain",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Clear and certain.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:definite": {
+    "answer": "uncertain",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Clear and certain.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:desperate": {
+    "answer": "frantic",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Feeling that a situation is so bad that you will try almost anything.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:determined": {
+    "answer": "resolute",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Firmly decided to do something, even when it is difficult.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:determined": {
+    "answer": "hesitant",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Firmly decided to do something, even when it is difficult.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:develop": {
+    "answer": "grow",
+    "distractors": [
+      "kneel",
+      "float",
+      "hatch"
+    ],
+    "sense": "To grow or gradually become more advanced.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:environment": {
+    "answer": "surroundings",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "The surroundings and conditions in which living things exist.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:equip": {
+    "answer": "supply",
+    "distractors": [
+      "kneel",
+      "float",
+      "hatch"
+    ],
+    "sense": "To provide the things needed for a task.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:equipment": {
+    "answer": "gear",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "The tools and other things needed for an activity.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:equipped": {
+    "answer": "supplied",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Provided with the things needed for a task.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:especially": {
+    "answer": "particularly",
+    "distractors": [
+      "upstairs",
+      "yesterday",
+      "sideways"
+    ],
+    "sense": "More than usual, or more than other things.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:evaluate": {
+    "answer": "assess",
+    "distractors": [
+      "kneel",
+      "float",
+      "hatch"
+    ],
+    "sense": "To judge how good, useful or successful something is.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:excellent": {
+    "answer": "superb",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Extremely good.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:excellent": {
+    "answer": "poor",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Extremely good.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:familiar": {
+    "answer": "recognisable",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Known or recognised because you have met or seen it before.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:familiar": {
+    "answer": "unfamiliar",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Known or recognised because you have met or seen it before.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:figurative": {
+    "answer": "non-literal",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Using words imaginatively rather than with their exact ordinary meaning.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:figurative": {
+    "answer": "literal",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Using words imaginatively rather than with their exact ordinary meaning.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:foreign": {
+    "answer": "overseas",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "From or connected with another country.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:foreign": {
+    "answer": "domestic",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "From or connected with another country.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:frequently": {
+    "answer": "often",
+    "distractors": [
+      "upstairs",
+      "yesterday",
+      "sideways"
+    ],
+    "sense": "Often; many times.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:frequently": {
+    "answer": "rarely",
+    "distractors": [
+      "upstairs",
+      "yesterday",
+      "sideways"
+    ],
+    "sense": "Often; many times.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:government": {
+    "answer": "administration",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "The group of people responsible for running a country or area.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:guarantee": {
+    "answer": "assurance",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "A firm promise that something will happen or be provided.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:harass": {
+    "answer": "pester",
+    "distractors": [
+      "kneel",
+      "float",
+      "hatch"
+    ],
+    "sense": "To keep bothering or upsetting someone.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:harass": {
+    "answer": "leave alone",
+    "distractors": [
+      "kneel",
+      "float",
+      "hatch"
+    ],
+    "sense": "To keep bothering or upsetting someone.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:immediate": {
+    "answer": "instant",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Happening now, without delay.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:immediate": {
+    "answer": "delayed",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Happening now, without delay.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:immediately": {
+    "answer": "instantly",
+    "distractors": [
+      "upstairs",
+      "yesterday",
+      "sideways"
+    ],
+    "sense": "At once, without waiting.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:immediately": {
+    "answer": "later",
+    "distractors": [
+      "upstairs",
+      "yesterday",
+      "sideways"
+    ],
+    "sense": "At once, without waiting.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:inference": {
+    "answer": "deduction",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "An idea worked out from clues rather than stated directly.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:interpret": {
+    "answer": "explain",
+    "distractors": [
+      "kneel",
+      "float",
+      "hatch"
+    ],
+    "sense": "To explain or work out the meaning of something.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:interrupt": {
+    "answer": "break into",
+    "distractors": [
+      "kneel",
+      "float",
+      "hatch"
+    ],
+    "sense": "To stop someone or something briefly before it is finished.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:justify": {
+    "answer": "give reasons for",
+    "distractors": [
+      "kneel",
+      "float",
+      "hatch"
+    ],
+    "sense": "To give reasons that support an answer or decision.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:leisure": {
+    "answer": "free time",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "Time when you are free from work or duties.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:literal": {
+    "answer": "exact",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Using the ordinary, exact meaning of words.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:literal": {
+    "answer": "figurative",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Using the ordinary, exact meaning of words.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:marvellous": {
+    "answer": "wonderful",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Extremely good or pleasing.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:marvellous": {
+    "answer": "awful",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Extremely good or pleasing.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:mischievous": {
+    "answer": "impish",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Enjoying playful tricks that may cause a little trouble.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:mischievous": {
+    "answer": "well-behaved",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Enjoying playful tricks that may cause a little trouble.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:narrative": {
+    "answer": "story",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "A spoken or written account of events; a story.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:necessary": {
+    "answer": "essential",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Needed for a particular purpose.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:necessary": {
+    "answer": "unnecessary",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Needed for a particular purpose.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:occupy": {
+    "answer": "fill",
+    "distractors": [
+      "kneel",
+      "float",
+      "hatch"
+    ],
+    "sense": "To take up a place or space.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:occupy": {
+    "answer": "vacate",
+    "distractors": [
+      "kneel",
+      "float",
+      "hatch"
+    ],
+    "sense": "To take up a place or space.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:occur": {
+    "answer": "happen",
+    "distractors": [
+      "kneel",
+      "float",
+      "hatch"
+    ],
+    "sense": "To happen or take place.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:perspective": {
+    "answer": "viewpoint",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "A particular way of seeing or thinking about something.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:persuade": {
+    "answer": "convince",
+    "distractors": [
+      "kneel",
+      "float",
+      "hatch"
+    ],
+    "sense": "To get someone to agree or act by giving reasons.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:physical": {
+    "answer": "bodily",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Relating to the body rather than the mind.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:physical": {
+    "answer": "mental",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Relating to the body rather than the mind.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:privilege": {
+    "answer": "special advantage",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "A special advantage or right that not everyone has.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:profession": {
+    "answer": "occupation",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "A job that usually needs special education or training.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:programme": {
+    "answer": "schedule",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "A planned set of activities or events.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:purpose": {
+    "answer": "aim",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "The reason something is done or made.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:queue": {
+    "answer": "waiting line",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "A line of people or things waiting for their turn.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:recognise": {
+    "answer": "identify",
+    "distractors": [
+      "kneel",
+      "float",
+      "hatch"
+    ],
+    "sense": "To know someone or something because you have met or seen them before.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:recommend": {
+    "answer": "suggest",
+    "distractors": [
+      "kneel",
+      "float",
+      "hatch"
+    ],
+    "sense": "To suggest that something is a good choice.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:sacrifice": {
+    "answer": "give up",
+    "distractors": [
+      "kneel",
+      "float",
+      "hatch"
+    ],
+    "sense": "To give up something valued for a more important reason.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:sacrifice": {
+    "answer": "keep",
+    "distractors": [
+      "kneel",
+      "float",
+      "hatch"
+    ],
+    "sense": "To give up something valued for a more important reason.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:signature": {
+    "answer": "signed name",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "Someone's name written in their own particular way.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:sincere": {
+    "answer": "genuine",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Meaning what you say or feel; not pretending.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:sincere": {
+    "answer": "insincere",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Meaning what you say or feel; not pretending.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:sincerely": {
+    "answer": "genuinely",
+    "distractors": [
+      "upstairs",
+      "yesterday",
+      "sideways"
+    ],
+    "sense": "In a way that shows you really mean what you say or feel.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:sincerely": {
+    "answer": "insincerely",
+    "distractors": [
+      "upstairs",
+      "yesterday",
+      "sideways"
+    ],
+    "sense": "In a way that shows you really mean what you say or feel.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:stanza": {
+    "answer": "verse",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "A group of lines forming a section of a poem.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:structure": {
+    "answer": "organisation",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "The way the parts of something are arranged.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:sufficient": {
+    "answer": "enough",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Enough for a particular need.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:sufficient": {
+    "answer": "insufficient",
+    "distractors": [
+      "striped",
+      "wooden",
+      "triangular"
+    ],
+    "sense": "Enough for a particular need.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:suggest": {
+    "answer": "propose",
+    "distractors": [
+      "kneel",
+      "float",
+      "hatch"
+    ],
+    "sense": "To put forward an idea for someone to consider.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:summarise": {
+    "answer": "sum up",
+    "distractors": [
+      "kneel",
+      "float",
+      "hatch"
+    ],
+    "sense": "To give the main points in a shorter form.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:symbol": {
+    "answer": "sign",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "A mark, object or sign that represents something else.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:theme": {
+    "answer": "central idea",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "A central idea explored in a piece of writing or art.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:tone": {
+    "answer": "attitude",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "The attitude or feeling shown by someone's voice or writing.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "syn:variety": {
+    "answer": "assortment",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "A range of different things or types.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
+  },
+  "ant:variety": {
+    "answer": "uniformity",
+    "distractors": [
+      "ladder",
+      "puddle",
+      "whistle"
+    ],
+    "sense": "A range of different things or types.",
+    "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   }
 }

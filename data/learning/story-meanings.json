@@ -1,0 +1,354 @@
+{
+  "level-1-01": {
+    "enterprise": {
+      "meaning": "A business or project—like Maya’s pet-rock shop.",
+      "syn": "business; venture",
+      "ant": "—"
+    },
+    "tally": {
+      "meaning": "To count up the sales.",
+      "syn": "count; total",
+      "ant": "—"
+    },
+    "token": {
+      "meaning": "A small gift to show thanks."
+    }
+  },
+  "level-1-02": {
+    "harbour": {
+      "meaning": "A sheltered place where boats can stay safely.",
+      "syn": "port; haven",
+      "ant": "open sea"
+    },
+    "current": {
+      "meaning": "Water flowing in one direction.",
+      "syn": "flow; stream",
+      "ant": "—"
+    },
+    "slack": {
+      "meaning": "Loose rather than pulled tight.",
+      "syn": "loose",
+      "ant": "taut; tight"
+    },
+    "rigid": {
+      "meaning": "Stiff and not bending.",
+      "syn": "stiff; inflexible",
+      "ant": "flexible; bendy"
+    },
+    "endure": {
+      "meaning": "To put up with a difficult or worrying time.",
+      "syn": "tolerate; bear",
+      "ant": "give up"
+    }
+  },
+  "level-1-03": {
+    "crop": {
+      "meaning": "Plants grown for food—in this case, carrots.",
+      "syn": "harvest; produce",
+      "ant": "—"
+    },
+    "yield": {
+      "meaning": "To produce something, such as carrots.",
+      "syn": "produce; provide",
+      "ant": "withhold"
+    },
+    "fringe": {
+      "meaning": "The outside edge of the trees."
+    },
+    "sole": {
+      "meaning": "The only one."
+    }
+  },
+  "level-1-04": {
+    "acid": {
+      "meaning": "A substance in vinegar that reacts with bicarbonate of soda.",
+      "syn": "—",
+      "ant": "alkali"
+    },
+    "cork": {
+      "meaning": "A stopper used to close a bottle."
+    }
+  },
+  "level-1-05": {
+    "crack up": {
+      "meaning": "To burst out laughing.",
+      "syn": "burst out laughing",
+      "ant": "—"
+    }
+  },
+  "level-1-06": {
+    "legend": {
+      "meaning": "An old story told about a place or creature."
+    },
+    "sage": {
+      "meaning": "A wise person.",
+      "syn": "wise person",
+      "ant": "fool"
+    },
+    "grave": {
+      "meaning": "Very serious.",
+      "syn": "serious; critical",
+      "ant": "minor; trivial"
+    },
+    "summit": {
+      "meaning": "The highest point of a mountain or trail."
+    },
+    "myth": {
+      "meaning": "A story or belief that is not true.",
+      "syn": "false belief",
+      "ant": "fact; truth"
+    }
+  },
+  "level-1-07": {
+    "blunt": {
+      "meaning": "Not sharp.",
+      "syn": "dull",
+      "ant": "sharp"
+    },
+    "uniform": {
+      "meaning": "All the same colour."
+    },
+    "lean": {
+      "meaning": "To bend your body towards something.",
+      "syn": "bend; tilt",
+      "ant": "straighten"
+    }
+  },
+  "level-1-08": {
+    "liable": {
+      "meaning": "Likely to do something—in this case, miss clues.",
+      "syn": "likely",
+      "ant": "unlikely"
+    }
+  },
+  "level-1-09": {
+    "club": {
+      "meaning": "A group that meets for a shared activity.",
+      "syn": "group; association",
+      "ant": "—"
+    },
+    "veteran": {
+      "meaning": "Someone with lots of experience."
+    },
+    "mobile": {
+      "meaning": "Able to move around."
+    },
+    "limp": {
+      "meaning": "To walk unevenly because a leg or foot hurts."
+    },
+    "acute": {
+      "meaning": "Very strong or severe pain."
+    },
+    "barb": {
+      "meaning": "A sharp point that hooks backwards."
+    }
+  },
+  "level-1-10": {
+    "subtle": {
+      "meaning": "Not too obvious; a hint the audience can notice."
+    },
+    "sway": {
+      "meaning": "To move from side to side.",
+      "syn": "swing; rock",
+      "ant": "stay still"
+    },
+    "kindle": {
+      "meaning": "To make a feeling or interest begin.",
+      "syn": "spark; arouse",
+      "ant": "dampen; suppress"
+    },
+    "margin": {
+      "meaning": "The blank space at the edge of a page."
+    }
+  },
+  "level-2-01": {
+    "trough": {
+      "meaning": "A long container holding water or food for animals.",
+      "syn": "container; basin",
+      "ant": "—"
+    }
+  },
+  "level-2-03": {
+    "skim": {
+      "meaning": "To read quickly to get the main idea."
+    }
+  },
+  "level-2-04": {
+    "peculiar": {
+      "meaning": "Strange or unusual."
+    },
+    "lofty": {
+      "meaning": "Very high above the ground.",
+      "syn": "high; tall",
+      "ant": "low"
+    }
+  },
+  "level-2-05": {
+    "abrupt": {
+      "meaning": "Sudden and rather short in tone."
+    }
+  },
+  "level-2-06": {
+    "condemn": {
+      "meaning": "To say strongly that something is wrong."
+    },
+    "offend": {
+      "meaning": "To upset or hurt someone’s feelings."
+    }
+  },
+  "level-2-09": {
+    "dictate": {
+      "meaning": "To give orders that others must follow."
+    },
+    "adhere": {
+      "meaning": "To follow the agreed rules.",
+      "syn": "follow; comply with",
+      "ant": "disobey"
+    }
+  },
+  "level-3-03": {
+    "tangle": {
+      "meaning": "A messy knot of things twisted together.",
+      "syn": "knot; jumble",
+      "ant": "—"
+    },
+    "twine": {
+      "meaning": "Strong thread or thin string.",
+      "syn": "string; cord",
+      "ant": "—"
+    },
+    "unravel": {
+      "meaning": "To untangle the string.",
+      "syn": "untangle",
+      "ant": "tangle"
+    }
+  },
+  "level-3-04": {
+    "waver": {
+      "meaning": "To become less firm or certain."
+    }
+  },
+  "level-3-06": {
+    "wither": {
+      "meaning": "To dry up and become weak."
+    },
+    "pique": {
+      "meaning": "To spark someone’s interest.",
+      "syn": "spark; arouse",
+      "ant": "dull"
+    }
+  },
+  "level-3-07": {
+    "besieged": {
+      "meaning": "Surrounded by attackers.",
+      "syn": "surrounded; blockaded",
+      "ant": "freed; liberated"
+    },
+    "sanction": {
+      "meaning": "Official permission to do something."
+    }
+  },
+  "level-3-08": {
+    "oblige": {
+      "meaning": "To help someone as a favour.",
+      "syn": "help; accommodate",
+      "ant": "refuse"
+    },
+    "torment": {
+      "meaning": "To cause someone a lot of distress.",
+      "syn": "distress; trouble",
+      "ant": "comfort; soothe"
+    }
+  },
+  "level-3-09": {
+    "obtuse": {
+      "meaning": "An angle bigger than a right angle but smaller than a straight line: between 90 and 180 degrees.",
+      "syn": "—",
+      "ant": "acute"
+    }
+  },
+  "level-4-01": {
+    "avowed": {
+      "meaning": "Said openly and clearly."
+    },
+    "antiquity": {
+      "meaning": "Ancient times, long ago.",
+      "syn": "ancient times; ancient past",
+      "ant": "modern times"
+    },
+    "superficial": {
+      "meaning": "Not looking carefully beyond what is easy to see."
+    }
+  },
+  "level-4-02": {
+    "immerse": {
+      "meaning": "To put something completely under water.",
+      "syn": "submerge; dip",
+      "ant": "lift out; withdraw"
+    }
+  },
+  "level-4-04": {
+    "frivolous": {
+      "meaning": "Silly rather than serious."
+    }
+  },
+  "level-4-07": {
+    "tardy": {
+      "meaning": "Late."
+    }
+  },
+  "level-4-08": {
+    "ramble": {
+      "meaning": "To take a walk for pleasure.",
+      "syn": "stroll; wander",
+      "ant": "—"
+    },
+    "temperate": {
+      "meaning": "Neither too hot nor too cold.",
+      "syn": "mild; moderate",
+      "ant": "extreme"
+    }
+  },
+  "level-4-10": {
+    "succumb": {
+      "meaning": "To give in to a feeling, such as the urge to cry."
+    },
+    "resonate": {
+      "meaning": "To keep having a strong meaning for someone.",
+      "syn": "strike a chord; mean something",
+      "ant": "—"
+    }
+  },
+  "level-5-01": {
+    "serpentine": {
+      "meaning": "Curving and winding like a snake."
+    },
+    "asinine": {
+      "meaning": "Like a donkey—in this story, the ears.",
+      "syn": "donkey-like",
+      "ant": "—"
+    }
+  },
+  "level-5-05": {
+    "apprehend": {
+      "meaning": "To arrest someone.",
+      "syn": "arrest; capture",
+      "ant": "release"
+    }
+  },
+  "level-5-06": {
+    "enchant": {
+      "meaning": "To delight and hold an audience’s attention."
+    }
+  },
+  "level-5-08": {
+    "aggravation": {
+      "meaning": "Annoyance or trouble."
+    }
+  },
+  "level-5-09": {
+    "inflame": {
+      "meaning": "To make an argument or anger worse."
+    }
+  }
+}

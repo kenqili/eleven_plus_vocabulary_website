@@ -62,3 +62,12 @@ Every retained row was verified unchanged against the previously reviewed CSV;
 `review-report.json` preserves the earlier review metadata under
 `postReviewChanges` and records the resulting file hash. This removal is an
 editorial difficulty choice, not a claim that the pair is incorrect.
+
+On 2026-09-26, the Level 0 curriculum extension added 117 words, so the
+generator added 82 synonym and 35 antonym questions for them. Both files are
+additive against the reviewed versions: every earlier row is identical and in
+the same order, and each new row belongs to a curriculum word, so the five
+original levels keep their questions unchanged. Those added rows have not been
+independently reviewed and are recorded as such under `postReviewChanges`;
+schedule a semantic review of the 117 new words before relying on them.
+

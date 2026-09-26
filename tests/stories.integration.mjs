@@ -42,7 +42,7 @@ const post = (data, headers) =>
 try {
   const catalog = await call("/api/stories");
   assert.equal(catalog.status, 200);
-  assert.equal(catalog.data.stories.length, 50);
+  assert.equal(catalog.data.stories.length, 60);
   const detail = await call(`/api/stories?id=${storyId}`);
   assert.equal(detail.status, 200);
   assert.equal("answer" in detail.data.question, false);
@@ -177,13 +177,89 @@ try {
       .get(userId, secondId).seconds,
     15,
   );
+  // Level 0 is a real level: its stories bookmark, start, tick and finish like any other.
+  const levelZero = JSON.parse(
+    readFileSync("data/stories/level-0.txt", "utf8"),
+  )[0];
+  const zeroId = levelZero.id;
+  const zeroOwner = randomUUID();
+  const zeroPost = (data) => call("/api/stories", { storyId: zeroId, ...data });
+  assert.equal(
+    (
+      await zeroPost({
+        action: "bookmark",
+        paragraph: 0,
+        fraction: 0,
+        revision: 0,
+      })
+    ).status,
+    200,
+  );
+  assert.equal(
+    (await zeroPost({ action: "start", owner: zeroOwner })).status,
+    200,
+  );
+  rewind();
+  assert.equal(
+    (
+      await zeroPost({
+        action: "time",
+        owner: zeroOwner,
+        sequence: 1,
+        seconds: 30,
+      })
+    ).status,
+    200,
+  );
+  assert.equal(
+    (await zeroPost({ action: "complete", answer: levelZero.question.answer }))
+      .status,
+    409,
+    "the reading-time floor still applies at level 0",
+  );
+  for (let sequence = 2; sequence <= 4; sequence++) {
+    rewind();
+    assert.equal(
+      (
+        await zeroPost({
+          action: "time",
+          owner: zeroOwner,
+          sequence,
+          seconds: 30,
+        })
+      ).status,
+      200,
+    );
+  }
+  const finishedZero = await zeroPost({
+    action: "complete",
+    answer: levelZero.question.answer,
+  });
+  assert.equal(finishedZero.status, 200);
+  assert.equal(finishedZero.data.credits, 10);
+  assert.equal(
+    (await call("/api/stories")).data.stories.find((s) => s.id === zeroId)
+      .completed,
+    true,
+  );
+  assert.equal(
+    (
+      await post({
+        action: "start",
+        storyId: "level-6-01",
+        owner: randomUUID(),
+      })
+    ).status,
+    400,
+    "a story outside levels 0-5 is rejected",
+  );
   cookie = "";
   assert.equal(
     (await call(`/api/stories?id=${storyId}`)).data.progress.completedAt,
     null,
   );
   console.log(
-    "Story API passed: guest access, auth, origin, timing, retry/tab deduplication, questions, concurrent awards, navigation, rewards and calendar.",
+    "Story API passed: guest access, auth, origin, timing, retry/tab deduplication, questions, concurrent awards, navigation, level 0 stories, rewards and calendar.",
   );
 } finally {
   if (userId) db.prepare("DELETE FROM users WHERE id=?").run(userId);

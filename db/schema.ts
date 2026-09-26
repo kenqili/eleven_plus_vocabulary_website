@@ -158,6 +158,8 @@ export const progress = sqliteTable(
       .references(() => users.id, { onDelete: "cascade" }),
     wordId: text("word_id").notNull(),
     correct: integer("correct").notNull().default(0),
+    mastered: integer("mastered").notNull().default(0),
+    fastStreak: integer("fast_streak").notNull().default(0),
     seen: integer("seen").notNull().default(0),
     retryAt: integer("retry_at"),
   },
@@ -233,6 +235,10 @@ export const storyReads = sqliteTable(
       .references(() => stories.id),
     startedAt: integer("started_at").notNull(),
     seconds: integer("seconds").notNull().default(0),
+    paragraph: integer("paragraph").notNull().default(0),
+    fraction: integer("fraction").notNull().default(0),
+    bookmarkRevision: integer("bookmark_revision").notNull().default(0),
+    bookmarkedAt: integer("bookmarked_at").notNull().default(0),
   },
   (t) => [primaryKey({ columns: [t.userId, t.storyId] })],
 );
@@ -264,4 +270,26 @@ export const storyCompletions = sqliteTable(
     day: text("day").notNull(),
   },
   (t) => [uniqueIndex("story_completion_once").on(t.userId, t.storyId)],
+);
+
+export const readingPreferences = sqliteTable("reading_preferences", {
+  userId: text("user_id")
+    .primaryKey()
+    .references(() => users.id, { onDelete: "cascade" }),
+  level: integer("level").notNull().default(1),
+  revision: integer("revision").notNull().default(0),
+});
+export const dailyStoryFinishes = sqliteTable(
+  "daily_story_finishes",
+  {
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    storyId: text("story_id")
+      .notNull()
+      .references(() => stories.id),
+    day: text("day").notNull(),
+    createdAt: integer("created_at").notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.storyId, t.day] })],
 );

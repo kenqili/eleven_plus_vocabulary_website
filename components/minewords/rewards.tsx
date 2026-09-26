@@ -11,6 +11,8 @@ import {
 } from "@/lib/challenge/rewards";
 type Data = {
   rewards: RewardSummary;
+  totalEarned: number;
+  collection: Record<string, number>;
   receipts: Receipt[];
   transactions: Transaction[];
   more: boolean;
@@ -78,6 +80,9 @@ export default function Rewards() {
       setBusy(false);
     }
   }
+  const nextBadge = data
+    ? BADGES.find((item) => !data.collection[item.id])
+    : undefined;
   const badge = BADGES.find((item) => item.id === chosen);
   return (
     <>
@@ -94,7 +99,8 @@ export default function Rewards() {
           </div>
           {data && (
             <div className="credit-balance">
-              <strong>{data.rewards.balance}</strong> credits available
+              <strong>{data.rewards.balance}</strong> credits available to spend
+              <small>{data.totalEarned} total credits earned</small>
             </div>
           )}
         </div>
@@ -130,13 +136,28 @@ export default function Rewards() {
         )}
         {data && (
           <>
+            <div className="collection-goal" role="status">
+              {nextBadge
+                ? data.rewards.balance >= nextBadge.cost
+                  ? `${nextBadge.name} is ready to collect!`
+                  : `${nextBadge.cost - data.rewards.balance} more credits to collect ${nextBadge.name}`
+                : "You’ve collected every badge! You can collect your favourites again."}
+            </div>
             <div className="badge-grid">
               {BADGES.map((item) => (
-                <article className="badge-card" key={item.id}>
+                <article
+                  className={`badge-card ${data.collection[item.id] ? "badge-collected" : "badge-uncollected"}`}
+                  key={item.id}
+                >
                   <div className="badge-symbol" aria-hidden="true">
                     {item.symbol}
                   </div>
                   <h2>{item.name}</h2>
+                  <p>
+                    {data.collection[item.id]
+                      ? `Collected ×${data.collection[item.id]}`
+                      : "Not collected yet"}
+                  </p>
                   <p>{item.cost} credits</p>
                   <button
                     className="primary-button"
@@ -148,7 +169,9 @@ export default function Rewards() {
                   >
                     {data.rewards.balance < item.cost
                       ? `${item.cost - data.rewards.balance} more to earn`
-                      : "Choose badge"}
+                      : data.collection[item.id]
+                        ? "Collect again"
+                        : "Choose badge"}
                   </button>
                 </article>
               ))}
@@ -179,8 +202,8 @@ export default function Rewards() {
                 </button>
               </section>
             )}
-            <section className="history-panel">
-              <h2>Your badge collection</h2>
+            <details className="history-panel">
+              <summary>Badge receipts</summary>
               {!data.receipts.length ? (
                 <p>Your first badge is waiting. Keep practising!</p>
               ) : (
@@ -196,9 +219,9 @@ export default function Rewards() {
                   ))}
                 </ul>
               )}
-            </section>
-            <section className="history-panel">
-              <h2>Credit history</h2>
+            </details>
+            <details className="history-panel">
+              <summary>Credit history</summary>
               <p>
                 +2 per correct answer, +5 for every three correct in a row, +10
                 for mastering a word, and +10 for each story’s first completion.
@@ -238,7 +261,7 @@ export default function Rewards() {
                   ))}
                 </ul>
               )}
-            </section>
+            </details>
             {data.more && (
               <button
                 className="text-button"

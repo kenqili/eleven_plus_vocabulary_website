@@ -1,8 +1,11 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { BookOpen, ArrowRight } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
+import Pronunciation from "./pronunciation";
+import AnswerPacing from "./answer-pacing";
+import { DAILY_QUESTION_TARGET } from "@/lib/challenge/mission";
+import { pauseAutoNext, type NextDelay } from "@/lib/client/auto-next";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
   MASTERY_TARGET,
@@ -10,13 +13,23 @@ import {
   TYPE_LABELS,
   type QuestionType,
 } from "@/lib/challenge/config";
+import { DIFFICULTY_LEVELS, type Difficulty } from "@/lib/challenge/difficulty";
 import Header from "./header";
 import ProgressPanel from "./progress-panel";
+import DailyMission from "./daily-mission";
 import WordExplanation from "./word-explanation";
 import { useChallenge } from "./use-challenge";
+const levelLabel = (difficulty: number) =>
+  difficulty in DIFFICULTY_LEVELS
+    ? DIFFICULTY_LEVELS[difficulty as Difficulty]
+    : "";
 export default function Challenge() {
   const study = useChallenge();
+  const [clueQuestion, setClueQuestion] = useState<string | null>(null);
   const { question, feedback, stats, demo, busy, error } = study;
+  const mastery = feedback?.mastery ?? question?.mastery;
+  const questionLevel =
+    question?.difficulty !== undefined ? levelLabel(question.difficulty) : "";
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (event.altKey || event.ctrlKey || event.metaKey) return;
@@ -86,6 +99,7 @@ export default function Challenge() {
             <BookOpen size={16} /> Vocabulary practice
           </span>
         </div>
+        <DailyMission stats={demo ? undefined : stats} signedIn={!demo} />
         <div className="study-layout">
           <section>
             <div className="practice-types">
@@ -105,11 +119,43 @@ export default function Challenge() {
                     value={type}
                     className={`practice-type practice-type-${type}`}
                   >
-                    {TYPE_LABELS[type]}s
+                    <span>
+                      {type === "def"
+                        ? "Meanings"
+                        : type === "syn"
+                          ? "Similar words"
+                          : "Opposite words"}
+                      <small>{TYPE_LABELS[type]}s</small>
+                    </span>
                   </ToggleGroupItem>
                 ))}
               </ToggleGroup>
               <span className="muted">Select one or more</span>
+            </div>
+            <div className="practice-level">
+              <label htmlFor="practice-level">Practise level</label>
+              <select
+                id="practice-level"
+                value={study.level ?? "all"}
+                disabled={busy}
+                onChange={(event) =>
+                  study.selectLevel(
+                    event.target.value === "all"
+                      ? null
+                      : (Number(event.target.value) as Difficulty),
+                  )
+                }
+              >
+                <option value="all">All levels</option>
+                {Object.entries(DIFFICULTY_LEVELS).map(([number, label]) => (
+                  <option key={number} value={number}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+              <span className="muted">
+                Optional. Every level is part of the same saved progress.
+              </span>
             </div>
             {!demo && study.trial && (
               <div className="trial-banner" role="status">
@@ -149,14 +195,43 @@ export default function Challenge() {
                         ? "PREVIOUS QUESTION · REVIEW ONLY"
                         : TYPE_LABELS[question.type].toUpperCase()}
                     </span>
-                    <span className="pill">
-                      {question.seen <= 1
-                        ? "New word"
-                        : `Seen ${question.seen} times`}
+                    <span className="question-badges">
+                      {questionLevel && (
+                        <span className="pill level-pill">{questionLevel}</span>
+                      )}
+                      <span className="pill">
+                        {question.seen <= 1
+                          ? "New word"
+                          : `Seen ${question.seen} times`}
+                      </span>
                     </span>
                   </div>
-                  <h2>{question.word}</h2>
+                  <div className="question-word">
+                    <h2>{question.word}</h2>
+                    <Pronunciation
+                      key={question.id}
+                      word={question.word}
+                      id={question.wordId}
+                    />
+                  </div>
                   <p>{question.prompt}</p>
+                  {!feedback && question.clue && (
+                    <div className="question-clue">
+                      {clueQuestion === question.id ? (
+                        <p role="status">
+                          <strong>A clue:</strong> {question.clue}
+                        </p>
+                      ) : (
+                        <button
+                          className="text-button"
+                          disabled={busy}
+                          onClick={() => { study.markAssisted(); setClueQuestion(question.id); }}
+                        >
+                          Give me a clue
+                        </button>
+                      )}
+                    </div>
+                  )}
                   <div className="answers">
                     {question.choices.map((choice, i) => (
                       <button
@@ -224,13 +299,28 @@ export default function Challenge() {
                     </div>
                   )}
                   <div className="question-footer">
-                    <span>
-                      {Math.min(
-                        MASTERY_TARGET,
-                        question.correctCount + (feedback?.correct ? 1 : 0),
-                      )}{" "}
-                      of {MASTERY_TARGET} correct to master this word
-                    </span>
+                    <div className="mastery-mini">
+                      <span>
+                        {mastery?.mastered ? "Word mastered!" : `${mastery?.correct ?? question.correctCount} correct so far · ${mastery?.fastStreak ?? 0}/${mastery?.quickTarget ?? 4} confident recalls`}
+                      </span>
+                      <span
+                        className="mastery-circles"
+                        role="img"
+                        aria-label={mastery?.mastered ? "Mastered" : `${mastery?.correct ?? question.correctCount} correct answers; five at any pace also masters this word`}
+                      >
+                        {Array.from({ length: MASTERY_TARGET }, (_, index) => (
+                          <i
+                            key={index}
+                            className={
+                              index <
+                              (mastery?.mastered ? 5 : mastery?.correct ?? question.correctCount)
+                                ? "filled"
+                                : ""
+                            }
+                          />
+                        ))}
+                      </span>
+                    </div>
                     {feedback ? (
                       <button
                         className="primary-button"
@@ -252,6 +342,22 @@ export default function Challenge() {
                       </button>
                     )}
                   </div>
+                  {feedback && (
+                    <AnswerPacing
+                      key={`${question.id}:${study.autoNext}`}
+                      id={question.id}
+                      delay={study.autoNext}
+                      eligible={Boolean(
+                        feedback.correct &&
+                          !busy &&
+                          !error &&
+                          !study.historical &&
+                          (demo ||
+                            stats.mission?.questions !== DAILY_QUESTION_TARGET),
+                      )}
+                      next={study.next}
+                    />
+                  )}
                   <p className="keyboard-hint">
                     {feedback
                       ? "← previous · →, Enter or Space next"
@@ -274,10 +380,12 @@ export default function Challenge() {
                     {study.gated
                       ? "Your saved progress is safe. Subscribe to keep practising the full word collection, reviewing your progress and exporting revision sheets."
                       : study.freeTier
-                        ? `You have answered every word in your free ${study.freeWordCount ?? 20}-word collection correctly ${MASTERY_TARGET} times. Subscribe to unlock all ${stats.total} words.`
+                        ? `You have mastered every word in your free ${study.freeWordCount ?? 20}-word collection. Subscribe to unlock all ${stats.total} words.`
                         : demo
                           ? `Create a free account for ${study.trialDaysConfigured ?? 7} days of full access to every word and practice feature.`
-                          : `Every available word in your selected practice types has been answered correctly ${MASTERY_TARGET} times. Select other types to keep practising.`}
+                          : study.level !== null
+                            ? `Every Level ${study.level} word in your selected practice types has been mastered. Choose another level, or select other types, to keep practising.`
+                            : `Every available word in your selected practice types has been mastered. Select other types to keep practising.`}
                   </p>
                   {(demo || study.gated || study.freeTier) && (
                     <Link className="primary-button" href="/account">
@@ -309,12 +417,19 @@ export default function Challenge() {
               )}
             </article>
             <div className="control-row">
-              <label style={{ display: "flex", alignItems: "center", gap: 9 }}>
-                <Checkbox
-                  checked={study.autoNext}
-                  onCheckedChange={(value) => study.setAutoNext(value === true)}
-                />
-                Auto-next when correct
+              <label className="next-word-setting">
+                Next word
+                <select
+                  aria-label="Next word"
+                  value={study.autoNext}
+                  onChange={(e) =>
+                    study.setAutoNext(Number(e.target.value) as NextDelay)
+                  }
+                >
+                  <option value={0}>When I’m ready</option>
+                  <option value={5}>After 5 seconds</option>
+                  <option value={10}>After 10 seconds</option>
+                </select>
               </label>
               <span className="muted">
                 {demo
@@ -329,14 +444,20 @@ export default function Challenge() {
                 {study.timeError} We’ll retry automatically.
               </p>
             )}
-            <details className="previous-review">
+            <details
+              className="previous-review"
+              onToggle={(e) => {
+                if (e.currentTarget.open) pauseAutoNext();
+              }}
+            >
               <summary>How questions are ordered</summary>
               {demo ? (
                 <p>
                   The sample uses your configured, difficulty-balanced free
                   collection. Each shuffled round asks one question per word
-                  before moving to its other selected types. Reloading or
-                  changing types starts a fresh sample.
+                  before moving to its other selected types. Choosing a level
+                  narrows the sample to the free words in that level. Reloading
+                  or changing types starts a fresh sample.
                 </p>
               ) : (
                 <>
@@ -350,19 +471,26 @@ export default function Challenge() {
                     overriding the usual 20-word gap. With very few words left,
                     they may return sooner. Keep the same practice types
                     selected to include those reviews. For each word, we favour
-                    its least-practised selected question type. Five correct
-                    answers across types master the word and remove it from
-                    practice.
+                    its least-practised selected question type. Two confident recalls
+                    master Level 0 words, three master Levels 1–2, and four
+                    master Levels 3–5. Five correct answers at any pace also
+                    master a word. Clues, mistakes and reveals reset the confident-recall run.
+                    Take your time: speed is optional.
                   </p>
                   <p>
                     Reloading resumes your unanswered question. Changing types
-                    keeps your saved word progress.
+                    or level keeps your saved word progress.
                   </p>
                 </>
               )}
             </details>
             {study.previous && (
-              <details className="previous-review">
+              <details
+                className="previous-review"
+                onToggle={(e) => {
+                  if (e.currentTarget.open) pauseAutoNext();
+                }}
+              >
                 <summary>Review previous word</summary>
                 <p>
                   <strong>{study.previous.word}</strong>

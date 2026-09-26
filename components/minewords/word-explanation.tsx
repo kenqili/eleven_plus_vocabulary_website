@@ -1,3 +1,6 @@
+"use client";
+import { storyMeaning } from "@/lib/challenge/story-meanings";
+import { pauseAutoNext } from "@/lib/client/auto-next";
 import type { Feedback } from "@/lib/challenge/types";
 import { TYPE_LABELS } from "@/lib/challenge/config";
 
@@ -18,19 +21,32 @@ export default function WordExplanation({ word }: { word: Feedback }) {
         </div>
       )}
       <div>
-        <dt>Definition</dt>
-        <dd>{word.definition}</dd>
+        <dt>Meaning</dt>
+        <dd>
+          {storyMeaning({
+            id: word.word.toLowerCase(),
+            definition: word.definition,
+          })}
+          <details
+            onToggle={(e) => {
+              if (e.currentTarget.open) pauseAutoNext();
+            }}
+          >
+            <summary>More word help</summary>
+            <p>{word.definition}</p>
+          </details>
+        </dd>
       </div>
       <div>
         <dt>Example</dt>
         <dd>{display(word.example)}</dd>
       </div>
       <div>
-        <dt>Synonyms</dt>
+        <dt>Similar words (synonyms)</dt>
         <dd>{display(word.syn)}</dd>
       </div>
       <div>
-        <dt>Antonyms</dt>
+        <dt>Opposite words (antonyms)</dt>
         <dd>{display(word.ant)}</dd>
       </div>
     </dl>

@@ -1,0 +1,3390 @@
+{
+  "abandon": {
+    "meaning": "To leave someone or something behind.",
+    "clue": "The sailors had to abandon the damaged ship."
+  },
+  "abundance": {
+    "meaning": "A very large amount of something; more than enough.",
+    "clue": "There was an abundance of cake at the birthday party."
+  },
+  "affable": {
+    "meaning": "Friendly, pleasant, and easy to get along with.",
+    "clue": "Henry, an affable child, always included anyone who was being left out of the conversation."
+  },
+  "antiquity": {
+    "meaning": "Ancient times; or an object that has survived from ancient times.",
+    "clue": "The ancient Greek vase was the museum's most precious antiquity."
+  },
+  "arduous": {
+    "meaning": "Difficult, tiring, and requiring a lot of effort.",
+    "clue": "Building a brick wall is an arduous task."
+  },
+  "assiduous": {
+    "meaning": "Working hard and carefully, and not giving up.",
+    "clue": "Jenny was an assiduous candidate during her election campaign for school captain."
+  },
+  "avowed": {
+    "meaning": "Said or promised openly.",
+    "clue": "The boy's avowed ambition was to become an excellent mathematician."
+  },
+  "barren": {
+    "meaning": "Unable to grow plants; empty and bare.",
+    "clue": "Very little could grow on the barren land."
+  },
+  "belligerent": {
+    "meaning": "Ready to argue or fight.",
+    "clue": "The belligerent man began shouting at everyone in the room."
+  },
+  "besieged": {
+    "meaning": "Surrounded by attackers; also faced with too many demands or problems.",
+    "clue": "The besieged city waited anxiously for help while enemy troops blocked every road."
+  },
+  "bewildered": {
+    "meaning": "Very confused and unable to understand what is happening.",
+    "clue": "Mia looked bewildered when she saw the complicated instructions."
+  },
+  "choreographer": {
+    "meaning": "Someone who plans the steps of a dance.",
+    "clue": "The choreographer taught the dancers a new routine for the show."
+  },
+  "composition": {
+    "meaning": "Something made by putting parts together, such as music or a piece of writing.",
+    "clue": "The pianist performed a beautiful composition at the concert."
+  },
+  "comrade": {
+    "meaning": "A friend who shares your work or experiences.",
+    "clue": "The soldier refused to leave his injured comrade behind."
+  },
+  "conscience": {
+    "meaning": "Your inner sense of right and wrong.",
+    "clue": "His conscience told him that he should admit that he had broken the window."
+  },
+  "contemporary": {
+    "meaning": "From the present time; also living at the same time as someone else.",
+    "clue": "The gallery displays contemporary British art."
+  },
+  "conventional": {
+    "meaning": "Following the usual way of doing things.",
+    "clue": "They chose a conventional design for their new house."
+  },
+  "covet": {
+    "meaning": "To want something that belongs to someone else very much.",
+    "clue": "He coveted his neighbour's expensive new bicycle."
+  },
+  "coy": {
+    "meaning": "Shy, or not wanting to give much away.",
+    "clue": "She was coy when asked about her plans for the competition."
+  },
+  "deceive": {
+    "meaning": "To make someone believe something that is not true.",
+    "clue": "The dishonest salesman tried to deceive his customers."
+  },
+  "demolished": {
+    "meaning": "Completely destroyed or knocked down.",
+    "clue": "The old factory was demolished to make room for new houses."
+  },
+  "destitute": {
+    "meaning": "So poor that you lack basics such as food and a home.",
+    "clue": "The charity provides food and shelter for destitute families."
+  },
+  "dilapidated": {
+    "meaning": "Old and falling apart because it has not been looked after.",
+    "clue": "They discovered a dilapidated cottage at the edge of the woods."
+  },
+  "diluted": {
+    "meaning": "Made weaker by adding water or another substance.",
+    "clue": "The juice was diluted with water before being served."
+  },
+  "disarray": {
+    "meaning": "A messy or confused state.",
+    "clue": "After the children had finished playing, the room was in disarray."
+  },
+  "disastrous": {
+    "meaning": "Causing great harm or failure.",
+    "clue": "The expedition had a disastrous ending when a storm destroyed their supplies."
+  },
+  "dishevelled": {
+    "meaning": "Looking untidy, especially your hair or clothes.",
+    "clue": "He looked dishevelled after spending the night sleeping on the train."
+  },
+  "dismal": {
+    "meaning": "Gloomy, depressing, or very poor.",
+    "clue": "The team gave a dismal performance and lost badly."
+  },
+  "disperse": {
+    "meaning": "To scatter or spread in different directions.",
+    "clue": "The crowd began to disperse after the concert ended."
+  },
+  "drought": {
+    "meaning": "A long time with hardly any rain.",
+    "clue": "The prolonged drought caused many crops to fail."
+  },
+  "embarrass": {
+    "meaning": "To make someone feel awkward or ashamed.",
+    "clue": "Please don't embarrass him by mentioning his mistake in front of everyone."
+  },
+  "endeavour": {
+    "meaning": "A determined attempt to do something.",
+    "clue": "Climbing the mountain was a difficult endeavour."
+  },
+  "enterprise": {
+    "meaning": "A business, or a project you work hard on.",
+    "clue": "Setting up her own bakery was an ambitious enterprise."
+  },
+  "errand": {
+    "meaning": "A short journey made to deliver, collect, or do something.",
+    "clue": "Mum sent me on an errand to buy some milk."
+  },
+  "evident": {
+    "meaning": "Easy to see or understand.",
+    "clue": "It was evident from his smile that he was delighted."
+  },
+  "explanation": {
+    "meaning": "Something that helps you understand how or why.",
+    "clue": "The teacher gave a simple explanation of how the machine worked."
+  },
+  "famine": {
+    "meaning": "An extreme shortage of food affecting many people.",
+    "clue": "The failed harvest led to a severe famine."
+  },
+  "fatigue": {
+    "meaning": "Feeling very tired after hard work.",
+    "clue": "After hours of walking, she was overcome with fatigue."
+  },
+  "feign": {
+    "meaning": "To pretend you have a feeling or problem.",
+    "clue": "He tried to feign illness so that he could avoid school."
+  },
+  "flamboyant": {
+    "meaning": "Bright, bold or showy in a way that gets noticed.",
+    "clue": "The actor arrived wearing a flamboyant purple suit."
+  },
+  "fleet": {
+    "meaning": "A group of ships or vehicles working together.",
+    "clue": "A fleet of fishing boats sailed out of the harbour."
+  },
+  "frivolous": {
+    "meaning": "Silly or not very serious or important.",
+    "clue": "She refused to waste her savings on frivolous purchases."
+  },
+  "gratitude": {
+    "meaning": "The feeling of being thankful.",
+    "clue": "He expressed his gratitude to the stranger who had helped him."
+  },
+  "gregarious": {
+    "meaning": "Enjoying being with other people.",
+    "clue": "Mia is gregarious and enjoys meeting new people."
+  },
+  "grotesque": {
+    "meaning": "Very strange or ugly, sometimes in a frightening way.",
+    "clue": "A grotesque stone creature was carved above the doorway."
+  },
+  "helix": {
+    "meaning": "A spiral shape, like a coil or corkscrew.",
+    "clue": "The structure of DNA forms a double helix."
+  },
+  "hygienic": {
+    "meaning": "Clean and unlikely to cause illness or spread germs.",
+    "clue": "Washing your hands before preparing food is hygienic."
+  },
+  "idiosyncrasy": {
+    "meaning": "An unusual habit or feature that makes someone different.",
+    "clue": "One of his idiosyncrasies was arranging his books according to their height."
+  },
+  "immerse": {
+    "meaning": "To put completely under liquid; also to give something all your attention.",
+    "clue": "She liked to immerse herself in a good book."
+  },
+  "impudent": {
+    "meaning": "Rude and showing a lack of respect.",
+    "clue": "The teacher was shocked by the pupil's impudent reply."
+  },
+  "inaugural": {
+    "meaning": "The first event or the start of something.",
+    "clue": "The club held its inaugural meeting on Monday."
+  },
+  "inconspicuous": {
+    "meaning": "Not easy to notice.",
+    "clue": "The spy wore plain clothes to remain inconspicuous."
+  },
+  "innocuous": {
+    "meaning": "Harmless.",
+    "clue": "The spider looked frightening but was completely innocuous."
+  },
+  "insolent": {
+    "meaning": "Rude and showing a lack of respect.",
+    "clue": "His insolent behaviour earned him a stern warning from the teacher."
+  },
+  "lament": {
+    "meaning": "To express sadness about something.",
+    "clue": "The villagers lamented the loss of the ancient woodland."
+  },
+  "lavish": {
+    "meaning": "Very generous, plentiful or expensive.",
+    "clue": "They prepared a lavish feast for the celebration."
+  },
+  "malady": {
+    "meaning": "An illness or serious problem.",
+    "clue": "The doctor searched for a cure for the mysterious malady."
+  },
+  "matte": {
+    "meaning": "Not shiny.",
+    "clue": "She chose matte paint because she did not want the wall to shine."
+  },
+  "meagre": {
+    "meaning": "A very small amount, often not enough.",
+    "clue": "The family had to survive on a meagre supply of food."
+  },
+  "melancholy": {
+    "meaning": "A deep, quiet sadness.",
+    "clue": "A feeling of melancholy came over him as he remembered his old home."
+  },
+  "merchant": {
+    "meaning": "Someone who buys and sells things.",
+    "clue": "The merchant travelled overseas to sell his goods."
+  },
+  "meticulous": {
+    "meaning": "Very careful about every small detail.",
+    "clue": "She was meticulous when checking her answers for mistakes."
+  },
+  "nauseous": {
+    "meaning": "Feeling as if you might be sick.",
+    "clue": "The rough boat journey made him feel nauseous."
+  },
+  "nimble": {
+    "meaning": "Able to move quickly, lightly, and easily.",
+    "clue": "The nimble squirrel leapt easily from branch to branch."
+  },
+  "nuisance": {
+    "meaning": "Someone or something that causes trouble or annoyance.",
+    "clue": "The broken alarm became a nuisance because it kept ringing."
+  },
+  "obstinate": {
+    "meaning": "Refusing to change your mind or behaviour.",
+    "clue": "The obstinate child refused to admit that he was wrong."
+  },
+  "omen": {
+    "meaning": "A sign people believe tells them what will happen.",
+    "clue": "Dark clouds were an omen of the approaching storm."
+  },
+  "oppress": {
+    "meaning": "To use power to treat people cruelly or unfairly.",
+    "clue": "The cruel ruler used harsh laws to oppress his people."
+  },
+  "ordeal": {
+    "meaning": "A very difficult or unpleasant experience.",
+    "clue": "Being stranded in the freezing wilderness was a terrible ordeal."
+  },
+  "ostentatious": {
+    "meaning": "Showing off money or importance to get noticed.",
+    "clue": "He arrived in an ostentatious limousine covered in gold decorations."
+  },
+  "palaeontologist": {
+    "meaning": "A scientist who studies fossils and ancient forms of life.",
+    "clue": "The palaeontologist carefully examined the dinosaur fossil."
+  },
+  "peril": {
+    "meaning": "Serious and immediate danger.",
+    "clue": "The climbers were in great peril when the storm struck."
+  },
+  "perish": {
+    "meaning": "To die or be completely destroyed.",
+    "clue": "Without water, the plants would perish in the heat."
+  },
+  "pioneer": {
+    "meaning": "Someone who is one of the first to try or discover something new.",
+    "clue": "She was a pioneer in the development of new medical treatments."
+  },
+  "placid": {
+    "meaning": "Calm, peaceful, and not easily disturbed.",
+    "clue": "The placid lake reflected the mountains perfectly."
+  },
+  "polarity": {
+    "meaning": "Having two opposite sides or qualities.",
+    "clue": "There was a clear polarity between the two opinions."
+  },
+  "pompous": {
+    "meaning": "Behaving as though you are more important than you really are.",
+    "clue": "Everyone became tired of his pompous speeches about his achievements."
+  },
+  "precarious": {
+    "meaning": "Not safe or steady, and likely to go wrong.",
+    "clue": "The ladder stood in a precarious position on the uneven ground."
+  },
+  "prohibit": {
+    "meaning": "To say officially that something is not allowed.",
+    "clue": "School rules prohibit pupils from using phones during lessons."
+  },
+  "provoke": {
+    "meaning": "To cause a reaction, often by annoying someone.",
+    "clue": "He deliberately tried to provoke his brother into an argument."
+  },
+  "quaint": {
+    "meaning": "Attractively unusual or old-fashioned.",
+    "clue": "We stayed in a quaint cottage in a small village."
+  },
+  "quench": {
+    "meaning": "To satisfy thirst or put out a fire.",
+    "clue": "A glass of cold water helped quench her thirst."
+  },
+  "raiment": {
+    "meaning": "Clothes, especially smart or special ones.",
+    "clue": "The king appeared in magnificent raiment for the ceremony."
+  },
+  "reprimand": {
+    "meaning": "To tell someone off seriously for doing something wrong.",
+    "clue": "The teacher had to reprimand the pupils for their poor behaviour."
+  },
+  "restrain": {
+    "meaning": "To hold someone or something back or keep it under control.",
+    "clue": "She had to restrain the excited dog from chasing the cat."
+  },
+  "rigid": {
+    "meaning": "Stiff and hard to bend; also unwilling to change.",
+    "clue": "The frozen rope became completely rigid."
+  },
+  "scanty": {
+    "meaning": "Not much; less than is needed.",
+    "clue": "The explorers survived on scanty supplies until help arrived."
+  },
+  "scripture": {
+    "meaning": "Writings that a religion considers holy.",
+    "clue": "The scholar spent many years studying ancient scripture."
+  },
+  "seize": {
+    "meaning": "To grab something firmly or take it by force.",
+    "clue": "The eagle swooped down to seize its prey."
+  },
+  "sermon": {
+    "meaning": "A talk about religion or how people should behave.",
+    "clue": "The priest delivered a sermon about kindness and forgiveness."
+  },
+  "stern": {
+    "meaning": "Very serious and strict.",
+    "clue": "The teacher gave the class a stern warning about their behaviour."
+  },
+  "submissive": {
+    "meaning": "Ready to obey without arguing or resisting.",
+    "clue": "The once rebellious dog became submissive after careful training."
+  },
+  "succumb": {
+    "meaning": "To give in; also to die from an illness or injury.",
+    "clue": "After hours of temptation, he finally succumbed and ate a slice of cake."
+  },
+  "tempestuous": {
+    "meaning": "Full of strong feelings, arguments or violent storms.",
+    "clue": "Their tempestuous journey across the sea was filled with violent storms."
+  },
+  "tranquil": {
+    "meaning": "Calm, quiet, and peaceful.",
+    "clue": "The garden was tranquil in the early morning."
+  },
+  "turbulent": {
+    "meaning": "Full of disorder, conflict or rough movement.",
+    "clue": "The aeroplane shook as it passed through turbulent air."
+  },
+  "vicarious": {
+    "meaning": "Felt through someone else's experience rather than your own.",
+    "clue": "He experienced vicarious excitement by listening to his friend's adventures."
+  },
+  "virtuous": {
+    "meaning": "Behaving in a good and honest way.",
+    "clue": "The virtuous knight refused to betray his companions."
+  },
+  "wither": {
+    "meaning": "To dry up or become weak.",
+    "clue": "Without water, the flowers began to wither."
+  },
+  "wretched": {
+    "meaning": "Very unhappy or in a very poor state.",
+    "clue": "The lost traveller felt wretched after spending a cold night in the rain."
+  },
+  "abode": {
+    "meaning": "A place where someone lives; a home.",
+    "clue": "The cottage had been his peaceful abode for many years."
+  },
+  "absurd": {
+    "meaning": "So silly or unreasonable that it makes no sense.",
+    "clue": "The idea that a mouse could lift an elephant was absurd."
+  },
+  "adhere": {
+    "meaning": "To stick to something; also to follow a rule or belief.",
+    "clue": "Everyone must adhere to the safety rules."
+  },
+  "advice": {
+    "meaning": "Suggestions about what you could do.",
+    "clue": "She asked her teacher for advice about the exam."
+  },
+  "ancient": {
+    "meaning": "From a very long time ago.",
+    "clue": "They discovered the ruins of an ancient temple."
+  },
+  "apparent": {
+    "meaning": "Easy to see; sometimes, seeming to be true.",
+    "clue": "It became apparent that the door had been forced open."
+  },
+  "banish": {
+    "meaning": "To send someone away from a place as a punishment; to get rid of something.",
+    "clue": "The king decided to banish the traitor from the kingdom."
+  },
+  "beck": {
+    "meaning": "A movement that calls someone over. At someone’s beck and call means always ready to do what they want.",
+    "clue": "The servant was always at the king's beck and call."
+  },
+  "brusque": {
+    "meaning": "Speaking or acting in a quick, rather rude way.",
+    "clue": "His brusque reply surprised everyone in the room."
+  },
+  "calamity": {
+    "meaning": "A serious event that causes great damage or suffering.",
+    "clue": "The earthquake was a terrible calamity for the region."
+  },
+  "caulk": {
+    "meaning": "To fill a gap so water or air cannot get through.",
+    "clue": "Dad used sealant to caulk the gap around the window."
+  },
+  "clemency": {
+    "meaning": "Choosing to be less harsh when you have the power to punish.",
+    "clue": "The prisoner appealed to the judge for clemency."
+  },
+  "coax": {
+    "meaning": "To gently persuade someone to do something.",
+    "clue": "She managed to coax the frightened cat out from under the bed."
+  },
+  "commence": {
+    "meaning": "To begin or start.",
+    "clue": "The ceremony will commence at ten o'clock."
+  },
+  "complement": {
+    "meaning": "Something that completes or improves something else.",
+    "clue": "The fresh salad was a perfect complement to the meal."
+  },
+  "compliment": {
+    "meaning": "A polite expression of praise or admiration.",
+    "clue": "He paid her a compliment on her excellent performance."
+  },
+  "conceal": {
+    "meaning": "To hide something or prevent it from being seen or known.",
+    "clue": "He tried to conceal the present behind his back."
+  },
+  "conceit": {
+    "meaning": "Being too proud of yourself.",
+    "clue": "His conceit made him believe he was better than everyone else."
+  },
+  "condemn": {
+    "meaning": "To say strongly that something is wrong; also to find someone guilty.",
+    "clue": "The community leaders condemned the act of vandalism."
+  },
+  "conflagration": {
+    "meaning": "A large and destructive fire.",
+    "clue": "The conflagration destroyed several buildings."
+  },
+  "controversy": {
+    "meaning": "A subject that people publicly disagree about.",
+    "clue": "The proposal caused considerable controversy in the town."
+  },
+  "deceit": {
+    "meaning": "Tricking someone into believing something untrue.",
+    "clue": "His deceit was discovered when the truth came out."
+  },
+  "deliberate": {
+    "meaning": "Done on purpose and with thought.",
+    "clue": "Breaking the window was a deliberate act."
+  },
+  "derelict": {
+    "meaning": "Abandoned and in very poor condition.",
+    "clue": "The children were warned not to enter the derelict building."
+  },
+  "despise": {
+    "meaning": "To strongly dislike and have no respect for someone or something.",
+    "clue": "She despised people who were deliberately cruel to animals."
+  },
+  "device": {
+    "meaning": "Something made to do a particular job.",
+    "clue": "The small electronic device measures temperature."
+  },
+  "din": {
+    "meaning": "A loud, unpleasant noise that goes on and on.",
+    "clue": "The din from the construction site made it difficult to concentrate."
+  },
+  "disclose": {
+    "meaning": "To reveal information that was previously secret or unknown.",
+    "clue": "The company refused to disclose the confidential information."
+  },
+  "dispute": {
+    "meaning": "An argument or disagreement.",
+    "clue": "The neighbours had a dispute over the boundary fence."
+  },
+  "distress": {
+    "meaning": "Great worry, sadness or pain.",
+    "clue": "The injured animal was clearly in distress."
+  },
+  "dwelling": {
+    "meaning": "A house or other place where someone lives.",
+    "clue": "The small dwelling stood beside the river."
+  },
+  "economical": {
+    "meaning": "Using money, time or supplies without wasting them.",
+    "clue": "The small car is economical to run."
+  },
+  "elude": {
+    "meaning": "To escape from or avoid someone or something, especially cleverly.",
+    "clue": "The thief managed to elude the police for several hours."
+  },
+  "emerge": {
+    "meaning": "To come out or appear.",
+    "clue": "A butterfly began to emerge from its chrysalis."
+  },
+  "endure": {
+    "meaning": "To put up with something difficult; also to last a long time.",
+    "clue": "The explorers had to endure freezing temperatures."
+  },
+  "evaluation": {
+    "meaning": "A careful judgement of how good or useful something is.",
+    "clue": "The teacher completed an evaluation of the student's work."
+  },
+  "exaggerate": {
+    "meaning": "To describe something as bigger, better or worse than it really is.",
+    "clue": "Do not exaggerate the size of the fish you caught."
+  },
+  "extinction": {
+    "meaning": "The state of a species no longer existing.",
+    "clue": "Habitat loss can push rare animals towards extinction."
+  },
+  "factual": {
+    "meaning": "Based on facts rather than opinions or imagination.",
+    "clue": "The report was factual and supported by evidence."
+  },
+  "fatal": {
+    "meaning": "Causing death, or causing something to fail completely.",
+    "clue": "The poisonous bite can be fatal without treatment."
+  },
+  "feeble": {
+    "meaning": "Weak and lacking physical strength or effectiveness.",
+    "clue": "The elderly man spoke in a feeble voice."
+  },
+  "fertile": {
+    "meaning": "Able to grow lots of plants or produce young.",
+    "clue": "The fertile soil produced an excellent crop."
+  },
+  "flourish": {
+    "meaning": "To grow or do very well.",
+    "clue": "The plants began to flourish in the warm sunshine."
+  },
+  "grave": {
+    "meaning": "Very serious; also a place where a dead person is buried.",
+    "clue": "The doctor warned that the patient was in grave danger."
+  },
+  "grieve": {
+    "meaning": "To feel or express deep sadness, especially after a loss.",
+    "clue": "The family needed time to grieve after their loss."
+  },
+  "harbour": {
+    "meaning": "A safe, sheltered place for boats; also to keep a feeling inside.",
+    "clue": "The fishing boats returned safely to the harbour."
+  },
+  "hasty": {
+    "meaning": "Done too quickly and without enough thought.",
+    "clue": "He made a hasty decision that he later regretted."
+  },
+  "hindrance": {
+    "meaning": "Something that makes progress difficult or slows it down.",
+    "clue": "The heavy snow was a hindrance to the rescue team."
+  },
+  "hoax": {
+    "meaning": "A trick that makes people believe something untrue.",
+    "clue": "The supposed sighting of a monster turned out to be a hoax."
+  },
+  "ignorant": {
+    "meaning": "Not knowing about something.",
+    "clue": "He was ignorant of the rules and accidentally broke one."
+  },
+  "imitate": {
+    "meaning": "To copy someone's actions, behaviour, or appearance.",
+    "clue": "The child tried to imitate the singer's voice."
+  },
+  "inaugurate": {
+    "meaning": "To start something officially, often with a ceremony.",
+    "clue": "The mayor will inaugurate the new community centre."
+  },
+  "incision": {
+    "meaning": "A cut, especially one made during an operation.",
+    "clue": "The surgeon made a small incision in the patient's skin."
+  },
+  "inferior": {
+    "meaning": "Not as good, or lower in rank.",
+    "clue": "The cheaper material proved to be inferior in quality."
+  },
+  "inhabitants": {
+    "meaning": "People or animals that live in a particular place.",
+    "clue": "The island's inhabitants depend largely on fishing."
+  },
+  "interfere": {
+    "meaning": "To get involved when your help is not wanted or needed.",
+    "clue": "She told her brother not to interfere in her argument."
+  },
+  "interrogate": {
+    "meaning": "To ask someone lots of detailed, formal questions.",
+    "clue": "The detectives began to interrogate the suspect."
+  },
+  "isolation": {
+    "meaning": "Being apart from other people or things.",
+    "clue": "The remote village lived in isolation for many years."
+  },
+  "lenient": {
+    "meaning": "Not as strict or harsh as you might expect.",
+    "clue": "The teacher was lenient and gave him another chance."
+  },
+  "liable": {
+    "meaning": "Likely to do or suffer something; also responsible for it by law.",
+    "clue": "Drivers are liable for damage caused by their negligence."
+  },
+  "linger": {
+    "meaning": "To remain somewhere longer than necessary or expected.",
+    "clue": "The smell of smoke continued to linger in the room."
+  },
+  "lofty": {
+    "meaning": "Very high; also grand or noble.",
+    "clue": "The eagle built its nest on a lofty cliff."
+  },
+  "majestic": {
+    "meaning": "Grand, beautiful and impressive.",
+    "clue": "The majestic mountains rose above the valley."
+  },
+  "margin": {
+    "meaning": "An edge or border; also the amount between two scores or results.",
+    "clue": "She wrote a note in the margin of the page."
+  },
+  "oblige": {
+    "meaning": "To make someone do something; also to help as a favour.",
+    "clue": "The rules oblige everyone to wear a safety helmet."
+  },
+  "offend": {
+    "meaning": "To upset or insult someone; or to break a law or rule.",
+    "clue": "He did not mean to offend anyone with his remark."
+  },
+  "opportunity": {
+    "meaning": "A chance to do something.",
+    "clue": "She had an opportunity to perform on stage."
+  },
+  "painstaking": {
+    "meaning": "Done with great care and effort.",
+    "clue": "The archaeologist carried out painstaking work on the fragile artefact."
+  },
+  "passive": {
+    "meaning": "Letting things happen without trying to change them.",
+    "clue": "He remained passive while the others argued."
+  },
+  "peculiar": {
+    "meaning": "Strange or unusual; particular to a specific person, place, or thing.",
+    "clue": "There was a peculiar smell coming from the cupboard."
+  },
+  "perceive": {
+    "meaning": "To notice or understand something.",
+    "clue": "She perceived a slight change in his expression."
+  },
+  "perplexed": {
+    "meaning": "Completely puzzled or confused.",
+    "clue": "He looked perplexed by the difficult riddle."
+  },
+  "pigment": {
+    "meaning": "A substance that gives colour to something.",
+    "clue": "The artist mixed a blue pigment into the paint."
+  },
+  "plunder": {
+    "meaning": "To steal goods by force, especially during war or disorder.",
+    "clue": "The invaders began to plunder the abandoned town."
+  },
+  "pretence": {
+    "meaning": "Making something seem true when it is not.",
+    "clue": "He made a pretence of being asleep when his mother entered."
+  },
+  "proclaim": {
+    "meaning": "To announce something publicly or officially.",
+    "clue": "The king stood before the crowd to proclaim the good news."
+  },
+  "prophecy": {
+    "meaning": "A statement that predicts what will happen in the future.",
+    "clue": "According to the ancient prophecy, a great leader would arise."
+  },
+  "relevant": {
+    "meaning": "Connected to what you are talking about or doing.",
+    "clue": "Please include only relevant information in your answer."
+  },
+  "repent": {
+    "meaning": "To feel sorry for something wrong you have done and wish to change.",
+    "clue": "He began to repent after realising how much harm he had caused."
+  },
+  "resort to": {
+    "meaning": "To try something because other ways have not worked.",
+    "clue": "They had to resort to candles when the electricity failed."
+  },
+  "retreat": {
+    "meaning": "To move back, often away from danger.",
+    "clue": "The soldiers were ordered to retreat to a safer position."
+  },
+  "rowdy": {
+    "meaning": "Noisy, rough, and disorderly.",
+    "clue": "The rowdy crowd disturbed the neighbours."
+  },
+  "sanguine": {
+    "meaning": "Hopeful and confident that things will go well.",
+    "clue": "She remained sanguine about her chances of success."
+  },
+  "sanitary": {
+    "meaning": "Clean and safe for health.",
+    "clue": "The kitchen must be kept sanitary at all times."
+  },
+  "stationary": {
+    "meaning": "Not moving or changing position.",
+    "clue": "The car remained stationary at the traffic lights."
+  },
+  "sturdy": {
+    "meaning": "Strongly built and unlikely to break or be damaged.",
+    "clue": "The sturdy table easily supported the heavy boxes."
+  },
+  "subdued": {
+    "meaning": "Quieter or less bright or strong than usual.",
+    "clue": "The usually cheerful class was subdued after hearing the bad news."
+  },
+  "subterfuge": {
+    "meaning": "A trick used to hide what you are really doing.",
+    "clue": "He used subterfuge to conceal his true intentions."
+  },
+  "subterranean": {
+    "meaning": "Under the ground.",
+    "clue": "The explorers discovered a subterranean tunnel."
+  },
+  "summit": {
+    "meaning": "The top of a mountain; also a meeting of leaders.",
+    "clue": "The climbers finally reached the summit before noon."
+  },
+  "superfluous": {
+    "meaning": "More than is needed or necessary.",
+    "clue": "Remove any superfluous details from your answer."
+  },
+  "torment": {
+    "meaning": "Severe physical or mental suffering; or to cause such suffering.",
+    "clue": "The constant toothache was a source of torment."
+  },
+  "trivia": {
+    "meaning": "Unimportant facts or details, often interesting or entertaining.",
+    "clue": "The quiz included trivia about famous films."
+  },
+  "trivial": {
+    "meaning": "Of little importance or seriousness.",
+    "clue": "They argued over a trivial matter."
+  },
+  "unfathomable": {
+    "meaning": "Very difficult or impossible to understand.",
+    "clue": "Her sudden decision to leave was unfathomable to her friends."
+  },
+  "unsurpassed": {
+    "meaning": "As good as or better than anything else.",
+    "clue": "The view from the mountain was unsurpassed in its beauty."
+  },
+  "vanish": {
+    "meaning": "To disappear suddenly or completely.",
+    "clue": "The magician made the coin vanish."
+  },
+  "volatile": {
+    "meaning": "Likely to change suddenly; also turning easily into gas.",
+    "clue": "The volatile situation could become dangerous at any moment."
+  },
+  "yacht": {
+    "meaning": "A boat used for fun or racing.",
+    "clue": "They sailed their yacht along the coast."
+  },
+  "yield": {
+    "meaning": "To produce something; also to give way or give in.",
+    "clue": "The fertile field should yield a good crop this year."
+  },
+  "tardy": {
+    "meaning": "Late; not arriving or happening on time",
+    "clue": "The tardy pupil arrived ten minutes after the lesson began."
+  },
+  "punctual": {
+    "meaning": "Arriving or happening at the correct time",
+    "clue": "Maya is punctual and always arrives before the bell."
+  },
+  "deteriorate": {
+    "meaning": "To get worse over time.",
+    "clue": "Without repairs, the old roof will continue to deteriorate."
+  },
+  "thrive": {
+    "meaning": "To grow well or do very well.",
+    "clue": "Tomato plants thrive in warm, sunny conditions."
+  },
+  "imperative": {
+    "meaning": "Very important or necessary.",
+    "clue": "It is imperative that you wear a helmet while cycling."
+  },
+  "lout": {
+    "meaning": "A rude, clumsy, or badly behaved person",
+    "clue": "The lout pushed to the front of the queue without apologising."
+  },
+  "viscous": {
+    "meaning": "Thick and sticky, so it flows slowly.",
+    "clue": "Honey is more viscous than water."
+  },
+  "vicious": {
+    "meaning": "Very cruel or violent.",
+    "clue": "The vicious dog snarled at anyone who approached the gate."
+  },
+  "gravely": {
+    "meaning": "In a very serious way.",
+    "clue": "The doctor spoke gravely about the risks of the operation."
+  },
+  "boldness": {
+    "meaning": "Confidence and willingness to take risks",
+    "clue": "Her boldness showed when she stepped onto the stage and began speaking to the whole school."
+  },
+  "fortitude": {
+    "meaning": "Courage to face something difficult.",
+    "clue": "He showed remarkable fortitude during the difficult journey."
+  },
+  "grit": {
+    "meaning": "Courage to keep trying when things are hard.",
+    "clue": "She needed grit to keep training after several defeats."
+  },
+  "apprehension": {
+    "meaning": "Anxiety or fear about what may happen",
+    "clue": "He felt a sense of apprehension before opening the exam paper."
+  },
+  "rivet": {
+    "meaning": "To hold someone's attention completely",
+    "clue": "The storyteller managed to rivet the children's attention."
+  },
+  "riveting": {
+    "meaning": "Extremely interesting or exciting",
+    "clue": "The final chapter was so riveting that I could not put the book down."
+  },
+  "tedious": {
+    "meaning": "Boring because it is long or repetitive",
+    "clue": "Sorting hundreds of papers was a tedious job."
+  },
+  "apathy": {
+    "meaning": "Lack of interest, enthusiasm, or concern",
+    "clue": "His apathy towards the project frustrated the rest of the team."
+  },
+  "veto": {
+    "meaning": "To use your authority to say a plan cannot go ahead.",
+    "clue": "The committee used its power to veto the proposal."
+  },
+  "agitated": {
+    "meaning": "Worried, nervous, or upset",
+    "clue": "The horse became agitated when it heard the thunder."
+  },
+  "haughty": {
+    "meaning": "Acting as if you are better than other people.",
+    "clue": "The haughty prince refused to speak to the servants."
+  },
+  "sanction": {
+    "meaning": "Official permission; also a penalty for breaking a rule.",
+    "clue": "The head teacher gave her sanction for the school trip."
+  },
+  "rectify": {
+    "meaning": "To correct something that is wrong",
+    "clue": "We must rectify the mistake before the invitations are printed."
+  },
+  "feud": {
+    "meaning": "A bitter argument that lasts a long time.",
+    "clue": "A long feud had divided the two families."
+  },
+  "startle": {
+    "meaning": "To surprise or frighten suddenly",
+    "clue": "The sudden crash startled everyone in the room."
+  },
+  "savage": {
+    "meaning": "Very fierce, violent or cruel.",
+    "clue": "The village was struck by a savage storm."
+  },
+  "ferocious": {
+    "meaning": "Extremely fierce or violent",
+    "clue": "A ferocious wind battered the coast."
+  },
+  "callous": {
+    "meaning": "Unkind and showing no concern for others",
+    "clue": "His callous remarks showed no concern for her feelings."
+  },
+  "demean": {
+    "meaning": "To treat someone as if they matter less.",
+    "clue": "The coach refused to demean players who made mistakes."
+  },
+  "animosity": {
+    "meaning": "A strong feeling of dislike.",
+    "clue": "Years of rivalry had created animosity between the teams."
+  },
+  "besotted": {
+    "meaning": "So fond of someone or something that it is hard to think clearly.",
+    "clue": "He was besotted with the puppy and carried it everywhere."
+  },
+  "relish": {
+    "meaning": "To enjoy something greatly",
+    "clue": "She relished the chance to compete against the best runners."
+  },
+  "abhor": {
+    "meaning": "To hate intensely",
+    "clue": "I abhor cruelty to animals."
+  },
+  "loathe": {
+    "meaning": "To dislike or hate greatly",
+    "clue": "He loathed getting up before sunrise."
+  },
+  "enmity": {
+    "meaning": "Strong dislike between people or groups.",
+    "clue": "The treaty brought years of enmity to an end."
+  },
+  "steadfast": {
+    "meaning": "Firm, loyal, and not changing",
+    "clue": "She remained steadfast despite pressure to change her mind."
+  },
+  "supple": {
+    "meaning": "Flexible and able to bend easily",
+    "clue": "Regular stretching kept the gymnast's muscles supple."
+  },
+  "potent": {
+    "meaning": "Very powerful or having a strong effect.",
+    "clue": "The medicine was potent enough to relieve the pain quickly."
+  },
+  "conceited": {
+    "meaning": "Too proud of yourself.",
+    "clue": "The conceited actor talked constantly about his own talent."
+  },
+  "pretentious": {
+    "meaning": "Trying to appear more important or impressive than you really are",
+    "clue": "The café had a pretentious menu full of unnecessarily grand descriptions."
+  },
+  "malicious": {
+    "meaning": "Wanting to hurt or upset someone.",
+    "clue": "Someone posted a malicious rumour about the new pupil."
+  },
+  "foam": {
+    "meaning": "Lots of tiny bubbles together.",
+    "clue": "White foam gathered on the waves near the shore."
+  },
+  "froth": {
+    "meaning": "A mass of small bubbles on a liquid",
+    "clue": "A layer of froth formed on top of the hot chocolate."
+  },
+  "fret": {
+    "meaning": "To worry about something.",
+    "clue": "Do not fret about the test; you have prepared well."
+  },
+  "obscene": {
+    "meaning": "Very offensive or shocking.",
+    "clue": "The editor removed the obscene language from the article."
+  },
+  "vulgar": {
+    "meaning": "Rude or in bad taste.",
+    "clue": "His vulgar joke offended several guests."
+  },
+  "cordial": {
+    "meaning": "Warm and friendly",
+    "clue": "The two rivals remained cordial when they met."
+  },
+  "demolish": {
+    "meaning": "To completely destroy a building or structure",
+    "clue": "The council plans to demolish the unsafe building."
+  },
+  "facile": {
+    "meaning": "Easy, or seeming too simple to be useful.",
+    "clue": "The critic rejected the facile explanation because the issue was complex."
+  },
+  "cinch": {
+    "meaning": "Something extremely easy to do",
+    "clue": "After weeks of practice, the final routine was a cinch."
+  },
+  "intricate": {
+    "meaning": "Very detailed or complicated",
+    "clue": "The clock contained an intricate system of tiny gears."
+  },
+  "prejudice": {
+    "meaning": "An unfair opinion made without knowing enough.",
+    "clue": "Decisions should be based on evidence rather than prejudice."
+  },
+  "bedlam": {
+    "meaning": "A scene of great noise and confusion",
+    "clue": "The classroom descended into bedlam when the balloons burst."
+  },
+  "favoured": {
+    "meaning": "Preferred or treated with special approval",
+    "clue": "The favoured candidate won the final vote."
+  },
+  "impediment": {
+    "meaning": "Something that gets in the way of progress.",
+    "clue": "A fallen tree was a serious impediment to our progress."
+  },
+  "acrid": {
+    "meaning": "Having a strong, bitter, irritating smell or taste",
+    "clue": "Acrid smoke filled the kitchen after the toast burned."
+  },
+  "acid": {
+    "meaning": "A substance that can taste sour; also a sharp or hurtful way of speaking.",
+    "clue": "The lemon juice had a sharp, acid taste."
+  },
+  "arid": {
+    "meaning": "Very dry, with little rain.",
+    "clue": "Few crops can survive in such an arid region."
+  },
+  "pungent": {
+    "meaning": "Having a very strong smell or taste",
+    "clue": "The pungent smell of onions filled the room."
+  },
+  "toil": {
+    "meaning": "To work extremely hard for a long time",
+    "clue": "The farmers toiled in the fields from dawn until dusk."
+  },
+  "coil": {
+    "meaning": "To wind something into loops or rings.",
+    "clue": "The snake began to coil around the branch."
+  },
+  "wholesome": {
+    "meaning": "Good for your health or for how you behave.",
+    "clue": "They ate a wholesome meal of vegetables, rice and fish."
+  },
+  "pious": {
+    "meaning": "Deeply religious or devoted to religion",
+    "clue": "The pious monk spent many hours in prayer."
+  },
+  "mellow": {
+    "meaning": "Soft, smooth, pleasant, or relaxed",
+    "clue": "The cheese develops a mellow flavour as it ages."
+  },
+  "faux": {
+    "meaning": "Made to look like something else, rather than being the real thing.",
+    "clue": "The jacket had a faux-fur collar."
+  },
+  "platonic": {
+    "meaning": "Close and friendly, without being romantic.",
+    "clue": "Their relationship was close but entirely platonic."
+  },
+  "fluctuate": {
+    "meaning": "To keep changing or going up and down.",
+    "clue": "Temperatures can fluctuate greatly in the desert."
+  },
+  "concur": {
+    "meaning": "To agree",
+    "clue": "Most experts concur that the bridge needs urgent repairs."
+  },
+  "auspicious": {
+    "meaning": "A good sign that something may succeed.",
+    "clue": "The clear skies were an auspicious start to the expedition."
+  },
+  "wander": {
+    "meaning": "To move around without a set route.",
+    "clue": "We wandered through the old streets without a map."
+  },
+  "ramble": {
+    "meaning": "To walk for pleasure; or talk at unnecessary length",
+    "clue": "We rambled through the countryside for several hours."
+  },
+  "regal": {
+    "meaning": "Like a king or queen.",
+    "clue": "The queen entered the hall with a regal bearing."
+  },
+  "submerge": {
+    "meaning": "To put or go completely beneath a liquid",
+    "clue": "The diver watched the submarine submerge beneath the waves."
+  },
+  "petty": {
+    "meaning": "Not very important; also making a fuss about small things.",
+    "clue": "They wasted an hour arguing over a petty disagreement."
+  },
+  "intentional": {
+    "meaning": "Done deliberately",
+    "clue": "His actions were intentional, not an accident."
+  },
+  "compulsory": {
+    "meaning": "Required by a rule or law",
+    "clue": "Attendance at the safety briefing is compulsory."
+  },
+  "voluntary": {
+    "meaning": "Done by choice rather than force",
+    "clue": "She does voluntary work at the animal shelter every Saturday."
+  },
+  "diminish": {
+    "meaning": "To become or make smaller or less important",
+    "clue": "The noise began to diminish as the train moved away."
+  },
+  "slit": {
+    "meaning": "A long, narrow cut or opening.",
+    "clue": "He peered through a narrow slit in the curtain."
+  },
+  "vent": {
+    "meaning": "A hole that lets air, gas or liquid out.",
+    "clue": "Steam escaped through a vent in the lid."
+  },
+  "cork": {
+    "meaning": "A light material from tree bark, often used to plug a bottle.",
+    "clue": "She pushed the cork firmly back into the bottle."
+  },
+  "rupture": {
+    "meaning": "A sudden break, burst, or tear",
+    "clue": "The impact caused a pipe to rupture."
+  },
+  "rift": {
+    "meaning": "A serious disagreement that separates people.",
+    "clue": "The argument created a rift between the two friends."
+  },
+  "impervious": {
+    "meaning": "Not letting something through; also not affected by something.",
+    "clue": "The waterproof coat was impervious to rain."
+  },
+  "fissure": {
+    "meaning": "A long, narrow crack",
+    "clue": "A deep fissure appeared in the rock."
+  },
+  "crevice": {
+    "meaning": "A narrow crack or opening",
+    "clue": "A tiny plant was growing in a crevice in the wall."
+  },
+  "eccentric": {
+    "meaning": "Unusual or strange in behaviour",
+    "clue": "The eccentric inventor wore a different coloured shoe on each foot."
+  },
+  "authentic": {
+    "meaning": "Real, not a copy or a fake.",
+    "clue": "The museum confirmed that the painting was authentic."
+  },
+  "sole": {
+    "meaning": "The only one; also the bottom of a foot or shoe.",
+    "clue": "She was the sole person who knew the password."
+  },
+  "lucid": {
+    "meaning": "Clear and easy to understand",
+    "clue": "The teacher gave a lucid explanation of the difficult idea."
+  },
+  "dazzling": {
+    "meaning": "Extremely bright or impressive",
+    "clue": "The dancer gave a dazzling performance."
+  },
+  "splendid": {
+    "meaning": "Magnificent or excellent",
+    "clue": "We had a splendid view from the top of the hill."
+  },
+  "impair": {
+    "meaning": "To damage or weaken",
+    "clue": "Lack of sleep can impair your concentration."
+  },
+  "wreck": {
+    "meaning": "To destroy something or damage it badly.",
+    "clue": "The storm threatened to wreck the small boat."
+  },
+  "dilemma": {
+    "meaning": "A difficult choice between alternatives",
+    "clue": "She faced a dilemma: tell the truth or protect her friend."
+  },
+  "unkempt": {
+    "meaning": "Untidy or poorly cared for",
+    "clue": "His hair was unkempt after the windy walk."
+  },
+  "subordinate": {
+    "meaning": "Lower in rank or importance than someone else.",
+    "clue": "The subordinate officer reported to the captain."
+  },
+  "placate": {
+    "meaning": "To make an angry person calmer",
+    "clue": "She offered an apology to placate the angry customer."
+  },
+  "irritate": {
+    "meaning": "To annoy or cause discomfort",
+    "clue": "The constant tapping began to irritate everyone."
+  },
+  "impartial": {
+    "meaning": "Fair to both sides.",
+    "clue": "A referee must remain impartial."
+  },
+  "wax": {
+    "meaning": "To grow or increase.",
+    "clue": "The moon appeared to wax each night."
+  },
+  "wane": {
+    "meaning": "To decrease or become weaker",
+    "clue": "His enthusiasm began to wane after several setbacks."
+  },
+  "vanity": {
+    "meaning": "Being too proud of how you look or what you can do.",
+    "clue": "His vanity made him check his reflection constantly."
+  },
+  "profligate": {
+    "meaning": "Wasting money or other things carelessly.",
+    "clue": "The profligate heir quickly spent his inheritance."
+  },
+  "frugal": {
+    "meaning": "Careful about spending money or resources",
+    "clue": "A frugal shopper compares prices before buying."
+  },
+  "devout": {
+    "meaning": "Strongly religious or deeply committed.",
+    "clue": "The devout worshipper attended the service every week."
+  },
+  "dwindle": {
+    "meaning": "To gradually become smaller or fewer",
+    "clue": "Our food supplies began to dwindle."
+  },
+  "irate": {
+    "meaning": "Very angry",
+    "clue": "The irate customer demanded to speak to the manager."
+  },
+  "furious": {
+    "meaning": "Very angry.",
+    "clue": "Dad was furious when he discovered the broken window."
+  },
+  "slack": {
+    "meaning": "Loose; also not making enough effort.",
+    "clue": "The rope became slack when the load was removed."
+  },
+  "industrious": {
+    "meaning": "Working hard and getting things done.",
+    "clue": "The industrious ants gathered food throughout the summer."
+  },
+  "diligent": {
+    "meaning": "Working carefully and not giving up.",
+    "clue": "The diligent student revised a little every evening."
+  },
+  "indolent": {
+    "meaning": "Lazy and avoiding effort",
+    "clue": "The indolent prince expected servants to do everything for him."
+  },
+  "lax": {
+    "meaning": "Not careful or strict enough.",
+    "clue": "Lax security allowed the intruder to enter unnoticed."
+  },
+  "conscientious": {
+    "meaning": "Taking care to do things properly and responsibly.",
+    "clue": "She was conscientious and checked every figure twice."
+  },
+  "prose": {
+    "meaning": "Ordinary writing, such as a story, rather than poetry.",
+    "clue": "The novel is written in clear, lively prose."
+  },
+  "poetry": {
+    "meaning": "Writing that uses carefully chosen sounds, rhythms and word pictures.",
+    "clue": "She enjoys reading poetry aloud."
+  },
+  "suppress": {
+    "meaning": "To stop something happening or keep it under control.",
+    "clue": "He tried to suppress a laugh during the serious ceremony."
+  },
+  "disguise": {
+    "meaning": "To change appearance to hide identity",
+    "clue": "The spy wore a hat and glasses as a disguise."
+  },
+  "extinct": {
+    "meaning": "No longer existing",
+    "clue": "Dinosaurs have been extinct for millions of years."
+  },
+  "imposing": {
+    "meaning": "Impressive because of size, appearance, or importance",
+    "clue": "An imposing stone castle stood above the town."
+  },
+  "adolescent": {
+    "meaning": "A young person growing from a child into an adult.",
+    "clue": "The programme offers advice to adolescent students."
+  },
+  "berate": {
+    "meaning": "To scold angrily",
+    "clue": "The manager berated the player for ignoring the rules."
+  },
+  "crave": {
+    "meaning": "To want something very much.",
+    "clue": "After the long run, she craved a cold drink."
+  },
+  "yearn": {
+    "meaning": "To strongly desire something, especially something difficult to obtain",
+    "clue": "He yearned to see his family again."
+  },
+  "conspicuous": {
+    "meaning": "Easily noticed or attracting attention",
+    "clue": "Her bright yellow coat made her conspicuous in the crowd."
+  },
+  "conspiracy": {
+    "meaning": "A secret plan by a group to do something harmful or illegal",
+    "clue": "The detectives uncovered a conspiracy to steal the jewels."
+  },
+  "vile": {
+    "meaning": "Very unpleasant or wicked.",
+    "clue": "A vile smell came from the blocked drain."
+  },
+  "gratifying": {
+    "meaning": "Making you feel pleased or satisfied.",
+    "clue": "It was gratifying to see all our hard work succeed."
+  },
+  "despicable": {
+    "meaning": "So bad that it deserves strong dislike.",
+    "clue": "Stealing from a charity was a despicable act."
+  },
+  "adept": {
+    "meaning": "Highly skilled",
+    "clue": "She is adept at solving complicated puzzles."
+  },
+  "loathsome": {
+    "meaning": "Extremely unpleasant or disgusting",
+    "clue": "The bin gave off a loathsome smell."
+  },
+  "repulsive": {
+    "meaning": "So unpleasant that it makes you want to turn away.",
+    "clue": "The rotten food had a repulsive odour."
+  },
+  "defy": {
+    "meaning": "To refuse openly to obey someone or something.",
+    "clue": "The climbers decided to defy the warning and continue."
+  },
+  "domestic": {
+    "meaning": "To do with the home or family life.",
+    "clue": "Domestic chores included cooking and cleaning."
+  },
+  "solace": {
+    "meaning": "Comfort when you feel sad or upset.",
+    "clue": "She found solace in music after a difficult day."
+  },
+  "aggravation": {
+    "meaning": "Annoyance; also making a problem worse.",
+    "clue": "The repeated delays caused considerable aggravation."
+  },
+  "dignify": {
+    "meaning": "To make something seem worthy of respect.",
+    "clue": "We should not dignify the silly rumour with a response."
+  },
+  "inflame": {
+    "meaning": "To make anger worse; also to make part of the body swollen and sore.",
+    "clue": "His angry speech threatened to inflame the dispute."
+  },
+  "blunt": {
+    "meaning": "Not sharp; also saying exactly what you think without softening it.",
+    "clue": "The knife was too blunt to cut the rope."
+  },
+  "thwart": {
+    "meaning": "To prevent someone from achieving something",
+    "clue": "Quick action thwarted the thief's plan."
+  },
+  "foil": {
+    "meaning": "To stop a plan from working.",
+    "clue": "The guard dog helped foil the attempted burglary."
+  },
+  "lea": {
+    "meaning": "An open, grassy field.",
+    "clue": "Cattle grazed peacefully in the green lea."
+  },
+  "meadow": {
+    "meaning": "A field of grass and wild plants",
+    "clue": "Wildflowers covered the meadow in spring."
+  },
+  "pinnacle": {
+    "meaning": "The highest point or greatest achievement",
+    "clue": "Winning the championship was the pinnacle of her career."
+  },
+  "dilate": {
+    "meaning": "To become or make wider",
+    "clue": "The pupils of your eyes dilate in dim light."
+  },
+  "oblivious": {
+    "meaning": "Unaware of what is happening",
+    "clue": "He was oblivious to the noise around him."
+  },
+  "affluence": {
+    "meaning": "Having plenty of money and valuable things.",
+    "clue": "The district became known for its affluence."
+  },
+  "poverty": {
+    "meaning": "Being very poor.",
+    "clue": "The charity works to reduce poverty."
+  },
+  "pivotal": {
+    "meaning": "Very important to what happens next.",
+    "clue": "Her discovery played a pivotal role in the investigation."
+  },
+  "temperate": {
+    "meaning": "Not extreme; neither very hot nor very cold.",
+    "clue": "The region has a temperate climate."
+  },
+  "humid": {
+    "meaning": "Having lots of moisture in the air.",
+    "clue": "The air was hot and humid after the storm."
+  },
+  "irksome": {
+    "meaning": "Annoying or irritating",
+    "clue": "Filling in the same form twice was irksome."
+  },
+  "peddle": {
+    "meaning": "To sell goods by travelling from place to place",
+    "clue": "Traders peddled fruit and cloth in the market."
+  },
+  "vend": {
+    "meaning": "To sell",
+    "clue": "The machine can vend drinks and snacks."
+  },
+  "hawk": {
+    "meaning": "To sell things by calling out to people.",
+    "clue": "Vendors hawked souvenirs outside the stadium."
+  },
+  "miser": {
+    "meaning": "Someone who hates spending money",
+    "clue": "The miser hated spending even a single penny."
+  },
+  "spurn": {
+    "meaning": "To reject something with strong dislike.",
+    "clue": "She spurned the unfair offer."
+  },
+  "probate": {
+    "meaning": "The legal process for checking a dead person's will and dealing with what they owned.",
+    "clue": "The will went through probate before the estate was distributed."
+  },
+  "probation": {
+    "meaning": "A time when someone's behaviour or work is checked.",
+    "clue": "The new employee completed a three-month probation period."
+  },
+  "dawdle": {
+    "meaning": "To waste time by moving or acting slowly",
+    "clue": "Stop dawdling or we will miss the bus."
+  },
+  "refute": {
+    "meaning": "To prove a statement or argument wrong",
+    "clue": "The evidence helped refute the false accusation."
+  },
+  "scoff": {
+    "meaning": "To speak about something as if it is silly or worthless.",
+    "clue": "Some people scoffed at the unusual invention."
+  },
+  "limp": {
+    "meaning": "To walk unevenly because a leg or foot hurts; also soft and floppy.",
+    "clue": "He began to limp after twisting his ankle."
+  },
+  "floppy": {
+    "meaning": "Soft and hanging loosely",
+    "clue": "The puppy's floppy ears bounced as it ran."
+  },
+  "weary": {
+    "meaning": "Very tired.",
+    "clue": "The weary hikers stopped to rest."
+  },
+  "jaded": {
+    "meaning": "Tired or bored after having too much of something",
+    "clue": "After years of travelling, he had become jaded."
+  },
+  "exhausted": {
+    "meaning": "Extremely tired",
+    "clue": "We were exhausted after the long hike."
+  },
+  "drowsy": {
+    "meaning": "Sleepy",
+    "clue": "The warm room made me drowsy."
+  },
+  "invigorated": {
+    "meaning": "Filled with energy",
+    "clue": "The cold swim left her feeling invigorated."
+  },
+  "obtuse": {
+    "meaning": "Slow to understand; also an angle bigger than 90 degrees but smaller than 180 degrees.",
+    "clue": "He was being deliberately obtuse and ignored the obvious clue."
+  },
+  "abridge": {
+    "meaning": "To shorten writing while keeping its main meaning.",
+    "clue": "The editor abridged the novel for younger readers."
+  },
+  "sullen": {
+    "meaning": "Bad-tempered, gloomy, and silent",
+    "clue": "The child sat in sullen silence."
+  },
+  "acute": {
+    "meaning": "Very strong or severe; also quick to notice things.",
+    "clue": "She felt acute pain in her ankle."
+  },
+  "pensive": {
+    "meaning": "Deeply thoughtful, often slightly sad",
+    "clue": "He looked pensive as he watched the sunset."
+  },
+  "impale": {
+    "meaning": "To pierce with a sharp object",
+    "clue": "The sharp branch could impale anyone who fell onto it."
+  },
+  "malign": {
+    "meaning": "To say unfair, harmful things about someone.",
+    "clue": "It is unfair to malign someone without evidence."
+  },
+  "slander": {
+    "meaning": "A spoken lie that damages what people think of someone.",
+    "clue": "The politician sued over the false slander."
+  },
+  "crooked": {
+    "meaning": "Bent, twisted, or dishonest",
+    "clue": "The picture hung crooked on the wall."
+  },
+  "contempt": {
+    "meaning": "A strong feeling that someone or something deserves no respect.",
+    "clue": "She treated the dishonest claim with contempt."
+  },
+  "vapour": {
+    "meaning": "A gas formed from a substance that is usually liquid or solid.",
+    "clue": "Water vapour condensed on the cold window."
+  },
+  "mist": {
+    "meaning": "Tiny drops of water floating in the air near the ground.",
+    "clue": "A thin mist covered the fields at dawn."
+  },
+  "reckless": {
+    "meaning": "Acting without thinking about danger or what might happen.",
+    "clue": "Reckless cycling on a busy road is dangerous."
+  },
+  "enrage": {
+    "meaning": "To make extremely angry",
+    "clue": "The unfair accusation began to enrage him."
+  },
+  "perilous": {
+    "meaning": "Very dangerous",
+    "clue": "The sailors faced a perilous journey through the storm."
+  },
+  "overt": {
+    "meaning": "Open and clearly visible",
+    "clue": "There was no overt sign of disagreement."
+  },
+  "covert": {
+    "meaning": "Secret or hidden",
+    "clue": "The officers carried out a covert investigation."
+  },
+  "candid": {
+    "meaning": "Honest and straightforward",
+    "clue": "She gave a candid account of what had happened."
+  },
+  "stingy": {
+    "meaning": "Unwilling to spend or give",
+    "clue": "The stingy landlord refused to replace the broken heater."
+  },
+  "decoy": {
+    "meaning": "Something used to trick someone into going the wrong way.",
+    "clue": "The wooden duck was used as a decoy."
+  },
+  "futile": {
+    "meaning": "Unable to achieve anything useful.",
+    "clue": "It was futile to argue once the decision had been made."
+  },
+  "impede": {
+    "meaning": "To delay or obstruct progress",
+    "clue": "Heavy traffic may impede the ambulance."
+  },
+  "pique": {
+    "meaning": "To spark interest; also a feeling of annoyance.",
+    "clue": "The mysterious letter piqued her curiosity."
+  },
+  "smother": {
+    "meaning": "To cover completely or prevent breathing",
+    "clue": "He used a blanket to smother the small fire."
+  },
+  "heed": {
+    "meaning": "To listen carefully and take notice.",
+    "clue": "You should heed the warning signs."
+  },
+  "exile": {
+    "meaning": "Being forced to live away from your home or country.",
+    "clue": "The defeated ruler lived in exile for many years."
+  },
+  "throng": {
+    "meaning": "A large crowd packed together.",
+    "clue": "A throng gathered outside the theatre."
+  },
+  "aloof": {
+    "meaning": "Distant and unfriendly",
+    "clue": "The new student seemed aloof at first."
+  },
+  "congregate": {
+    "meaning": "To gather together",
+    "clue": "Fans began to congregate outside the stadium."
+  },
+  "forthwith": {
+    "meaning": "Immediately",
+    "clue": "The damaged machine was ordered to be switched off forthwith."
+  },
+  "sporadically": {
+    "meaning": "From time to time, without a regular pattern.",
+    "clue": "It rained sporadically throughout the afternoon."
+  },
+  "intermittently": {
+    "meaning": "Stopping and starting now and then.",
+    "clue": "The lights flickered intermittently during the storm."
+  },
+  "godsend": {
+    "meaning": "Something unexpectedly helpful",
+    "clue": "The unexpected lift home was a godsend."
+  },
+  "concede": {
+    "meaning": "To admit something is true, even if you do not want to.",
+    "clue": "He finally conceded that his opponent was correct."
+  },
+  "contemplate": {
+    "meaning": "To think about something carefully",
+    "clue": "She sat quietly to contemplate her next move."
+  },
+  "vowel": {
+    "meaning": "A speech sound such as a, e, i, o or u",
+    "clue": "The letter 'a' represents a vowel in this word."
+  },
+  "consonant": {
+    "meaning": "A speech sound made by blocking some air with your mouth, such as b, m or s.",
+    "clue": "The word 'cat' begins with the consonant 'c'."
+  },
+  "sombre": {
+    "meaning": "Serious, gloomy, or dark",
+    "clue": "Everyone wore sombre expressions after hearing the news."
+  },
+  "marquee": {
+    "meaning": "A large tent used for events",
+    "clue": "The wedding reception was held in a large marquee."
+  },
+  "atlas": {
+    "meaning": "A book of maps.",
+    "clue": "He used an atlas to locate the mountain range."
+  },
+  "ingredient": {
+    "meaning": "One of the substances used to make something",
+    "clue": "Flour is an important ingredient in bread."
+  },
+  "immaculate": {
+    "meaning": "Perfectly clean, neat, or free from errors",
+    "clue": "The hotel room was immaculate."
+  },
+  "tally": {
+    "meaning": "To count or keep a total; also to match or agree.",
+    "clue": "The final figures tally with our records."
+  },
+  "assent": {
+    "meaning": "To express agreement",
+    "clue": "She nodded to show her assent."
+  },
+  "deprive": {
+    "meaning": "To prevent someone from having something",
+    "clue": "Lack of sleep can deprive you of concentration."
+  },
+  "crop": {
+    "meaning": "To cut short; also a plant grown for food or another use.",
+    "clue": "The photographer cropped the image to remove the empty border."
+  },
+  "criticism": {
+    "meaning": "Saying what you think is wrong with something.",
+    "clue": "The plan received criticism for being too expensive."
+  },
+  "glitter": {
+    "meaning": "To shine with many small flashes of light",
+    "clue": "The snow began to glitter in the sunlight."
+  },
+  "felicitous": {
+    "meaning": "Just right for the situation, or especially pleasing.",
+    "clue": "Her felicitous remark made everyone feel welcome."
+  },
+  "hapless": {
+    "meaning": "Unlucky or unfortunate",
+    "clue": "The hapless goalkeeper slipped at the worst possible moment."
+  },
+  "break a leg": {
+    "meaning": "A way to say ‘good luck’, especially before a performance.",
+    "clue": "Before the play began, the director smiled and told the actors to break a leg."
+  },
+  "rural": {
+    "meaning": "To do with the countryside.",
+    "clue": "They moved from the city to a quiet rural village."
+  },
+  "urban": {
+    "meaning": "To do with towns or cities.",
+    "clue": "Urban areas often have extensive public transport."
+  },
+  "raucous": {
+    "meaning": "Loud, harsh, and disorderly",
+    "clue": "Raucous cheering erupted after the winning goal."
+  },
+  "dingy": {
+    "meaning": "Dark, dirty, and unattractive",
+    "clue": "They entered a dingy room with stained walls."
+  },
+  "shun": {
+    "meaning": "To deliberately avoid someone or something",
+    "clue": "The other children began to shun the bully."
+  },
+  "confront": {
+    "meaning": "To face or deal with a difficult situation directly",
+    "clue": "She decided to confront the problem directly."
+  },
+  "forgo": {
+    "meaning": "To choose to go without something",
+    "clue": "He chose to forgo dessert."
+  },
+  "abstain": {
+    "meaning": "To choose not to do or have something.",
+    "clue": "She decided to abstain from voting."
+  },
+  "club": {
+    "meaning": "A group of people with a shared interest; also a heavy stick.",
+    "clue": "He joined the chess club at school."
+  },
+  "baton": {
+    "meaning": "A short stick, such as the one runners pass in a relay race.",
+    "clue": "The runner passed the baton to her teammate."
+  },
+  "forlorn": {
+    "meaning": "Lonely, sad, and abandoned",
+    "clue": "The lost dog looked forlorn in the rain."
+  },
+  "implore": {
+    "meaning": "To beg very strongly.",
+    "clue": "She implored the guard to let them through."
+  },
+  "pristine": {
+    "meaning": "Extremely clean and in original condition",
+    "clue": "The lake remained in pristine condition."
+  },
+  "grime": {
+    "meaning": "Dirt that has built up on a surface.",
+    "clue": "Grime covered the old windows."
+  },
+  "filth": {
+    "meaning": "Very unpleasant dirt",
+    "clue": "The abandoned room was covered in filth."
+  },
+  "abolish": {
+    "meaning": "To officially end or get rid of something",
+    "clue": "The government voted to abolish the outdated rule."
+  },
+  "novice": {
+    "meaning": "A beginner",
+    "clue": "As a novice, he asked an experienced player for advice."
+  },
+  "urge": {
+    "meaning": "To encourage someone strongly to do something.",
+    "clue": "I urge you to read the instructions carefully."
+  },
+  "deter": {
+    "meaning": "To put someone off doing something.",
+    "clue": "The alarm is designed to deter thieves."
+  },
+  "folly": {
+    "meaning": "Foolish behaviour or a foolish action",
+    "clue": "Ignoring the warning was an act of folly."
+  },
+  "crease": {
+    "meaning": "A line caused by folding or crushing material",
+    "clue": "A deep crease appeared in the paper."
+  },
+  "shack": {
+    "meaning": "A small, roughly built shelter",
+    "clue": "They found shelter in a wooden shack."
+  },
+  "abrupt": {
+    "meaning": "Sudden and unexpected; or rudely brief",
+    "clue": "The meeting came to an abrupt end."
+  },
+  "opaque": {
+    "meaning": "Not allowing light through; difficult to understand",
+    "clue": "The opaque glass prevented us from seeing inside."
+  },
+  "cellar": {
+    "meaning": "A room below ground level, usually for storage",
+    "clue": "They stored the apples in the cool cellar."
+  },
+  "chastise": {
+    "meaning": "To scold or punish",
+    "clue": "The teacher chastised him for repeatedly interrupting."
+  },
+  "glut": {
+    "meaning": "Much more of something than is needed.",
+    "clue": "A glut of apples caused prices to fall."
+  },
+  "baffle": {
+    "meaning": "To confuse completely",
+    "clue": "The strange clue continued to baffle the detectives."
+  },
+  "pliable": {
+    "meaning": "Easy to bend; also easy to influence.",
+    "clue": "The warm clay became soft and pliable."
+  },
+  "permeate": {
+    "meaning": "To spread throughout something",
+    "clue": "The smell of fresh bread began to permeate the house."
+  },
+  "penetrate": {
+    "meaning": "To enter or pass through",
+    "clue": "The nail failed to penetrate the thick wood."
+  },
+  "ambiguous": {
+    "meaning": "Having more than one possible meaning",
+    "clue": "The ambiguous instructions confused everyone."
+  },
+  "equivocate": {
+    "meaning": "To give an unclear answer to avoid telling the truth.",
+    "clue": "The witness began to equivocate when asked a difficult question."
+  },
+  "rigorous": {
+    "meaning": "Very careful and thorough, or very demanding.",
+    "clue": "The equipment must pass rigorous safety tests."
+  },
+  "scrupulous": {
+    "meaning": "Taking great care to be honest and do things properly.",
+    "clue": "She kept scrupulous records of every payment."
+  },
+  "nebulous": {
+    "meaning": "Unclear or not properly worked out.",
+    "clue": "His explanation of the plan was rather nebulous."
+  },
+  "mediocre": {
+    "meaning": "Only average, rather than good.",
+    "clue": "The film was mediocre despite its famous cast."
+  },
+  "intrigue": {
+    "meaning": "To make someone very interested or curious",
+    "clue": "The locked box began to intrigue the children."
+  },
+  "jeer": {
+    "meaning": "To mock someone rudely",
+    "clue": "A few spectators began to jeer the referee."
+  },
+  "dextrous": {
+    "meaning": "Skilful with the hands",
+    "clue": "The dextrous jeweller handled the tiny stones with ease."
+  },
+  "thrifty": {
+    "meaning": "Careful about spending money",
+    "clue": "My grandmother is thrifty and rarely wastes food."
+  },
+  "peckish": {
+    "meaning": "Slightly hungry",
+    "clue": "I felt peckish, so I ate a small sandwich."
+  },
+  "ravenous": {
+    "meaning": "Extremely hungry",
+    "clue": "After football practice, the children were ravenous."
+  },
+  "sated": {
+    "meaning": "Completely satisfied, especially with food",
+    "clue": "After the enormous meal, he felt completely sated."
+  },
+  "satiated": {
+    "meaning": "Fully satisfied; having had enough",
+    "clue": "The guests were satiated after the feast."
+  },
+  "famished": {
+    "meaning": "Extremely hungry",
+    "clue": "We were famished after walking all day."
+  },
+  "replete": {
+    "meaning": "Full or having plenty of something.",
+    "clue": "The cupboard was replete with food."
+  },
+  "deplete": {
+    "meaning": "To greatly reduce the amount of something",
+    "clue": "The long drought began to deplete the reservoir."
+  },
+  "juvenile": {
+    "meaning": "Young, or to do with young people.",
+    "clue": "The juvenile fox remained close to its mother."
+  },
+  "unravel": {
+    "meaning": "To untangle; or solve something complicated",
+    "clue": "The detective slowly began to unravel the mystery."
+  },
+  "tangle": {
+    "meaning": "A twisted mass; or to become twisted together",
+    "clue": "The fishing lines became tangled together."
+  },
+  "barb": {
+    "meaning": "A sharp point that hooks backwards; also a hurtful comment.",
+    "clue": "The fishhook had a sharp barb."
+  },
+  "despair": {
+    "meaning": "The feeling that there is no hope.",
+    "clue": "He refused to give in to despair."
+  },
+  "anguish": {
+    "meaning": "Very great pain or sadness.",
+    "clue": "She cried out in anguish when she heard the news."
+  },
+  "twine": {
+    "meaning": "Strong thread; or wind things around each other",
+    "clue": "The plant began to twine around the fence."
+  },
+  "peripheral": {
+    "meaning": "Near the outside edge; also less important to the main issue.",
+    "clue": "Movement in his peripheral vision caught his attention."
+  },
+  "ambulatory": {
+    "meaning": "Able to walk, or to do with walking.",
+    "clue": "The patient was ambulatory and could walk without help."
+  },
+  "stagnant": {
+    "meaning": "Not flowing, moving or improving.",
+    "clue": "Mosquitoes bred in the stagnant water."
+  },
+  "mobile": {
+    "meaning": "Able to move; also a decoration with hanging, moving parts.",
+    "clue": "The lightweight table is mobile and easy to move."
+  },
+  "wary": {
+    "meaning": "Careful because there might be danger or trouble.",
+    "clue": "The wary fox watched us from a distance."
+  },
+  "gullible": {
+    "meaning": "Easily tricked or persuaded",
+    "clue": "A gullible person may believe the scam."
+  },
+  "shuffle": {
+    "meaning": "To walk without lifting the feet properly",
+    "clue": "The tired man shuffled slowly towards the door."
+  },
+  "stride": {
+    "meaning": "To walk with long, confident steps",
+    "clue": "She strode confidently onto the stage."
+  },
+  "dread": {
+    "meaning": "A strong feeling of fear or worry.",
+    "clue": "He felt dread as the storm approached."
+  },
+  "fable": {
+    "meaning": "A short story that teaches a lesson, often using animal characters.",
+    "clue": "The fable teaches a lesson about honesty."
+  },
+  "myth": {
+    "meaning": "An old, traditional story; also something people believe that is not true.",
+    "clue": "The story of the creature may be only a myth."
+  },
+  "doltish": {
+    "meaning": "Stupid or foolish",
+    "clue": "His doltish mistake cost the team a point."
+  },
+  "dopey": {
+    "meaning": "Silly, sleepy, or not alert",
+    "clue": "The medicine made him feel dopey."
+  },
+  "shrewd": {
+    "meaning": "Clever and good at making practical judgements",
+    "clue": "The shrewd merchant negotiated a better price."
+  },
+  "astute": {
+    "meaning": "Very clever at understanding situations",
+    "clue": "Her astute question exposed the flaw in the plan."
+  },
+  "imbecile": {
+    "meaning": "A very foolish person",
+    "clue": "Only an imbecile would ignore such an obvious danger."
+  },
+  "inane": {
+    "meaning": "Extremely silly or meaningless",
+    "clue": "They spent ten minutes discussing an inane rumour."
+  },
+  "savvy": {
+    "meaning": "Knowing how to make sensible choices in real situations.",
+    "clue": "She has enough computer savvy to solve the problem herself."
+  },
+  "sage": {
+    "meaning": "Very wise; also a wise person.",
+    "clue": "The young king sought advice from an old sage."
+  },
+  "subtle": {
+    "meaning": "Not obvious or easy to notice.",
+    "clue": "There was a subtle change in her tone."
+  },
+  "vain": {
+    "meaning": "Too proud of how you look or what you can do.",
+    "clue": "He was too vain to admit that he had made a mistake."
+  },
+  "deficient": {
+    "meaning": "Not having enough of something needed.",
+    "clue": "The soil was deficient in important nutrients."
+  },
+  "warp": {
+    "meaning": "To bend or twist out of shape.",
+    "clue": "Moisture can warp wooden boards."
+  },
+  "lean": {
+    "meaning": "To tilt or rest against something; also thin.",
+    "clue": "Do not lean too far over the railing."
+  },
+  "oodles": {
+    "meaning": "A very large amount",
+    "clue": "We had oodles of time before the train arrived."
+  },
+  "populous": {
+    "meaning": "Having lots of people living there.",
+    "clue": "London is a populous city."
+  },
+  "wavy": {
+    "meaning": "Having a series of curves",
+    "clue": "She has long, wavy hair."
+  },
+  "taut": {
+    "meaning": "Stretched tight",
+    "clue": "The rope was pulled taut."
+  },
+  "radiant": {
+    "meaning": "Shining brightly; showing happiness",
+    "clue": "The bride looked radiant."
+  },
+  "gulp": {
+    "meaning": "To swallow quickly or in large amounts",
+    "clue": "He gulped down the water after the race."
+  },
+  "tint": {
+    "meaning": "A slight shade of colour",
+    "clue": "The sky had a faint pink tint."
+  },
+  "jubilant": {
+    "meaning": "Extremely joyful",
+    "clue": "The jubilant supporters celebrated the victory."
+  },
+  "dismay": {
+    "meaning": "Shock and worry when something goes wrong.",
+    "clue": "To her dismay, the keys were missing."
+  },
+  "gleeful": {
+    "meaning": "Extremely happy or excited",
+    "clue": "The children were gleeful when school closed early."
+  },
+  "glum": {
+    "meaning": "Sad and gloomy",
+    "clue": "He looked glum after losing the match."
+  },
+  "ajar": {
+    "meaning": "Slightly open",
+    "clue": "She left the door ajar."
+  },
+  "scruffy": {
+    "meaning": "Untidy or shabby",
+    "clue": "The scruffy dog needed a bath."
+  },
+  "legend": {
+    "meaning": "An old, traditional story; also a very famous, admired person.",
+    "clue": "According to legend, treasure is buried beneath the castle."
+  },
+  "caption": {
+    "meaning": "Words explaining a picture or image",
+    "clue": "The caption beneath the photograph explained where it was taken."
+  },
+  "chortle": {
+    "meaning": "To laugh with delight",
+    "clue": "He chortled with delight at the joke."
+  },
+  "exclaim": {
+    "meaning": "To cry out suddenly",
+    "clue": "'Watch out!' she exclaimed."
+  },
+  "clamour": {
+    "meaning": "A loud mixture of voices or demands",
+    "clue": "A clamour of excited voices filled the hall."
+  },
+  "whisper": {
+    "meaning": "To speak very quietly",
+    "clue": "She whispered the secret into my ear."
+  },
+  "whimper": {
+    "meaning": "To make quiet, weak sounds of fear or pain",
+    "clue": "The frightened puppy began to whimper."
+  },
+  "mumble": {
+    "meaning": "To speak quietly and unclearly",
+    "clue": "He mumbled an apology under his breath."
+  },
+  "cackle": {
+    "meaning": "To laugh loudly and harshly",
+    "clue": "The witch cackled loudly in the story."
+  },
+  "crack up": {
+    "meaning": "To burst out laughing; also to become unable to cope with stress.",
+    "clue": "The comedian's final joke made the audience crack up."
+  },
+  "snicker": {
+    "meaning": "To laugh quietly in an unkind or disrespectful way.",
+    "clue": "The boys began to snicker when the hat blew away."
+  },
+  "snivel": {
+    "meaning": "To cry or complain in an irritating way",
+    "clue": "He continued to snivel about the tiny scratch."
+  },
+  "howl": {
+    "meaning": "To make a long, loud cry",
+    "clue": "The wolves began to howl at night."
+  },
+  "bawl": {
+    "meaning": "To shout or cry very loudly",
+    "clue": "The baby began to bawl loudly."
+  },
+  "absolve": {
+    "meaning": "To say someone is not to blame.",
+    "clue": "The new evidence helped absolve her of blame."
+  },
+  "obsolete": {
+    "meaning": "No longer used because something newer has replaced it",
+    "clue": "DVD players have become largely obsolete in many homes."
+  },
+  "current": {
+    "meaning": "Happening now; also water flowing in a particular direction.",
+    "clue": "Please use the current version of the form."
+  },
+  "truce": {
+    "meaning": "An agreement to stop fighting for a while.",
+    "clue": "The two sides agreed to a temporary truce."
+  },
+  "inept": {
+    "meaning": "Not good at doing something.",
+    "clue": "The inept thief dropped the stolen bag."
+  },
+  "hinder": {
+    "meaning": "To make progress difficult",
+    "clue": "Heavy snow may hinder our journey."
+  },
+  "sever": {
+    "meaning": "To cut or break off completely",
+    "clue": "The storm severed the power cable."
+  },
+  "severe": {
+    "meaning": "Very serious, harsh or strong.",
+    "clue": "The region suffered severe flooding."
+  },
+  "encompass": {
+    "meaning": "To include or surround completely.",
+    "clue": "The course will encompass history, geography and science."
+  },
+  "scatter": {
+    "meaning": "To spread in different directions",
+    "clue": "The wind scattered the leaves across the road."
+  },
+  "trickle": {
+    "meaning": "To flow slowly in a small stream",
+    "clue": "Water began to trickle through the crack."
+  },
+  "trinket": {
+    "meaning": "A small decorative object of little value",
+    "clue": "She bought a small silver trinket at the market."
+  },
+  "memoir": {
+    "meaning": "Someone’s written memories of their own life.",
+    "clue": "The explorer wrote a memoir about her travels."
+  },
+  "mirage": {
+    "meaning": "Something that looks real, such as water in a desert, caused by light bending through air.",
+    "clue": "The distant pool of water turned out to be a mirage."
+  },
+  "languid": {
+    "meaning": "Lacking energy; moving slowly",
+    "clue": "He moved with a languid pace in the afternoon heat."
+  },
+  "austerity": {
+    "meaning": "Living or spending with very few extras or comforts.",
+    "clue": "The family adopted a period of austerity to save money."
+  },
+  "extravagance": {
+    "meaning": "Spending much more than you need to.",
+    "clue": "The enormous chandelier seemed an unnecessary extravagance."
+  },
+  "susceptible": {
+    "meaning": "Likely to be affected by something.",
+    "clue": "Young plants are susceptible to frost."
+  },
+  "dearth": {
+    "meaning": "A serious shortage",
+    "clue": "A dearth of rainfall damaged the crops."
+  },
+  "fusion": {
+    "meaning": "Two or more things joining together.",
+    "clue": "The dish is a fusion of several cooking styles."
+  },
+  "cuisine": {
+    "meaning": "A style of cooking.",
+    "clue": "Italian cuisine is famous for pasta and pizza."
+  },
+  "meld": {
+    "meaning": "To blend or combine",
+    "clue": "The two musical styles meld beautifully."
+  },
+  "molten": {
+    "meaning": "Melted by great heat",
+    "clue": "Molten rock flowed from the volcano."
+  },
+  "tease": {
+    "meaning": "To make fun of someone, sometimes playfully.",
+    "clue": "It is unkind to tease someone about their appearance."
+  },
+  "imperious": {
+    "meaning": "Giving orders as if everyone must obey you.",
+    "clue": "The imperious ruler expected instant obedience."
+  },
+  "meek": {
+    "meaning": "Quiet and gentle, and not likely to argue back.",
+    "clue": "The meek child rarely argued with anyone."
+  },
+  "smug": {
+    "meaning": "Much too pleased with yourself.",
+    "clue": "He wore a smug smile after winning the argument."
+  },
+  "vein": {
+    "meaning": "A tube in the body that carries blood towards the heart.",
+    "clue": "A vein carries blood towards the heart."
+  },
+  "demure": {
+    "meaning": "Quiet, modest and not drawing attention to yourself.",
+    "clue": "She gave a demure smile."
+  },
+  "boastful": {
+    "meaning": "Talking proudly about yourself or your achievements",
+    "clue": "His boastful comments annoyed his teammates."
+  },
+  "timid": {
+    "meaning": "Shy and lacking courage",
+    "clue": "The timid rabbit hid beneath the bush."
+  },
+  "hallmark": {
+    "meaning": "A feature that helps you recognise a particular quality or character.",
+    "clue": "Attention to detail is a hallmark of her work."
+  },
+  "insignia": {
+    "meaning": "A badge or symbol showing someone's group or rank.",
+    "clue": "The uniform carried the regiment's insignia."
+  },
+  "ploy": {
+    "meaning": "A clever plan used to gain an advantage",
+    "clue": "The discount was a ploy to attract more customers."
+  },
+  "token": {
+    "meaning": "Something small that stands for a feeling or idea, such as a thank-you gift.",
+    "clue": "He gave her flowers as a token of gratitude."
+  },
+  "elementary": {
+    "meaning": "Basic or simple",
+    "clue": "The first chapter covers elementary mathematics."
+  },
+  "potential": {
+    "meaning": "The chance to grow, improve or succeed.",
+    "clue": "She has the potential to become an excellent pianist."
+  },
+  "probable": {
+    "meaning": "Likely to happen",
+    "clue": "Rain is probable this afternoon."
+  },
+  "refrain": {
+    "meaning": "To stop yourself from doing something",
+    "clue": "Please refrain from talking during the test."
+  },
+  "myriad": {
+    "meaning": "A very large number",
+    "clue": "A myriad of stars filled the night sky."
+  },
+  "aromatic": {
+    "meaning": "Having a strong, pleasant smell",
+    "clue": "Aromatic herbs filled the kitchen with a pleasant smell."
+  },
+  "fragrant": {
+    "meaning": "Having a pleasant, sweet smell",
+    "clue": "The garden was full of fragrant roses."
+  },
+  "vex": {
+    "meaning": "To annoy, worry, or frustrate",
+    "clue": "The repeated error continued to vex the programmer."
+  },
+  "exorbitant": {
+    "meaning": "Much more expensive than is reasonable.",
+    "clue": "The shop charged an exorbitant price for the umbrella."
+  },
+  "adverse": {
+    "meaning": "Unhelpful or harmful.",
+    "clue": "The race was cancelled because of adverse weather."
+  },
+  "favourable": {
+    "meaning": "Helpful or likely to bring a good result.",
+    "clue": "The plants need favourable conditions to grow well."
+  },
+  "squander": {
+    "meaning": "To waste something valuable",
+    "clue": "Do not squander your savings on things you do not need."
+  },
+  "conserve": {
+    "meaning": "To protect something or use it carefully",
+    "clue": "We should conserve water during a drought."
+  },
+  "solitary": {
+    "meaning": "Alone or done without other people",
+    "clue": "A solitary tree stood in the middle of the field."
+  },
+  "petite": {
+    "meaning": "Small and delicately built",
+    "clue": "The petite dancer moved gracefully across the stage."
+  },
+  "paltry": {
+    "meaning": "A very small amount, often too little to be useful.",
+    "clue": "They were offered a paltry reward for hours of work."
+  },
+  "wee": {
+    "meaning": "Very small.",
+    "clue": "A wee bird perched on the fence."
+  },
+  "trifling": {
+    "meaning": "Unimportant or of little value",
+    "clue": "They quarrelled over a trifling matter."
+  },
+  "tenuous": {
+    "meaning": "Weak, slight or uncertain.",
+    "clue": "There was only a tenuous link between the two events."
+  },
+  "uniform": {
+    "meaning": "The same throughout; also special clothes worn by a group.",
+    "clue": "The tiles were uniform in size and shape."
+  },
+  "sagacious": {
+    "meaning": "Wise and good at making sensible judgements.",
+    "clue": "The sagacious judge considered every piece of evidence."
+  },
+  "snub": {
+    "meaning": "To deliberately ignore or insult someone",
+    "clue": "She felt hurt when her old friend snubbed her."
+  },
+  "smirk": {
+    "meaning": "To smile as if you are much too pleased with yourself.",
+    "clue": "He gave a smug smirk after guessing correctly."
+  },
+  "censure": {
+    "meaning": "Strong, official criticism.",
+    "clue": "The official faced public censure for his behaviour."
+  },
+  "royal": {
+    "meaning": "To do with a king, queen or their family.",
+    "clue": "The royal procession passed through the city."
+  },
+  "empire": {
+    "meaning": "A group of lands or countries under one ruler or government.",
+    "clue": "The Roman Empire once covered a vast area."
+  },
+  "sequence": {
+    "meaning": "The order in which things follow one another.",
+    "clue": "Put the pictures in the correct sequence."
+  },
+  "evade": {
+    "meaning": "To avoid or escape from something",
+    "clue": "The fox managed to evade the hunters."
+  },
+  "aspire": {
+    "meaning": "To strongly hope to achieve something",
+    "clue": "She aspires to become a doctor."
+  },
+  "desire": {
+    "meaning": "A strong wish for something.",
+    "clue": "He had a strong desire to travel."
+  },
+  "naive": {
+    "meaning": "Too ready to believe people because you have little experience.",
+    "clue": "His naive trust made him easy to deceive."
+  },
+  "artefact": {
+    "meaning": "Something made by people, often long ago.",
+    "clue": "The archaeologist uncovered a Roman artefact."
+  },
+  "apprehend": {
+    "meaning": "To arrest; or to understand",
+    "clue": "Police apprehended the suspect near the station."
+  },
+  "purloin": {
+    "meaning": "To steal",
+    "clue": "Someone tried to purloin a silver spoon."
+  },
+  "impart": {
+    "meaning": "To share or pass on information.",
+    "clue": "The teacher tried to impart her knowledge to the class."
+  },
+  "pilfer": {
+    "meaning": "To steal small things",
+    "clue": "Someone had been pilfering biscuits from the cupboard."
+  },
+  "resonate": {
+    "meaning": "To make a deep sound; also to have a strong meaning for someone.",
+    "clue": "Her words continued to resonate with the audience."
+  },
+  "diplomatic": {
+    "meaning": "Good at dealing with people without upsetting them.",
+    "clue": "He gave a diplomatic answer that offended nobody."
+  },
+  "tactful": {
+    "meaning": "Careful not to upset or offend others",
+    "clue": "She was tactful when discussing his mistake."
+  },
+  "sway": {
+    "meaning": "To move from side to side; also to change someone’s opinion.",
+    "clue": "The trees began to sway in the wind."
+  },
+  "magma": {
+    "meaning": "Hot liquid rock beneath Earth's surface",
+    "clue": "Magma rose beneath the volcano."
+  },
+  "vouch": {
+    "meaning": "To say you know something or someone can be trusted.",
+    "clue": "I can vouch for her honesty."
+  },
+  "attest": {
+    "meaning": "To show or say that something is true.",
+    "clue": "Several witnesses can attest to what happened."
+  },
+  "dais": {
+    "meaning": "A raised platform",
+    "clue": "The head teacher stood on the dais."
+  },
+  "celestial": {
+    "meaning": "To do with the sky or space.",
+    "clue": "They used a telescope to observe celestial objects."
+  },
+  "vital": {
+    "meaning": "So important that you cannot do without it.",
+    "clue": "Clean water is vital for survival."
+  },
+  "trough": {
+    "meaning": "A long narrow container; also a low point",
+    "clue": "The horses drank from a stone trough."
+  },
+  "vice": {
+    "meaning": "Bad behaviour or a bad habit.",
+    "clue": "Greed was considered his greatest vice."
+  },
+  "virtue": {
+    "meaning": "A good quality, such as honesty or kindness.",
+    "clue": "Patience is a valuable virtue."
+  },
+  "sweltering": {
+    "meaning": "Uncomfortably hot",
+    "clue": "We sat in the shade during the sweltering afternoon."
+  },
+  "scalding": {
+    "meaning": "Extremely hot; hot enough to burn",
+    "clue": "Be careful—the water is scalding."
+  },
+  "tepid": {
+    "meaning": "Slightly warm",
+    "clue": "The tea had become tepid."
+  },
+  "frigid": {
+    "meaning": "Extremely cold",
+    "clue": "A frigid wind blew across the field."
+  },
+  "scowl": {
+    "meaning": "An angry or disapproving facial expression",
+    "clue": "He gave me a scowl when I interrupted."
+  },
+  "frown": {
+    "meaning": "To wrinkle the forehead to show worry or displeasure",
+    "clue": "She frowned when she saw the incorrect answer."
+  },
+  "hamper": {
+    "meaning": "To obstruct or make progress difficult",
+    "clue": "Heavy luggage can hamper your movement."
+  },
+  "stroll": {
+    "meaning": "To walk in a relaxed way",
+    "clue": "We took a leisurely stroll through the park."
+  },
+  "husk": {
+    "meaning": "The dry outer covering of a seed or fruit",
+    "clue": "She removed the husk from the corn."
+  },
+  "brittle": {
+    "meaning": "Hard but easily broken",
+    "clue": "The old plastic had become brittle."
+  },
+  "shell": {
+    "meaning": "A hard outer covering.",
+    "clue": "The chick began to break through its shell."
+  },
+  "notion": {
+    "meaning": "An idea or belief.",
+    "clue": "He rejected the notion that success comes without effort."
+  },
+  "hind": {
+    "meaning": "A female deer.",
+    "clue": "A hind and her fawn crossed the path."
+  },
+  "sedate": {
+    "meaning": "Calm, quiet, and unhurried",
+    "clue": "The horse remained sedate despite the noise."
+  },
+  "divulge": {
+    "meaning": "To reveal secret information",
+    "clue": "She refused to divulge the password."
+  },
+  "valour": {
+    "meaning": "Great courage, especially in danger",
+    "clue": "The firefighter was honoured for exceptional valour."
+  },
+  "midst": {
+    "meaning": "The middle of something.",
+    "clue": "We found ourselves in the midst of a noisy crowd."
+  },
+  "forfeit": {
+    "meaning": "To lose something as a penalty",
+    "clue": "If you break the rule, you may forfeit your prize."
+  },
+  "inconsequential": {
+    "meaning": "Not important",
+    "clue": "The spelling error was inconsequential to the main argument."
+  },
+  "superficial": {
+    "meaning": "Only on the surface, or not looking into something carefully.",
+    "clue": "His knowledge of the subject was superficial."
+  },
+  "negligible": {
+    "meaning": "So small that it hardly matters.",
+    "clue": "The difference in price was negligible."
+  },
+  "substantial": {
+    "meaning": "Large or important.",
+    "clue": "They made a substantial improvement to the building."
+  },
+  "salient": {
+    "meaning": "The most noticeable or important part.",
+    "clue": "She summarised the salient points of the report."
+  },
+  "immaterial": {
+    "meaning": "Not important to the matter being discussed.",
+    "clue": "His age was immaterial to the decision."
+  },
+  "insignificant": {
+    "meaning": "Too small or unimportant to matter",
+    "clue": "The scratch was insignificant and needed no repair."
+  },
+  "discord": {
+    "meaning": "Disagreement or a lack of harmony.",
+    "clue": "The decision caused discord within the group."
+  },
+  "chronicle": {
+    "meaning": "A record of events in the order they happened.",
+    "clue": "The diary chronicles his journey across Europe."
+  },
+  "bland": {
+    "meaning": "Having little flavour or excitement.",
+    "clue": "The soup was bland and needed more seasoning."
+  },
+  "insipid": {
+    "meaning": "Lacking flavour, energy, or interest",
+    "clue": "The drink was watery and insipid."
+  },
+  "whine": {
+    "meaning": "To complain in an annoying voice",
+    "clue": "The child began to whine about having to wait."
+  },
+  "moan": {
+    "meaning": "To complain, or make a low sound because something hurts.",
+    "clue": "He moaned about the cold weather all morning."
+  },
+  "surmise": {
+    "meaning": "To make a guess from a few clues.",
+    "clue": "From the muddy footprints, we surmised that someone had entered."
+  },
+  "deduct": {
+    "meaning": "To subtract or take away",
+    "clue": "The teacher deducted two marks for the missing working."
+  },
+  "enchant": {
+    "meaning": "To delight greatly; or magically charm",
+    "clue": "The magical story enchanted the young audience."
+  },
+  "skim": {
+    "meaning": "To read or look over quickly; or remove something from a surface",
+    "clue": "I skimmed the article before reading it carefully."
+  },
+  "pare": {
+    "meaning": "To trim by cutting away the outer part",
+    "clue": "She pared the apple with a small knife."
+  },
+  "rebuke": {
+    "meaning": "To sharply express disapproval",
+    "clue": "The coach rebuked the player for ignoring instructions."
+  },
+  "gadget": {
+    "meaning": "A small useful mechanical or electronic device",
+    "clue": "This small gadget measures the room temperature."
+  },
+  "comprehensive": {
+    "meaning": "Including nearly everything that is needed.",
+    "clue": "The guide gives a comprehensive overview of the topic."
+  },
+  "thorough": {
+    "meaning": "Careful, detailed, and complete",
+    "clue": "The police carried out a thorough search."
+  },
+  "indulgent": {
+    "meaning": "Too ready to let someone have or do what they want.",
+    "clue": "His indulgent grandparents rarely refused him anything."
+  },
+  "prudent": {
+    "meaning": "Sensible and careful about what might happen next.",
+    "clue": "It was prudent to save some money for emergencies."
+  },
+  "detrimental": {
+    "meaning": "Harmful",
+    "clue": "Too little sleep can be detrimental to concentration."
+  },
+  "queasy": {
+    "meaning": "Feeling as if you might be sick.",
+    "clue": "The rough sea made me feel queasy."
+  },
+  "witty": {
+    "meaning": "Clever and funny with words.",
+    "clue": "Her witty reply made everyone laugh."
+  },
+  "chore": {
+    "meaning": "A routine or unpleasant task",
+    "clue": "Washing the dishes is my least favourite chore."
+  },
+  "revolve": {
+    "meaning": "To move around a central point",
+    "clue": "The Earth revolves around the Sun."
+  },
+  "veteran": {
+    "meaning": "Someone with lots of experience; also someone who used to serve in the armed forces.",
+    "clue": "The veteran climber knew how to handle the difficult conditions."
+  },
+  "elongate": {
+    "meaning": "To make longer",
+    "clue": "Stretching the shape will elongate it."
+  },
+  "curtail": {
+    "meaning": "To reduce or cut short",
+    "clue": "The storm forced us to curtail our trip."
+  },
+  "tempest": {
+    "meaning": "A violent storm",
+    "clue": "The ship struggled through a violent tempest."
+  },
+  "waver": {
+    "meaning": "To become uncertain; or move unsteadily",
+    "clue": "She did not waver in her decision."
+  },
+  "ignite": {
+    "meaning": "To set on fire or cause to begin burning",
+    "clue": "A spark can ignite dry grass."
+  },
+  "kindle": {
+    "meaning": "To start a fire; also to make a feeling begin.",
+    "clue": "They used dry twigs to kindle the fire."
+  },
+  "docile": {
+    "meaning": "Quiet and easy to control",
+    "clue": "The docile pony was safe for beginners to ride."
+  },
+  "obedient": {
+    "meaning": "Willing to follow commands",
+    "clue": "The obedient dog returned when called."
+  },
+  "compliant": {
+    "meaning": "Willing to obey rules or requests",
+    "clue": "The company was fully compliant with the new rules."
+  },
+  "resentful": {
+    "meaning": "Upset and angry because something seems unfair.",
+    "clue": "He felt resentful after being blamed unfairly."
+  },
+  "gloomy": {
+    "meaning": "Dark, sad, or depressing",
+    "clue": "The dark clouds made the afternoon feel gloomy."
+  },
+  "censorious": {
+    "meaning": "Very quick to criticise other people.",
+    "clue": "Her censorious comments made everyone uncomfortable."
+  },
+  "decrepit": {
+    "meaning": "Old and in very poor condition",
+    "clue": "They found a decrepit shed at the end of the garden."
+  },
+  "obliging": {
+    "meaning": "Willing and eager to help",
+    "clue": "The obliging neighbour carried our bags inside."
+  },
+  "poise": {
+    "meaning": "Staying calm and confident in how you act.",
+    "clue": "She answered the difficult questions with poise."
+  },
+  "technophobe": {
+    "meaning": "Someone who dislikes or avoids modern technology",
+    "clue": "The self-confessed technophobe still preferred a paper diary."
+  },
+  "flog": {
+    "meaning": "To sell something, especially by trying hard to persuade buyers",
+    "clue": "He tried to flog his old bicycle at the market."
+  },
+  "amoral": {
+    "meaning": "Not thinking about whether actions are right or wrong.",
+    "clue": "The villain was portrayed as cold and amoral."
+  },
+  "stricken": {
+    "meaning": "Badly affected by illness, fear or something terrible.",
+    "clue": "The flood-stricken village needed urgent help."
+  },
+  "strenuous": {
+    "meaning": "Needing lots of physical or mental effort.",
+    "clue": "The steep climb was strenuous."
+  },
+  "melodious": {
+    "meaning": "Pleasant and musical to hear",
+    "clue": "A melodious birdsong came from the trees."
+  },
+  "discordant": {
+    "meaning": "Harsh and unpleasant in sound; not in agreement",
+    "clue": "The instruments produced a discordant noise."
+  },
+  "afflict": {
+    "meaning": "To cause ongoing pain or trouble.",
+    "clue": "Severe drought can afflict farming communities."
+  },
+  "dictate": {
+    "meaning": "To give orders; or say words for someone else to write",
+    "clue": "The rules dictate what safety equipment must be worn."
+  },
+  "desist": {
+    "meaning": "To stop doing something",
+    "clue": "The guard ordered them to desist from climbing the fence."
+  },
+  "prevalent": {
+    "meaning": "Common or found in many places.",
+    "clue": "Colds are prevalent during the winter."
+  },
+  "enrapt": {
+    "meaning": "So interested or delighted that something has all your attention.",
+    "clue": "The children were enrapt by the storyteller."
+  },
+  "threadbare": {
+    "meaning": "Worn so thin that the threads show; also used too often to be interesting.",
+    "clue": "He wore an old, threadbare coat."
+  },
+  "devoted": {
+    "meaning": "Very loving, loyal or dedicated.",
+    "clue": "She is devoted to caring for her animals."
+  },
+  "stalwart": {
+    "meaning": "Loyal, reliable and hard-working.",
+    "clue": "He remained a stalwart supporter of the team."
+  },
+  "jovial": {
+    "meaning": "Cheerful, friendly, and good-humoured",
+    "clue": "Our jovial host made everyone feel welcome."
+  },
+  "genial": {
+    "meaning": "Friendly, cheerful, and pleasant",
+    "clue": "The genial shopkeeper greeted every customer warmly."
+  },
+  "fraught": {
+    "meaning": "Full of worry or problems.",
+    "clue": "The journey was fraught with delays."
+  },
+  "fracas": {
+    "meaning": "A noisy argument or fight",
+    "clue": "A noisy fracas broke out outside the stadium."
+  },
+  "facilitate": {
+    "meaning": "To make something easier to do.",
+    "clue": "The new bridge will facilitate travel between the villages."
+  },
+  "nullify": {
+    "meaning": "To cancel something or stop it having any effect.",
+    "clue": "The new evidence could nullify the earlier decision."
+  },
+  "infamy": {
+    "meaning": "Being well known for something very bad.",
+    "clue": "The traitor's actions earned him lasting infamy."
+  },
+  "notoriety": {
+    "meaning": "Being famous for something bad.",
+    "clue": "The criminal gained notoriety after the daring robbery."
+  },
+  "rebuttal": {
+    "meaning": "An argument explaining why a claim is wrong.",
+    "clue": "She gave a strong rebuttal to the accusation."
+  },
+  "fickle": {
+    "meaning": "Frequently changing opinions, loyalties, or feelings",
+    "clue": "The fickle crowd quickly changed its opinion."
+  },
+  "staunch": {
+    "meaning": "Very loyal and firm in your support.",
+    "clue": "He was a staunch defender of his friend."
+  },
+  "virulent": {
+    "meaning": "Very harmful or severe, especially a disease.",
+    "clue": "A virulent strain of the disease spread rapidly."
+  },
+  "proxy": {
+    "meaning": "Someone allowed to do something for another person.",
+    "clue": "She voted by proxy because she could not attend."
+  },
+  "fester": {
+    "meaning": "To become worse because a problem is not dealt with",
+    "clue": "Resentment can fester if a disagreement is never discussed."
+  },
+  "intrinsic": {
+    "meaning": "A natural part of what something is.",
+    "clue": "Curiosity is intrinsic to learning."
+  },
+  "debut": {
+    "meaning": "The first time someone performs or appears in public.",
+    "clue": "The young singer made her debut at the festival."
+  },
+  "hustle": {
+    "meaning": "To move quickly and with lots of energy.",
+    "clue": "We had to hustle to catch the last train."
+  },
+  "chew the fat": {
+    "meaning": "To have a relaxed, friendly conversation",
+    "clue": "After dinner, the old friends sat down to chew the fat."
+  },
+  "delegate": {
+    "meaning": "To give a task or responsibility to another person",
+    "clue": "The manager decided to delegate the task to her assistant."
+  },
+  "procrastinate": {
+    "meaning": "To delay doing something that should be done",
+    "clue": "If you procrastinate, you may have to finish everything at the last minute."
+  },
+  "fringe": {
+    "meaning": "An outer edge; also hair cut across the forehead.",
+    "clue": "A fringe of trees surrounded the field."
+  },
+  "asinine": {
+    "meaning": "To do with donkeys; more often, very foolish.",
+    "clue": "It was an asinine idea to go hiking without water."
+  },
+  "bovine": {
+    "meaning": "To do with cattle, such as cows.",
+    "clue": "The veterinarian specialises in bovine diseases."
+  },
+  "canine": {
+    "meaning": "Relating to dogs and similar animals",
+    "clue": "The wolf belongs to the canine family."
+  },
+  "caprine": {
+    "meaning": "To do with goats.",
+    "clue": "The farm specialises in caprine breeds."
+  },
+  "cervine": {
+    "meaning": "To do with deer.",
+    "clue": "The animal had a graceful cervine appearance."
+  },
+  "corvine": {
+    "meaning": "To do with crows and ravens.",
+    "clue": "Ravens and crows are corvine birds."
+  },
+  "equine": {
+    "meaning": "Relating to horses and similar animals",
+    "clue": "She works at an equine veterinary clinic."
+  },
+  "feline": {
+    "meaning": "Relating to cats",
+    "clue": "The tiger moved with feline grace."
+  },
+  "leonine": {
+    "meaning": "Like a lion or to do with lions.",
+    "clue": "His thick mane of hair gave him a leonine appearance."
+  },
+  "lupine": {
+    "meaning": "Like a wolf or to do with wolves.",
+    "clue": "The creature had distinctly lupine features."
+  },
+  "murine": {
+    "meaning": "To do with mice and rats.",
+    "clue": "The researchers studied a murine model in the laboratory."
+  },
+  "ovine": {
+    "meaning": "To do with sheep.",
+    "clue": "The farmer specialises in ovine care."
+  },
+  "piscine": {
+    "meaning": "To do with fish.",
+    "clue": "The fossil had several piscine features."
+  },
+  "porcine": {
+    "meaning": "To do with pigs.",
+    "clue": "The vet examined the animal for a porcine disease."
+  },
+  "serpentine": {
+    "meaning": "Like a snake, or winding from side to side.",
+    "clue": "A serpentine road climbed the mountain."
+  },
+  "ursine": {
+    "meaning": "Like a bear or to do with bears.",
+    "clue": "The animal's broad paws gave it an ursine appearance."
+  },
+  "vulpine": {
+    "meaning": "Like a fox or to do with foxes.",
+    "clue": "The character wore a sly, vulpine smile."
+  },
+  "settee": {
+    "meaning": "A sofa with room for two or more people.",
+    "clue": "We sat together on the settee."
+  },
+  "hammock": {
+    "meaning": "A cloth or net bed hung between two supports",
+    "clue": "He relaxed in a hammock between two trees."
+  },
+  "blot": {
+    "meaning": "A spot or stain; also something that harms a person's good name.",
+    "clue": "A drop of ink left a blot on the page."
+  },
+  "jury": {
+    "meaning": "People in a court who listen to the facts and decide a case.",
+    "clue": "The jury listened carefully to the evidence."
+  },
+  "accommodate": {
+    "meaning": "To provide enough space for someone or something.",
+    "clue": "The hall can accommodate our class and all their enormous hats."
+  },
+  "accompany": {
+    "meaning": "To go somewhere with someone.",
+    "clue": "Dad will accompany us to the museum."
+  },
+  "according": {
+    "meaning": "In the phrase 'according to', as stated by someone or something.",
+    "clue": "According to the map, the treasure is beneath the compost heap."
+  },
+  "achieve": {
+    "meaning": "To succeed in doing something you worked towards.",
+    "clue": "With daily practice, I can achieve my swimming goal."
+  },
+  "aggressive": {
+    "meaning": "Ready to attack or argue in a forceful way.",
+    "clue": "The aggressive goose chased the visitors away from its nest."
+  },
+  "alliteration": {
+    "meaning": "The use of the same starting consonant sound in nearby words.",
+    "clue": "We used alliteration in the name 'Bouncing Billy's Biscuit Boat'."
+  },
+  "amateur": {
+    "meaning": "Someone who does an activity for enjoyment rather than as a paid job.",
+    "clue": "The amateur photographer took pictures after finishing her job at the bakery."
+  },
+  "analyse": {
+    "meaning": "To examine something carefully to understand its parts and how they work.",
+    "clue": "We will analyse the clues before accusing the hamster."
+  },
+  "appreciate": {
+    "meaning": "To recognise the value of something and feel thankful for it.",
+    "clue": "I appreciate your help with my giant papier-mâché potato."
+  },
+  "atmosphere": {
+    "meaning": "The feeling or mood of a place or situation.",
+    "clue": "The spooky music gave the empty hall a mysterious atmosphere."
+  },
+  "attached": {
+    "meaning": "Joined or fastened to something.",
+    "clue": "A tiny bell was attached to the puppet's hat."
+  },
+  "audience": {
+    "meaning": "The people who watch or listen to a performance or talk.",
+    "clue": "The audience laughed when the dragon sneezed confetti."
+  },
+  "available": {
+    "meaning": "Ready for someone to use or obtain.",
+    "clue": "There are three seats available on the coach."
+  },
+  "average": {
+    "meaning": "A value found by adding quantities and dividing by how many there are.",
+    "clue": "The average of two, four and six is four."
+  },
+  "awkward": {
+    "meaning": "Difficult to move, use or deal with.",
+    "clue": "The enormous cardboard crown was awkward to carry through the doorway."
+  },
+  "bargain": {
+    "meaning": "Something bought for less than its usual price.",
+    "clue": "At fifty pence, the nearly new book was a bargain."
+  },
+  "bias": {
+    "meaning": "An unfair preference for or against someone or something.",
+    "clue": "Choosing your own brother every time shows bias."
+  },
+  "bruise": {
+    "meaning": "A dark mark caused by bleeding under the skin after a bump.",
+    "clue": "A purple bruise appeared where I had bumped my knee."
+  },
+  "category": {
+    "meaning": "A group of things that share a feature.",
+    "clue": "Put the whale in the mammal category, not with the fish."
+  },
+  "cemetery": {
+    "meaning": "A place where people who have died are buried.",
+    "clue": "We laid flowers beside our grandfather's grave in the cemetery."
+  },
+  "characterisation": {
+    "meaning": "The way a writer shows what a character is like.",
+    "clue": "The author uses the pirate's kind actions for characterisation."
+  },
+  "committee": {
+    "meaning": "A group chosen to organise something or make decisions.",
+    "clue": "The school committee met to plan the summer fair."
+  },
+  "communicate": {
+    "meaning": "To share information, thoughts or feelings.",
+    "clue": "The divers communicate with hand signals underwater."
+  },
+  "community": {
+    "meaning": "A group of people connected by a place or shared interests.",
+    "clue": "Our community worked together to restore the playground."
+  },
+  "comparison": {
+    "meaning": "The act of examining things to see how they are similar or different.",
+    "clue": "Our comparison of the two bikes included their weight and price."
+  },
+  "competition": {
+    "meaning": "An event in which people try to win by doing something best.",
+    "clue": "My wobbly jelly won the competition for the funniest dessert."
+  },
+  "connotation": {
+    "meaning": "An idea or feeling a word suggests beyond its basic meaning.",
+    "clue": "The word 'home' can have a connotation of comfort."
+  },
+  "conscious": {
+    "meaning": "Awake and aware of what is happening.",
+    "clue": "The patient was conscious and able to answer the nurse's questions."
+  },
+  "context": {
+    "meaning": "The surrounding information or situation that helps explain something.",
+    "clue": "The words around 'bank' gave us the context to tell it meant a river bank."
+  },
+  "contrast": {
+    "meaning": "A noticeable difference between things.",
+    "clue": "There was a clear contrast between the silent library and the noisy playground."
+  },
+  "convenience": {
+    "meaning": "The quality of being easy or useful for someone's needs.",
+    "clue": "We enjoyed the convenience of having a library next door."
+  },
+  "correspond": {
+    "meaning": "To match or agree with something.",
+    "clue": "The numbers on the keys correspond to the numbers on the lockers."
+  },
+  "criticise": {
+    "meaning": "To point out faults in someone or something.",
+    "clue": "You can criticise my plan politely and suggest a better one."
+  },
+  "curiosity": {
+    "meaning": "A strong wish to find out about something.",
+    "clue": "Curiosity made us investigate the squeaking cupboard."
+  },
+  "definite": {
+    "meaning": "Clear and certain.",
+    "clue": "We need a definite date so everyone knows when to arrive."
+  },
+  "desperate": {
+    "meaning": "Feeling that a situation is so bad that you will try almost anything.",
+    "clue": "The stranded sailor was desperate for someone to notice her signal."
+  },
+  "determined": {
+    "meaning": "Firmly decided to do something, even when it is difficult.",
+    "clue": "The determined runner kept training after a disappointing race."
+  },
+  "develop": {
+    "meaning": "To grow or gradually become more advanced.",
+    "clue": "With practice, your drawing skills will develop."
+  },
+  "dictionary": {
+    "meaning": "A book or resource that lists words and explains their meanings.",
+    "clue": "I checked the dictionary to find out what 'mischievous' meant."
+  },
+  "environment": {
+    "meaning": "The surroundings and conditions in which living things exist.",
+    "clue": "The pond provides an environment where frogs can live."
+  },
+  "equip": {
+    "meaning": "To provide the things needed for a task.",
+    "clue": "We must equip each explorer with a torch and a map."
+  },
+  "equipment": {
+    "meaning": "The tools and other things needed for an activity.",
+    "clue": "Our camping equipment included a tent and sleeping bags."
+  },
+  "equipped": {
+    "meaning": "Provided with the things needed for a task.",
+    "clue": "The rescue boat was equipped with ropes and life jackets."
+  },
+  "especially": {
+    "meaning": "More than usual, or more than other things.",
+    "clue": "I like fruit, especially strawberries."
+  },
+  "evaluate": {
+    "meaning": "To judge how good, useful or successful something is.",
+    "clue": "We will evaluate our bridge by testing how much weight it holds."
+  },
+  "evidence": {
+    "meaning": "Facts or information that help show whether something is true.",
+    "clue": "The muddy paw prints were evidence that the dog had entered the kitchen."
+  },
+  "excellent": {
+    "meaning": "Extremely good.",
+    "clue": "Your excellent instructions made the tricky model easy to build."
+  },
+  "existence": {
+    "meaning": "The state of being real or alive.",
+    "clue": "The photograph confirmed the existence of the rare bird on the island."
+  },
+  "familiar": {
+    "meaning": "Known or recognised because you have met or seen it before.",
+    "clue": "I heard a familiar voice and turned to see my best friend."
+  },
+  "figurative": {
+    "meaning": "Using words imaginatively rather than with their exact ordinary meaning.",
+    "clue": "Calling the goalkeeper 'a brick wall' is figurative language."
+  },
+  "foreign": {
+    "meaning": "From or connected with another country.",
+    "clue": "We found a foreign coin from Japan in the drawer."
+  },
+  "forty": {
+    "meaning": "The number equal to four groups of ten.",
+    "clue": "There were forty chairs in four rows of ten."
+  },
+  "frequently": {
+    "meaning": "Often; many times.",
+    "clue": "We visit the library frequently because we enjoy borrowing books."
+  },
+  "government": {
+    "meaning": "The group of people responsible for running a country or area.",
+    "clue": "The government announced a plan to improve public transport."
+  },
+  "guarantee": {
+    "meaning": "A firm promise that something will happen or be provided.",
+    "clue": "The shop gave us a guarantee that it would repair the new bike if it broke."
+  },
+  "harass": {
+    "meaning": "To keep bothering or upsetting someone.",
+    "clue": "It is unkind to harass someone with repeated nasty messages."
+  },
+  "identity": {
+    "meaning": "Who someone is, or what makes them recognisable.",
+    "clue": "The detective discovered the identity of the masked visitor."
+  },
+  "imagery": {
+    "meaning": "Descriptive language that helps readers imagine sights, sounds or other sensations.",
+    "clue": "The poem's imagery helped me picture the snowy forest and hear the crunching footsteps."
+  },
+  "immediate": {
+    "meaning": "Happening now, without delay.",
+    "clue": "The leaking pipe needed immediate attention."
+  },
+  "immediately": {
+    "meaning": "At once, without waiting.",
+    "clue": "When the alarm sounded, we immediately left the building."
+  },
+  "individual": {
+    "meaning": "One person or thing considered separately from a group.",
+    "clue": "Each individual in the team chose a different hat."
+  },
+  "inference": {
+    "meaning": "An idea worked out from clues rather than stated directly.",
+    "clue": "My inference from the wet umbrella was that it had been raining."
+  },
+  "interpret": {
+    "meaning": "To explain or work out the meaning of something.",
+    "clue": "Can you interpret the symbols on this old map?"
+  },
+  "interrupt": {
+    "meaning": "To stop someone or something briefly before it is finished.",
+    "clue": "Please do not interrupt while your partner is speaking."
+  },
+  "justify": {
+    "meaning": "To give reasons that support an answer or decision.",
+    "clue": "Use clues from the story to justify your answer."
+  },
+  "language": {
+    "meaning": "A system of words or signs used to share meaning.",
+    "clue": "My grandmother speaks Welsh, and I am learning the language too."
+  },
+  "leisure": {
+    "meaning": "Time when you are free from work or duties.",
+    "clue": "During her leisure time, Aisha builds tiny houses from cardboard."
+  },
+  "lightning": {
+    "meaning": "A bright electrical flash in the sky during a storm.",
+    "clue": "We saw lightning through the window before we heard thunder."
+  },
+  "literal": {
+    "meaning": "Using the ordinary, exact meaning of words.",
+    "clue": "The literal meaning of 'cold feet' is feet that are chilly, not feeling nervous."
+  },
+  "marvellous": {
+    "meaning": "Extremely good or pleasing.",
+    "clue": "The marvellous puppet show made everyone smile."
+  },
+  "metaphor": {
+    "meaning": "A comparison that describes one thing as another without using 'like' or 'as'.",
+    "clue": "The sentence 'The classroom was a zoo' uses a metaphor."
+  },
+  "mischievous": {
+    "meaning": "Enjoying playful tricks that may cause a little trouble.",
+    "clue": "The mischievous puppy hid one slipper under the sofa."
+  },
+  "muscle": {
+    "meaning": "Body tissue that tightens and relaxes to produce movement.",
+    "clue": "I could feel the muscle in my upper arm working as I lifted the bag."
+  },
+  "narrative": {
+    "meaning": "A spoken or written account of events; a story.",
+    "clue": "Her narrative began with a lost sandwich and ended with a rescued cat."
+  },
+  "necessary": {
+    "meaning": "Needed for a particular purpose.",
+    "clue": "A helmet is necessary for this cycling activity."
+  },
+  "neighbour": {
+    "meaning": "Someone who lives near you.",
+    "clue": "Our neighbour returned the football that landed in his garden."
+  },
+  "occupy": {
+    "meaning": "To take up a place or space.",
+    "clue": "The enormous beanbag will occupy most of my bedroom."
+  },
+  "occur": {
+    "meaning": "To happen or take place.",
+    "clue": "The next eclipse will occur on the date shown in the guide."
+  },
+  "parliament": {
+    "meaning": "The body that debates and passes laws; in the UK it includes the Commons, Lords and monarch.",
+    "clue": "Our class visited Parliament to learn how laws are made."
+  },
+  "personification": {
+    "meaning": "Describing a thing or idea as if it has human qualities or actions.",
+    "clue": "The phrase 'the wind whispered' is personification."
+  },
+  "perspective": {
+    "meaning": "A particular way of seeing or thinking about something.",
+    "clue": "From the mouse's perspective, the kitchen was a dangerous place."
+  },
+  "persuade": {
+    "meaning": "To get someone to agree or act by giving reasons.",
+    "clue": "I tried to persuade Mum that a library trip would be fun."
+  },
+  "physical": {
+    "meaning": "Relating to the body rather than the mind.",
+    "clue": "Running and jumping are physical activities."
+  },
+  "privilege": {
+    "meaning": "A special advantage or right that not everyone has.",
+    "clue": "Being allowed to help feed the zoo's penguins was a privilege."
+  },
+  "profession": {
+    "meaning": "A job that usually needs special education or training.",
+    "clue": "Teaching is the profession she hopes to enter."
+  },
+  "programme": {
+    "meaning": "A planned set of activities or events.",
+    "clue": "The holiday programme included swimming, painting and a treasure hunt."
+  },
+  "pronunciation": {
+    "meaning": "The way a word is spoken, including its sounds and stress.",
+    "clue": "I listened to the recording to check the pronunciation of 'yacht'."
+  },
+  "purpose": {
+    "meaning": "The reason something is done or made.",
+    "clue": "The purpose of the poster was to invite people to our play."
+  },
+  "queue": {
+    "meaning": "A line of people or things waiting for their turn.",
+    "clue": "We joined the queue for the museum's dinosaur exhibition."
+  },
+  "recognise": {
+    "meaning": "To know someone or something because you have met or seen them before.",
+    "clue": "I could recognise my friend's laugh even behind the curtain."
+  },
+  "recommend": {
+    "meaning": "To suggest that something is a good choice.",
+    "clue": "Which funny book would you recommend for our reading club?"
+  },
+  "restaurant": {
+    "meaning": "A place where people pay to sit and eat meals cooked for them.",
+    "clue": "We ate lunch at a restaurant beside the river."
+  },
+  "rhyme": {
+    "meaning": "A match between the end sounds of words, such as 'cat' and 'hat'.",
+    "clue": "I needed a rhyme for 'moon', so I chose 'spoon'."
+  },
+  "rhythm": {
+    "meaning": "A pattern of beats or sounds.",
+    "clue": "We clapped the rhythm while our friend played the drum."
+  },
+  "sacrifice": {
+    "meaning": "To give up something valued for a more important reason.",
+    "clue": "I would sacrifice some playtime to help my friend finish the model."
+  },
+  "secretary": {
+    "meaning": "Someone whose work includes organising records, messages and meetings.",
+    "clue": "The club secretary sent everyone the date of the next meeting."
+  },
+  "shoulder": {
+    "meaning": "The part of the body where an arm joins the torso.",
+    "clue": "The parrot perched on the pirate's shoulder."
+  },
+  "signature": {
+    "meaning": "Someone's name written in their own particular way.",
+    "clue": "The author added her signature inside my book."
+  },
+  "simile": {
+    "meaning": "A comparison using 'like' or 'as' to show a shared quality.",
+    "clue": "We wrote the simile 'as quiet as a sleeping mouse'."
+  },
+  "sincere": {
+    "meaning": "Meaning what you say or feel; not pretending.",
+    "clue": "His sincere apology showed that he truly regretted breaking the toy."
+  },
+  "sincerely": {
+    "meaning": "In a way that shows you really mean what you say or feel.",
+    "clue": "I sincerely hope you feel better soon."
+  },
+  "soldier": {
+    "meaning": "A person who serves in an army.",
+    "clue": "The soldier helped deliver supplies after the flood."
+  },
+  "stanza": {
+    "meaning": "A group of lines forming a section of a poem.",
+    "clue": "The poem had three stanzas; each stanza contained four lines."
+  },
+  "stomach": {
+    "meaning": "The organ that receives food after it is swallowed and helps digest it.",
+    "clue": "Food travels from your mouth down a tube to your stomach."
+  },
+  "structure": {
+    "meaning": "The way the parts of something are arranged.",
+    "clue": "We planned the structure of our story before writing its opening."
+  },
+  "sufficient": {
+    "meaning": "Enough for a particular need.",
+    "clue": "We have sufficient paper for everyone to make a kite."
+  },
+  "suggest": {
+    "meaning": "To put forward an idea for someone to consider.",
+    "clue": "I suggest we name our cardboard robot Sir Rusty."
+  },
+  "summarise": {
+    "meaning": "To give the main points in a shorter form.",
+    "clue": "Please summarise the chapter in three sentences."
+  },
+  "symbol": {
+    "meaning": "A mark, object or sign that represents something else.",
+    "clue": "The dove is often used as a symbol of peace."
+  },
+  "system": {
+    "meaning": "A set of connected parts that work together.",
+    "clue": "The school's heating system keeps the classrooms warm."
+  },
+  "temperature": {
+    "meaning": "A measure of how hot or cold something is.",
+    "clue": "We used a thermometer to check the temperature of the water."
+  },
+  "theme": {
+    "meaning": "A central idea explored in a piece of writing or art.",
+    "clue": "Friendship is a theme in the story about two lost penguins."
+  },
+  "tone": {
+    "meaning": "The attitude or feeling shown by someone's voice or writing.",
+    "clue": "Her cheerful tone made the invitation sound welcoming."
+  },
+  "twelfth": {
+    "meaning": "Coming after eleventh in order.",
+    "clue": "I was twelfth in the line, with eleven people ahead of me."
+  },
+  "variety": {
+    "meaning": "A range of different things or types.",
+    "clue": "The picnic included a variety of fruit, from apples to mangoes."
+  },
+  "vegetable": {
+    "meaning": "A plant or part of a plant used as food, especially in savoury meals.",
+    "clue": "We each chose a vegetable to add to the soup."
+  },
+  "vehicle": {
+    "meaning": "Something used to transport people or goods, such as a car or bus.",
+    "clue": "The delivery vehicle stopped outside the bakery."
+  }
+}

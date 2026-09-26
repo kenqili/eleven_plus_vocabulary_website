@@ -5,7 +5,12 @@ import { createHash } from "node:crypto";
 import { words } from "../scripts/load-word-bank.mjs";
 import { problems, synText } from "../scripts/load-problem-bank.mjs";
 import { parseProblemCsv } from "../lib/challenge/problems.ts";
-import { MASTERY_TARGET, parseQuestionTypes } from "../lib/challenge/config.ts";
+import {
+  MASTERY_TARGET,
+  parsePracticeLevel,
+  parseQuestionTypes,
+} from "../lib/challenge/config.ts";
+import { DIFFICULTY_LEVELS } from "../lib/challenge/difficulty.ts";
 test("Shipped question CSVs match the independently reviewed versions", () => {
   const review = JSON.parse(
     readFileSync(
@@ -20,9 +25,16 @@ test("Shipped question CSVs match the independently reviewed versions", () => {
       review.final[type].sha256,
       `${type}.csv changed since semantic review`,
     );
+    const recorded = review.final[type];
     assert.equal(
       problems.filter((p) => p.type === type).length,
-      review.final[type].rowsReviewed,
+      recorded.currentRows,
+    );
+    // Rows added after the review are recorded, not counted as reviewed.
+    assert.equal(
+      recorded.rowsReviewed + (recorded.rowsAddedAfterReview || 0),
+      recorded.currentRows,
+      `${type}.csv row accounting`,
     );
   }
 });
@@ -87,4 +99,40 @@ test("Type selection requires one or more known types and mastery is per-word fi
   assert.deepEqual(parseQuestionTypes(["ant", "syn", "syn"]), ["syn", "ant"]);
   for (const value of [[], ["unknown"], "syn", [null]])
     assert.throws(() => parseQuestionTypes(value), /practice type/);
+});
+test("Level 0 practises alongside levels 1-5 and only known levels are accepted", () => {
+  assert.deepEqual(Object.keys(DIFFICULTY_LEVELS), [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+  ]);
+  assert.equal(parsePracticeLevel(undefined), null);
+  assert.equal(parsePracticeLevel("all"), null);
+  for (const level of [0, 1, 2, 3, 4, 5]) {
+    assert.equal(parsePracticeLevel(level), level);
+    assert.equal(parsePracticeLevel(String(level)), level);
+  }
+  for (const value of ["6", -1, 1.5, "curriculum", true, {}])
+    assert.throws(() => parsePracticeLevel(value), /practice level/);
+  // The five original bands keep their words; only curriculum words take level 0.
+  const snapshot = JSON.parse(
+    readFileSync(
+      new URL("../data/word-levels/levels.json", import.meta.url),
+      "utf8",
+    ),
+  ).words;
+  const levelFor = (id) => snapshot[id]?.difficulty;
+  const counts = [0, 1, 2, 3, 4, 5].map(
+    (level) => words.filter((word) => levelFor(word.id) === level).length,
+  );
+  assert.deepEqual(counts, [117, 146, 146, 146, 146, 146]);
+  assert.equal(
+    words.every(
+      (word) => (levelFor(word.id) === 0) === (word.source === "curriculum"),
+    ),
+    true,
+  );
 });

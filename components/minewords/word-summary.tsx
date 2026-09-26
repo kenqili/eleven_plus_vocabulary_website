@@ -1,4 +1,5 @@
 "use client";
+import Pronunciation from "./pronunciation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Header from "./header";
@@ -129,7 +130,7 @@ export default function WordSummaryPage() {
               ))}
             </div>
             <p className="muted word-level-help">
-              Five correct answers master a word. Needs practice highlights
+              Confident recall or five correct answers at any pace master a word. Needs practice highlights
               unmastered words with a mistake or revealed answer.
             </p>
             <section
@@ -150,7 +151,7 @@ export default function WordSummaryPage() {
                     setPage(0);
                   }}
                 >
-                  <option value="all">All five levels</option>
+                  <option value="all">All levels</option>
                   {Object.entries(DIFFICULTY_LEVELS).map(([number, label]) => (
                     <option key={number} value={number}>
                       {label} (
@@ -166,11 +167,13 @@ export default function WordSummaryPage() {
                 <details className="difficulty-help">
                   <summary>How are levels assigned?</summary>
                   <p>
-                    Level 1 contains the easier words in this collection; Level
-                    5 the more challenging. We combine 70% word rarity with 30%
-                    letter count, then divide the collection into five bands.
-                    These are estimates, not exam grades. Short rare words can
-                    still have a high level.
+                    Level 0 holds the curriculum extension words. Level 1
+                    contains the easier words in this collection; Level 5 the
+                    more challenging. For Levels 1–5 we combine 70% word rarity
+                    with 30% letter count, then divide those words into five
+                    equal bands, so the original levels keep their words. These
+                    are estimates, not exam grades. Short rare words can still
+                    have a high level.
                   </p>
                   <p>
                     Frequency data:{" "}
@@ -314,6 +317,7 @@ export default function WordSummaryPage() {
                             <strong className="summary-word">
                               {word.word}
                             </strong>
+                            <Pronunciation word={word.word} id={word.id} />
                             <p>{word.definition}</p>
                             <details>
                               <summary>Example & related words</summary>
@@ -350,12 +354,12 @@ export default function WordSummaryPage() {
                           <td>
                             <label className="word-progress-label">
                               <span>
-                                {word.correct}/{MASTERY_TARGET} correct
+                                {word.correct} correct{word.status === "mastered" ? " · mastered" : ""}
                               </span>
                               <progress
-                                value={word.correct}
+                                value={word.status === "mastered" ? MASTERY_TARGET : word.correct}
                                 max={MASTERY_TARGET}
-                                aria-label={`${word.word}: ${word.correct} of ${MASTERY_TARGET} correct`}
+                                aria-label={`${word.word}: ${word.correct} correct, ${LEARNING_STATUS[word.status]}`}
                               />
                             </label>
                           </td>

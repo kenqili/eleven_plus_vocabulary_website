@@ -73,8 +73,10 @@ try {
   assert.equal((await call("/api/words/export")).status, 401);
   const demo = await call("/api/challenge?types=def");
   assert.equal(demo.status, 200);
-  assert.equal(demo.data.words.length, Math.min(5, words.length));
-  assert.equal(demo.data.stats.total, words.length);
+  const freeIds = new Set(demo.data.words.map((word) => word.wordId));
+  assert.equal(demo.data.words.length, demo.data.freeWordCount);
+  assert.equal(freeIds.size, demo.data.freeWordCount);
+  assert.equal(demo.data.stats.total, demo.data.freeWordCount);
   for (const type of ["syn", "ant"]) {
     const sample = await call(`/api/challenge?types=${type}`);
     assert.equal(sample.status, 200);
@@ -109,7 +111,16 @@ try {
   assert.match(account.cookie, /HttpOnly/);
   assert.match(account.cookie, /SameSite=Lax/);
   assert.equal((await call("/api/auth/me")).data.user.id, userId);
-  assert.equal((await call("/api/challenge", { action: "next" })).status, 402);
+  const initialAccess = await call("/api/challenge");
+  if (demo.data.trialDaysConfigured > 0) {
+    assert.equal(initialAccess.data.trial, true);
+    assert.equal(initialAccess.data.stats.total, words.length);
+    assert.equal((await call("/api/words/export")).status, 200);
+  }
+  sql(`UPDATE users SET created_at=1 WHERE id='${userId}';`);
+  const expiredAccess = await call("/api/challenge");
+  assert.equal(expiredAccess.data.trialExpired, true);
+  assert.equal(expiredAccess.data.freeWordCount, freeIds.size);
   assert.equal((await call("/api/billing/checkout", {})).status, 503);
   const freeWords = await call("/api/words");
   assert.equal(freeWords.status, 200);
@@ -218,6 +229,39 @@ try {
       (await call("/api/challenge", { action: "next", types })).status,
       400,
     );
+  for (const level of [6, -1, 1.5, "curriculum", true])
+    assert.equal(
+      (await call("/api/challenge", { action: "next", level })).status,
+      400,
+      `level ${JSON.stringify(level)}`,
+    );
+  // A chosen level narrows the questions to that level, including level 0.
+  for (const level of [0, 4]) {
+    const scoped = await call("/api/challenge", {
+      action: "next",
+      level,
+    });
+    assert.equal(scoped.data.question.difficulty, level);
+    // A pending question from another level cannot earn credit.
+    assert.equal(
+      (
+        await call("/api/challenge", {
+          action: "answer",
+          id: next.data.question.id,
+          selected: 0,
+          elapsed: 1,
+        })
+      ).status,
+      409,
+    );
+    const same = await call("/api/challenge", { action: "next", level });
+    assert.equal(same.data.question.id, scoped.data.question.id);
+  }
+  const mixedAgain = await call("/api/challenge", { action: "next" });
+  assert.ok(
+    [0, 1, 2, 3, 4, 5].includes(mixedAgain.data.question.difficulty),
+    "dropping the level selection serves questions from any level again",
+  );
   const syn = await call("/api/challenge", { action: "next", types: ["syn"] });
   assert.equal(syn.data.question.type, "syn");
   const synProblem = problems.find(
@@ -274,7 +318,7 @@ try {
   assert.ok(
     summary.data.words.every(
       (word) =>
-        [1, 2, 3, 4, 5].includes(word.difficulty) && word.letterCount > 0,
+        [0, 1, 2, 3, 4, 5].includes(word.difficulty) && word.letterCount > 0,
     ),
   );
   const mistaken = summary.data.words.find(
@@ -522,7 +566,14 @@ try {
   sql(`UPDATE subscriptions SET status='canceled' WHERE user_id='${userId}';`);
   assert.equal((await call("/api/words/export")).status, 402);
   assert.equal((await call("/api/words/export?format=print")).status, 402);
-  assert.equal((await call("/api/challenge", { action: "next" })).status, 402);
+  const afterCancellation = await call("/api/challenge", { action: "next" });
+  assert.equal(afterCancellation.status, freeIds.size ? 200 : 402);
+  if (freeIds.size) {
+    assert.equal(afterCancellation.data.freeTier, true);
+    assert.equal(afterCancellation.data.stats.total, freeIds.size);
+    if (afterCancellation.data.question)
+      assert.ok(freeIds.has(afterCancellation.data.question.wordId));
+  }
   // Calendar history remains available after membership lapses. Repeated words
   // count once per day/month, and midnight study ticks split between dates.
   const otherCalendarUser = `calendar-other-${stamp}`;

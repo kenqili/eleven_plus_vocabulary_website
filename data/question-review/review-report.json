@@ -10,18 +10,20 @@
   "final": {
     "syn": {
       "file": "data/syn.csv",
-      "sha256": "867495d9d98de75669311daa94c906486d0b2cd36d02beac75e2a7ad745691ad",
+      "sha256": "4013b93a28158876aad7b48147051898518ca0bbc5190e041197f4875466c007",
       "rowsReviewed": 730,
       "unchangedFromInitialReview": 628,
       "changedRowsRechecked": 99,
       "addedRowsReviewed": 3,
       "removedInitialRows": 0,
       "allRowsHaveFourDistinctOptionsAndOneExactAnswer": true,
-      "noRemainingKnownAlternativeCorrectOptions": true
+      "noRemainingKnownAlternativeCorrectOptions": true,
+      "rowsAddedAfterReview": 82,
+      "currentRows": 812
     },
     "ant": {
       "file": "data/ant.csv",
-      "sha256": "0598d51d7b118d00608eb740e2558198e1372868b44b2b0b28bed87a1457e7ce",
+      "sha256": "92dc88c020a12bafc406f04697f71857ba902f434ed8e287d297e8de56b21816",
       "rowsReviewed": 630,
       "unchangedFromInitialReview": 532,
       "changedRowsRechecked": 99,
@@ -29,9 +31,12 @@
       "removedInitialRows": 30,
       "allRowsHaveFourDistinctOptionsAndOneExactAnswer": true,
       "noRemainingKnownAlternativeCorrectOptions": true,
-      "removedAfterReview": 1
+      "removedAfterReview": 1,
+      "rowsAddedAfterReview": 35,
+      "currentRows": 665
     },
-    "totalRows": 1360
+    "totalRows": 1360,
+    "currentTotalRows": 1477
   },
   "editorialOverrideEntries": 234,
   "editorialAntonymExclusions": [
@@ -690,6 +695,30 @@
         "removedInitialRows": 30,
         "allRowsHaveFourDistinctOptionsAndOneExactAnswer": true,
         "noRemainingKnownAlternativeCorrectOptions": true
+      }
+    },
+    {
+      "date": "2026-09-26",
+      "reason": "The Level 0 curriculum extension added 117 words to the merged bank. Each new word needs its own synonym and antonym question, so both CSVs gained rows.",
+      "level": 0,
+      "curriculumWords": 117,
+      "additions": {
+        "syn": { "rows": 82 },
+        "ant": { "rows": 35 }
+      },
+      "verification": "Both CSVs are purely additive against the previously reviewed versions: every earlier row is identical and in the same order, and each added row belongs to a Level 0 curriculum word. No reviewed answer, distractor or exclusion changed, so the five original levels keep their questions.",
+      "reviewStatus": "The added rows come from the same reviewed generator and overrides, but they have not been through an independent semantic review. Give them that review before treating them as reviewed.",
+      "previousReview": {
+        "syn": {
+          "file": "data/syn.csv",
+          "sha256": "867495d9d98de75669311daa94c906486d0b2cd36d02beac75e2a7ad745691ad",
+          "rowsReviewed": 730
+        },
+        "ant": {
+          "file": "data/ant.csv",
+          "sha256": "0598d51d7b118d00608eb740e2558198e1372868b44b2b0b28bed87a1457e7ce",
+          "rowsReviewed": 630
+        }
       }
     }
   ]
