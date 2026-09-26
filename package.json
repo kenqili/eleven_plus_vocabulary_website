@@ -13,7 +13,7 @@
     "start": "node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js dev --config dist/server/wrangler.json --local --persist-to .wrangler/state --ip 0.0.0.0 --inspector-port 0",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate",
-    "test": "node --test tests/core.test.mjs tests/cloze.test.mjs tests/questions.test.mjs tests/ordering.test.mjs tests/rewards.test.mjs tests/mastery.test.mjs tests/word-summary.test.mjs tests/calendar.test.mjs tests/stories.test.mjs tests/child-experience.test.mjs",
+    "test": "node --test tests/core.test.mjs tests/guides.test.mjs tests/cloze.test.mjs tests/questions.test.mjs tests/ordering.test.mjs tests/rewards.test.mjs tests/mastery.test.mjs tests/word-summary.test.mjs tests/calendar.test.mjs tests/stories.test.mjs tests/child-experience.test.mjs",
     "test:integration": "node tests/integration.mjs",
     "typecheck": "tsc --noEmit",
     "words:validate": "node scripts/validate-words.mjs",

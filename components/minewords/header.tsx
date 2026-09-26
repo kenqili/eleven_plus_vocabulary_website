@@ -55,6 +55,9 @@ export default function Header() {
         <Link className="account-link" href="/how-to">
           How to use
         </Link>
+        <Link className="account-link" href="/guides">
+          11+ guides
+        </Link>
         <Link className="account-link" href="/rewards">
           Badges
         </Link>

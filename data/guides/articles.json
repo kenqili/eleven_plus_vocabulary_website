@@ -1,0 +1,654 @@
+{
+  "articles": [
+    {
+      "slug": "what-the-11-plus-involves",
+      "title": "What the 11+ actually involves",
+      "summary": "There is no single 11+ exam in the UK. Different areas and schools use different providers, papers and combinations of subjects, so the first job is to work out exactly what your child will sit.",
+      "readMinutes": 7,
+      "tags": ["tests", "providers", "admissions"],
+      "sections": [
+        {
+          "heading": "There is no single 11+",
+          "body": [
+            "The phrase the 11+ suggests one national exam, and that is the most common misunderstanding. There is no single national 11+ paper. Each local authority, consortium or individual school decides who sets its test, which subjects appear on it, and how much each one counts towards the offer of a place. Grammar schools in neighbouring counties can sit entirely different papers on different days.",
+            "The system also covers a small part of the country. There are around 160 grammar schools in England out of several thousand state secondary schools, plus a smaller group in Northern Ireland. Wales and Scotland have no selective state grammars, although a few schools keep the name without selecting pupils. For many families, therefore, the 11+ is only relevant if a local grammar school exists or is within comfortable travelling distance."
+          ]
+        },
+        {
+          "heading": "Who sets the papers",
+          "body": [
+            "GL Assessment is the largest provider. GL describes itself as the leading provider of 11+ tests, used by the majority of grammar schools in the UK, and its papers cover four areas: verbal reasoning, non-verbal reasoning, English and maths. GL stresses that 11+ tests vary from area to area, so the exact timings, the combination of topics and the number of questions in your local test may differ from its practice materials.",
+            "Cambridge Select Insight, previously called CEM Select, is a computer-based assessment with numerical, verbal and non-verbal sections and an average duration of about 60 minutes. It is used by selective independent schools, partially selective state schools, some grammar schools and schools using fair banding. The original CEM, the Centre for Evaluation and Monitoring, joined Cambridge in 2019 and is now known as Cambridge Insight.",
+            "Other options are more local. A small number of schools use a nonverbal ability measure such as Pearson's NNAT, which uses picture-based problems and no written language. Elsewhere, groups of schools write their own: the Essex grammars share a consortium test, CSSE, built around English and Mathematics papers, and Buckinghamshire runs its own Secondary Transfer Test."
+          ]
+        },
+        {
+          "heading": "What a test day is usually like",
+          "body": [
+            "Most 11+ tests are multiple choice. Some are printed booklets sat in an exam hall, some are computer-based, and some are adaptive, which means the questions a child sees depend on the answers given so far. A child may sit everything in one morning, or papers may be spread across a term. Check the arrangements your own admissions authority publishes rather than assuming.",
+            "Results are normally reported as standardised scores rather than marks out of 100. This adjusts for the age of the candidates and shows how a child performed relative to a reference group, rather than simply how many questions they got right. Schools then set a qualifying standard, and where there are more applicants than places, admission criteria such as distance from the school or a sibling already attending may apply."
+          ]
+        },
+        {
+          "heading": "Registering and applying are separate jobs",
+          "body": [
+            "In most areas, registering your child to sit the test and applying for a place through the local authority are two different processes on two different deadlines. Missing the registration date is one of the most common and entirely avoidable reasons a child ends up not sitting the test. Kent, for example, asks parents to register only if they intend to apply for a Kent grammar school place.",
+            "A useful habit is to write both dates on a calendar as soon as the admissions authority publishes them, and to ask the school directly if anything is unclear. A short email to the admissions office will settle most questions in a way that a parent forum cannot."
+          ]
+        },
+        {
+          "heading": "Independent schools run their own process",
+          "body": [
+            "Independent schools do not use the state admissions system at all. Many select at 11+ using their own papers or a shared adaptive test, such as the ISEB Pre-Tests, which cover English, mathematics, verbal reasoning and non-verbal reasoning and take about two hours and fifteen minutes in total. Applications usually also include a school report, references and sometimes an interview.",
+            "The Independent Schools Examinations Board also sets Common Entrance, in use since 1903. At 11+ it consists of three papers in English, mathematics and science, sat in Year 6, mainly for entry to senior independent girls' schools. At 13+ it covers a wider range of subjects and is sat in Year 8."
+          ]
+        },
+        {
+          "heading": "Things do change",
+          "body": [
+            "Test design is not fixed, so it is worth re-checking details every year rather than acting on advice from two or three years ago. In 2026 the seven Gloucestershire grammar schools announced a move to a test closer to the national curriculum for 2027 entry, with non-verbal reasoning removed, and a move of the exam from September of Year 6 into the summer of Year 5. The stated aims were to reduce the scope for tutoring and to stop children revising through the summer holidays.",
+            "Changes like this are the reason so much advice online goes out of date quickly. Your own school's current admissions page, and the local authority's, are the two places worth checking first. Everything else is helpful context, but it is context."
+          ]
+        }
+      ],
+      "keyPoints": [
+        "There is no national 11+ exam. Your local authority or school decides the provider, the subjects and the weighting.",
+        "GL Assessment is the most widely used provider; Cambridge Select Insight, formerly CEM Select, is common in independent schools.",
+        "Results are usually reported as standardised scores, not as marks out of 100, so scores are hard to compare between areas.",
+        "Registering for the test and applying for a place are separate steps with separate deadlines.",
+        "Test content and timing change from time to time, so check your own school's current guidance each year."
+      ],
+      "sources": [
+        {
+          "title": "11+ practice papers",
+          "publisher": "GL Assessment",
+          "url": "https://11plus.gl-assessment.co.uk/"
+        },
+        {
+          "title": "Cambridge Select Insight entrance assessments",
+          "publisher": "Cambridge Insight (formerly CEM)",
+          "url": "https://www.cem.org/entrance-assessments"
+        },
+        {
+          "title": "Common Entrance (CE) assessments",
+          "publisher": "Independent Schools Examinations Board (ISEB)",
+          "url": "https://www.iseb.co.uk/assessments/common-entrance/"
+        },
+        {
+          "title": "New grammar school test 'won't stop tutoring gap'",
+          "publisher": "BBC News",
+          "url": "https://www.bbc.co.uk/news/articles/clyple9qpldo"
+        }
+      ]
+    },
+    {
+      "slug": "the-four-components",
+      "title": "The four parts of most 11+ tests",
+      "summary": "Most 11+ tests draw on four components: English, verbal reasoning, non-verbal reasoning and mathematics. Here is what each one actually measures and the question types your child will meet.",
+      "readMinutes": 8,
+      "tags": ["components", "question-types", "tests"],
+      "sections": [
+        {
+          "heading": "Not every test has all four",
+          "body": [
+            "It is often said that the 11+ has four papers. In practice, the four common components are English or English comprehension, verbal reasoning, non-verbal reasoning and mathematics, but the combination varies considerably. Essex grammars sit English and Mathematics through the CSSE consortium, with no separate reasoning papers, while Buckinghamshire's Secondary Transfer Test uses verbal reasoning, mathematics and non-verbal reasoning but no English paper.",
+            "Some areas also include creative writing, and in Kent the creative writing element of the English test is used only in particular circumstances, such as an appeal. This is why a parent's first question should always be which papers their child will actually sit, rather than which subjects exist in general. The BBC's overview of grammar school selection notes that entrance exams can consist of all or any subset of numerical reasoning, verbal reasoning, English comprehension, punctuation and grammar, non-verbal reasoning and creative writing."
+          ]
+        },
+        {
+          "heading": "English and comprehension",
+          "body": [
+            "This is the closest component to ordinary school work. Questions typically ask a child to read a short passage and answer questions about it, spot a grammatical error, choose the best word for a sentence, or work out which punctuation is needed. Nothing here is taught specifically for the test; it rewards the reading and writing habits a child already has.",
+            "Because it draws on taught knowledge, English is the component where a child's experience of books matters most. A child who reads widely for pleasure will usually find these papers more familiar than one who has only met exam-style extracts, simply because long texts become less tiring and inference becomes more automatic."
+          ]
+        },
+        {
+          "heading": "Why verbal reasoning is different",
+          "body": [
+            "Verbal reasoning is the component that surprises families most, and it is distinctive to UK selection at this age. It is not a subject on the national curriculum and not a standard academic skill taught in school. It asks a child to reason about words, letters and symbols in a structured way, rather than to recall anything that has been taught.",
+            "A typical question shows a pair of words and asks which of five other words relates to them in the same way, or shows a coded relationship such as one letter standing for another and asks which coded word matches. Another common format gives a list of words and asks which does not belong. None of this depends on subject knowledge. It depends on noticing relationships, holding a rule in mind, and applying it quickly and accurately.",
+            "Verbal reasoning is where familiarity with the format pays most, which is why GL Assessment and the ISEB both publish free or open materials introducing the question styles. A child who has never seen a coded question before will spend the first few minutes working out what is being asked, and that time comes straight out of the clock."
+          ]
+        },
+        {
+          "heading": "Non-verbal reasoning",
+          "body": [
+            "Non-verbal reasoning uses shapes, patterns and diagrams rather than language, so it is intended to be as accessible as possible to children from different language backgrounds. Common formats include finding the next shape in a series, deciding which shape completes a grid, working out which net folds into a cube, and recognising a shape that has been rotated or reflected.",
+            "It is a test of pattern recognition and mental manipulation rather than drawing, so accuracy in art is not the marker. It also tends to be the component most heavily targeted by private practice, which is one reason some schools have recently moved to reduce or remove it."
+          ]
+        },
+        {
+          "heading": "Mathematics",
+          "body": [
+            "The mathematics paper covers the ordinary primary curriculum: number and place value, the four operations, fractions and percentages, measures, time, geometry and word problems. Questions are usually multiple choice, and the difficulty tends to rise through the paper, with several options per question rather than written working to be marked.",
+            "The word problems are often the part families underestimate. They test whether a child can identify which part of a multi-step situation matters, hold several relationships at once and check an answer against what the question actually asked. That is a reading skill as much as a mathematical one, which is another reason the English and reasoning components deserve the same attention. None of this requires work beyond the primary curriculum, which is why a child who is doing well at school maths rarely needs extra drilling on this paper."
+          ]
+        },
+        {
+          "heading": "The question formats worth recognising",
+          "body": [
+            "In verbal reasoning you will meet odd-one-out, where a list of words is given and the child identifies the one that does not fit; codes, where a letter or symbol stands for another; word relationships, including synonyms, antonyms and analogies; hidden words, where a target word is embedded in a sentence or passage; and sequences, where a list runs in some order and the child continues or completes it.",
+            "In non-verbal reasoning the recurring formats are series, matrices, nets, rotations and reflections, and shape classification. Recognising the format is often most of the difficulty, so a short introduction to each type, well before the test, is more useful than lots of practice on one familiar type. GL Assessment makes the same point when it notes that its free familiarisation materials are particularly useful for reasoning tests, because children may not have encountered these question types before."
+          ]
+        }
+      ],
+      "keyPoints": [
+        "The four common components are English, verbal reasoning, non-verbal reasoning and mathematics, but no single test has to include all four.",
+        "Verbal reasoning is not a taught school subject; it asks children to reason about words, letters and symbols rather than recall knowledge.",
+        "English and mathematics reward ordinary school teaching, while the two reasoning papers reward familiarity with their question formats.",
+        "Non-verbal reasoning is language-free and depends on pattern recognition and mental manipulation, not drawing ability.",
+        "Introduce each question type early, because time lost working out what is being asked cannot be recovered."
+      ],
+      "sources": [
+        {
+          "title": "11+ practice papers",
+          "publisher": "GL Assessment",
+          "url": "https://11plus.gl-assessment.co.uk/"
+        },
+        {
+          "title": "Free familiarisation materials",
+          "publisher": "GL Assessment",
+          "url": "https://11plus.gl-assessment.co.uk/pages/free-materials"
+        },
+        {
+          "title": "Cambridge Select Insight entrance assessments",
+          "publisher": "Cambridge Insight (formerly CEM)",
+          "url": "https://www.cem.org/entrance-assessments"
+        },
+        {
+          "title": "Grammar schools: What are they and why are they controversial?",
+          "publisher": "BBC News",
+          "url": "https://www.bbc.co.uk/news/education-34538222"
+        }
+      ]
+    },
+    {
+      "slug": "building-vocabulary",
+      "title": "Building vocabulary that actually helps",
+      "summary": "Vocabulary breadth is one of the strongest predictors of reading comprehension, and verbal reasoning depends on knowing words. Here is why reading widely beats word lists, and what the research says about how many words children need.",
+      "readMinutes": 8,
+      "tags": ["vocabulary", "reading", "revision"],
+      "sections": [
+        {
+          "heading": "Why vocabulary carries so much weight",
+          "body": [
+            "Vocabulary is the quiet foundation under two of the four components. In the English paper, a child who does not know a word has to decode it, work out its sense from context and still hold the rest of the sentence in mind. In verbal reasoning, where there is no surrounding text to help, an unknown word simply blocks the question. Breadth of vocabulary therefore limits performance in both papers at once.",
+            "This is not a new idea in education research. Large studies have repeatedly found that children's vocabulary is among the best single indicators of later reading comprehension, which is why Cambridge Insight describes verbal, non-verbal and mathematical ability as the key areas that decades of research have shown to be the best indicators of academic achievement across every subject. Cambridge Primary Insight, its assessment for ages 5 to 11, measures this directly."
+          ]
+        },
+        {
+          "heading": "How many words does a child need?",
+          "body": [
+            "Any figure should be treated with care, because it depends entirely on how a word is counted. Brysbaert and colleagues, reviewing the literature alongside a large crowdsourcing study, estimate that an average 20-year-old native speaker of American English knows about 42,000 lemmas, plus roughly 4,200 non-transparent multiword expressions, derived from around 11,100 word families. Other published estimates for adults range from under 10,000 to over 200,000 words, purely because of differing definitions.",
+            "The more useful number for parents is the rate. The same research finds that between the ages of 20 and 60, the average person learns about 6,000 additional lemmas, which is roughly one new word every two days. Words are also related in families: knowing help helps a child work out helpful, helpless and helpfulness. So for an 11+ candidate, breadth of word families and confidence with related forms matters more than memorised single definitions."
+          ]
+        },
+        {
+          "heading": "Why reading beats a word list",
+          "body": [
+            "A list teaches recognition; reading teaches use. A child meets a word in a sentence, sees it again a week later in a different context, and gradually builds a sense of when it is the right word, not only what it means. That is the knowledge an exam question on synonyms or word relationships actually tests, and it is very hard to fake from a list.",
+            "The wider context matters too, because reading enjoyment itself tracks reading attainment. In the National Literacy Trust's 2025 survey of 114,970 responses, only 32.7% of 8 to 18 year olds said they enjoyed reading in their free time, the lowest proportion in twenty years, and fewer than one in five said they read something daily. When the Trust matched survey answers to reading scores the previous year, children who read daily had noticeably higher average standardised reading scores than those who did not. For a child facing an English or verbal reasoning paper, daily reading is one of the most useful habits available."
+          ]
+        },
+        {
+          "heading": "Use spaced revision, not cramming",
+          "body": [
+            "The most reliable finding in the learning sciences is that practice spread over time beats practice crammed into one session. A widely cited review in Nature Reviews Psychology sets out both the spacing effect, where spacing practice across several sessions improves retention compared with massed practice, and the retrieval effect, where material that is tested is remembered better than material that is simply reread. The review notes that these strategies are effective and yet widely underused.",
+            "For vocabulary in particular, the practical version is simple. Meet a small group of words, use them in conversation or in a written sentence, then look at them again after a few days, a couple of weeks and a couple of months. Asking a child to retrieve a word from memory, rather than to read a definition again, is the part that makes the difference."
+          ]
+        },
+        {
+          "heading": "What a light-touch week looks like",
+          "body": [
+            "Nothing on this list needs to feel like homework. Twenty minutes of reading most days, with the child choosing the book, does more for vocabulary than an hour of a workbook once a week. A short conversation about a word that came up in the book, or a quick odd-one-out question using words from it, adds retrieval without adding pressure.",
+            "It also helps to widen the reading diet. Non-fiction, newspapers, comics, information books and fiction all contribute different vocabulary, and a child who only reads one genre will meet a narrower range of words. The National Literacy Trust's survey found that children who enjoy reading are often drawn to it by interests, familiar stories on screen, and the freedom to choose, all of which are easy to honour at home."
+          ]
+        },
+        {
+          "heading": "Words in context, and in both directions",
+          "body": [
+            "It is worth remembering that verbal reasoning rewards both meaning and structure. Questions about opposites, categories, alphabetical order and shared features all depend on precise word knowledge, not just broad understanding. A child who knows that clemency and leniency are opposites will answer a synonym question; a child who only knows that both are kind words may not.",
+            "Reading widely builds exactly that precision, because books contain shades of meaning that definitions do not. It is also the least competitive form of preparation there is: every child in the class benefits, no score is recorded, and nothing needs to be reported back to a school."
+          ]
+        }
+      ],
+      "keyPoints": [
+        "Vocabulary breadth limits performance in both the English and verbal reasoning papers, because unknown words slow comprehension.",
+        "Research estimates of how many words someone knows range from under 10,000 to over 200,000, so avoid fixed targets and think in word families instead.",
+        "Words are learned steadily, at roughly one every two days into early adulthood, which is an argument for starting early rather than cramming.",
+        "Reading widely and daily beats a word list, because comprehension questions need shades of meaning rather than definitions.",
+        "Spaced retrieval, revisiting a small set of words after gaps, is more effective than rereading them in one session."
+      ],
+      "sources": [
+        {
+          "title": "How Many Words Do We Know? Practical Estimates of Vocabulary Size Dependent on Word Definition, the Degree of Language Input and the Participant's Age",
+          "publisher": "Frontiers in Psychology",
+          "url": "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2016.01116/full"
+        },
+        {
+          "title": "The science of effective learning with spacing and retrieval practice",
+          "publisher": "Nature Reviews Psychology",
+          "url": "https://www.nature.com/articles/s44159-022-00089-1"
+        },
+        {
+          "title": "Children and young people's reading in 2025",
+          "publisher": "National Literacy Trust",
+          "url": "https://literacytrust.org.uk/research-services/research-reports/children-and-young-peoples-reading-in-2025/"
+        },
+        {
+          "title": "Information for parents and carers",
+          "publisher": "Cambridge Insight (formerly CEM)",
+          "url": "https://www.cem.org/parents"
+        }
+      ]
+    },
+    {
+      "slug": "preparation-timeline",
+      "title": "A realistic preparation timeline",
+      "summary": "A calm, year-by-year plan from Year 3 to the exam year, and the reason building reading habits early matters more than long sessions near the deadline.",
+      "readMinutes": 7,
+      "tags": ["timeline", "planning", "year-groups"],
+      "sections": [
+        {
+          "heading": "Year 3: build the reading habit",
+          "body": [
+            "Year 3 is a good time to start, and the work is mostly ordinary. Read together every day, let your child choose much of what they read, and talk about what they have read without turning it into a quiz. This is the year to build a routine that will still be in place in Year 6, not a routine that needs sustaining by willpower at the end.",
+            "Reasoning question types can be introduced here too, in small doses, because they are formats rather than skills. Ten minutes once a week looking at an odd-one-out question or a simple shape series is enough at this stage. The aim is familiarity, so that a coded question in Year 6 does not feel like a new subject."
+          ]
+        },
+        {
+          "heading": "Year 4: meet all four components",
+          "body": [
+            "By Year 4, a child is usually old enough to enjoy a proper sample paper, and it is a good year to work through the free familiarisation materials published by the test provider. GL Assessment offers free downloads across verbal reasoning, non-verbal reasoning, English and maths, and describes them as particularly useful for reasoning tests because children may not have met these question types before.",
+            "This is also the year to find out which papers your child will actually sit. Talk to the local authority or the school, note the registration deadline in your calendar, and be clear about which components are included. Families who discover late that there is a creative writing element, or that there is no English paper at all, have less time to adjust."
+          ]
+        },
+        {
+          "heading": "Year 5: turn it into a routine",
+          "body": [
+            "Year 5 is the year where consistency beats intensity. A short, reliable session most weeks will do more than a handful of long sessions, partly because spacing practice over time is one of the best-supported findings in learning research, and partly because a tired child retains very little from a two-hour Saturday morning.",
+            "Keep reading for pleasure running alongside any practice. It is easy for a reading habit to be quietly displaced by past papers in Year 5, and that is a poor trade, because the papers draw on vocabulary and comprehension built over years rather than months. If practice starts to crowd out reading, reduce the practice."
+          ]
+        },
+        {
+          "heading": "Year 6: familiarise, then rehearse",
+          "body": [
+            "The first half of Year 6 is for breadth. Work through full papers in the correct format, mix up the question types rather than drilling one, and keep a note of which areas feel weakest. Include some untimed work early on, because understanding the questions matters more than speed at this point.",
+            "Later in the year, introduce the clock. Sit papers under timed conditions, learn the discipline of moving on when a question will not resolve, and practise with the same materials you expect on the day. A few full rehearsals in the weeks before the test are worth more than continuous small practice, because they test the routine, not just the knowledge."
+          ]
+        },
+        {
+          "heading": "The final fortnight",
+          "body": [
+            "In the last two weeks, the priority is rest, not revision. Sleep is a practical academic matter here: NHS guidance for children aged 5 to 11 recommends nine to eleven hours of sleep a night, and advises turning screens off an hour before bed. A child revising late into the night is trading a small amount of extra practice for a much larger loss of attention and recall.",
+            "Some families find it helpful to stop all formal practice about a week before the test and use the time for ordinary things: a walk, a film, a normal weekend. There is no evidence that a final weekend of cramming helps, and there is a real chance it makes the test feel unfamiliar again."
+          ]
+        },
+        {
+          "heading": "When the test is not in Year 6",
+          "body": [
+            "Not every child sits the 11+ in Year 6. Some areas test in the autumn of Year 6, some in the summer of Year 5, and a few schools have experimented with other timings. In 2026 the seven Gloucestershire grammar schools announced that from 2027 they would move the exam into the summer of Year 5, partly so that children are not revising through the summer holidays.",
+            "If your child sits early, shift the whole timeline up a year rather than compressing it. The same logic applies in reverse for anyone considering an optional year: the aim is steady reading and steady reasoning practice, not a compressed final push."
+          ]
+        }
+      ],
+      "keyPoints": [
+        "Start in Year 3 with reading habits and light exposure to reasoning question types, not with past papers.",
+        "Use Year 4 to find out exactly which papers apply and to work through the provider's free familiarisation materials.",
+        "In Year 5, prefer short regular sessions to occasional long ones, and protect reading time from being crowded out.",
+        "Year 6 should move from understanding question types to rehearsing them under timed conditions.",
+        "In the final fortnight, protect sleep rather than adding revision; NHS guidance recommends nine to eleven hours for 5 to 11 year olds."
+      ],
+      "sources": [
+        {
+          "title": "Free familiarisation materials",
+          "publisher": "GL Assessment",
+          "url": "https://11plus.gl-assessment.co.uk/pages/free-materials"
+        },
+        {
+          "title": "The science of effective learning with spacing and retrieval practice",
+          "publisher": "Nature Reviews Psychology",
+          "url": "https://www.nature.com/articles/s44159-022-00089-1"
+        },
+        {
+          "title": "Healthy sleep: advice for children aged 5 to 11",
+          "publisher": "NHS Healthier Together",
+          "url": "https://www.healthiertogether.nhs.uk/child-under-12-years/healthy-sleep"
+        },
+        {
+          "title": "New grammar school test 'won't stop tutoring gap'",
+          "publisher": "BBC News",
+          "url": "https://www.bbc.co.uk/news/articles/clyple9qpldo"
+        }
+      ]
+    },
+    {
+      "slug": "how-to-practise",
+      "title": "How to practise in a way that helps",
+      "summary": "Why past papers matter, when to use a clock, how to review properly, and why mixing question types beats doing more of the same.",
+      "readMinutes": 8,
+      "tags": ["practice", "technique", "revision"],
+      "sections": [
+        {
+          "heading": "Real papers, and why they matter",
+          "body": [
+            "Practice that looks like the real thing is worth far more than practice that is merely similar. The layout, the number of options, the instructions, the font size and the length of the passages all contribute to how a child feels in the first five minutes. A child who has only ever done worksheets can lose time simply working out the ground rules on the day.",
+            "GL Assessment sells printed practice papers designed to reflect the layout children are likely to meet, with up-to-date question types and answers, and offers free familiarisation papers separately. That split is a useful model: familiarisation for learning the format, and fuller papers once a child is ready to work under conditions that resemble the real thing."
+          ]
+        },
+        {
+          "heading": "Timed and untimed, in the right order",
+          "body": [
+            "For younger children, and for a child's first exposure to a format, untimed practice is kinder and more effective. There is no point timing a child who is still working out what a coded question means, because the result measures confusion rather than ability. Untimed practice allows a child to think, talk through the reasoning and ask why.",
+            "Timing becomes useful later, once the formats are familiar. It is then a question of pacing rather than speed: knowing roughly how long a question should take, and being willing to leave a hard one and come back. A child who gets stuck on one question for five minutes has, in effect, lost a whole paper's worth of marks elsewhere."
+          ]
+        },
+        {
+          "heading": "Mix the question types",
+          "body": [
+            "Repetition builds automaticity, but only for the thing being repeated. If a child does nothing but synonyms, they will improve at synonyms and nothing else. Mixed practice forces a child to read the instruction each time, which is closer to what the real paper demands, and it keeps the work interesting.",
+            "A simple weekly structure works well: one short mixed set covering several question types, and one longer paper in the subject your child finds hardest. Both should be sat with the paper closed and answers written down, then marked properly afterwards."
+          ]
+        },
+        {
+          "heading": "Review is the part that counts",
+          "body": [
+            "Marking a paper is not reviewing it. The useful part happens after the score: going back through the questions that were wrong, working out whether the error was a misread instruction, a knowledge gap, a vocabulary problem or a miscalculation, and saying so out loud. Research on testing effects suggests that being asked to retrieve and explain an answer is itself a strong learning event.",
+            "Keep a short written record of the type of error rather than the score. Six weeks later, a list saying three times the instruction was misread and twice a word was unknown is far more actionable than a percentage, and it points directly at what to work on next."
+          ]
+        },
+        {
+          "heading": "How much is enough",
+          "body": [
+            "There is no published optimum, and any product claiming to know one is guessing. For most children, a couple of sessions a week in the year or two before the test is a reasonable amount alongside school, reading and sport. Cambridge Insight makes a related point in the design of its own entrance assessment: it is built so children can show their potential without excessive preparation, and it states that no commercially available practice papers are provided for it.",
+            "Watch for the signals that it has become too much. A child who starts dreading practice, whose sleep is disturbed, or who stops reading for pleasure is telling you clearly that the balance has tipped. Cutting back for a fortnight is a better response than pushing through."
+          ]
+        },
+        {
+          "heading": "Where tutoring fits",
+          "body": [
+            "Private tutoring is a reasonable option for a family who wants it, and it can be particularly useful for a child who works well one to one. The Education Endowment Foundation's guidance on effective tutoring describes one-to-one and small group tuition as one of the best-evidenced interventions available when it is implemented well, with structured content, trained tutors and enough time to make a difference.",
+            "The same guidance is honest that the impact is positive on average but not universal, and that careful implementation is what makes the difference. It is worth remembering too that a change of test design, as seen in Gloucestershire, is partly a response to the fact that children who are intensively tutored in reasoning techniques have tended to do better in those components than their raw ability would suggest. No amount of tuition changes the underlying reading, vocabulary and reasoning a child brings to the paper."
+          ]
+        }
+      ],
+      "keyPoints": [
+        "Use real papers early on so the layout, instructions and question types are not a surprise on the day.",
+        "Practise untimed while formats are new, then introduce the clock once the child understands what is being asked.",
+        "Mix question types across a session, because drilling one type only improves that one type.",
+        "Spend the review time explaining why each error happened, not just counting them.",
+        "Tutoring can help when it is well targeted, but no amount of it substitutes for reading, vocabulary and reasoning."
+      ],
+      "sources": [
+        {
+          "title": "11+ practice papers and free familiarisation materials",
+          "publisher": "GL Assessment",
+          "url": "https://11plus.gl-assessment.co.uk/pages/free-materials"
+        },
+        {
+          "title": "Making a Difference with Effective Tutoring",
+          "publisher": "Education Endowment Foundation",
+          "url": "https://educationendowmentfoundation.org.uk/education-evidence/effective-tutoring"
+        },
+        {
+          "title": "The science of effective learning with spacing and retrieval practice",
+          "publisher": "Nature Reviews Psychology",
+          "url": "https://www.nature.com/articles/s44159-022-00089-1"
+        },
+        {
+          "title": "Cambridge Select Insight entrance assessments",
+          "publisher": "Cambridge Insight (formerly CEM)",
+          "url": "https://www.cem.org/entrance-assessments"
+        }
+      ]
+    },
+    {
+      "slug": "mistakes-parents-make",
+      "title": "Common mistakes parents make",
+      "summary": "Six widely repeated approaches that tend to backfire, from starting too late to over-focusing on maths, and what to do instead of each one.",
+      "readMinutes": 7,
+      "tags": ["advice", "mistakes", "parents"],
+      "sections": [
+        {
+          "heading": "Starting too late",
+          "body": [
+            "The most common error is beginning in the summer before the test. Reasoning formats can be learned in a fortnight, but vocabulary, reading comprehension and the habit of sustained concentration are built over years. A child who meets a coded question for the first time in August has to learn the format and the content at once, under a clock, with a parent watching.",
+            "Starting early also changes the emotional shape of the year. Spread across Year 4, Year 5 and Year 6, preparation is an ordinary part of the routine and largely invisible. Crammed into one term, it takes over the household, and everyone involved comes to the test exhausted."
+          ]
+        },
+        {
+          "heading": "Over-focusing on maths",
+          "body": [
+            "Mathematics feels more measurable, so it attracts more practice time. But in most areas the English paper carries the same weight, and where the reasoning papers are included they often carry the most. A child can be fluent in arithmetic and still lose a large share of available marks on a comprehension passage or a coded word question.",
+            "The overlap between the components is also easy to miss. Mathematics word problems are a reading test as much as a maths test, and verbal reasoning is, in effect, a vocabulary test. Practising maths while leaving English and reading untouched is like training one arm and expecting a three-metre spring."
+          ]
+        },
+        {
+          "heading": "Doing practice without review",
+          "body": [
+            "A large stack of completed papers can feel like progress and produce very little. The learning happens when a child explains why an answer was wrong, so a session that ends with the sheets tidied away has missed the point. This is also the step most likely to be dropped when families are tired, which is exactly when it is needed.",
+            "The evidence on testing and retrieval practice is consistent: being asked to produce an answer from memory strengthens learning more than rereading the same material. Marking is the easy part. Sitting down together afterwards and talking through three or four mistakes is the part that pays."
+          ]
+        },
+        {
+          "heading": "Relying on one source",
+          "body": [
+            "Families often commit to one workbook or one online package, and sometimes to a provider's published papers alone. Providers are explicit that their materials are not identical to every local test, and GL Assessment states plainly that 11+ tests vary from area to area and that timings, topics and question counts may differ from its practice papers.",
+            "A second source is useful insurance. It introduces unfamiliar wording and a slightly different layout, which is realistic, and it reduces the risk of a child recognising a paper from a distance and being unsettled when the real one is different. Mixed sources are also simply less dull."
+          ]
+        },
+        {
+          "heading": "Assuming an earlier win guarantees a place",
+          "body": [
+            "Scores in Year 3 and Year 4 are encouraging, and worth being pleased about. They are not a forecast. Standardised scores describe a child's performance on one day against a particular reference group, and the reference group, the weighting and sometimes the test itself will be different by the time the real exam is sat.",
+            "It also cuts both ways. A child who did well in an earlier mock but is now working steadily should not be told the place is theirs, because places are decided by one morning's result under a school's own qualifying standard and admission criteria. Nothing short of the offer itself is a guarantee."
+          ]
+        },
+        {
+          "heading": "Letting reading for pleasure slip",
+          "body": [
+            "The habit that supports the English and reasoning papers most is the one most often sacrificed to preparing for them. In practice, reading for pleasure tends to be displaced first, because it is the least measurable and the easiest to postpone, and its effects are slow and hard to see week to week.",
+            "The National Literacy Trust's figures suggest there is not much slack to cut. In its 2025 survey, 32.7% of 8 to 18 year olds said they enjoyed reading in their free time, the lowest proportion in twenty years, and 18.7% read something daily. Maintaining a daily read in Year 5 and Year 6 is a deliberate choice, and one of the higher-value ones available."
+          ]
+        },
+        {
+          "heading": "Overloading with tutoring",
+          "body": [
+            "Tutoring is easy to overdo, and the pressure to sign up often comes from other families rather than from the child. The BBC's reporting on grammar school families is candid about this, with parents describing the difficulty of deciding whether preparing their child means accepting an advantage over families who cannot pay, and others saying they had signed up largely because everyone else had.",
+            "A crowded week is easy to create by accident: reading, practice, a tutor, a club and a music lesson all compete for the same evening. The Education Endowment Foundation's tutoring guidance is worth reading in full precisely because it is measured: tuition is well evidenced, but only when it is structured, targeted and given enough time to show an effect."
+          ]
+        }
+      ],
+      "keyPoints": [
+        "Starting in the final summer leaves too little time for vocabulary, comprehension and pace to improve.",
+        "English and the reasoning papers usually carry as much weight as maths, and are rarely the child's strongest area by default.",
+        "Practice without review produces tidied papers rather than learning; the explanation of each error is the useful part.",
+        "No single source matches every local test, and a second source makes practice more realistic.",
+        "Reading for pleasure is the habit most easily displaced and the one that most supports the English and reasoning papers."
+      ],
+      "sources": [
+        {
+          "title": "Grammar schools: What are they and why are they controversial?",
+          "publisher": "BBC News",
+          "url": "https://www.bbc.co.uk/news/education-34538222"
+        },
+        {
+          "title": "New grammar school test 'won't stop tutoring gap'",
+          "publisher": "BBC News",
+          "url": "https://www.bbc.co.uk/news/articles/clyple9qpldo"
+        },
+        {
+          "title": "Making a Difference with Effective Tutoring",
+          "publisher": "Education Endowment Foundation",
+          "url": "https://educationendowmentfoundation.org.uk/education-evidence/effective-tutoring"
+        },
+        {
+          "title": "Children and young people's reading in 2025",
+          "publisher": "National Literacy Trust",
+          "url": "https://literacytrust.org.uk/research-services/research-reports/children-and-young-peoples-reading-in-2025/"
+        }
+      ]
+    },
+    {
+      "slug": "managing-pressure",
+      "title": "Managing pressure, at home and on the day",
+      "summary": "Practical ways to keep the final months manageable: proportionate pressure, avoiding comparison, protecting sleep, handling nerves and knowing when a child needs adjustments.",
+      "readMinutes": 8,
+      "tags": ["wellbeing", "sleep", "exam-day"],
+      "sections": [
+        {
+          "heading": "Some pressure, but not too much",
+          "body": [
+            "A little pressure is motivating. Children meet it in football matches, music exams and school plays, and it does them no harm. The problem is not pressure itself but pressure that a child has no way off, and that a parent adds on top of everything else already happening at school.",
+            "The evidence on this is worth taking seriously. A study reported in The Guardian in 2026, drawing on data from nearly 5,000 young people followed by researchers at University College London, found that higher academic pressure at 15 was linked to greater risk of depression and self-harm into early adulthood. The authors suggested that families can help by reducing academic pressure and encouraging physical activity, socialising and sleep."
+          ]
+        },
+        {
+          "heading": "Avoid comparison",
+          "body": [
+            "The most damaging comparisons are usually the closest ones. Older siblings who passed, cousins who went to a particular school, and the child in the next seat who seems to have finished the paper are all sources of pressure that a child cannot argue with or act on.",
+            "It helps to agree in advance, calmly, on a small number of phrases and stick to them. Saying something like we are not comparing you with anyone, and that today is just a day you take a test, removes the invitation to rank. So does not announcing the results to relatives, which turns a child's morning into a family announcement."
+          ]
+        },
+        {
+          "heading": "Sleep, food and the run-up",
+          "body": [
+            "Sleep is the most commonly sacrificed thing in 11+ preparation, and the least wise. NHS guidance for children aged 5 to 11 recommends nine to eleven hours of sleep a night, and the same advice notes that screens should be turned off an hour before bed because they keep the brain awake.",
+            "Meals matter in the same practical way. A familiar breakfast, a packed snack and normal routines do more for a child's concentration on a test morning than any last-minute revision. If a child is not hungry, they will not eat, and arguing about it at half past seven in the morning helps nobody."
+          ]
+        },
+        {
+          "heading": "Exam day nerves",
+          "body": [
+            "Most children who are nervous about the 11+ have never sat a test of this shape before, so the nerves are about the unfamiliar rather than the difficulty. Familiarisation papers help here more than any pep talk, because a child who has already sat a full paper at home knows roughly what the room, the instructions and the clock feel like.",
+            "On the day, keep statements factual. Tell your child what time to wake up, what to eat, where to go and who will be there. Anything about doing well tends to raise pressure rather than lower it. Bringing a water bottle and remembering to arrive early are more useful than last-minute encouragement."
+          ]
+        },
+        {
+          "heading": "When a child needs adjustments",
+          "body": [
+            "If a child has an additional need, a diagnosed condition such as dyslexia or ADHD, or simply finds the format unusually hard, that is a conversation to have with the school or admissions authority well before the test rather than in the week before. Adjustments such as extra time, rest breaks or a reader are routinely available, and they are not a last-minute favour.",
+            "Cambridge Select Insight, for example, is published with 25% extra time versions for candidates with special educational needs, and every candidate receives standardised familiarisation materials to reduce anxiety. The ISEB publishes a step-by-step guide for families going through the process for a child with SEND. Parents should ask what their own provider offers rather than assuming."
+          ]
+        },
+        {
+          "heading": "What schools actually look at",
+          "body": [
+            "A single morning's score is only one part of an admissions picture, and schools are aware of that. Independent applications typically include a school report, references and often an interview, so a child's conduct, curiosity and effort are all in view alongside the papers. Grammar school decisions also rest on the qualifying standard and the published admission criteria rather than on a single number.",
+            "The broader point is that schools of every kind measure more than attainment. Cambridge Insight, the organisation behind Cambridge Select Insight, also offers a wellbeing check used by schools to monitor how students are feeling at points in the year when emotions may be heightened, including in the run-up to exams. Attention to the whole child is built into how schools think about selection, not bolted on afterwards."
+          ]
+        }
+      ],
+      "keyPoints": [
+        "A modest amount of pressure is normal and motivating; sustained, unavoidable pressure is not.",
+        "Research reported in 2026 links higher academic pressure at 15 with worse mental health into adulthood.",
+        "Protect sleep: NHS guidance recommends nine to eleven hours a night for 5 to 11 year olds, with screens off an hour before bed.",
+        "If a child needs adjustments, raise them with the school early; extra time and rest breaks are standard, not exceptional.",
+        "Admissions decisions rest on more than one test score, and schools take a wider view of each child."
+      ],
+      "sources": [
+        {
+          "title": "Healthy sleep: advice for children aged 5 to 11",
+          "publisher": "NHS Healthier Together",
+          "url": "https://www.healthiertogether.nhs.uk/child-under-12-years/healthy-sleep"
+        },
+        {
+          "title": "More exam stress at 15 linked to higher risk of depression as young adult - study",
+          "publisher": "The Guardian",
+          "url": "https://www.theguardian.com/education/2026/feb/12/exam-stress-higher-risk-depression-self-harm-study"
+        },
+        {
+          "title": "Cambridge Select Insight entrance assessments",
+          "publisher": "Cambridge Insight (formerly CEM)",
+          "url": "https://www.cem.org/entrance-assessments"
+        },
+        {
+          "title": "ISEB Pre-Tests: information for families",
+          "publisher": "Independent Schools Examinations Board (ISEB)",
+          "url": "https://www.iseb.co.uk/assessments/common-pre-tests/for-families/"
+        }
+      ]
+    },
+    {
+      "slug": "glossary",
+      "title": "A plain-English glossary of 11+ jargon",
+      "summary": "What the acronyms and phrases used by schools, tutors and exam boards actually mean, including one term that has nothing to do with the 11+ at all.",
+      "readMinutes": 6,
+      "tags": ["glossary", "jargon", "reference"],
+      "sections": [
+        {
+          "heading": "The components",
+          "body": [
+            "Verbal reasoning, usually written VR, is a test of reasoning with words, letters and codes rather than of anything taught in school. Non-verbal reasoning, or NVR, is the same kind of reasoning done with shapes and patterns instead of words, and is designed not to depend on English language ability. English, sometimes called English comprehension, is the paper based on reading, grammar and punctuation. Mathematics, sometimes called numerical reasoning, covers the primary maths curriculum.",
+            "NNAT stands for the Naglieri Nonverbal Ability Test, a nonverbal ability measure published by Pearson that uses picture-based problems and no written language. It is used in a small number of UK settings, chiefly in independent schools, rather than across the grammar school system."
+          ]
+        },
+        {
+          "heading": "The providers and the papers",
+          "body": [
+            "GL is short for GL Assessment, a Renaissance company and the largest provider of 11+ tests, with papers in verbal reasoning, non-verbal reasoning, English and maths. CEM stands for the Centre for Evaluation and Monitoring, founded in Newcastle and later based in Durham, which joined Cambridge in 2019 and is now called Cambridge Insight.",
+            "CEM Select, the computer-based entrance test, is now called Cambridge Select Insight. It has numerical, verbal and non-verbal sections, runs for about 60 minutes on average, and is used by selective independent schools, partially selective state schools, some grammar schools and schools using fair banding. ISEB stands for the Independent Schools Examinations Board.",
+            "CSSE is the Consortium of Selective Schools in Essex, whose member grammars share a test built around English and Mathematics papers rather than separate reasoning papers. Buckinghamshire's own paper is called the Secondary Transfer Test, often shortened to STTS, and covers verbal reasoning, mathematics and non-verbal reasoning."
+          ]
+        },
+        {
+          "heading": "The scores",
+          "body": [
+            "A raw score is simply the number of questions answered correctly. A standardised score, sometimes written SAS for standardised age score, adjusts for age and shows how a child performed against a reference group. It is usually reported on a scale with a mean of 100 and a standard deviation of 15, so 115 is about one standard deviation above average.",
+            "Standardised age, or the standardised age a score represents, is the age group whose typical performance the score matches. A qualifying standard, pass mark or threshold is the score a school sets to offer a place, and it differs between schools because demand differs. Where a school is oversubscribed, admission criteria such as distance from the school or a sibling already attending may then be applied. Banding and fair banding refer to admitting pupils in a range of ability groups rather than ranking purely by score."
+          ]
+        },
+        {
+          "heading": "The schools",
+          "body": [
+            "A grammar school is a state secondary school that selects its pupils by examination at about the age of 11. A comprehensive school is a state secondary school that does not select, and is the norm across England, Wales and Scotland. A partially selective school admits some pupils by test and the rest by other criteria, and several independent schools use a similar model.",
+            "Grammar school admissions means the whole process, from registration through test and offer, rather than a single event. Registration is the separate step of putting your child forward to sit the test, which in most areas is not the same as applying for a place through the local authority."
+          ]
+        },
+        {
+          "heading": "Common Entrance and pre-testing",
+          "body": [
+            "Common Entrance, usually shortened to CE, is a set of subject papers set by the ISEB, in use since 1903, for pupils moving from prep or junior schools to senior independent schools. At 11+ it is three papers in English, mathematics and science, sat in Year 6; at 13+ it covers a wider range of subjects and is sat in Year 8.",
+            "Pre-test has two meanings worth separating. The ISEB Pre-Tests are a real assessment: four online adaptive multiple-choice tests covering English, mathematics, verbal reasoning and non-verbal reasoning, taken once in a window from autumn to spring term and used by many leading independent schools. In ordinary conversation, pre-testing or a mock simply means a practice paper sat at home before the real thing. Neither is a pass mark for the other."
+          ]
+        },
+        {
+          "heading": "One term that is not about the 11+",
+          "body": [
+            "CMAT does not belong to the 11+ at all. It stood for the Cambridge Mathematical Admissions Test, an assessment used for admission to the sixth form of grammar schools, that is after Year 11 and around the age of 16, not for entry at 11. Families sometimes meet the acronym in older admissions material, or in discussion of sixth form entry, and it is worth being clear about which one is meant.",
+            "A separate exam shares the acronym. The Common Management Admission Test is a postgraduate management entrance exam run in India, which accounts for much of the confusion when families search online. Neither version has anything to do with a child's Year 6 entrance test in the UK."
+          ]
+        }
+      ],
+      "keyPoints": [
+        "VR and NVR are reasoning tests in words and in shapes respectively, and neither is a school subject.",
+        "GL Assessment, CEM, Cambridge Select Insight and the ISEB are providers; CSSE and the Secondary Transfer Test are locally run papers.",
+        "Standardised scores compare a child with a reference group, so scores are not comparable between areas or schools.",
+        "Common Entrance is the ISEB's subject-based exam for independent schools; the ISEB Pre-Tests are a separate adaptive online test.",
+        "CMAT is for sixth form entry after Year 11, not for the 11+."
+      ],
+      "sources": [
+        {
+          "title": "11+ practice papers",
+          "publisher": "GL Assessment",
+          "url": "https://11plus.gl-assessment.co.uk/"
+        },
+        {
+          "title": "About Cambridge Insight assessments and the history of CEM",
+          "publisher": "Cambridge Insight (formerly CEM)",
+          "url": "https://www.cem.org/history"
+        },
+        {
+          "title": "Common Entrance (CE) assessments",
+          "publisher": "Independent Schools Examinations Board (ISEB)",
+          "url": "https://www.iseb.co.uk/assessments/common-entrance/"
+        },
+        {
+          "title": "ISEB Pre-Tests: information for families",
+          "publisher": "Independent Schools Examinations Board (ISEB)",
+          "url": "https://www.iseb.co.uk/assessments/common-pre-tests/for-families/"
+        }
+      ]
+    }
+  ]
+}
