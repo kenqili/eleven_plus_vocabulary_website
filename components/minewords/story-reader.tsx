@@ -111,10 +111,10 @@ function Reading({ story }: { story: StoryDetail }) {
       <div className="story-reading-timer">
         <Clock3 size={20} aria-hidden="true" />
         <div>
-          <span>Reading time · this visit</span>
+          <span>Story reading time · this visit</span>
           <strong
             role="timer"
-            aria-label="Reading time this visit"
+            aria-label="Story reading time this visit"
             aria-live="off"
           >
             {Math.floor(clock.sessionSeconds / 60)

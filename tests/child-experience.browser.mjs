@@ -102,23 +102,21 @@ try {
   await page.getByRole("button", { name: "Next word", exact: true }).click();
   await page.locator(".answer:not(:disabled)").first().waitFor();
   await correct();
-  await page
-    .locator(".feedback summary")
-    .getByText("More word help", { exact: true })
-    .click();
-  await page.waitForTimeout(5400);
-  assert.equal(
-    db
-      .prepare(
-        "SELECT COUNT(*) n FROM attempts WHERE user_id=? AND answered_at IS NULL",
-      )
-      .get(user).n,
-    0,
-    "More word help prevents auto-next",
-  );
   await page.getByRole("button", { name: "Next word", exact: true }).click();
   await page.locator(".answer:not(:disabled)").first().waitFor();
   await correct();
+  // The meaning and the example are both listed outright, so there is no
+  // disclosure left to hold auto-next open here.
+  assert.equal(
+    await page.getByText("More word help", { exact: true }).count(),
+    0,
+    "feedback lists the example without a disclosure",
+  );
+  assert.match(
+    await page.locator(".feedback").innerText(),
+    /Setting up her own bakery/,
+    "feedback shows the example inline",
+  );
   await page
     .locator(".answer:not(:disabled)")
     .first()
@@ -294,13 +292,22 @@ try {
   await page.unroute("**/audio/vocabulary/*.mp3*");
   await voiceButton.click();
   await help.getByText("Playing…", { exact: true }).waitFor();
-  await help.getByText("More word help", { exact: true }).click();
+  // The example is listed directly in the note, so no disclosure has to be opened.
+  await help
+    .locator(".story-word-example")
+    .getByText("Setting up her own bakery was an ambitious enterprise.")
+    .waitFor();
   assert.match(await help.innerText(), /undertaking/);
+  assert.equal(
+    await help.getByText("More word help", { exact: true }).count(),
+    0,
+    "the redundant word-help disclosure is gone",
+  );
   await page.waitForTimeout(150);
   const expanded = await help.boundingBox();
   assert.ok(
     expanded.y + expanded.height <= 845,
-    "expanded word help stays in viewport",
+    "word help with the inline example stays in viewport",
   );
   await page.keyboard.press("Escape");
   assert.equal(await help.count(), 0);

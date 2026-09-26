@@ -5,6 +5,10 @@ import type { Word } from "@/lib/challenge/words";
 import { storyMeaning, storyRelated } from "@/lib/challenge/story-meanings";
 import { pauseAutoNext } from "@/lib/client/auto-next";
 import Pronunciation from "./pronunciation";
+
+/** A dash or blank in the CSVs means no relation was supplied for that word. */
+const has = (value: string) => !!value?.trim() && !/^[—–-]$/.test(value.trim());
+
 export default function WordHint({
   text,
   word,
@@ -143,27 +147,21 @@ export default function WordHint({
             </div>
             <span>{storyMeaning(word, storyId)}</span>
             <Pronunciation word={word.word} id={word.id} />
-            <span>
-              <b>Similar words (synonyms):</b>{" "}
-              {related.syn && related.syn !== "—"
-                ? related.syn
-                : "No close synonym listed"}
-            </span>
-            <span>
-              <b>Opposite words (antonyms):</b>{" "}
-              {related.ant && related.ant !== "—"
-                ? related.ant
-                : "No direct opposite listed"}
-            </span>
-            <details
-              onToggle={(e) => {
-                if (e.currentTarget.open) pauseAutoNext();
-              }}
-            >
-              <summary>More word help</summary>
-              <p>{word.definition}</p>
-              <p>Example: {word.example}</p>
-            </details>
+            {has(related.syn) && (
+              <span>
+                <b>Similar words (synonyms):</b> {related.syn}
+              </span>
+            )}
+            {has(related.ant) && (
+              <span>
+                <b>Opposite words (antonyms):</b> {related.ant}
+              </span>
+            )}
+            {word.example && (
+              <span className="story-word-example">
+                <b>Example:</b> {word.example}
+              </span>
+            )}
           </div>,
           document.body,
         )}

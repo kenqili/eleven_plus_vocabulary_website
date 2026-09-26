@@ -859,7 +859,6 @@
       "float",
       "hatch"
     ],
-    "sense": "To provide enough space for someone or something.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:accompany": {
@@ -869,7 +868,6 @@
       "float",
       "hatch"
     ],
-    "sense": "To go somewhere with someone.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:accompany": {
@@ -879,7 +877,6 @@
       "float",
       "hatch"
     ],
-    "sense": "To go somewhere with someone.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:achieve": {
@@ -889,7 +886,6 @@
       "float",
       "hatch"
     ],
-    "sense": "To succeed in doing something you worked towards.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:achieve": {
@@ -899,7 +895,6 @@
       "float",
       "hatch"
     ],
-    "sense": "To succeed in doing something you worked towards.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:aggressive": {
@@ -909,7 +904,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Ready to attack or argue in a forceful way.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:aggressive": {
@@ -919,7 +913,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Ready to attack or argue in a forceful way.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:amateur": {
@@ -929,7 +922,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "Someone who does an activity for enjoyment rather than as a paid job.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:amateur": {
@@ -939,7 +931,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "Someone who does an activity for enjoyment rather than as a paid job.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:analyse": {
@@ -949,7 +940,6 @@
       "float",
       "hatch"
     ],
-    "sense": "To examine something carefully to understand its parts and how they work.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:appreciate": {
@@ -959,7 +949,6 @@
       "float",
       "hatch"
     ],
-    "sense": "To recognise the value of something and feel thankful for it.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:atmosphere": {
@@ -969,7 +958,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "The feeling or mood of a place or situation.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:attached": {
@@ -979,7 +967,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Joined or fastened to something.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:attached": {
@@ -989,7 +976,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Joined or fastened to something.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:audience": {
@@ -999,7 +985,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "The people who watch or listen to a performance or talk.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:available": {
@@ -1009,7 +994,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Ready for someone to use or obtain.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:available": {
@@ -1019,7 +1003,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Ready for someone to use or obtain.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:average": {
@@ -1029,7 +1012,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "A value found by adding quantities and dividing by how many there are.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:awkward": {
@@ -1039,7 +1021,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Difficult to move, use or deal with.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:awkward": {
@@ -1049,7 +1030,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Difficult to move, use or deal with.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:bargain": {
@@ -1059,7 +1039,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "Something bought for less than its usual price.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:bias": {
@@ -1069,7 +1048,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "An unfair preference for or against someone or something.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:bias": {
@@ -1079,7 +1057,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "An unfair preference for or against someone or something.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:category": {
@@ -1089,7 +1066,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "A group of things that share a feature.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:cemetery": {
@@ -1099,7 +1075,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "A place where people who have died are buried.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:committee": {
@@ -1109,7 +1084,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "A group chosen to organise something or make decisions.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:communicate": {
@@ -1119,7 +1093,6 @@
       "float",
       "hatch"
     ],
-    "sense": "To share information, thoughts or feelings.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:competition": {
@@ -1129,7 +1102,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "An event in which people try to win by doing something best.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:connotation": {
@@ -1139,7 +1111,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "An idea or feeling a word suggests beyond its basic meaning.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:conscious": {
@@ -1149,7 +1120,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Awake and aware of what is happening.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:conscious": {
@@ -1159,7 +1129,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Awake and aware of what is happening.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:contrast": {
@@ -1169,7 +1138,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "A noticeable difference between things.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:contrast": {
@@ -1179,7 +1147,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "A noticeable difference between things.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:convenience": {
@@ -1189,7 +1156,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "The quality of being easy or useful for someone's needs.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:convenience": {
@@ -1199,7 +1165,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "The quality of being easy or useful for someone's needs.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:correspond": {
@@ -1209,7 +1174,6 @@
       "float",
       "hatch"
     ],
-    "sense": "To match or agree with something.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:correspond": {
@@ -1219,7 +1183,6 @@
       "float",
       "hatch"
     ],
-    "sense": "To match or agree with something.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:criticise": {
@@ -1229,7 +1192,6 @@
       "float",
       "hatch"
     ],
-    "sense": "To point out faults in someone or something.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:criticise": {
@@ -1239,7 +1201,6 @@
       "float",
       "hatch"
     ],
-    "sense": "To point out faults in someone or something.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:curiosity": {
@@ -1249,7 +1210,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "A strong wish to find out about something.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:curiosity": {
@@ -1259,7 +1219,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "A strong wish to find out about something.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:definite": {
@@ -1269,7 +1228,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Clear and certain.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:definite": {
@@ -1279,7 +1237,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Clear and certain.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:desperate": {
@@ -1289,7 +1246,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Feeling that a situation is so bad that you will try almost anything.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:determined": {
@@ -1299,7 +1255,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Firmly decided to do something, even when it is difficult.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:determined": {
@@ -1309,7 +1264,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Firmly decided to do something, even when it is difficult.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:develop": {
@@ -1319,7 +1273,6 @@
       "float",
       "hatch"
     ],
-    "sense": "To grow or gradually become more advanced.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:environment": {
@@ -1329,7 +1282,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "The surroundings and conditions in which living things exist.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:equip": {
@@ -1339,7 +1291,6 @@
       "float",
       "hatch"
     ],
-    "sense": "To provide the things needed for a task.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:equipment": {
@@ -1349,7 +1300,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "The tools and other things needed for an activity.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:equipped": {
@@ -1359,7 +1309,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Provided with the things needed for a task.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:especially": {
@@ -1369,7 +1318,6 @@
       "yesterday",
       "sideways"
     ],
-    "sense": "More than usual, or more than other things.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:evaluate": {
@@ -1379,7 +1327,6 @@
       "float",
       "hatch"
     ],
-    "sense": "To judge how good, useful or successful something is.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:excellent": {
@@ -1389,7 +1336,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Extremely good.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:excellent": {
@@ -1399,7 +1345,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Extremely good.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:familiar": {
@@ -1409,7 +1354,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Known or recognised because you have met or seen it before.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:familiar": {
@@ -1419,7 +1363,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Known or recognised because you have met or seen it before.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:figurative": {
@@ -1429,7 +1372,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Using words imaginatively rather than with their exact ordinary meaning.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:figurative": {
@@ -1439,7 +1381,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Using words imaginatively rather than with their exact ordinary meaning.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:foreign": {
@@ -1449,7 +1390,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "From or connected with another country.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:foreign": {
@@ -1459,7 +1399,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "From or connected with another country.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:frequently": {
@@ -1469,7 +1408,6 @@
       "yesterday",
       "sideways"
     ],
-    "sense": "Often; many times.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:frequently": {
@@ -1479,7 +1417,6 @@
       "yesterday",
       "sideways"
     ],
-    "sense": "Often; many times.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:government": {
@@ -1489,7 +1426,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "The group of people responsible for running a country or area.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:guarantee": {
@@ -1499,7 +1435,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "A firm promise that something will happen or be provided.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:harass": {
@@ -1509,7 +1444,6 @@
       "float",
       "hatch"
     ],
-    "sense": "To keep bothering or upsetting someone.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:harass": {
@@ -1519,7 +1453,6 @@
       "float",
       "hatch"
     ],
-    "sense": "To keep bothering or upsetting someone.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:immediate": {
@@ -1529,7 +1462,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Happening now, without delay.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:immediate": {
@@ -1539,7 +1471,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Happening now, without delay.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:immediately": {
@@ -1549,7 +1480,6 @@
       "yesterday",
       "sideways"
     ],
-    "sense": "At once, without waiting.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:immediately": {
@@ -1559,7 +1489,6 @@
       "yesterday",
       "sideways"
     ],
-    "sense": "At once, without waiting.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:inference": {
@@ -1569,7 +1498,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "An idea worked out from clues rather than stated directly.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:interpret": {
@@ -1579,7 +1507,6 @@
       "float",
       "hatch"
     ],
-    "sense": "To explain or work out the meaning of something.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:interrupt": {
@@ -1589,7 +1516,6 @@
       "float",
       "hatch"
     ],
-    "sense": "To stop someone or something briefly before it is finished.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:justify": {
@@ -1599,7 +1525,6 @@
       "float",
       "hatch"
     ],
-    "sense": "To give reasons that support an answer or decision.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:leisure": {
@@ -1609,7 +1534,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "Time when you are free from work or duties.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:literal": {
@@ -1619,7 +1543,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Using the ordinary, exact meaning of words.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:literal": {
@@ -1629,7 +1552,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Using the ordinary, exact meaning of words.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:marvellous": {
@@ -1639,7 +1561,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Extremely good or pleasing.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:marvellous": {
@@ -1649,7 +1570,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Extremely good or pleasing.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:mischievous": {
@@ -1659,7 +1579,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Enjoying playful tricks that may cause a little trouble.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:mischievous": {
@@ -1669,7 +1588,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Enjoying playful tricks that may cause a little trouble.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:narrative": {
@@ -1679,7 +1597,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "A spoken or written account of events; a story.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:necessary": {
@@ -1689,7 +1606,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Needed for a particular purpose.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:necessary": {
@@ -1699,7 +1615,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Needed for a particular purpose.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:occupy": {
@@ -1709,7 +1624,6 @@
       "float",
       "hatch"
     ],
-    "sense": "To take up a place or space.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:occupy": {
@@ -1719,7 +1633,6 @@
       "float",
       "hatch"
     ],
-    "sense": "To take up a place or space.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:occur": {
@@ -1729,7 +1642,6 @@
       "float",
       "hatch"
     ],
-    "sense": "To happen or take place.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:perspective": {
@@ -1739,7 +1651,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "A particular way of seeing or thinking about something.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:persuade": {
@@ -1749,7 +1660,6 @@
       "float",
       "hatch"
     ],
-    "sense": "To get someone to agree or act by giving reasons.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:physical": {
@@ -1759,7 +1669,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Relating to the body rather than the mind.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:physical": {
@@ -1769,7 +1678,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Relating to the body rather than the mind.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:privilege": {
@@ -1779,7 +1687,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "A special advantage or right that not everyone has.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:profession": {
@@ -1789,7 +1696,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "A job that usually needs special education or training.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:programme": {
@@ -1799,7 +1705,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "A planned set of activities or events.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:purpose": {
@@ -1809,7 +1714,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "The reason something is done or made.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:queue": {
@@ -1819,7 +1723,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "A line of people or things waiting for their turn.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:recognise": {
@@ -1829,7 +1732,6 @@
       "float",
       "hatch"
     ],
-    "sense": "To know someone or something because you have met or seen them before.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:recommend": {
@@ -1839,7 +1741,6 @@
       "float",
       "hatch"
     ],
-    "sense": "To suggest that something is a good choice.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:sacrifice": {
@@ -1849,7 +1750,6 @@
       "float",
       "hatch"
     ],
-    "sense": "To give up something valued for a more important reason.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:sacrifice": {
@@ -1859,7 +1759,6 @@
       "float",
       "hatch"
     ],
-    "sense": "To give up something valued for a more important reason.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:signature": {
@@ -1869,7 +1768,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "Someone's name written in their own particular way.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:sincere": {
@@ -1879,7 +1777,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Meaning what you say or feel; not pretending.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:sincere": {
@@ -1889,7 +1786,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Meaning what you say or feel; not pretending.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:sincerely": {
@@ -1899,7 +1795,6 @@
       "yesterday",
       "sideways"
     ],
-    "sense": "In a way that shows you really mean what you say or feel.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:sincerely": {
@@ -1909,7 +1804,6 @@
       "yesterday",
       "sideways"
     ],
-    "sense": "In a way that shows you really mean what you say or feel.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:stanza": {
@@ -1919,7 +1813,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "A group of lines forming a section of a poem.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:structure": {
@@ -1929,7 +1822,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "The way the parts of something are arranged.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:sufficient": {
@@ -1939,7 +1831,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Enough for a particular need.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:sufficient": {
@@ -1949,7 +1840,6 @@
       "wooden",
       "triangular"
     ],
-    "sense": "Enough for a particular need.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:suggest": {
@@ -1959,7 +1849,6 @@
       "float",
       "hatch"
     ],
-    "sense": "To put forward an idea for someone to consider.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:summarise": {
@@ -1969,7 +1858,6 @@
       "float",
       "hatch"
     ],
-    "sense": "To give the main points in a shorter form.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:symbol": {
@@ -1979,7 +1867,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "A mark, object or sign that represents something else.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:theme": {
@@ -1989,7 +1876,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "A central idea explored in a piece of writing or art.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:tone": {
@@ -1999,7 +1885,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "The attitude or feeling shown by someone's voice or writing.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "syn:variety": {
@@ -2009,7 +1894,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "A range of different things or types.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   },
   "ant:variety": {
@@ -2019,7 +1903,6 @@
       "puddle",
       "whistle"
     ],
-    "sense": "A range of different things or types.",
     "reason": "Curriculum extension: original child-friendly sense and three semantically distinct options reviewed together."
   }
 }

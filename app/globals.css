@@ -3079,6 +3079,11 @@ hr {
   align-items: center;
   text-decoration: underline;
 }
+.story-word-note .story-word-example {
+  color: #e4f2ff;
+  border-left: 3px solid #4d7ea8;
+  padding-left: 10px;
+}
 .next-adventure {
   display: inline-flex;
   white-space: normal;

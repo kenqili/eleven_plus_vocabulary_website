@@ -10,7 +10,7 @@
   "final": {
     "syn": {
       "file": "data/syn.csv",
-      "sha256": "860def9e16b87d527ae2a7fb29c8ebee30fdf6ce741b6301af362d34506e1172",
+      "sha256": "412a7f67dcc4633c2b4cb52999796be30e25a6688bdb2e08e0f22492cf72338e",
       "rowsReviewed": 730,
       "unchangedFromInitialReview": 628,
       "changedRowsRechecked": 99,
@@ -23,7 +23,7 @@
     },
     "ant": {
       "file": "data/ant.csv",
-      "sha256": "95e8bdba92df71de8f5bb28894088a38e7133a50922f7944fe3cb1112fecb890",
+      "sha256": "6dea6a1a3ccacf3f111e31b52e4cb50bf11142eaad1e42f4ea60b75e100b51ca",
       "rowsReviewed": 630,
       "unchangedFromInitialReview": 532,
       "changedRowsRechecked": 99,
@@ -765,6 +765,40 @@
         "ant": {
           "file": "data/ant.csv",
           "sha256": "92dc88c020a12bafc406f04697f71857ba902f434ed8e287d297e8de56b21816",
+          "rowsReviewed": 630
+        }
+      }
+    },
+    {
+      "date": "2026-09-26",
+      "reason": "Synonym and antonym prompts no longer restate the word's own definition. Many prompts ended in a parenthetical sense tag that was a verbatim or near-verbatim copy of the taught meaning, for example \"Choose the synonym for 'especially' (More than usual, or more than other things.).\" Showing the meaning turned a recall-the-synonym task into a match-the-definition task.",
+      "change": "editorial",
+      "promptsRewritten": {
+        "syn": 82,
+        "ant": 35
+      },
+      "totalPromptsRewritten": 117,
+      "rule": "A sense tag was kept only where it selects one genuine sense of a polysemous word and does not restate the meaning or contain the answer. It was removed where it covered 60 percent or more of the meaning's content words, or where it contained the correct answer as a phrase.",
+      "senseTagsKept": 160,
+      "senseTagsRemoved": 117,
+      "preservedExamples": [
+        "sanction (permission) separates permission from penalty",
+        "sage (a person) separates the wise person from the herb",
+        "legend (a traditional story) separates the tale from the famous person",
+        "summit (of a mountain) separates the peak from the leaders' meeting",
+        "immerse (in liquid) separates immersion from total absorption"
+      ],
+      "verification": "Only the problem text changed. Every option list, correct answer, row type, target word, row order and row count is byte-identical to the previous version, and all 1511 rows still have four distinct options with exactly one correct answer. Definition questions are unchanged and still show the definition, because matching a definition to its word is the task being tested there.",
+      "reviewStatus": "This was an editorial prompt change, not new content, so it was applied mechanically and verified structurally. The retained sense tags were not re-reviewed for sense accuracy.",
+      "previousReview": {
+        "syn": {
+          "file": "data/syn.csv",
+          "sha256": "860def9e16b87d527ae2a7fb29c8ebee30fdf6ce741b6301af362d34506e1172",
+          "rowsReviewed": 730
+        },
+        "ant": {
+          "file": "data/ant.csv",
+          "sha256": "95e8bdba92df71de8f5bb28894088a38e7133a50922f7944fe3cb1112fecb890",
           "rowsReviewed": 630
         }
       }
