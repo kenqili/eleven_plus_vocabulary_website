@@ -21,7 +21,6 @@ import {
 import {
   A4,
   CONTENT_LABELS,
-  bodyFontPt as contentFontPt,
   resolveSheet,
 } from "@/lib/challenge/print-layout";
 const escape = (value: string) =>
@@ -32,10 +31,6 @@ const escape = (value: string) =>
         char
       ]!,
   );
-/** Keeps a cell to a sensible number of lines so a row never overflows. */
-const clamp = (value: string, max: number) =>
-  value.length > max ? value.slice(0, max - 1).trimEnd() + "…" : value;
-
 type SheetWord = Awaited<ReturnType<typeof wordSummary>>[number];
 
 /**
@@ -51,20 +46,19 @@ function sheetResponse(
   level: string,
 ) {
   const params = new URL(request.url).searchParams;
-  const { density, content } = resolveSheet(
-    params.get("layout"),
-    params.get("content"),
-  );
+  const sheet = resolveSheet(params.get("layout"), params.get("content"));
+  const { density, content } = sheet;
   const perPage = density.columns * density.rows;
-  const body = contentFontPt(density, content);
+  const body = sheet.bodyPt;
+  const budget = { meaning: sheet.meaningChars, example: sheet.exampleChars };
+  const clamp = (value: string, max: number) =>
+    value.length > max ? value.slice(0, max - 1).trimEnd() + "…" : value;
   const cell = (word: SheetWord) => {
     const parts = [`<b>${escape(word.word)}</b>`];
     if (content !== "word")
-      parts.push(
-        `<span class="m">${escape(clamp(word.definition, content === "example" ? 90 : 60))}</span>`,
-      );
+      parts.push(`<span class="m">${escape(clamp(word.definition, budget.meaning))}</span>`);
     if (content === "example" && word.example)
-      parts.push(`<span class="e">${escape(clamp(word.example, 110))}</span>`);
+      parts.push(`<span class="e">${escape(clamp(word.example, budget.example))}</span>`);
     return `<li>${parts.join("")}</li>`;
   };
   const pages: string[] = [];
