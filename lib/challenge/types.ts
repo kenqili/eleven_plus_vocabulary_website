@@ -30,6 +30,9 @@ export type Stats = {
   todaySeconds: number;
   totalSeconds: number;
   inProgress?: number;
+  /** Words this account has been shown at least once, which is a denominator
+   *  a child can do something about, unlike the size of the whole collection. */
+  meetCount?: number;
   periods?: {
     today: import("./rewards").PeriodStats;
     week: import("./rewards").PeriodStats;

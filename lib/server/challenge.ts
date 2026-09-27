@@ -106,6 +106,7 @@ export async function statsFor(
     inProgress: rows.results.filter(
       (p) => ids.has(p.word_id) && p.correct > 0 && !hasMastered(p),
     ).length,
+    meetCount: rows.results.filter((p) => ids.has(p.word_id)).length,
     ...summary,
   };
 }

@@ -72,7 +72,9 @@ export async function storyCatalog(userId?: string) {
         title: story.title,
         summary: story.summary,
         wordCount: story.wordIds.length,
-        minutes: Math.ceil(storyLength(story) / 130),
+        // About ninety words a minute, which is a real reading pace for a
+        // child who is also looking words up. At 130 it was optimistic.
+        minutes: Math.max(3, Math.ceil(storyLength(story) / 90)),
         completed: row.completedAt !== null,
         started: row.startedAt !== null,
         bookmark: row.updatedAt

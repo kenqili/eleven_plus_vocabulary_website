@@ -183,7 +183,8 @@ export default function StoryLibrary() {
             </p>
           )}
         <p className="muted">
-          Ten stories explore every word in this level. Pick any adventure;
+          {stories.length} {stories.length === 1 ? "story explores" : "stories explore"}{" "}
+          every word in this level. Pick any adventure;
           levels describe the vocabulary, not your age.
         </p>
         <p className="story-unread-legend">

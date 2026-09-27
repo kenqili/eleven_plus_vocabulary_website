@@ -23,12 +23,17 @@ export const TYPE_INSTRUCTIONS: Record<QuestionType, string> = {
   cloze: "Which word is missing from the sentence?",
 };
 /** Short button captions for the practice type picker. */
+/**
+ * One name per type, used everywhere: the picker, the card and the feedback.
+ * They used to differ between the three, so the same question was called a
+ * meaning, a definition and a Meanings in one sitting.
+ */
 export const TYPE_BUTTONS: Record<QuestionType, string> = {
   def: "Meanings",
   syn: "Similar words",
   ant: "Opposite words",
-  word: "Word from meaning",
-  cloze: "Missing word",
+  word: "Name the word",
+  cloze: "Fill the gap",
 };
 export function parseQuestionTypes(value: unknown): QuestionType[] {
   if (value === undefined || value === null) return [...QUESTION_TYPES];

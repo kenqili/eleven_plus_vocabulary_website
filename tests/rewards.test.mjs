@@ -163,6 +163,14 @@ test("London calendar uses local midnight, Monday weeks and DST boundaries", () 
     new Date(dayStart(Date.parse("2026-10-25T20:00:00Z"))).toISOString(),
     "2026-10-24T23:00:00.000Z",
   );
-  assert.equal(studyDuration(8), "8 sec");
-  assert.equal(studyDuration(68), "1 min 8 sec");
+  // Seconds are not a unit a child thinks in, and "0 sec" under a heading
+  // called learning time reads as a score of zero.
+  assert.equal(studyDuration(0), "under a minute");
+  assert.equal(studyDuration(8), "under a minute");
+  assert.equal(studyDuration(59), "under a minute");
+  assert.equal(studyDuration(68), "1 min");
+  assert.equal(studyDuration(605), "10 min");
+  assert.equal(studyDuration(3 * 3600 + 12 * 60), "3 hr 12 min");
+  // Never a negative or a NaN, whatever the clock hands it.
+  assert.equal(studyDuration(-5), "under a minute");
 });

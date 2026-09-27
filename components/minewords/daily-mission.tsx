@@ -72,8 +72,8 @@ export default function DailyMission({
           {progress.complete
             ? "Today’s adventure complete!"
             : signedIn
-              ? "Today’s little adventure"
-              : "Your first little adventure"}
+              ? "Today’s adventure"
+              : "Your first adventure"}
         </strong>
         <p role="status">{missionMessage({ day: "", ...progress })}</p>
       </div>
@@ -88,14 +88,14 @@ export default function DailyMission({
           <div className="mission-steps">
             <Link
               href="/"
-              aria-label={`${progress.questions} of ${DAILY_QUESTION_TARGET} questions tried. Go to practice.`}
+              aria-label={`${progress.questions} of ${DAILY_QUESTION_TARGET} questions done today. Go to practice.`}
             >
               {progress.questions === DAILY_QUESTION_TARGET ? "✓ " : ""}
               {progress.questions}/{DAILY_QUESTION_TARGET} questions tried
             </Link>
             <Link
               href="/stories"
-              aria-label={`${progress.stories} of 1 stories completed. Choose a story.`}
+              aria-label={`${progress.stories === 1 ? "Story finished" : "No story finished yet"}. Choose a story.`}
             >
               {progress.stories === 1 ? "✓ " : ""}
               {progress.stories}/1 story finished
@@ -103,8 +103,8 @@ export default function DailyMission({
           </div>
           {signedIn ? (
             <small>
-              {current?.day} · Resets at midnight in London. Try an answer to
-              move your mission along. Rereads count too.
+              Resets tomorrow morning. Every answer counts, and rereading a
+              story counts too.
             </small>
           ) : (
             <small>

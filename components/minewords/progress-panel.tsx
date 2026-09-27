@@ -72,14 +72,19 @@ export default function ProgressPanel({
         </div>
         <div className="mastered">
           <strong>{stats.mastered}</strong>
-          <span>words mastered</span>
+          <span>words you know</span>
         </div>
         <Progress
-          aria-label="Words mastered"
+          aria-label="Words you know"
           value={stats.total ? (stats.mastered / stats.total) * 100 : 0}
         />
         <div className="progress-label">
-          {stats.mastered} of {stats.total} words in your collection mastered
+          {/* Out of the whole collection this reads as 0 of 2,249, which is
+              true and useless on the first morning. What the child has met is
+              the number that can actually go up. */}
+          {stats.meetCount
+            ? `${stats.mastered} of the ${stats.meetCount} words you have met`
+            : "Answer a few questions to start your word list"}
         </div>
         <div
           className="status-tabs"

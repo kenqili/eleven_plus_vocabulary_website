@@ -83,7 +83,11 @@ export function dayStart(time: number): number {
 }
 export function studyDuration(seconds: number): string {
   const value = Math.max(0, Math.floor(seconds));
-  return value < 60
-    ? `${value} sec`
-    : `${Math.floor(value / 60)} min ${value % 60} sec`;
+  // "0 sec" under a heading called learning time reads as a score of zero, and
+  // seconds are not a unit a child thinks in.
+  if (value < 60) return "under a minute";
+  const minutes = Math.floor(value / 60);
+  if (minutes < 60) return `${minutes} min`;
+  const hours = Math.floor(minutes / 60);
+  return `${hours} hr ${minutes % 60} min`;
 }

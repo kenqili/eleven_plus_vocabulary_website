@@ -118,7 +118,7 @@ export default function Challenge() {
       <main className="workspace">
         <div className="page-heading">
           <div>
-            <div className="eyebrow">LEARN A LITTLE EVERY DAY</div>
+            <div className="eyebrow">A FEW WORDS A DAY</div>
             <h1>11+ Vocabulary Challenge</h1>
             <p>Build your vocabulary, one word at a time.</p>
           </div>
@@ -146,10 +146,7 @@ export default function Challenge() {
                     value={type}
                     className={`practice-type practice-type-${type}`}
                   >
-                    <span>
-                      {TYPE_BUTTONS[type]}
-                      <small>{TYPE_LABELS[type]}s</small>
-                    </span>
+                    <span>{TYPE_BUTTONS[type]}</span>
                   </ToggleGroupItem>
                 ))}
               </ToggleGroup>
@@ -351,9 +348,9 @@ export default function Challenge() {
                       <span>
                         {mastery?.mastered
                           ? "Word mastered!"
-                          : `${mastery?.correct ?? question.correctCount} of ${CUMULATIVE_FLOOR} correct${
+                          : `${mastery?.correct ?? question.correctCount} of ${CUMULATIVE_FLOOR} right${
                               (mastery?.recalls ?? 0) > 0
-                                ? ` · ${mastery?.recalls}/${mastery?.target ?? 2} sure recalls`
+                                ? ` · got it ${mastery?.recalls}/${mastery?.target ?? 2} times on your own`
                                 : ""
                             }`}
                       </span>
@@ -363,7 +360,7 @@ export default function Challenge() {
                         aria-label={
                           mastery?.mastered
                             ? "Mastered"
-                            : `${mastery?.correct ?? question.correctCount} of ${CUMULATIVE_FLOOR} correct answers; ${mastery?.target ?? 2} sure recalls also master this word`
+                            : `${mastery?.correct ?? question.correctCount} of ${CUMULATIVE_FLOOR} right answers; getting it right ${mastery?.target ?? 2} times on your own also finishes a word`
                         }
                       >
                         {Array.from({ length: CUMULATIVE_FLOOR }, (_, index) => (

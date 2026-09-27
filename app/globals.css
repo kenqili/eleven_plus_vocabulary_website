@@ -352,7 +352,7 @@ h1 {
   justify-content: space-between;
   margin-bottom: 12px;
   color: var(--ink-slate);
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 1px;
 }
 .session-bar span:first-child {
@@ -370,7 +370,7 @@ h1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 1px;
   color: var(--ink-slate);
@@ -380,7 +380,7 @@ h1 {
   color: var(--ink-brand-5);
   border-radius: var(--radius-lg);
   padding: 5px 10px;
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 0;
 }
 .question-card h2 {
@@ -424,7 +424,7 @@ h1 {
   border-radius: var(--radius-sm);
   min-width: 29px;
   height: 29px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--ink-slate);
 }
@@ -436,7 +436,7 @@ h1 {
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--ink-slate);
 }
 .text-button {
@@ -475,7 +475,7 @@ h1 {
   margin: 0;
 }
 .progress-panel .panel-eyebrow {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 800;
   letter-spacing: 1.4px;
   text-transform: uppercase;
@@ -504,7 +504,7 @@ h1 {
   background: var(--surface-sky-soft);
 }
 .progress-label {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--ink-on-navy);
   margin: 10px 0 23px;
 }
@@ -697,7 +697,7 @@ h1 {
     gap: 10px;
   }
   .account-link {
-    font-size: 12px;
+    font-size: 13px;
   }
   .site-footer span:last-child {
     display: none;
@@ -758,7 +758,7 @@ hr {
     flex-wrap: wrap;
   }
   .question-meta {
-    font-size: 11px;
+    font-size: 13px;
   }
   .question-footer > span {
     font-size: 14px;
@@ -1012,7 +1012,7 @@ hr {
 .dashboard-kicker,
 .panel-eyebrow {
   color: var(--ink-on-navy-3);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 800;
   letter-spacing: 1.2px;
 }
@@ -1045,7 +1045,7 @@ hr {
 .streak-best {
   margin-left: auto;
   color: var(--ink-warn);
-  font-size: 12px;
+  font-size: 13px;
 }
 .study-aside .streak-markers {
   align-items: center;
@@ -1056,19 +1056,19 @@ hr {
   width: 30px;
   height: 30px;
   border-width: 1px;
-  font-size: 12px;
+  font-size: 13px;
 }
 .study-aside .streak-markers strong {
   margin-left: 3px;
   color: var(--ink-olive-6);
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.3;
 }
 .rewards-link {
   display: inline-flex;
   margin-top: 12px;
   color: var(--ink-amber-4);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 800;
 }
 .study-aside > .progress-panel:not(.reward-panel) {
@@ -1116,7 +1116,7 @@ hr {
 .study-aside .progress-panel .status-date,
 .study-aside .dashboard-note {
   color: var(--ink-on-navy-2);
-  font-size: 12px;
+  font-size: 13px;
   margin-top: 8px;
 }
 .stat-grid {
@@ -1141,7 +1141,7 @@ hr {
 }
 .stat-grid span {
   color: var(--ink-on-navy-2);
-  font-size: 12px;
+  font-size: 13px;
 }
 .question-answered {
   padding-top: 23px;
@@ -1177,7 +1177,7 @@ hr {
   padding: 9px 11px;
 }
 .question-answered .reward-notice p {
-  font-size: 12px;
+  font-size: 13px;
 }
 .question-answered .word-explanation {
   grid-template-columns: 1fr;
@@ -1750,7 +1750,7 @@ hr {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--ink-slate-deep);
   margin: 16px 0 24px;
 }
@@ -1810,7 +1810,7 @@ hr {
     border-spacing: 2px;
   }
   .learning-calendar th {
-    font-size: 11px;
+    font-size: 13px;
     padding-bottom: 10px;
   }
   .calendar-day {
@@ -1824,7 +1824,7 @@ hr {
   }
   .calendar-day-words,
   .calendar-day-time {
-    font-size: 10px;
+    font-size: 13px;
   }
   .calendar-day-detail {
     padding: 20px;
@@ -1935,7 +1935,7 @@ hr {
   border-radius: 12px 18px 18px 12px;
   background: var(--surface-purple-2);
   color: var(--ink-3);
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 800;
   letter-spacing: 1.4px;
   text-align: center;
@@ -1964,7 +1964,7 @@ hr {
 .book-front span {
   margin-top: 8px;
   color: var(--ink-warn);
-  font-size: 11px;
+  font-size: 13px;
 }
 .about-word-chip {
   position: absolute;
@@ -2163,7 +2163,7 @@ hr {
   border-radius: var(--radius-lg);
   background: var(--surface-purple);
   color: var(--ink-purple);
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 800;
   letter-spacing: 1px;
   white-space: nowrap;
@@ -2474,7 +2474,7 @@ hr {
   padding-top: 14px;
   border-top: 1px solid var(--line-4);
   color: var(--ink-4);
-  font-size: 12px;
+  font-size: 13px;
 }
 .howto-tools {
   display: grid;
@@ -2675,7 +2675,7 @@ hr {
   justify-content: space-between;
   align-items: center;
   color: var(--ink-slate);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 1px;
 }
@@ -2698,7 +2698,7 @@ hr {
   padding-top: 20px;
   margin-top: 12px;
   border-top: 1px solid var(--line-2);
-  font-size: 12px;
+  font-size: 13px;
   color: var(--ink-slate-deep);
 }
 .story-card-footer strong {
@@ -2776,9 +2776,9 @@ hr {
 .story-word-note {
   position: fixed;
   z-index: 100;
-  width: 300px;
+  width: 360px;
   max-width: calc(100vw - 24px);
-  max-height: 220px;
+  max-height: 260px;
   overflow: auto;
   display: grid;
   gap: 8px;
@@ -2787,15 +2787,15 @@ hr {
   border-radius: var(--radius);
   padding: 18px;
   box-shadow: 0 8px 26px var(--shadow-8);
-  font-size: 14px;
+  font-size: 17px;
   line-height: 1.5;
   text-align: left;
 }
 .story-word-note > strong {
-  font-size: 18px;
+  font-size: 21px;
 }
 .story-word-note b {
-  color: var(--ink-on-brand);
+  color: var(--ink-on-navy-3);
 }
 .story-finish {
   margin-top: 30px;
@@ -2890,7 +2890,7 @@ hr {
   gap: 2px;
 }
 .story-reading-timer > div > span {
-  font-size: 12px;
+  font-size: 13px;
 }
 .story-reading-timer [role="timer"] {
   font-size: 24px;
@@ -2899,7 +2899,7 @@ hr {
 }
 .story-timer-state {
   margin-left: 16px;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--ink-slate-deep);
 }
 .story-unread-dot {
@@ -3134,7 +3134,7 @@ hr {
 }
 .pronunciation > [role="status"] {
   max-width: 250px;
-  font-size: 12px;
+  font-size: 13px;
 }
 .question-clue {
   margin: 12px 0;
@@ -3227,7 +3227,7 @@ hr {
   gap: 6px;
   margin: 0;
   color: var(--ink-slate-deep);
-  font-size: 12px;
+  font-size: 13px;
   text-wrap: balance;
 }
 .story-audio-note > svg {
@@ -3444,7 +3444,7 @@ hr {
   border-radius: 999px;
   background: var(--surface-brand);
   color: var(--ink-2);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
 }
 .guide-card-meta {
@@ -3669,7 +3669,7 @@ hr {
   margin-top: 10px;
 }
 .exclude-word .manage-action {
-  font-size: 12px;
+  font-size: 13px;
   padding: 6px 11px;
   color: var(--ink-olive-5);
   border-color: var(--line-warn);
@@ -3702,7 +3702,7 @@ hr {
   background: var(--surface);
   color: var(--ink-brand);
   font: inherit;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   cursor: pointer;
 }
@@ -3756,7 +3756,7 @@ hr {
 }
 .sheet-option small {
   color: var(--ink-4);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
 }
 .sheet-option[aria-pressed="true"] {
@@ -4342,7 +4342,7 @@ hr {
 .theme-menu-note {
   margin: 4px 8px 8px;
   color: var(--ink-3);
-  font-size: 12.5px;
+  font-size: 13px;
   line-height: 1.5;
 }
 .theme-option {
@@ -4389,7 +4389,7 @@ hr {
 }
 .theme-option-text small {
   color: var(--ink-3);
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.4;
 }
 .theme-check {
@@ -4645,4 +4645,63 @@ hr {
 .story-finish label[data-outcome="wrong"] .story-option-mark,
 .story-finish label[data-outcome="correct"] .story-option-mark {
   visibility: visible;
+}
+
+/* The grown-up pages sit behind a disclosure rather than in the same list as
+   the things a child came for. One of them talks about exam pressure and its
+   effect on mental health, which is worth a grown-up and not worth one tap away
+   from a question. */
+.grown-ups {
+  position: relative;
+}
+.grown-ups-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+}
+.grown-ups-chevron {
+  transition: transform 140ms ease;
+}
+.grown-ups.is-open .grown-ups-chevron {
+  transform: rotate(180deg);
+}
+.grown-ups-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 6px 0 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-3);
+}
+.grown-ups-menu p {
+  margin: 0 0 6px;
+  color: var(--ink-3);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.grown-ups-menu .account-link {
+  padding: 9px 10px;
+  min-height: 44px;
+}
+@media (min-width: 1100px) {
+  .grown-ups-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 60;
+    width: 300px;
+    box-shadow: 0 12px 30px var(--shadow-3);
+  }
+}
+@media (max-width: 1100px) {
+  .grown-ups-menu {
+    margin-top: 8px;
+  }
 }
