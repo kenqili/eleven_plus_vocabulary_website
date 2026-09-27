@@ -1,0 +1,52 @@
+{
+  "sections": [
+    {
+      "id": "what-this-app-does",
+      "group": "This app",
+      "heading": "What this app does, precisely",
+      "summary": "A short daily round of vocabulary questions, matched to the child, with a record of what has stuck.",
+      "body": [
+        "Vocabulary is the part of the 11+ that can be practised honestly. It is also the part most likely to be done badly: a list of words to memorise, drilled the night before, and forgotten by the morning of the test. The reason is that most vocabulary practice has no idea what a child already knows, so it spends its time on words the child would have got anyway.",
+        "This app does the opposite. It keeps a record of every word and when it was last seen, and builds each round from words that are new, words that have been slipped, and words that have been got right enough times to count as learned. Words the child already knows stop appearing. Words they nearly knew come back sooner. A word that was got right only because the options gave it away is not counted as known.",
+        "Five kinds of question are drawn from the same word: choose the meaning, choose a similar word, choose an opposite word, name the word from its meaning, and fill the gap in a sentence that uses it. Each one asks for the word from a different direction, because a child who can define a word but has never seen it in a sentence has not really learned it.",
+        "If the child gets one wrong, the app then says what the option they picked actually means. Choosing debris instead of timid teaches nothing about debris unless the app says what debris is, and a wrong answer is exactly when a child most wants to know the word they did not pick, because they will meet it again."
+      ],
+      "points": [
+        "Every word has a plain meaning, a sentence that uses it, and real synonyms and antonyms rather than near-misses.",
+        "Difficulty is matched to the child, and wrong options are drawn from the same difficulty band, so an easy question is not lost to an obscure answer.",
+        "A word appears again until it has been recalled on its own a set number of times, spread over days. It is not retired by being seen often.",
+        "Nothing is timed under pressure by default, and a wrong answer never costs a life, a streak or a mark.",
+        "A parent can add their own words, exclude words the child should not see, and print practice sheets on A4."
+      ]
+    },
+    {
+      "id": "what-this-app-is-not",
+      "group": "This app",
+      "heading": "What this app is not",
+      "summary": "It is not a test, a tutor, a predictor, or a promise.",
+      "body": [
+        "It does not predict whether a child will get a place anywhere, and it will not tell you a score means a school is reachable. Anyone who offers you a score-to-school mapping is guessing, and a guess that flatters is a commercial act, not a helpful one.",
+        "It does not replace reading. Vocabulary in isolation is not reading, and a child who can define words but does not read will still struggle with the comprehension papers. If your child reads for pleasure, that is doing more for their 11+ than any app, and it is free.",
+        "It does not teach the maths, the verbal reasoning or the non-verbal reasoning. It covers one component of the papers, thoroughly.",
+        "It does not know your child. It knows what they have answered, which is evidence about their vocabulary and nothing about their ability, their confidence, or how they perform on a day."
+      ]
+    },
+    {
+      "id": "questions-parents-ask",
+      "group": "This app",
+      "heading": "Questions parents ask before paying",
+      "summary": "The ones worth answering plainly.",
+      "body": [
+        "These are the questions we are asked most, answered as directly as we can. Where the honest answer is that it depends on the school, or that we do not know, that is what is written."
+      ],
+      "points": [
+        "Is my child ready yet? Readiness is not an age. A child who enjoys reading and can explain a word back to you in their own words is further along than an older child who has been drilled for a term.",
+        "How long should a session be? Long enough to be worth starting, short enough that it happens tomorrow as well. A round that gets skipped is worse than a shorter one that does not.",
+        "What if they get it wrong? They are told what the word they picked means, and the word comes back later. Nothing is taken away and nothing is lost.",
+        "Does this work offline or on a tablet? It is a website, so it works on any modern device. There is no app to install.",
+        "Can more than one child use it? One account is for one child. A second child needs a second account.",
+        "What happens to the data? The account page says what is stored, how long it is kept, and gives a button that deletes the account and everything in it."
+      ]
+    }
+  ]
+}
