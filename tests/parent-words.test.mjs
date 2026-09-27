@@ -3,6 +3,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { problemsForAddedWords } from "../lib/challenge/problems.ts";
+import { problems as bankProblems } from "../scripts/load-problem-bank.mjs";
+import { chosenWordExplanation, optionGlosses } from "../lib/challenge/option-gloss.ts";
 import {
   difficultyForAddedWord,
   isAlreadyInBank,
@@ -132,4 +134,89 @@ test("a definition that names its own word gets no word question", () => {
     "the prompt would give the answer away",
   );
   assert.ok(made.some((problem) => problem.type === "def"));
+});
+
+const lookup = (word) => words.find((entry) => entry.word.toLowerCase() === word);
+
+test("a wrong answer explains the word the child actually chose", () => {
+  // Picking "debris" instead of "timid" teaches nothing about debris, and a
+  // wrong answer is exactly when a child most wants to know the word they did
+  // not pick, because they will meet it again.
+  const options = ["timid", "debris", "flawed", "vehicle"];
+  const explained = chosenWordExplanation(options, 1, "timid", lookup);
+  assert.equal(explained?.word, "debris");
+  assert.ok(explained?.meaning, "the chosen word must be given a meaning");
+  assert.equal(
+    explained?.word.toLowerCase(),
+    "debris",
+    "it must be the option that was chosen, not the answer",
+  );
+});
+
+test("there is nothing to explain in the cases where it would be noise", () => {
+  // The right answer, because there was no mistake.
+  assert.equal(chosenWordExplanation(["timid", "debris"], 0, "timid", lookup), undefined);
+  // A reveal, which is not a choice at all.
+  assert.equal(chosenWordExplanation(["timid", "debris"], -1, "timid", lookup), undefined);
+  // An option index that does not exist.
+  assert.equal(chosenWordExplanation(["timid", "debris"], 7, "timid", lookup), undefined);
+  // A definition question offers meanings, not words, so there is no word to
+  // define. Anything with a space is a phrase the child can already read.
+  assert.equal(
+    chosenWordExplanation(["A means of walking", "A calm manner"], 0, "A means of walking", lookup),
+    undefined,
+  );
+  assert.equal(
+    chosenWordExplanation(["in spite of the fact that", "timid"], 0, "timid", lookup),
+    undefined,
+  );
+  // An option that is not a word in the collection at all.
+  assert.equal(chosenWordExplanation(["timid", "zzzqqq"], 1, "timid", lookup), undefined);
+});
+
+test("the explanation is given for every question type that offers words", () => {
+  // def offers definitions, so nothing to gloss. The other four offer words, so
+  // a wrong pick should always be explainable when it is a single word.
+  for (const type of ["word", "cloze", "syn", "ant"]) {
+    const problems = bankProblems.filter((problem) => problem.type === type);
+    let explained = 0;
+    let wrong = 0;
+    for (const problem of problems.slice(0, 300)) {
+      if (!problem.choices) continue;
+      const answerAt = problem.choices.indexOf(problem.answer);
+      if (answerAt <= 0) continue;
+      // Pick the option before the answer, which is a wrong single word.
+      const chosen = problem.choices[answerAt - 1];
+      if (!chosen || /\s/.test(chosen)) continue;
+      wrong += 1;
+      if (
+        chosenWordExplanation(
+          problem.choices,
+          answerAt - 1,
+          problem.answer,
+          lookup,
+        )
+      )
+        explained += 1;
+    }
+    assert.ok(wrong > 0, `${type}: no wrong single-word options to check`);
+    // Most should resolve. A word is only missing when it is a parent's own
+    // addition or a phrase the collection does not hold.
+    assert.ok(
+      explained / wrong > 0.9,
+      `${type}: only ${explained} of ${wrong} wrong single-word picks could be explained`,
+    );
+  }
+});
+
+test("a client can get every gloss in one go, and never for the answer", () => {
+  const options = ["timid", "debris", "flawed", "in spite of the fact that"];
+  const all = optionGlosses(options, "timid", lookup);
+  // Never the answer, and never a phrase.
+  assert.equal(all.timid, undefined);
+  assert.equal(all["in spite of the fact that"], undefined);
+  // Every single word that is in the collection, keyed as it was offered.
+  for (const option of Object.keys(all))
+    assert.ok(options.includes(option), `${option} was not offered`);
+  assert.ok(Object.keys(all).length >= 2, "expected glosses for the real words");
 });

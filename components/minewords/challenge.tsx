@@ -4,8 +4,6 @@ import Link from "next/link";
 import { ArrowRight, BookOpen, Lightbulb } from "lucide-react";
 import Pronunciation from "./pronunciation";
 import AnswerPacing from "./answer-pacing";
-import { DAILY_QUESTION_TARGET } from "@/lib/challenge/mission";
-import { pauseAutoNext, type NextDelay } from "@/lib/client/auto-next";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
   QUESTION_TYPES,
@@ -24,6 +22,13 @@ import Header from "./header";
 import ProgressPanel from "./progress-panel";
 import DailyMission from "./daily-mission";
 import WordExplanation from "./word-explanation";
+import {
+  NEXT_DELAYS,
+  NEXT_DELAY_LABELS,
+  pauseAutoNext,
+  type NextDelay,
+} from "@/lib/client/auto-next";
+
 import { usePlaySound } from "@/lib/theme/sound-provider";
 import { useAnswerSound } from "@/lib/theme/use-sounds";
 import { useChallenge } from "./use-challenge";
@@ -329,6 +334,16 @@ export default function Challenge() {
                         </div>
                       )}
                       <WordExplanation word={feedback} />
+                      {feedback.chosen ? (
+                        <div className="chosen-explanation">
+                          <strong>
+                            {feedback.chosen.word} means {feedback.chosen.meaning}
+                          </strong>
+                          {feedback.chosen.example ? (
+                            <em>{feedback.chosen.example}</em>
+                          ) : null}
+                        </div>
+                      ) : null}
                       {!demo && !feedback.correct && (
                         <small>
                           Your run of right answers starts again with your next
@@ -404,13 +419,11 @@ export default function Challenge() {
                       key={`${question.id}:${study.autoNext}`}
                       id={question.id}
                       delay={study.autoNext}
+                      // The daily target does not switch this off. It used to,
+                      // so a setting the child had chosen stopped working the
+                      // moment the day's count was reached, with nothing said.
                       eligible={Boolean(
-                        feedback.correct &&
-                          !busy &&
-                          !error &&
-                          !study.historical &&
-                          (demo ||
-                            stats.mission?.questions !== DAILY_QUESTION_TARGET),
+                        feedback.correct && !busy && !error && !study.historical,
                       )}
                       next={study.next}
                     />
@@ -477,15 +490,17 @@ export default function Challenge() {
               <label className="next-word-setting">
                 Next word
                 <select
-                  aria-label="Next word"
+                  aria-label="How quickly the next word appears"
                   value={study.autoNext}
                   onChange={(e) =>
                     study.setAutoNext(Number(e.target.value) as NextDelay)
                   }
                 >
-                  <option value={0}>When I’m ready</option>
-                  <option value={5}>After 5 seconds</option>
-                  <option value={10}>After 10 seconds</option>
+                  {NEXT_DELAYS.map((delay) => (
+                    <option key={delay} value={delay}>
+                      {NEXT_DELAY_LABELS[delay]}
+                    </option>
+                  ))}
                 </select>
               </label>
               <span className="muted">

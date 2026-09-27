@@ -1,4 +1,5 @@
 import { interleaveQuestions } from "@/lib/challenge/ordering";
+import { optionGlosses } from "@/lib/challenge/option-gloss";
 import { storyMeaning, wordClue } from "@/lib/challenge/story-meanings";
 import { words, problems, distractorContext } from "@/lib/challenge/bank";
 import { choicesFor, shuffle } from "@/lib/challenge/words";
@@ -89,6 +90,15 @@ export async function GET(request: Request) {
               // visitor who is only trying three questions.
               clue: wordClue(word.id, problem.answer, problem.type),
               help: storyMeaning(word, word.id),
+              // A gloss for each option that is a single word, so a child who
+              // picks the wrong one is told what it means rather than being
+              // left wondering. Definition questions offer meanings, so there
+              // is nothing to gloss and the record comes out empty.
+              optionHelp: optionGlosses(
+                problem.choices ?? [word.definition],
+                problem.answer,
+                demoLookup,
+              ),
               // Sent here so the browser never has to download the level
               // table just to label a question.
               difficulty: levelFor(word.id),
@@ -109,6 +119,14 @@ export async function GET(request: Request) {
     });
   });
 }
+/** Resolves a lower-cased word to its bank entry, with the plain-language help. */
+const demoLookup = (word: string) => {
+  const entry = words.find((candidate) => candidate.word.toLowerCase() === word);
+  return entry
+    ? { word: entry.word, definition: storyMeaning(entry), example: entry.example }
+    : undefined;
+};
+
 export async function POST(request: Request) {
   return boundary(async () => {
     sameOrigin(request);

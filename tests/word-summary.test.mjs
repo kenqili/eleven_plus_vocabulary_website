@@ -125,20 +125,24 @@ test("auto-next survives remounts, synchronises tabs and tolerates unavailable s
     values.set("minewords.auto-next", "true");
     assert.equal(
       readAutoNext(),
-      5,
-      "legacy enabled preference becomes five seconds",
+      4,
+      "legacy enabled preference becomes a real setting",
     );
     values.delete("minewords.auto-next");
     saveAutoNext(10);
     assert.equal(readAutoNext(), 10);
     let changes = 0;
     const unsubscribe = subscribeAutoNext(() => changes++);
-    saveAutoNext(5);
-    assert.equal(readAutoNext(), 5);
+    saveAutoNext(4);
+    assert.equal(readAutoNext(), 4);
     assert.equal(changes, 1);
     unsubscribe();
     const remount = subscribeAutoNext(() => changes++);
-    assert.equal(readAutoNext(), 5);
+    assert.equal(readAutoNext(), 4);
+    // A stored value that is no longer on offer falls back rather than sticking
+    // at a delay the picker does not show.
+    values.set("minewords.next-delay", "5");
+    assert.equal(readAutoNext(), 0, "a retired delay falls back to the safe one");
     values.set("minewords.next-delay", "0");
     const event = new Event("storage");
     Object.defineProperty(event, "key", { value: "minewords.next-delay" });
@@ -152,8 +156,8 @@ test("auto-next survives remounts, synchronises tabs and tolerates unavailable s
         throw new Error("Blocked");
       },
     });
-    saveAutoNext(5);
-    assert.equal(readAutoNext(), 5);
+    saveAutoNext(7);
+    assert.equal(readAutoNext(), 7, "the session preference is kept when storage is blocked");
     saveAutoNext(0);
     assert.equal(readAutoNext(), 0);
   } finally {

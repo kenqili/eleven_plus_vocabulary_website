@@ -239,6 +239,17 @@ test("the surfaces a child actually reads stay readable in every theme", () => {
     return tokens.get(name);
   };
   const pairs = [
+    // Each question type's own card colour, so the type is readable before the
+    // question is. The two newer types had no band of their own.
+    ["--ink", "--surface-3", 4.5, "a meaning question card"],
+    ["--ink", "--surface-success", 4.5, "a similar-words question card"],
+    ["--ink", "--surface-cream", 4.5, "an opposite-words question card"],
+    ["--ink", "--surface-brand-2", 4.5, "a name-the-word question card"],
+    ["--ink", "--surface-purple", 4.5, "a fill-the-gap question card"],
+    ["--ink-navy", "--surface-ice", 4.5, "the name-the-word badge"],
+    ["--ink-violet", "--surface-purple-2", 4.5, "the fill-the-gap badge"],
+    // The gloss under a wrong answer.
+    ["--ink-amber-deep", "--surface-warn-2", 4.5, "the wrong-answer gloss"],
     // The question card and its four answers, which were white on white.
     ["--ink", "--surface", 4.5, "the word being tested"],
     ["--ink-brand-3", "--surface", 4.5, "the answer options"],

@@ -777,6 +777,22 @@ hr {
   background: var(--surface-cream);
   border-top-color: var(--line-amber);
 }
+.question-word {
+  background: var(--surface-brand-2);
+  border-top-color: var(--line-teal);
+}
+.question-cloze {
+  background: var(--surface-purple);
+  border-top-color: var(--line-purple-solid);
+}
+.question-word .pill {
+  background: var(--surface-ice);
+  color: var(--ink-navy);
+}
+.question-cloze .pill {
+  background: var(--surface-purple-2);
+  color: var(--ink-violet);
+}
 .question-syn .pill {
   background: var(--surface-success-2);
   color: var(--ink-success);
@@ -4790,3 +4806,32 @@ hr {
 .guide-article li { margin-bottom: 8px; }
 .guide-article a { color: var(--ink-brand); font-weight: 700; }
 .guide-article h2 { margin-top: 30px; }
+
+/* What the option a child actually chose means. A wrong answer is the moment
+   they most want to know the word they did not pick, because they will meet it
+   again. Only shown for a single word: a phrase or a sentence needs no gloss. */
+.chosen-explanation {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 12px 0 2px;
+  padding: 14px 16px;
+  border-left: 4px solid var(--line-warn-2);
+  border-radius: var(--radius-sm);
+  background: var(--surface-warn-2);
+  color: var(--ink-amber-deep);
+  font-size: 15px;
+  line-height: 1.6;
+}
+.chosen-explanation strong {
+  font-weight: 700;
+}
+.chosen-explanation em {
+  color: var(--ink-olive-6);
+  font-size: 14px;
+}
+@media (max-width: 560px) {
+  .chosen-explanation {
+    font-size: 14px;
+  }
+}

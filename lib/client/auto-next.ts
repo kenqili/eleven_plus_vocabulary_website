@@ -1,13 +1,23 @@
 const key = "minewords.next-delay";
-export type NextDelay = 0 | 5 | 10;
+export type NextDelay = 0 | 2 | 4 | 7 | 10;
 let fallback: NextDelay = 0;
 const listeners = new Set<() => void>();
+export const NEXT_DELAYS: NextDelay[] = [0, 2, 4, 7, 10];
+export const NEXT_DELAY_LABELS: Record<NextDelay, string> = {
+  0: "When I'm ready",
+  2: "After 2 seconds",
+  4: "After 4 seconds",
+  7: "After 7 seconds",
+  10: "After 10 seconds",
+};
+
 export function readAutoNext(): NextDelay {
   try {
     const stored = localStorage.getItem(key);
     if (stored === null)
-      return localStorage.getItem("minewords.auto-next") === "true" ? 5 : 0;
-    return stored === "5" ? 5 : stored === "10" ? 10 : 0;
+      return localStorage.getItem("minewords.auto-next") === "true" ? 4 : 0;
+    const parsed = Number(stored);
+    return (NEXT_DELAYS as number[]).includes(parsed) ? (parsed as NextDelay) : 0;
   } catch {
     return fallback;
   }

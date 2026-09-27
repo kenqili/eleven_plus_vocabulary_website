@@ -26,7 +26,8 @@ import { difficultyForAddedWord } from "@/lib/challenge/added-words";
 import { choicesFor, shuffle, type Word } from "@/lib/challenge/words";
 import { type QuestionType } from "@/lib/challenge/config";
 import type { Difficulty } from "@/lib/challenge/difficulty";
-import type { Question, Stats } from "@/lib/challenge/types";
+import type { Feedback, Question, Stats } from "@/lib/challenge/types";
+import { chosenWordExplanation } from "@/lib/challenge/option-gloss";
 import { database } from "./db";
 import { HttpError } from "./http";
 type Attempt = {
@@ -66,6 +67,18 @@ export async function starterBand(
   // Never narrow a pool to nothing.
   return easy.length >= 8 ? easy : null;
 }
+
+/** Resolves a lower-cased word to its bank entry, for the wrong-answer gloss. */
+const glossLookup = (word: string) => {
+  const entry = words.find((candidate) => candidate.word.toLowerCase() === word);
+  return entry
+    ? {
+        word: entry.word,
+        definition: storyMeaning(entry),
+        example: entry.example,
+      }
+    : undefined;
+};
 
 export const levelFor = (id: string) =>
   (levels.words as Record<string, { difficulty: number }>)[id]?.difficulty ??
@@ -525,6 +538,7 @@ export async function answerQuestion(
     // data never has to be downloaded by the browser.
     help: storyMeaning(word),
     attemptId: id,
+    chosen: chosenWordExplanation(options, saved?.selected ?? -1, answer, glossLookup),
     type: attempt.question_type,
     answer,
     correct: Boolean(saved?.is_correct),

@@ -50,6 +50,8 @@ type DemoWord = {
   number: number;
   /** Worked out on the server, so the help data is not downloaded. */
   clue: string;
+  /** A gloss for each option that is a single word, so a wrong pick is taught. */
+  optionHelp?: Record<string, { meaning: string; example?: string }>;
   /** The word's band, sent with the question so the level table stays put. */
   difficulty: number;
   /** The plain-language help for this word, also from the server. */
@@ -64,6 +66,25 @@ const initialStats: Stats = {
   todaySeconds: 0,
   totalSeconds: 0,
 };
+/**
+ * What the option the child chose means, taken from what the server sent with
+ * the question. A definition question offers meanings rather than words, so
+ * there is nothing to explain and this returns nothing. The bank itself is not
+ * in the browser, so the glosses arrive with the question.
+ */
+function demoChosen(
+  word: DemoWord,
+  selected: number,
+  answer: string,
+): Feedback["chosen"] {
+  if (selected < 0 || selected >= word.choices.length) return undefined;
+  const chosen = word.choices[selected];
+  if (!chosen || chosen.toLowerCase() === answer.toLowerCase()) return undefined;
+  const entry = word.optionHelp?.[chosen];
+  if (!entry) return undefined;
+  return { word: chosen, meaning: entry.meaning, example: entry.example };
+}
+
 export function useChallenge() {
   const [state, setState] = useState<ChallengeState>({
     question: null,
@@ -405,6 +426,7 @@ export function useChallenge() {
               newlyMastered: justMastered,
               attemptId: `demo-${demoIndex.current}-${demoIndex.current}-${demoAttempt.current++}`,
               help: word.help,
+              chosen: demoChosen(word, selected, word.answer),
               type: word.type,
               answer: word.answer,
               correct,
@@ -421,6 +443,7 @@ export function useChallenge() {
           return {
             help: word.help,
             attemptId: `demo-return-${demoAttempt.current++}`,
+            chosen: demoChosen(word, selected, word.answer),
             type: word.type,
             answer: word.answer,
             correct,

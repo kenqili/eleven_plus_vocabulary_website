@@ -51,7 +51,7 @@ cinch,Something extremely easy to do,breeze; easy task,challenge; difficulty,"Af
 intricate,Very detailed or complicated,complex; elaborate,simple; straightforward,The clock contained an intricate system of tiny gears.
 prejudice,An unfair opinion formed without sufficient knowledge,bias; preconception,impartiality; fairness,Decisions should be based on evidence rather than prejudice.
 bedlam,A scene of great noise and confusion,chaos; uproar,order; calm,The classroom descended into bedlam when the balloons burst.
-favoured,Preferred or treated with special approval,preferred; preferred,unfavoured; rejected,The favoured candidate won the final vote.
+favoured,Preferred or treated with special approval,preferred; chosen; best-liked,unfavoured; rejected,The favoured candidate won the final vote.
 impediment,Something that obstructs or slows progress,obstacle; hindrance,aid; assistance,A fallen tree was a serious impediment to our progress.
 acrid,"Having a strong, bitter, irritating smell or taste",pungent; bitter,mild; sweet,Acrid smoke filled the kitchen after the toast burned.
 acid,A sour substance; also sharp or bitter in manner,sour; acidic,alkaline; sweet,"The lemon juice had a sharp, acid taste."
@@ -168,7 +168,7 @@ jaded,Tired or bored after having too much of something,weary; bored,enthusiasti
 exhausted,Extremely tired,drained; fatigued,energetic; refreshed,We were exhausted after the long hike.
 drowsy,Sleepy,sleepy; lethargic,alert; awake,The warm room made me drowsy.
 invigorated,Filled with energy,energised; refreshed,exhausted; weary,The cold swim left her feeling invigorated.
-obtuse,Slow to understand; also an angle greater than 90°,dull; slow-witted,astute; perceptive,He was being deliberately obtuse and ignored the obvious clue.
+obtuse,Slow to understand and notice things; an angle that is more than 90 degrees but less than 180 degrees.,dull; slow-witted,astute; perceptive,He was being deliberately obtuse and ignored the obvious clue.
 abridge,To shorten a text without losing its main meaning,shorten; condense,expand; lengthen,The editor abridged the novel for younger readers.
 sullen,"Bad-tempered, gloomy, and silent",gloomy; sulky,cheerful; friendly,The child sat in sullen silence.
 acute,Very severe or intense; also sharp or perceptive,severe; intense,mild; slight,She felt acute pain in her ankle.
@@ -540,9 +540,9 @@ propel,To drive or push something forward.,push; drive,repel; hold back,The new 
 scurry,To move hurriedly with short quick steps.,dash; rush,stroll; amble,The frightened hens scurry into the coop as soon as the thunder starts.
 trudge,To walk slowly and with heavy steps.,plod; slouch,sprint; scamper,We had to trudge the last mile through deep wet mud.
 abundant,Existing or available in large quantities.,plentiful; ample,scarce; meagre,"This orchard is abundant with apples, and the branches bend under them."
-opulent,Ostentatiously costly and luxurious.,wealthy; rich,impoverished; plain,The opulent palace had velvet curtains and a marble staircase.
-porous,Having minute spaces or holes through which liquid or air may pass.,permeable; pervious,impermeable; solid,The porous stone walls let the cool cave air seep slowly through.
-abhorrent,Inspiring disgust and loathing.,detestable; hateful,admirable; lovable,The thought of eating that slug was abhorrent to the whole family.
+opulent,"Very rich, grand and expensive, with plenty of fine things around.",wealthy; rich,impoverished; plain,The opulent palace had velvet curtains and a marble staircase.
+porous,"Full of tiny holes that let water, air or gases pass through.",permeable; pervious,impermeable; solid,The porous stone walls let the cool cave air seep slowly through.
+abhorrent,So hateful or cruel that it makes people feel disgust.,detestable; hateful,admirable; lovable,The thought of eating that slug was abhorrent to the whole family.
 hostile,Unfriendly; antagonistic.,aggressive; antagonistic,friendly; welcoming,The hostile watchdog barked at every passer-by.
-heinous,Utterly odious or wicked.,wicked; evil,admirable; decent,Everyone was horrified by the heinous act of pulling the fire alarm as a joke.
+heinous,So cruel or wicked that everyone hates it.,wicked; evil,admirable; decent,Everyone was horrified by the heinous act of pulling the fire alarm as a joke.
 adversity,Difficulties or misfortune.,hardship; trouble,prosperity; success,"Through the adversity of a hard frost, the seedlings still pushed up."

@@ -49,6 +49,20 @@ export type Feedback = {
   /** The plain-language help for this word, worked out on the server. */
   help?: string;
   /**
+   * What the option the child actually chose means, when it was a word rather
+   * than a sentence. Choosing "debris" instead of "timid" teaches nothing
+   * unless the app says what debris is, and a wrong answer is exactly when a
+   * child most needs to know the word they did not pick.
+   *
+   * Absent for a definition question, where the options are meanings and so
+   * there is nothing left to explain.
+   */
+  chosen?: {
+    word: string;
+    meaning: string;
+    example?: string;
+  };
+  /**
    * Identifies this one answer. It is what the sound layer uses to tell one
    * answer from the next, so two right answers in a row are two sounds rather
    * than one sound and silence.
