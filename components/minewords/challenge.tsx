@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { BookOpen, ArrowRight } from "lucide-react";
+import { ArrowRight, BookOpen, Lightbulb } from "lucide-react";
 import Pronunciation from "./pronunciation";
 import AnswerPacing from "./answer-pacing";
 import { DAILY_QUESTION_TARGET } from "@/lib/challenge/mission";
@@ -10,6 +10,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
   QUESTION_TYPES,
   TYPE_BUTTONS,
+  TYPE_INSTRUCTIONS,
   TYPE_LABELS,
   type QuestionType,
 } from "@/lib/challenge/config";
@@ -23,6 +24,7 @@ import Header from "./header";
 import ProgressPanel from "./progress-panel";
 import DailyMission from "./daily-mission";
 import WordExplanation from "./word-explanation";
+import { usePlaySound } from "@/lib/theme/sound-provider";
 import { useAnswerSound } from "@/lib/theme/use-sounds";
 import { useChallenge } from "./use-challenge";
 const levelLabel = (difficulty: number) =>
@@ -38,6 +40,9 @@ export default function Challenge() {
     question?.difficulty !== undefined ? levelLabel(question.difficulty) : "";
   // The answer sound depends on more than right and wrong: revealing is not a
   // failure, and mastering a word is a bigger moment than getting one right.
+  // The clue gets its own sound, which rises and then falls back so it can
+  // never be mistaken for the reward for a right answer.
+  const playSound = usePlaySound();
   useAnswerSound(
     feedback
       ? {
@@ -232,6 +237,15 @@ export default function Challenge() {
                       id={question.wordId}
                     />
                   </div>
+                  {/* Two of the five question types carry no question of their
+                      own: a word question shows a bare definition and a cloze
+                      shows a sentence with a gap. The instructions say which is
+                      which, so the child is not left guessing. */}
+                  {!feedback ? (
+                    <p className="question-instruction">
+                      {TYPE_INSTRUCTIONS[question.type]}
+                    </p>
+                  ) : null}
                   <p>{question.prompt}</p>
                   {!feedback && question.clue && (
                     <div className="question-clue">
@@ -241,11 +255,15 @@ export default function Challenge() {
                         </p>
                       ) : (
                         <button
-                          className="text-button"
+                          className="clue-button"
                           disabled={busy}
-                          onClick={() => { study.markAssisted(); setClueQuestion(question.id); }}
+                          onClick={() => {
+                            study.markAssisted();
+                            setClueQuestion(question.id);
+                            playSound("hint");
+                          }}
                         >
-                          Give me a clue
+                          <Lightbulb size={15} aria-hidden /> Give me a clue
                         </button>
                       )}
                     </div>
@@ -304,14 +322,14 @@ export default function Challenge() {
                       <WordExplanation word={feedback} />
                       {!demo && !feedback.correct && (
                         <small>
-                          New streak starts with your next correct answer. Your
-                          earned credits are safe.
+                          Your run of right answers starts again with your next
+                          one. The credits you have already earned are safe.
                         </small>
                       )}
                       {!demo && !feedback.correct && (
                         <small>
-                          This word is scheduled to return on your 15th next
-                          question. It may return sooner if few words remain.
+                          This word will come back later, so it has a chance to
+                          stick.
                         </small>
                       )}
                     </div>

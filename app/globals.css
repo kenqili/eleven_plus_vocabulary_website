@@ -19,6 +19,10 @@
  */
 :root,
 [data-theme="classic"] {
+  /* Text on the dark inset panel, which stays dark in every theme. */
+  --ink-on-navy: #dce8f7;
+  --ink-on-navy-2: #b4c6de;
+  --ink-on-navy-3: #8fa4bf;
   /* Text */
   --ink: #18253b;
   --ink-2: #3c4f68;
@@ -64,7 +68,6 @@
   --ink-lilac: #aa8bdf;
   --ink-orange: #e27629;
   --ink-ice: #d0ddf1;
-  --ink-pale: #c2d0e8;
   --ink-cyan: #39729d;
   --ink-sage: #596c62;
 
@@ -154,7 +157,7 @@
   --shadow-9: #193e6114;
 
   /* Controls and highlights */
-  --focus: #7aa7e8;
+  --focus: #2f6fc0;
   --focus-deep: #236399;
   --pick: #2358d5;
   --pick-deep: #245b4c;
@@ -170,6 +173,10 @@
   --font-display: ui-rounded, "SF Pro Rounded", "Nunito", system-ui,
     -apple-system, "Segoe UI", sans-serif;
   --font-read: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  /* Text on the dark inset panel, which stays dark in every theme. */
+  --ink-on-navy: #dce8f7;
+  --ink-on-navy-2: #b4c6de;
+  --ink-on-navy-3: #8fa4bf;
 }
 
 :root {
@@ -229,9 +236,16 @@ a {
 }
 button:focus-visible,
 a:focus-visible,
-input:focus-visible {
-  outline: 3px solid var(--pick-gold);
-  outline-offset: 4px;
+input:focus-visible,
+select:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+  /* The halo is the surface colour, so the ring stays visible against a dark
+     panel and a light page without either theme having to find a gold that
+     happens to work on both. */
+  box-shadow: 0 0 0 2px var(--surface);
 }
 .topbar {
   min-height: 94px;
@@ -441,8 +455,16 @@ h1 {
 }
 .progress-panel p {
   font-size: 14px;
-  color: var(--ink-pale);
+  color: var(--ink-on-navy);
   margin: 0;
+}
+.progress-panel .panel-eyebrow {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--ink-on-navy-3);
+  margin: 0 0 4px;
 }
 .mastered {
   display: flex;
@@ -456,7 +478,7 @@ h1 {
 }
 .mastered span {
   font-size: 13px;
-  color: var(--ink-pale);
+  color: var(--ink-on-navy);
 }
 .progress-panel [data-slot="progress"] {
   background: var(--surface-slate);
@@ -467,7 +489,7 @@ h1 {
 }
 .progress-label {
   font-size: 12px;
-  color: var(--ink-pale);
+  color: var(--ink-on-navy);
   margin: 10px 0 23px;
 }
 .stat-row {
@@ -477,7 +499,7 @@ h1 {
   padding: 14px 0 0;
   margin-top: 12px;
   font-size: 13px;
-  color: var(--ink-pale);
+  color: var(--ink-on-navy);
 }
 .stat-row b {
   color: var(--ink-invert);
@@ -861,13 +883,13 @@ hr {
 .status-date {
   font-size: 14px;
   line-height: 1.5;
-  color: var(--ink-slate-deep);
+  color: var(--ink-on-navy);
 }
 .progress-panel small {
   display: block;
   font-size: 14px;
   line-height: 1.5;
-  color: var(--ink-slate-deep);
+  color: var(--ink-on-navy-2);
   margin-top: 12px;
 }
 .reward-panel {
@@ -971,9 +993,10 @@ hr {
   background: var(--surface-amber-2);
   color: var(--ink-olive-8);
 }
-.dashboard-kicker {
-  color: var(--ink-warn);
-  font-size: 10px;
+.dashboard-kicker,
+.panel-eyebrow {
+  color: var(--ink-on-navy-3);
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 1.2px;
 }
@@ -1066,8 +1089,8 @@ hr {
   border-color: var(--line);
   background: var(--surface);
   color: var(--ink-slate-deep);
-  font-size: 12px;
-  padding: 7px 4px;
+  font-size: 14px;
+  padding: 9px 4px;
 }
 .study-aside .status-tabs button[aria-pressed="true"] {
   background: var(--surface-purple-solid);
@@ -1076,8 +1099,8 @@ hr {
 }
 .study-aside .progress-panel .status-date,
 .study-aside .dashboard-note {
-  color: var(--ink-slate);
-  font-size: 11px;
+  color: var(--ink-on-navy-2);
+  font-size: 12px;
   margin-top: 8px;
 }
 .stat-grid {
@@ -1101,8 +1124,8 @@ hr {
   line-height: 1.2;
 }
 .stat-grid span {
-  color: var(--ink-slate);
-  font-size: 10px;
+  color: var(--ink-on-navy-2);
+  font-size: 12px;
 }
 .question-answered {
   padding-top: 23px;
@@ -1111,23 +1134,14 @@ hr {
 .question-answered h2 {
   margin-top: 13px;
   margin-bottom: 5px;
-  font-size: 44px;
 }
 .question-answered > p {
   margin-bottom: 12px;
 }
+/* The answers keep their size and their single column. Only the colours change
+   when a question is answered. */
 .question-answered .answers {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 7px;
-}
-.question-answered .answer {
-  min-height: 46px;
-  padding: 8px 11px;
-  gap: 10px;
-}
-.question-answered .answer > span:first-child {
-  min-width: 24px;
-  height: 24px;
+  grid-template-columns: 1fr;
 }
 .question-answered .feedback {
   margin-top: 12px;
@@ -1141,16 +1155,16 @@ hr {
   font-size: 12px;
 }
 .question-answered .word-explanation {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px 16px;
-  margin: 10px 0 2px;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin: 12px 0 2px;
 }
 .question-answered .word-explanation dt {
-  font-size: 11px;
+  font-size: 14px;
 }
 .question-answered .word-explanation dd {
-  font-size: 13px;
-  line-height: 1.4;
+  font-size: 17px;
+  line-height: 1.55;
 }
 .question-answered .question-footer {
   margin-top: 13px;
@@ -1279,7 +1293,7 @@ hr {
 }
 .progress-panel .status-date,
 .progress-panel small {
-  color: var(--ink-pale);
+  color: var(--ink-on-navy);
 }
 .reward-panel,
 .reward-panel h3 {
@@ -3781,6 +3795,10 @@ hr {
  * much can switch back in one tap.
  */
 [data-theme="minecraft"] {
+  /* Text on the dark inset panel, which stays dark in every theme. */
+  --ink-on-navy: #e8f0dc;
+  --ink-on-navy-2: #c0cdb0;
+  --ink-on-navy-3: #9daa8c;
   /* Text */
   --ink: #2d2d33;
   --ink-2: #3f3f46;
@@ -3826,7 +3844,6 @@ hr {
   --ink-lilac: #b49ae8;
   --ink-orange: #c2601a;
   --ink-ice: #cfd6dd;
-  --ink-pale: #dfe4e9;
   --ink-cyan: #2f6b7d;
   --ink-sage: #4f6340;
 
@@ -3916,7 +3933,7 @@ hr {
   --shadow-9: #2d2d3318;
 
   /* Controls */
-  --focus: #f2c744;
+  --focus: #5a4a0a;
   --focus-deep: #b8900f;
   --pick: #4c8a1f;
   --pick-deep: #2f5c17;
@@ -3938,6 +3955,10 @@ hr {
  * who find the blue one flat, and for anyone who likes a softer page.
  */
 [data-theme="sunshine"] {
+  /* Text on the dark inset panel, which stays dark in every theme. */
+  --ink-on-navy: #fdf3e0;
+  --ink-on-navy-2: #e8d2ae;
+  --ink-on-navy-3: #c9ac81;
   /* Text */
   --ink: #3d2a12;
   --ink-2: #5a4020;
@@ -3983,7 +4004,6 @@ hr {
   --ink-lilac: #c0a4e8;
   --ink-orange: #d2601a;
   --ink-ice: #efe0cc;
-  --ink-pale: #f4e8d6;
   --ink-cyan: #2f6a72;
   --ink-sage: #5c6a3c;
 
@@ -4073,7 +4093,7 @@ hr {
   --shadow-9: #3d2a1218;
 
   /* Controls */
-  --focus: #f0a828;
+  --focus: #8a4f06;
   --focus-deep: #b07a10;
   --pick: #e07a1f;
   --pick-deep: #a85a12;
@@ -4097,6 +4117,10 @@ hr {
  * classic way a dark theme becomes unreadable.
  */
 [data-theme="midnight"] {
+  /* Text on the dark inset panel, which stays dark in every theme. */
+  --ink-on-navy: #dfe6f4;
+  --ink-on-navy-2: #bcc6dc;
+  --ink-on-navy-3: #98a3bb;
   /* Text */
   --ink: #e6ebf5;
   --ink-2: #c2cadd;
@@ -4142,7 +4166,6 @@ hr {
   --ink-lilac: #8f7bc4;
   --ink-orange: #e89a5a;
   --ink-ice: #2c3346;
-  --ink-pale: #353d52;
   --ink-cyan: #7cc0d4;
   --ink-sage: #8fae8a;
 
@@ -4233,7 +4256,7 @@ hr {
   --shadow-9: #0000001c;
 
   /* Controls */
-  --focus: #7fa8f5;
+  --focus: #8fb6f7;
   --focus-deep: #4a7ad4;
   --pick: #5b8def;
   --pick-deep: #7cc0f0;
@@ -4354,4 +4377,199 @@ hr {
     right: auto;
     left: 0;
   }
+}
+
+
+/* What the question is asking, for the two types whose prompt is only a
+   definition or a sentence with a gap. */
+.question-instruction {
+  margin: 0 0 6px;
+  color: var(--ink-2);
+  font-size: 17px;
+  font-weight: 700;
+}
+@media (max-width: 560px) {
+  .question-instruction {
+    font-size: 16px;
+  }
+}
+/* Asking for a clue is the difference between mastering a word and not, so it is
+   a real button with an icon and a 44px target, not a line of blue text. */
+.clue-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  padding: 9px 16px;
+  border: 1px solid var(--line-brand);
+  border-radius: var(--radius-sm);
+  background: var(--surface-brand);
+  color: var(--ink-brand);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.clue-button:hover:not(:disabled) {
+  background: var(--surface-brand-2);
+}
+.clue-button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+/* A tapped control has to look tapped. There were no :active rules at all, so
+   on a touchscreen nothing happened for the few hundred milliseconds a request
+   takes and a fast tapper tapped twice. */
+.answer:active:not(:disabled),
+.primary-button:active:not(:disabled),
+.secondary-button:active:not(:disabled),
+.practice-type:active:not(:disabled),
+.clue-button:active:not(:disabled),
+.theme-option:active:not(:disabled),
+.manage-action:active:not(:disabled),
+.text-button:active:not(:disabled) {
+  transform: translateY(2px);
+  filter: brightness(0.94);
+}
+@media (pointer: coarse) {
+  .answer,
+  .primary-button,
+  .secondary-button,
+  .practice-type,
+  .theme-option,
+  .manage-action,
+  .clue-button {
+    transition: none;
+  }
+}
+
+/* The story measure was about eighty characters, which is well past the point
+   where a nine-year-old loses their place on the return sweep. */
+.story-reader {
+  max-width: 720px;
+}
+.story-prose {
+  max-width: 34em;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* The bold words are the only interactive thing in a story, and as an inline
+   box the target was the glyph box alone: about nineteen pixels. */
+.story-word {
+  display: inline-block;
+  padding: 4px 2px;
+  margin: 0 -2px;
+  line-height: inherit;
+}
+@media (pointer: coarse) {
+  .story-word {
+    padding: 9px 5px;
+    margin: 0 -5px;
+  }
+}
+
+/* The keyboard hint is 11px grey advice about keys a tablet does not have. */
+@media (pointer: coarse), (max-width: 720px) {
+  .keyboard-hint {
+    display: none;
+  }
+}
+
+/* The theme menu had no gap between its options, so a near-miss silently
+   repainted the whole app and closed the menu with no way to undo it. */
+.theme-menu {
+  display: grid;
+  gap: 4px;
+}
+.theme-menu-note {
+  margin: 4px 8px 6px;
+}
+.theme-button {
+  min-height: 44px;
+}
+.theme-option {
+  min-height: 44px;
+}
+@media (pointer: coarse) {
+  .manage-action,
+  .manage-chip button,
+  .exclude-word .manage-action,
+  .theme-button,
+  .theme-option,
+  .text-button {
+    min-height: 44px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .exclude-word .manage-action {
+    font-size: 14px;
+  }
+  .manage-chip button {
+    font-size: 14px;
+  }
+}
+
+/* Motion is the point of a reward, so the correct answer gets one, and the
+   wrong one is nudged rather than shaken: a shake reads as punishment. */
+@keyframes answer-correct {
+  from {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.03);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+.answer.correct {
+  animation: answer-correct 260ms ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .answer.correct {
+    animation: none;
+  }
+}
+
+/* The look picker lives outside the collapsing nav, so it is one tap away on a
+   phone rather than the eleventh item of a hidden menu. */
+.header-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+@media (max-width: 720px) {
+  .theme-button span {
+    display: none;
+  }
+  .theme-button {
+    padding: 8px 12px;
+  }
+  .theme-menu {
+    right: 0;
+    left: auto;
+  }
+}
+/* Setting a word aside is reversible but not obvious, so it confirms, and then
+   offers an undo in the same place rather than on another page. */
+.undo-note {
+  color: var(--ink-2);
+  font-size: 13px;
+}
+.undo-row {
+  display: flex;
+  gap: 7px;
+  margin-top: 7px;
+}
+.manage-action.destructive {
+  color: var(--ink-danger);
+  border-color: var(--line-danger);
+  background: var(--surface-danger-2);
+}
+.manage-action.destructive:hover:not(:disabled) {
+  background: var(--surface-danger);
 }

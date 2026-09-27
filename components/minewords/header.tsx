@@ -71,8 +71,10 @@ export default function Header() {
         <Link className="account-link" href="/account">
           <UserRound size={18} /> Your account
         </Link>
-        <ThemePicker />
       </nav>
+      <div className="header-tools">
+        <ThemePicker />
+      </div>
     </header>
   );
 }

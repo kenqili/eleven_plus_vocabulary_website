@@ -28,7 +28,15 @@ export default function ProgressPanel({
           <span className="reward-icon"><Sparkles size={20} /></span>
           <div>
             <span className="dashboard-kicker">YOUR REWARDS</span>
-            <h3>{demo ? "Learn and earn!" : "You’re on a roll!"}</h3>
+            <h3>
+              {demo
+                ? "Learn and earn!"
+                : streak >= 3
+                  ? "You’re on a roll!"
+                  : streak > 0
+                    ? "Keep it going!"
+                    : "One right answer starts a run"}
+            </h3>
           </div>
         </div>
         {demo ? (

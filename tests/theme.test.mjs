@@ -203,3 +203,110 @@ test("the theme list is safe to persist and to switch on", () => {
   assert.equal(themeById(undefined).id, "classic");
   assert.match(THEME_STORAGE_KEY, /^minewords:/, "storage keys are namespaced");
 });
+
+/**
+ * The specific pairings a review of the app as a nine-year-old, a ten-year-old
+ * and two parents turned up as unreadable. Each of these is a real surface a
+ * child looks at, and each was invisible or near-invisible in at least one
+ * shipped theme while the general token test was happy.
+ */
+test("the surfaces a child actually reads stay readable in every theme", () => {
+  const channel = (value) => {
+    const hex = value.trim().replace("#", "");
+    const full = hex.length === 3 ? hex.replace(/./g, (c) => c + c) : hex;
+    return [0, 2, 4].map((i) => {
+      const n = parseInt(full.slice(i, i + 2), 16) / 255;
+      return n <= 0.04045 ? n / 12.92 : ((n + 0.055) / 1.055) ** 2.4;
+    });
+  };
+  const luminance = (value) => {
+    const [r, g, b] = channel(value);
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  };
+  const contrast = (a, b) => {
+    const [x, y] = [luminance(a), luminance(b)].sort((p, q) => q - p);
+    return (x + 0.05) / (y + 0.05);
+  };
+  const read = (name) => {
+    for (const theme of THEMES) {
+      const block = noComments.match(
+        new RegExp(`\\[data-theme="${theme.id}"\\]\\s*\\{([\\s\\S]*?)\\n\\}`),
+      );
+      if (!block) continue;
+      const hit = block[1].match(new RegExp(`${name}\\s*:\\s*([^;]+);`));
+      if (hit) return hit[1].trim();
+    }
+    return tokens.get(name);
+  };
+  const pairs = [
+    // The question card and its four answers, which were white on white.
+    ["--ink", "--surface", 4.5, "the word being tested"],
+    ["--ink-brand-3", "--surface", 4.5, "the answer options"],
+    ["--ink-slate", "--surface", 4.5, "the question text"],
+    ["--ink-brand-2", "--surface", 4.5, "the clue and skip buttons"],
+    // The stat labels under every number in the sidebar.
+    ["--ink-slate", "--surface-2", 4.5, "the sidebar stat labels"],
+    ["--ink-3", "--surface-2", 4.5, "the sidebar status line"],
+    // The progress panel is a dark inset even in a dark theme, so its text
+    // pairings are against the navy, not the page.
+    ["--ink-on-navy", "--surface-navy-2", 4.5, "the sidebar explainer"],
+    ["--ink-on-navy-2", "--surface-navy-2", 4.5, "the sidebar stat labels"],
+    ["--ink-on-navy-3", "--surface-navy-2", 4.5, "the sidebar faintest text"],
+    // The reward panel, which is the whole motivation loop.
+    ["--ink-amber-deep", "--surface-warn", 4.5, "the reward panel heading"],
+    ["--ink-olive-5", "--surface-warn", 4.5, "the reward panel text"],
+    ["--ink-olive-6", "--surface-warn", 4.5, "the credit balance and streak bonus"],
+    // Feedback, which a child reads immediately after answering.
+    ["--ink-brand", "--surface-brand", 4.5, "the answer feedback"],
+    ["--ink-crimson", "--surface-danger-2", 4.5, "an error message"],
+    ["--ink-3", "--surface-page", 4.5, "muted text on the page"],
+    // The focus ring, which has to clear 3:1 as a non-text indicator.
+    ["--focus", "--surface", 3, "the focus ring on a card"],
+    ["--focus", "--surface-page", 3, "the focus ring on the page"],
+  ];
+  for (const theme of THEMES)
+    for (const [ink, surface, floor, what] of pairs) {
+      const ratio = contrast(read(ink), read(surface));
+      assert.ok(
+        ratio >= floor,
+        `${theme.id}: ${what} is ${ink} on ${surface}, ${ratio.toFixed(2)}:1, needs ${floor}:1`,
+      );
+    }
+});
+
+test("the progress bar's fill is distinguishable from its track", () => {
+  // A bar whose fill and track are within 1.03:1 of each other is not a bar,
+  // and the "words mastered" progress vanished entirely in one theme.
+  const channel = (value) => {
+    const hex = value.trim().replace("#", "");
+    const full = hex.length === 3 ? hex.replace(/./g, (c) => c + c) : hex;
+    return [0, 2, 4].map((i) => parseInt(full.slice(i, i + 2), 16) / 255);
+  };
+  const lum = (value) => {
+    const [r, g, b] = channel(value);
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  };
+  const read = (name) => {
+    for (const theme of THEMES) {
+      const block = noComments.match(
+        new RegExp(`\\[data-theme="${theme.id}"\\]\\s*\\{([\\s\\S]*?)\\n\\}`),
+      );
+      if (!block) continue;
+      const hit = block[1].match(new RegExp(`${name}\\s*:\\s*([^;]+);`));
+      if (hit) return hit[1].trim();
+    }
+    return tokens.get(name);
+  };
+  for (const theme of THEMES) {
+    // The fill and the track have to be told apart by lightness, not by hue,
+    // because a hue difference alone is invisible in greyscale and to a
+    // colour-blind child.
+    const fill = lum(read("--surface-sky-soft"));
+    const track = lum(read("--surface-slate"));
+    const difference = Math.abs(fill - track);
+    assert.ok(
+      difference > 0.06,
+      `${theme.id}: progress fill and track are within ${difference.toFixed(3)} of each other in lightness`,
+    );
+  }
+});
