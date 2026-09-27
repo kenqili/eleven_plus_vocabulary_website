@@ -74,7 +74,8 @@ export async function wordSummary(
         `SELECT word_id,
       SUM(CASE WHEN selected>=0 AND is_correct=0 THEN 1 ELSE 0 END) AS mistakes,
       SUM(CASE WHEN selected=-1 THEN 1 ELSE 0 END) AS reveals,
-      MAX(answered_at) AS last_practised
+      MAX(answered_at) AS last_practised,
+      MAX(CASE WHEN is_correct=0 THEN answered_at END) AS last_slipped
       FROM attempts WHERE user_id=? AND answered_at IS NOT NULL AND selected>=-1 GROUP BY word_id`,
       )
       .bind(userId)
@@ -83,6 +84,7 @@ export async function wordSummary(
         mistakes: number;
         reveals: number;
         last_practised: number;
+        last_slipped: number | null;
       }>(),
   ]);
   const byWord = new Map(progress.results.map((row) => [row.word_id, row]));
@@ -112,6 +114,7 @@ export async function wordSummary(
       mistakes,
       reveals,
       lastPractised: attempts?.last_practised || null,
+      lastSlipped: attempts?.last_slipped || null,
       ...("custom" in word ? { custom: true } : {}),
       status: hasMastered(saved ?? {})
         ? ("mastered" as const)

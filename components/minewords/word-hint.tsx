@@ -92,8 +92,18 @@ export default function WordHint({
       )
         close();
     };
-    const reposition = () =>
+    // Scroll closes the panel, because it is positioned against the word and
+    // would otherwise drift away from it. A small scroll is a finger resting or
+    // a tap landing, not a decision to read on, and treating those as "close"
+    // meant a child could open a definition and lose it before they could press
+    // the button inside it.
+    let lastScroll = 0;
+    const reposition = () => {
+      const now = Date.now();
+      if (now - lastScroll < 120) return;
+      lastScroll = now;
       close(Boolean(note.current?.contains(document.activeElement)));
+    };
     document.addEventListener("pointerdown", outside);
     document.addEventListener("keydown", escape);
     window.addEventListener("scroll", reposition, { passive: true });
@@ -106,8 +116,12 @@ export default function WordHint({
       window.removeEventListener("resize", reposition);
     };
   }, []);
+  // Deliberately no hover handlers. Sliding the cursor down a paragraph of
+  // story used to flash a help panel open and shut over each bold word it
+  // passed, which is unreadable on a page someone is trying to read. Tap or
+  // focus opens it, and a pointer user can still click.
   return (
-    <span className="story-word-wrap" onMouseEnter={show} onMouseLeave={hide}>
+    <span className="story-word-wrap">
       <button
         ref={button}
         type="button"

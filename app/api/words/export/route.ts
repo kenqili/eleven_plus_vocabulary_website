@@ -23,6 +23,9 @@ import {
   CONTENT_LABELS,
   resolveSheet,
 } from "@/lib/challenge/print-layout";
+/** The most rows one export will build. 2,249 is the whole collection. */
+export const EXPORT_ROW_LIMIT = 2500;
+
 const escape = (value: string) =>
   value.replace(
     /[&<>"']/g,
@@ -137,6 +140,14 @@ export async function GET(request: Request) {
       "Cache-Control": "private, no-store",
       "X-Content-Type-Options": "nosniff",
     };
+    // A cap, so a parent who asks for everything gets a file they can use
+    // rather than a half-megabyte string built in one go. The response says so
+    // rather than quietly trimming.
+    if (words.length > EXPORT_ROW_LIMIT)
+      throw new HttpError(
+        400,
+        `That is ${words.length} words, and a single export is limited to ${EXPORT_ROW_LIMIT}. Narrow it with a level or a status filter.`,
+      );
     if (format === "csv")
       return new Response(wordSummaryCsv(words), {
         headers: {

@@ -12,7 +12,7 @@ import type { Word } from "./words.ts";
 export const LEARNING_STATUS = {
   new: "New",
   learning: "Learning",
-  practice: "Needs practice",
+  practice: "Slipped on · last 30 days",
   mastered: "Mastered",
 } as const;
 export type LearningStatus = keyof typeof LEARNING_STATUS;
@@ -55,8 +55,8 @@ export function learningStatus(progress: {
 }
 export const WORD_FILTERS = {
   all: "All words",
-  practice: "Needs practice",
-  mistakes: "Mistaken words",
+  practice: "Slipped on · last 30 days",
+  mistakes: "Slipped on most",
   revealed: "Revealed answers",
   new: "New",
   learning: "Learning",

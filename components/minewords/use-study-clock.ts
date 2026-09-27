@@ -76,8 +76,20 @@ export function useStudyClock(
       if (document.hidden) void flush();
       else active();
     };
-    for (const name of ["pointerdown", "pointermove", "keydown", "scroll"])
+    // pointermove is deliberately not listened for. It fired on every mouse
+    // movement for the whole session just to reset a timestamp, which is a
+    // main-thread callback on the hot path of a cheap phone. A press or a
+    // keystroke already says the person is here, and scrolling is throttled.
+    for (const name of ["pointerdown", "keydown"])
       window.addEventListener(name, active, { passive: true });
+    let scrolledAt = 0;
+    const onScroll = () => {
+      const now = Date.now();
+      if (now - scrolledAt < 1000) return;
+      scrolledAt = now;
+      active();
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
     document.addEventListener("visibilitychange", visibility);
     const leave = () => {
       void flush();
@@ -103,8 +115,9 @@ export function useStudyClock(
     return () => {
       void flush();
       clearInterval(interval);
-      for (const name of ["pointerdown", "pointermove", "keydown", "scroll"])
+      for (const name of ["pointerdown", "keydown"])
         window.removeEventListener(name, active);
+      window.removeEventListener("scroll", onScroll);
       document.removeEventListener("visibilitychange", visibility);
       window.removeEventListener("pagehide", leave);
     };

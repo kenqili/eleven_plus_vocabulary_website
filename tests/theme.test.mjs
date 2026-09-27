@@ -310,3 +310,33 @@ test("the progress bar's fill is distinguishable from its track", () => {
     );
   }
 });
+
+test("the script that applies the theme before paint knows every theme", () => {
+  // The inline script in the root layout carries its own allowlist, because it
+  // runs before any module loads. It used to be a hand-typed copy of the theme
+  // list, so adding a theme to the switcher left the script rejecting it on the
+  // next page load and quietly resetting the child to the default.
+  const layout = readFileSync(
+    new URL("../app/layout.tsx", import.meta.url),
+    "utf8",
+  );
+  assert.match(layout, /THEMES\.map\(\(theme\) => theme\.id\)/);
+  assert.match(layout, /THEME_STORAGE_KEY/);
+  assert.ok(
+    !/"classic","minecraft"/.test(layout),
+    "the theme ids must not be typed out a second time",
+  );
+  for (const theme of THEMES)
+    assert.ok(
+      noComments.includes(`[data-theme="${theme.id}"]`),
+      `${theme.id} has no stylesheet block, so the script would apply nothing`,
+    );
+});
+
+test("every offered theme has a readable swatch and real styles", () => {
+  for (const theme of THEMES) {
+    assert.ok(theme.swatch.length >= 3, `${theme.id} needs a readable swatch`);
+    for (const colour of theme.swatch)
+      assert.match(colour, /^#[0-9a-f]{6}$/i, `${theme.id}: ${colour}`);
+  }
+});
