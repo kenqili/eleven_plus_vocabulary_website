@@ -20,6 +20,9 @@ import ThemePicker from "./theme-picker";
  * pressure and its effect on mental health, and the page headed "Guides for
  * parents". One tap from a question about what a word means. Ten links is also
  * a lot of decisions before the first word.
+ *
+ * The 11+ page used to be one of those ten links, as an index of articles. It
+ * is now a single page, which is what a parent arriving cold actually wants.
  */
 const FOR_CHILDREN = [
   { href: "/stories", label: "Word Adventures" },
@@ -30,7 +33,7 @@ const FOR_CHILDREN = [
 
 const FOR_GROWN_UPS = [
   { href: "/how-to", label: "How to use this" },
-  { href: "/guides", label: "11+ guides for parents" },
+  { href: "/info", label: "The 11+ explained" },
   { href: "/words/manage", label: "Choose which words to practise" },
   { href: "/words/print", label: "Printable word sheets" },
   { href: "/about", label: "About MineWords" },

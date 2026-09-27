@@ -189,7 +189,7 @@ export default function Account() {
                 <Link href="/words/manage">Choose which words to practise</Link>
                 <Link href="/words/print">Printable word sheets</Link>
                 <Link href="/calendar">Practice calendar</Link>
-                <Link href="/guides">11+ guides for parents</Link>
+                <Link href="/info">The 11+ explained</Link>
               </nav>
               <div className="control-row">
                 <button

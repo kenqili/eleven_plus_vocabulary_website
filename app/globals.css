@@ -4835,3 +4835,369 @@ hr {
     font-size: 14px;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   The 11+ information page.
+
+   One long page rather than a set of articles, because a parent deciding
+   whether this is worth paying for does not want ten links: they want to be
+   able to read what the 11+ is, when everything happens and what is actually
+   worth doing about it in one sitting. So the contents list stays put beside
+   the text on a wide screen, and becomes a jump list at the top on a narrow
+   one. Every colour comes from the token layer, so a theme change carries it.
+   --------------------------------------------------------------------------- */
+.info-workspace {
+  max-width: 1180px;
+}
+.info-hero {
+  max-width: 44em;
+  margin-bottom: 40px;
+}
+.info-hero h1 {
+  margin: 8px 0 16px;
+  font-size: clamp(1.9rem, 4.2vw, 2.9rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.info-standfirst {
+  font-size: 1.2rem;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+.info-updated {
+  margin-top: 14px;
+  font-size: 0.9rem;
+  color: var(--ink-3);
+}
+.info-layout {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: 48px;
+  align-items: start;
+}
+.info-contents {
+  position: sticky;
+  top: 88px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+.info-contents-title {
+  margin: 0 0 12px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.info-contents-group + .info-contents-group {
+  margin-top: 16px;
+}
+.info-contents-group-name {
+  margin: 0 0 6px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--ink-brand);
+}
+.info-contents ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.info-contents li {
+  margin: 0;
+}
+.info-contents a {
+  display: block;
+  padding: 4px 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--ink-2);
+  text-decoration: none;
+}
+.info-contents a:hover {
+  color: var(--ink-brand);
+  text-decoration: underline;
+}
+.info-body {
+  max-width: 42em;
+  min-width: 0;
+}
+.info-body p {
+  margin: 0 0 16px;
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: var(--ink-2);
+}
+.info-body > p:first-child {
+  font-size: 1.15rem;
+  color: var(--ink);
+}
+.info-key-points {
+  margin: 32px 0 40px;
+  padding: 22px 26px;
+  border: 1px solid var(--line-brand-2);
+  border-left: 5px solid var(--line-brand);
+  border-radius: var(--radius);
+  background: var(--surface-brand-2);
+}
+.info-key-points h2 {
+  margin: 0 0 12px;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+}
+.info-key-points ul {
+  margin: 0;
+  padding-left: 22px;
+}
+.info-key-points li {
+  margin-bottom: 9px;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+.info-group {
+  margin-top: 52px;
+}
+.info-group-name {
+  margin: 0 0 8px;
+  padding-bottom: 10px;
+  border-bottom: 3px solid var(--line-brand);
+  font-size: 1.5rem;
+  letter-spacing: -0.01em;
+}
+.info-section {
+  padding-top: 30px;
+  /* A linked section must not land under the sticky header. */
+  scroll-margin-top: 88px;
+}
+.info-section h3 {
+  margin: 0 0 6px;
+  font-size: 1.28rem;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+.info-section-summary {
+  margin: 0 0 14px !important;
+  font-size: 1.08rem;
+  font-weight: 600;
+  color: var(--ink-2) !important;
+}
+.info-body ul {
+  margin: 0 0 18px;
+  padding-left: 22px;
+}
+.info-body ul li {
+  margin-bottom: 9px;
+  font-size: 1.02rem;
+  line-height: 1.7;
+  color: var(--ink-2);
+}
+.info-figures {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin: 0 0 22px;
+}
+.info-figures > div {
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+.info-figures dt {
+  margin-bottom: 4px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.info-figures dd {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--ink);
+}
+.info-table-scroll {
+  margin: 0 0 22px;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.info-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+.info-table th,
+.info-table td {
+  padding: 11px 14px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--line);
+}
+.info-table thead th {
+  background: var(--surface-2);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.info-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+.info-table td {
+  color: var(--ink-2);
+  line-height: 1.55;
+}
+.info-table-note {
+  margin: 0 !important;
+  padding: 12px 14px;
+  border-top: 1px solid var(--line);
+  background: var(--surface-2);
+  font-size: 0.9rem !important;
+  color: var(--ink-3) !important;
+}
+.info-section-sources {
+  margin: 0 0 8px;
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+.info-section-sources summary {
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+.info-section-sources[open] summary {
+  margin-bottom: 10px;
+}
+.info-section-sources ul {
+  margin: 0;
+  padding-left: 20px;
+}
+.info-section-sources li {
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.info-sources {
+  margin-top: 56px;
+  padding: 26px 28px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+.info-sources h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+  font-size: 1.2rem;
+}
+.info-sources p {
+  font-size: 0.98rem !important;
+}
+.info-sources ul {
+  columns: 2;
+  column-gap: 32px;
+  margin: 0;
+  padding-left: 20px;
+}
+.info-sources li {
+  margin-bottom: 9px;
+  break-inside: avoid;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.info-sources a,
+.info-section-sources a {
+  display: inline;
+  font-weight: 700;
+  color: var(--ink-brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.info-sources a:hover,
+.info-section-sources a:hover {
+  color: var(--ink-brand-2);
+}
+.info-sources li span,
+.info-section-sources li span {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--ink-3);
+}
+.info-cta {
+  margin-top: 48px;
+  padding: 30px 32px;
+  border: 1px solid var(--line-brand);
+  border-radius: var(--radius-lg);
+  background: var(--surface-brand-2);
+}
+.info-cta h2 {
+  margin: 0 0 12px;
+  font-size: 1.5rem;
+  letter-spacing: -0.01em;
+}
+.info-cta p {
+  color: var(--ink-2) !important;
+}
+.info-cta-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+.info-cta-links .primary-button,
+.info-cta-links .secondary-button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 22px;
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+@media (max-width: 900px) {
+  /* One column. The contents stop being a sidebar and become a jump list, which
+     is what a reader on a phone actually wants from it. */
+  .info-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+  .info-contents {
+    position: static;
+    max-height: none;
+  }
+  .info-contents-group {
+    display: inline-block;
+    vertical-align: top;
+    width: 48%;
+    margin-right: 2%;
+  }
+  .info-sources ul {
+    columns: 1;
+  }
+}
+@media (max-width: 560px) {
+  .info-contents-group {
+    display: block;
+    width: 100%;
+    margin-right: 0;
+  }
+  .info-body p {
+    font-size: 1rem;
+  }
+  .info-figures {
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  }
+}
