@@ -34,6 +34,16 @@ import {
 } from "../lib/challenge/problems.ts";
 import levels from "../data/word-levels/levels.json" with { type: "json" };
 
+// The plain-language help is what a child actually reads, and it is a separate
+// rewrite of each definition. It lives here rather than in its own file so it
+// is carried in the same parse, and so it is regenerated whenever the bank is:
+// ten words had help written against a definition that had since been corrected,
+// and nothing was checking. The help for "queer" was still teaching the sense
+// that correcting the word had specifically set out to stop teaching.
+const help = JSON.parse(
+  readFileSync(new URL("../data/learning/word-help.json", import.meta.url), "utf8"),
+);
+
 /**
  * How many wrong definitions to keep per word.
  *
@@ -153,6 +163,11 @@ const wordRows = words.map((word) => [
   // licence by source, and a parent reading the word list is told where a word
   // came from.
   word.source,
+  // The plain-language help and the contextual clue, so answering a question
+  // needs no second file. A word with no recorded help falls back to its own
+  // definition, which is what storyMeaning did with it anyway.
+  help[word.id]?.meaning ?? "",
+  help[word.id]?.clue ?? "",
 ]);
 
 // The difficulty snapshot, in the same file. It was a separate 336 KB JSON that
@@ -162,6 +177,22 @@ const levelRows = Object.entries(levels.words).map(([id, value]) => [
   id,
   value.difficulty,
 ]);
+
+// The free collection is chosen by frequency within a difficulty band, and that
+// ordering is fixed by the snapshot rather than by anything at request time. It
+// is resolved here so the request path does not have to load a second data file
+// to know which word to offer a child first.
+const freeOrder = [...words]
+  .sort((a, b) => {
+    const bandA = levelOf(a.id);
+    const bandB = levelOf(b.id);
+    if (bandA !== bandB) return bandA - bandB;
+    const zipfA = levels.words[a.id]?.frequencyZipf ?? -1;
+    const zipfB = levels.words[b.id]?.frequencyZipf ?? -1;
+    if (zipfB !== zipfA) return zipfB - zipfA;
+    return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
+  })
+  .map((word) => word.id);
 
 const output = {
   meta: {
@@ -180,12 +211,15 @@ const output = {
       "ant",
       "difficulty",
       "source",
+      "help",
+      "clue",
     ],
     problemColumns: ["wordId", "type", "prompt", "answer", "choices"],
   },
   words: wordRows,
   problems: rows,
   levels: levelRows,
+  freeOrder,
 };
 
 const path = new URL("../data/problem-bank.json", import.meta.url);

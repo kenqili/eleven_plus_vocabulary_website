@@ -4,7 +4,8 @@ import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { words } from "../scripts/load-word-bank.mjs";
 import { problems, synText } from "../scripts/load-problem-bank.mjs";
-import { parseProblemCsv } from "../lib/challenge/problems.ts";
+import { choicesForProblem } from "../lib/challenge/bank.ts";
+import { hasWholeWord, parseProblemCsv } from "../lib/challenge/problems.ts";
 import { parsePracticeLevel, parseQuestionTypes } from "../lib/challenge/config.ts";
 import { DIFFICULTY_LEVELS } from "../lib/challenge/difficulty.ts";
 test("Shipped question CSVs match the independently reviewed versions", () => {
@@ -50,21 +51,35 @@ test("Every word has one definition and at most one reviewed synonym/antonym pro
   assert.equal(new Set(problems.map((p) => p.id)).size, problems.length);
   for (const word of words)
     for (const type of ["def", "syn", "ant"]) {
-      const expected = report.excluded.some(
-        (row) => row.word === word.word && row.type === type,
-      )
-        ? 0
-        : 1;
+      // A definition question is also impossible for a word whose definition
+      // contains the word, because the answer would then be the only option
+      // that mentions it. Two words are in that position.
+      const selfNaming = hasWholeWord(word.definition, word.word);
+      const expected =
+        report.excluded.some(
+          (row) => row.word === word.word && row.type === type,
+        ) || (type === "def" && selfNaming)
+          ? 0
+          : 1;
       assert.equal(
         problems.filter((p) => p.wordId === word.id && p.type === type).length,
         expected,
         `${type}:${word.id}`,
       );
     }
+  // The bank stores the three wrong options with the answer kept apart, and
+  // joins them when a question is asked. What a child is shown is what is
+  // checked, because that is the thing that has to be right.
   for (const problem of problems.filter((p) => p.choices)) {
-    assert.equal(problem.choices.length, 4);
-    assert.equal(new Set(problem.choices.map((x) => x.toLowerCase())).size, 4);
-    assert.equal(problem.choices.filter((x) => x === problem.answer).length, 1);
+    assert.equal(problem.choices.length, 3, problem.id);
+    assert.ok(
+      !problem.choices.includes(problem.answer),
+      `${problem.id}: the answer is stored among the wrong options`,
+    );
+    const shown = choicesForProblem(problem, () => 0.5);
+    assert.equal(shown.length, 4, problem.id);
+    assert.equal(new Set(shown.map((x) => x.toLowerCase())).size, 4, problem.id);
+    assert.equal(shown.filter((x) => x === problem.answer).length, 1, problem.id);
   }
 });
 test("Malformed problem rows cannot enter the bank", () => {

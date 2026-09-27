@@ -13,6 +13,7 @@ import {
   CHOICES_PER_PROBLEM,
 } from "../lib/challenge/problems.ts";
 import { problems } from "../scripts/load-problem-bank.mjs";
+import { choicesForProblem } from "../lib/challenge/bank.ts";
 import { words } from "../scripts/load-word-bank.mjs";
 import { typeAsksForTheWord } from "../lib/challenge/config.ts";
 import { typeAllowsClue } from "../lib/challenge/story-meanings.ts";
@@ -107,14 +108,22 @@ test("word questions never show the answer, and offer four distinct options", ()
       !hasWholeWord(problem.prompt, word.word),
       `${problem.id}: the prompt must not contain the answer`,
     );
-    assert.equal(problem.choices.length, CHOICES_PER_PROBLEM, problem.id);
+    // The three wrong options are stored without the answer, and the answer is
+    // joined to them when the question is asked.
+    assert.equal(problem.choices.length, CHOICES_PER_PROBLEM - 1, problem.id);
+    assert.ok(
+      !problem.choices.includes(problem.answer),
+      `${problem.id}: the answer is stored among the wrong options`,
+    );
+    const shown = choicesForProblem(problem, () => 0.5);
+    assert.equal(shown.length, CHOICES_PER_PROBLEM, problem.id);
     assert.equal(
-      new Set(problem.choices.map((c) => c.toLowerCase())).size,
+      new Set(shown.map((c) => c.toLowerCase())).size,
       CHOICES_PER_PROBLEM,
       `${problem.id}: options must be distinct`,
     );
     assert.equal(
-      problem.choices.filter((c) => c === problem.answer).length,
+      shown.filter((c) => c === problem.answer).length,
       1,
       `${problem.id}: exactly one option is the answer`,
     );
@@ -131,8 +140,7 @@ test("cloze questions blank the word and never offer a related option", () => {
       !hasWholeWord(problem.prompt, word.word),
       `${problem.id}: the blanked sentence must not still contain the answer`,
     );
-    assert.equal(problem.choices.length, CHOICES_PER_PROBLEM, problem.id);
-    for (const choice of problem.choices) {
+    for (const choice of choicesForProblem(problem, () => 0.5)) {
       if (choice.toLowerCase() === problem.answer.toLowerCase()) continue;
       assert.ok(
         !related.get(word.id).has(choice.toLowerCase()),

@@ -183,21 +183,15 @@ test("the explanation is given for every question type that offers words", () =>
     let wrong = 0;
     for (const problem of problems.slice(0, 300)) {
       if (!problem.choices) continue;
-      const answerAt = problem.choices.indexOf(problem.answer);
-      if (answerAt <= 0) continue;
-      // Pick the option before the answer, which is a wrong single word.
-      const chosen = problem.choices[answerAt - 1];
-      if (!chosen || /\s/.test(chosen)) continue;
-      wrong += 1;
-      if (
-        chosenWordExplanation(
-          problem.choices,
-          answerAt - 1,
-          problem.answer,
-          lookup,
-        )
-      )
-        explained += 1;
+      // The stored options are the wrong ones, with the answer kept apart, so
+      // every index here is a wrong pick. That is what a child who answers
+      // wrongly chose.
+      for (const [index, chosen] of problem.choices.entries()) {
+        if (!chosen || /\s/.test(chosen)) continue;
+        wrong += 1;
+        if (chosenWordExplanation(problem.choices, index, problem.answer, lookup))
+          explained += 1;
+      }
     }
     assert.ok(wrong > 0, `${type}: no wrong single-word options to check`);
     // Most should resolve. A word is only missing when it is a parent's own

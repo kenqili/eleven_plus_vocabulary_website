@@ -1476,7 +1476,7 @@
   "clue": "The cold swim left her feeling invigorated."
  },
  "obtuse": {
-  "meaning": "Slow to understand; also an angle bigger than 90 degrees but smaller than 180 degrees.",
+  "meaning": "Slow to understand and notice things. An obtuse angle is more than a right angle but less than a straight one.",
   "clue": "He was being deliberately obtuse and ignored the obvious clue."
  },
  "abridge": {
@@ -2928,7 +2928,7 @@
   "clue": "Dad will accompany us to the museum."
  },
  "according": {
-  "meaning": "In the phrase 'according to', as stated by someone or something.",
+  "meaning": "Used to show that something came from a particular person or place: according to the news, according to your teacher.",
   "clue": "According to the map, the treasure is beneath the compost heap."
  },
  "achieve": {
@@ -3120,7 +3120,7 @@
   "clue": "We found a foreign coin from Japan in the drawer."
  },
  "forty": {
-  "meaning": "The number equal to four groups of ten.",
+  "meaning": "The number after thirty-nine. Four tens.",
   "clue": "There were forty chairs in four rows of ten."
  },
  "frequently": {
@@ -3428,15 +3428,15 @@
   "clue": "The hedgerow was abundant with blackberries this year."
  },
  "opulent": {
-  "meaning": "Expensive and luxurious in a showy way.",
+  "meaning": "Very rich and grand, and expensive. An opulent room has good things in it that it does not really need.",
   "clue": "The opulent hall had velvet curtains and a marble staircase."
  },
  "porous": {
-  "meaning": "Full of tiny holes that liquids or air can pass through.",
+  "meaning": "Full of tiny holes that let water, air or gas through. A porous wall lets damp in.",
   "clue": "Water dripped through the porous rock and gathered in the cave below."
  },
  "abhorrent": {
-  "meaning": "Causing disgust and loathing.",
+  "meaning": "So hateful that it makes people feel disgust. Something abhorrent is worse than merely bad.",
   "clue": "The smell from the old bin was abhorrent, so everyone shut the window."
  },
  "hostile": {
@@ -3444,7 +3444,7 @@
   "clue": "The hostile watchdog barked at every passer-by until the postman arrived."
  },
  "heinous": {
-  "meaning": "Extremely wicked or odious.",
+  "meaning": "So cruel or wicked that everyone hates it. A heinous act is one you would hear about and still not believe.",
   "clue": "Everyone was shocked by the heinous act of pulling the alarm for a joke."
  },
  "adversity": {
@@ -3464,7 +3464,7 @@
   "clue": "The school counsellor called his behaviour aberrant, as no other pupil reacted so violently to a lost pen."
  },
  "ablest": {
-  "meaning": "The ablest players are chosen first, because they manage the hardest tasks without any help.",
+  "meaning": "The ablest is the best of a group at something. If a coach picks the ablest eleven, she picked the eleven who were best at it.",
   "clue": "Though only eleven, my cousin proved the ablest goalkeeper in the county tournament."
  },
  "abominable": {
@@ -4272,7 +4272,7 @@
   "clue": "There was a sudden drop right in front of us, and sheep were grazing two hundred feet below."
  },
  "chastised": {
-  "meaning": "Being chastised means being talked to sharply and told off for misbehaving.",
+  "meaning": "Being talked to sharply and told off for doing something wrong. A chastised child knows they have been let off more lightly than they expected.",
   "clue": "The headteacher dealt with the boys who smashed the window by making them tidy the corridor all week."
  },
  "cherished": {
@@ -6128,7 +6128,7 @@
   "clue": "The crowd's hostility towards the visiting team was clear from the first whistle, and stewards stepped in early."
  },
  "hubris": {
-  "meaning": "Acting as though you are better or stronger than everyone else, without knowing your real limits.",
+  "meaning": "Being so sure you are better than everyone else that you overstep, and it often ends badly for you.",
   "clue": "The captain's hubris after winning the trophy led him to make comments that upset everybody in the club."
  },
  "hue": {
@@ -6652,7 +6652,7 @@
   "clue": "Her sharp intuition told her that the new boy in our class could not be trusted."
  },
  "intuitive": {
-  "meaning": "A method or tool that feels so obvious that you can use it straight away.",
+  "meaning": "Working something out without having to think it through step by step, the way you know where the light switch is without looking.",
   "clue": "The website has an intuitive design, so even beginners can order tickets without any help."
  },
  "inundate": {
@@ -7300,7 +7300,7 @@
   "clue": "My sister has a penchant for collecting old postcards, and her shelf is now completely full of them."
  },
  "perchance": {
-  "meaning": "A writer uses perchance when they are not certain that something is true or will happen.",
+  "meaning": "Perhaps, or by chance. It is an old-fashioned word, and you are most likely to meet it in a book set in the past.",
   "clue": "Perchance the parcel will arrive tomorrow, although nobody has told us when it was posted."
  },
  "perfidious": {
@@ -7476,7 +7476,7 @@
   "clue": "Bad weather precluded us from holding the picnic, so the class ate in the hall."
  },
  "precocious": {
-  "meaning": "A precocious pupil asks questions and takes on duties way beyond her years.",
+  "meaning": "Describing a child who acts far more grown-up than other children the same age, sometimes so much so that it is unsettling.",
   "clue": "Maya read books written for secondary school pupils, which made her seem remarkably grown-up for her age."
  },
  "predator": {
@@ -7668,7 +7668,7 @@
   "clue": "The old brick wall was pulverised so quickly that the workers turned it into a soft grey powder."
  },
  "punitive": {
-  "meaning": "Deterring others matters more than the fairness of the punishment, in this view.",
+  "meaning": "Meant to punish. A punitive measure is one whose purpose is to hurt, rather than to teach.",
   "clue": "The head teacher thought a whole week of extra homework was too punitive for one missed lesson."
  },
  "quagmire": {
@@ -7684,7 +7684,7 @@
   "clue": "Our geography trip ended at a huge quarry where a lorry dropped a block the size of our car."
  },
  "queer": {
-  "meaning": "Something queer is so far from the usual that people stop and stare at it.",
+  "meaning": "Today queer usually means someone attracted to people of the same sex. The old meaning, strange or unusual, is not what people mean when they say it now.",
   "clue": "We heard a queer noise behind the sports hall and found a fox stuck under the bike shed."
  },
  "quell": {

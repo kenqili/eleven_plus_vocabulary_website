@@ -1,5 +1,4 @@
-import levels from "@/data/word-levels/levels.json";
-import { words } from "@/lib/challenge/bank";
+import { freeOrder, levelOf, words, wordById } from "@/lib/challenge/bank";
 import type { Word } from "@/lib/challenge/words";
 import { configuredFreeWordLimit } from "./billing";
 
@@ -19,22 +18,16 @@ export const isAddedWordId = (id: string) => id.startsWith("own:");
  * "ablest", which is a comparative form rather than a word anyone reads.
  */
 export function freeWords(limit = configuredFreeWordLimit()): Word[] {
-  const rank = levels.words as Record<
-    string,
-    { difficulty: number; frequencyZipf: number }
-  >;
-  const buckets = [0, 1, 2, 3, 4, 5].map((difficulty) =>
-    words
-      .filter((word) => rank[word.id]?.difficulty === difficulty)
-      .sort((a, b) => {
-        // Most frequent first. A word with no frequency reading sorts last, so
-        // it is only reached once the rest of the band is used up.
-        const byFrequency =
-          (rank[b.id]?.frequencyZipf ?? -1) - (rank[a.id]?.frequencyZipf ?? -1);
-        if (byFrequency) return byFrequency;
-        return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
-      }),
-  );
+  // The bank arrives already in this order: easiest band first, and most
+  // frequent first within a band, with a word that has no frequency reading
+  // last so it is only reached once the rest of the band is used up. It was
+  // worked out here from the difficulty snapshot, which is a second data file
+  // the request path no longer has to load.
+  const buckets = [0, 1, 2, 3, 4, 5].map(() => [] as Word[]);
+  for (const id of freeOrder) {
+    const word = wordById(id);
+    if (word) buckets[levelOf.get(id) ?? 3].push(word);
+  }
   // The easy bands contribute more per round than the hard ones, so the free
   // collection starts readable and still works its way up. A flat round robin
   // put a Level 3 and a Level 5 word in every first six, which is a poor first

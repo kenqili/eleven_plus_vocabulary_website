@@ -21,6 +21,14 @@ export type Word = {
   syn: string;
   ant: string;
   example: string;
+  /**
+   * A plain-language rewrite of the definition, which is what a child reads
+   * rather than the definition itself. Falls back to the definition for a word
+   * with no recorded help, which is what storyMeaning did with it anyway.
+   */
+  help?: string;
+  /** A contextual hint that does not name the answer. Empty where none fits. */
+  clue?: string;
 };
 
 /** RFC-style CSV fields: commas, escaped quotes and multiline quoted cells. */

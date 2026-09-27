@@ -35,6 +35,9 @@ type WordRow = [
   string,
   number,
   Word["source"],
+  /** The plain-language help a child reads, and the contextual clue. */
+  string,
+  string,
 ];
 
 const rowToWord = ([
@@ -46,6 +49,8 @@ const rowToWord = ([
   ant,
   ,
   source,
+  help,
+  clue,
 ]: WordRow): Word => ({
   id,
   word,
@@ -54,6 +59,12 @@ const rowToWord = ([
   syn: syn || "",
   ant: ant || "",
   source,
+  // The help and the clue used to be a separate 420 KB file the request path
+  // loaded to answer one question. They are per-word, so they belong on the
+  // word, and carrying them here means they are regenerated with the bank and
+  // cannot fall behind a definition.
+  help: help || definition,
+  clue: clue || "",
 });
 
 export const words = (bank.words as WordRow[]).map(rowToWord);
@@ -66,6 +77,15 @@ export const words = (bank.words as WordRow[]).map(rowToWord);
  * so the whole request path is one file and one parse.
  */
 export const levelOf = new Map<string, number>(bank.levels as [string, number][]);
+
+/**
+ * Every word, easiest band first and most frequent first within it.
+ *
+ * The order is worked out at build time from the difficulty snapshot, so the
+ * free collection can be a prefix of this list without the request path loading
+ * a second data file to find out which word to offer a child first.
+ */
+export const freeOrder: readonly string[] = bank.freeOrder;
 
 /**
  * Words by id, so the request path never scans for one. Added rather than
@@ -90,7 +110,11 @@ export type Problem = {
   type: QuestionType;
   prompt: string;
   answer: string;
-  /** Fixed wrong options. Null for a definition question, which uses defPool. */
+  /**
+   * The three fixed wrong options. The answer is not among them: a question
+   * that carries its own answer inside the option list is one refactor away
+   * from shipping a duplicate.
+   */
   choices: string[] | null;
   /** Wrong definitions to draw from, for a definition question only. */
   defPool?: string[];
@@ -145,12 +169,20 @@ export { DEF_POOL };
  * left at request time, and it is a shuffle of a six-element array.
  */
 export function choicesForProblem(
-  problem: Pick<Problem, "choices" | "defPool">,
+  problem: Pick<Problem, "choices" | "defPool" | "answer">,
   random: () => number = Math.random,
 ): string[] {
-  if (problem.choices) return [...problem.choices];
-  const pool = problem.defPool ?? [];
-  if (pool.length < CHOICES_PER_PROBLEM - 1)
-    throw new Error("A definition question was generated with too few options.");
-  return shuffle(pool, random).slice(0, CHOICES_PER_PROBLEM - 1);
+  const wrong =
+    problem.choices ??
+    // A definition question keeps six and takes three, so a repeat of the same
+    // word can be shown differently. With exactly three every repeat would be
+    // the same question.
+    (problem.defPool ?? []).slice(0, CHOICES_PER_PROBLEM - 1);
+  if (wrong.length < CHOICES_PER_PROBLEM - 1)
+    throw new Error(
+      `A ${problem.defPool ? "definition" : "multiple choice"} question was generated with too few options.`,
+    );
+  // The answer is stored apart from the wrong options, so a question is never
+  // shown with the right answer missing from its own list.
+  return shuffle([...wrong, problem.answer], random);
 }

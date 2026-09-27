@@ -85,10 +85,10 @@ export async function GET(request: Request) {
               type: problem.type,
               prompt: problem.prompt,
               answer: problem.answer,
-              // The clue is worked out here rather than in the browser, so the
-              // learning-help data never has to be shipped to a signed-out
-              // visitor who is only trying three questions.
-              clue: wordClue(word.id, problem.answer, problem.type),
+              // Worked out here rather than in the browser, so the help data is
+              // never shipped to a signed-out visitor who is only trying three
+              // questions.
+              clue: wordClue(word, problem.answer, problem.type),
               help: storyMeaning(word, word.id),
               // A gloss for each option that is a single word, so a child who
               // picks the wrong one is told what it means rather than being
