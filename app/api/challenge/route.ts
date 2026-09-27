@@ -1,4 +1,5 @@
 import { interleaveQuestions } from "@/lib/challenge/ordering";
+import { storyMeaning, wordClue } from "@/lib/challenge/story-meanings";
 import { words, problems } from "@/lib/challenge/bank";
 import { choicesFor, shuffle } from "@/lib/challenge/words";
 import { parsePracticeLevel, parseQuestionTypes } from "@/lib/challenge/config";
@@ -83,6 +84,11 @@ export async function GET(request: Request) {
               type: problem.type,
               prompt: problem.prompt,
               answer: problem.answer,
+              // The clue is worked out here rather than in the browser, so the
+              // learning-help data never has to be shipped to a signed-out
+              // visitor who is only trying three questions.
+              clue: wordClue(word.id, problem.answer, problem.type),
+              help: storyMeaning(word, word.id),
               number: index + 1,
               choices: problem.choices
                 ? shuffle(problem.choices)

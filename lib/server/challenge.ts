@@ -10,11 +10,12 @@ import {
   type Evidence,
 } from "@/lib/challenge/mastery";
 import { initializeRewards, progressSummary, awardFor } from "./rewards";
-import { wordClue } from "@/lib/challenge/story-meanings";
+import { storyMeaning, wordClue } from "@/lib/challenge/story-meanings";
 import { missionFor } from "./mission";
 import { localDay } from "@/lib/challenge/rewards";
 import { chooseWord, reviewDueAt } from "@/lib/challenge/ordering";
 import { words, problems } from "@/lib/challenge/bank";
+import { isAllowedWord } from "./free-words";
 import { problemsForAddedWords } from "@/lib/challenge/problems";
 import {
   customWordsFor,
@@ -22,7 +23,7 @@ import {
   practiceWordsFor,
 } from "./parent-words";
 import { difficultyForAddedWord } from "@/lib/challenge/added-words";
-import { choicesFor, shuffle } from "@/lib/challenge/words";
+import { choicesFor, shuffle, type Word } from "@/lib/challenge/words";
 import { type QuestionType } from "@/lib/challenge/config";
 import type { Difficulty } from "@/lib/challenge/difficulty";
 import type { Question, Stats } from "@/lib/challenge/types";
@@ -70,6 +71,7 @@ export async function statsFor(
   const summary = await progressSummary(userId);
   return {
     total: ids.size,
+    collection: words.length,
     mission: await missionFor(userId),
     mastered,
     correct: summary.periods.all.correct,
@@ -81,9 +83,28 @@ export async function statsFor(
     ...summary,
   };
 }
-function toQuestion(attempt: Attempt, progress?: WordProgress): Question {
-  const index = words.findIndex((w) => w.id === attempt.word_id);
-  const word = words[index];
+/**
+ * Resolves a word for a question or an answer.
+ *
+ * The pool rather than the shipped bank, because a parent's own words are
+ * namespaced as own:<word> and are not in the bank. Resolving against the bank
+ * meant every question about an added word threw, and because the attempt had
+ * already been written, the resume path threw the same way on every subsequent
+ * request, so one added word could stop practice working altogether.
+ */
+function wordFor(
+  wordId: string,
+  pool: readonly Word[],
+): Word | undefined {
+  return pool.find((word) => word.id === wordId);
+}
+
+function toQuestion(
+  attempt: Attempt,
+  pool: readonly Word[],
+  progress?: WordProgress,
+): Question {
+  const word = wordFor(attempt.word_id, pool);
   if (!word)
     throw new HttpError(409, "The word list changed. Start another question.");
   return {
@@ -108,7 +129,7 @@ function toQuestion(attempt: Attempt, progress?: WordProgress): Question {
     type: attempt.question_type,
     prompt: attempt.prompt || `Choose the definition for '${word.word}'.`,
     source: word.source,
-    number: index + 1,
+    number: pool.findIndex((entry) => entry.id === word.id) + 1,
     choices: JSON.parse(attempt.choices),
     correctCount: progress?.correct || 0,
     seen: progress?.seen || 0,
@@ -158,13 +179,13 @@ export async function nextQuestion(
     if (
       currentWord &&
       (level === null || levelFor(currentWord.id) === level) &&
-      (!allowedWordIds || allowedWordIds.has(pending.word_id)) &&
+      isAllowedWord(pending.word_id, allowedWordIds) &&
       currentProblem &&
       types.includes(pending.question_type) &&
       (pending.answer || currentWord.definition) === currentProblem.answer &&
       JSON.parse(pending.choices).includes(currentProblem.answer)
     )
-      return toQuestion(pending, byId.get(pending.word_id));
+      return toQuestion(pending, pool, byId.get(pending.word_id));
     // Retire a pending question when its word was removed or its definition edited.
     await db
       .prepare(
@@ -181,7 +202,7 @@ export async function nextQuestion(
     (w) =>
       eligibleWordIds.has(w.id) &&
       (level === null || levelFor(w.id) === level) &&
-      (!allowedWordIds || allowedWordIds.has(w.id)) &&
+      isAllowedWord(w.id, allowedWordIds) &&
       !hasMastered(byId.get(w.id) ?? initialMastery),
   );
   if (!available.length) return null;
@@ -271,7 +292,7 @@ export async function nextQuestion(
       .bind(userId)
       .first<Attempt>();
     if (existing && types.includes(existing.question_type))
-      return toQuestion(existing, byId.get(existing.word_id));
+      return toQuestion(existing, pool, byId.get(existing.word_id));
     if (existing)
       throw new HttpError(
         409,
@@ -280,7 +301,7 @@ export async function nextQuestion(
     throw error;
   }
   const prior = byId.get(word.id);
-  return toQuestion(attempt, {
+  return toQuestion(attempt, pool, {
     word_id: word.id,
     correct: prior?.correct || 0,
     mastered: prior?.mastered ?? 0,
@@ -304,9 +325,10 @@ export async function answerQuestion(
     .bind(id, userId)
     .first<Attempt>();
   if (!attempt) throw new HttpError(404, "Question not found.");
-  const word = words.find((w) => w.id === attempt.word_id);
+  const pool = practiceWordsFor(await customWordsFor(userId), await excludedWordIds(userId));
+  const word = wordFor(attempt.word_id, pool);
   if (!word) throw new HttpError(409, "The word list changed. Please reload.");
-  if (allowedWordIds && !allowedWordIds.has(word.id))
+  if (!isAllowedWord(word.id, allowedWordIds))
     throw new HttpError(
       409,
       "This question is outside your free collection. Loading another question.",
@@ -459,6 +481,10 @@ export async function answerQuestion(
     // Only the answer that finishes a word reports it, so the app can mark the
     // moment rather than congratulating a child on every answer from then on.
     newlyMastered: paidMastery,
+    // The plain-language help travels with the answer, so the learning-help
+    // data never has to be downloaded by the browser.
+    help: storyMeaning(word),
+    attemptId: id,
     type: attempt.question_type,
     answer,
     correct: Boolean(saved?.is_correct),

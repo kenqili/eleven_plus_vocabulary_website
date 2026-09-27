@@ -1,6 +1,7 @@
 import { readingPreference, bookmarkFor } from "./reading-position";
 import { missionFor } from "./mission";
 import { words } from "@/lib/challenge/bank";
+import { storyMeaning } from "@/lib/challenge/story-meanings";
 import { dayStart, localDay } from "@/lib/challenge/rewards";
 import {
   STORY_CREDITS,
@@ -95,9 +96,14 @@ export async function storyDetail(id: string, userId?: string) {
       prompt: story.question.prompt,
       options: story.question.options,
     },
-    vocabulary: story.wordIds.map(
-      (id) => words.find((word) => word.id === id)!,
-    ),
+    // The plain-language help for each target word travels with the story, so
+    // the 434KB learning-help file stays on the server. A child opens one word
+    // at a time, so there is no reason to download all twenty.
+    vocabulary: story.wordIds.map((wordId) => {
+      const word = words.find((entry) => entry.id === wordId)!;
+      // story.id, not wordId: the story-specific wording is keyed by story.
+      return { ...word, help: storyMeaning(word, story.id) };
+    }),
     signedIn: Boolean(userId),
     bookmarkScope: userId || "guest",
     progress: userId

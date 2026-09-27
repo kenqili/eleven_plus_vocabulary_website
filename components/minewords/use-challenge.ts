@@ -22,7 +22,6 @@ import {
   type Evidence,
   type MasteryState,
 } from "@/lib/challenge/mastery";
-import { wordClue } from "@/lib/challenge/story-meanings";
 import { api } from "@/lib/client/api";
 import { useStudyClock } from "./use-study-clock";
 import { emptyPeriod } from "@/lib/challenge/rewards";
@@ -50,10 +49,15 @@ type DemoWord = {
   syn: string;
   ant: string;
   number: number;
+  /** Worked out on the server, so the help data is not downloaded. */
+  clue: string;
+  /** The plain-language help for this word, also from the server. */
+  help: string;
   choices: string[];
 };
 const initialStats: Stats = {
   total: 0,
+  collection: 0,
   mastered: 0,
   correct: 0,
   todaySeconds: 0,
@@ -92,6 +96,7 @@ export function useChallenge() {
   const assisted = useRef(false);
   const demoSeen = useRef(new Set<string>());
   const demoStats = useRef(initialStats);
+  const demoAttempt = useRef(0);
   const demoWords = useRef<DemoWord[]>([]),
     demoIndex = useRef(0),
     elapsed = useRef(0),
@@ -153,7 +158,9 @@ export function useChallenge() {
           prompt: word.prompt,
           source: word.source,
           word: word.word,
-          clue: wordClue(word.wordId, word.answer),
+          // The server works the clue out, so the learning-help data stays
+          // on the server rather than being downloaded to show three questions.
+          clue: word.clue,
           number: word.number,
           choices: word.choices,
           correctCount: demoProgress.current.get(word.wordId) || 0,
@@ -395,6 +402,8 @@ export function useChallenge() {
             feedback: {
               mastery: masteryProgress(mastery, difficulty ?? 1),
               newlyMastered: justMastered,
+              attemptId: `demo-${demoIndex.current}-${demoIndex.current}-${demoAttempt.current++}`,
+              help: word.help,
               type: word.type,
               answer: word.answer,
               correct,
@@ -409,6 +418,8 @@ export function useChallenge() {
             stats: demoStats.current,
           });
           return {
+            help: word.help,
+            attemptId: `demo-return-${demoAttempt.current++}`,
             type: word.type,
             answer: word.answer,
             correct,

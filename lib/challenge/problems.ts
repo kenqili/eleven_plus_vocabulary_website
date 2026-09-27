@@ -130,9 +130,16 @@ export type DistractorContext = {
   /** Bank order, fixed once, so a seeded walk is deterministic. */
   ordered: Word[];
   defTerms: Map<string, Set<string>>;
+  /** The same scattered order, split by difficulty band. */
+  byLevel: Map<number, Word[]>;
+  /** The band a word sits in. Injected so this module needs no data files. */
+  levelOf: (id: string) => number;
 };
 
-export function buildDistractorContext(words: Word[]): DistractorContext {
+export function buildDistractorContext(
+  words: Word[],
+  levelOf: (id: string) => number = () => 3,
+): DistractorContext {
   const defTerms = new Map(
     words.map((w) => [w.id, significantTerms(w.definition)]),
   );
@@ -144,15 +151,41 @@ export function buildDistractorContext(words: Word[]): DistractorContext {
   const blocked = new Map<string, Set<string>>();
   for (const word of words)
     blocked.set(word.id, new Set([word.id, ...(related.get(word.id) ?? [])]));
-  return {
-    related,
-    blocked,
-    defTerms,
-    // Scattered once, deterministically, so that walking this order for a
-    // question does not hand back three words that merely share a prefix.
-    ordered: [...words].sort((a, b) => hash(`order:${a.id}`) - hash(`order:${b.id}`)),
-  };
+  // Scattered once, deterministically, so that walking this order for a
+  // question does not hand back three words that merely share a prefix.
+  const ordered = [...words].sort(
+    (a, b) => hash(`order:${a.id}`) - hash(`order:${b.id}`),
+  );
+  const byLevel = new Map<number, Word[]>();
+  for (const word of ordered) {
+    const level = levelOf(word.id);
+    const bucket = byLevel.get(level);
+    if (bucket) bucket.push(word);
+    else byLevel.set(level, [word]);
+  }
+  return { related, blocked, defTerms, ordered, byLevel, levelOf };
 }
+
+/**
+ * The bands to draw a distractor from, nearest first.
+ *
+ * A question about an easy word must not offer a rare one as a wrong answer,
+ * because a child then has no way to tell the options apart except by noticing
+ * which one looks unfamiliar. That is not a vocabulary test, it is a test of
+ * having heard of a word, and it is why a Level 0 question used to come with
+ * three Level 5 options roughly a third of the time.
+ *
+ * The subject's own band is preferred and its neighbours are the fallback, so
+ * the options stay genuinely confusable. Bands are widened only if one cannot
+ * supply enough, which keeps a thin band from producing a short question.
+ */
+const bandsFor = (level: number, widest: number): number[] => {
+  const bands: number[] = [];
+  for (let offset = 0; offset <= widest; offset += 1)
+    for (const band of [level + offset, level - offset])
+      if (band >= 0 && band <= 5 && !bands.includes(band)) bands.push(band);
+  return bands;
+};
 
 /**
  * Picks three wrong options deterministically, avoiding the answer, anything
@@ -183,17 +216,32 @@ export function pickDistractors(
   const termsOf = (other: Word) =>
     context.defTerms.get(other.id) ?? significantTerms(other.definition);
 
-  const ordered = context.ordered;
-  const start = hash(key) % ordered.length;
+  const eligible = (candidate: Word) => {
+    if (candidate.id === word.id || blocked.has(candidate.id)) return false;
+    if (candidate.word.toLowerCase() === answerText) return false;
+    if (overlapRatio(mine, termsOf(candidate))) return false;
+    if (overlapRatio(answerTerms, termsOf(candidate))) return false;
+    return true;
+  };
+  const level = context.levelOf(word.id);
   const picked: string[] = [];
-  for (let step = 0; step < ordered.length && picked.length < CHOICES_PER_PROBLEM - 1; step++) {
-    const candidate = ordered[(start + step) % ordered.length];
-    if (candidate.id === word.id || blocked.has(candidate.id)) continue;
-    if (candidate.word.toLowerCase() === answerText) continue;
-    if (overlapRatio(mine, termsOf(candidate))) continue;
-    if (overlapRatio(answerTerms, termsOf(candidate))) continue;
-    picked.push(candidate.word);
-  }
+  // Widen the search only as far as needed, so a question about a Level 0 word
+  // is answered from Level 0 and Level 1 and reaches further only if it must.
+  for (const widest of [0, 1, 2, 5])
+    for (const band of bandsFor(level, widest)) {
+      const pool = context.byLevel.get(band) ?? [];
+      if (!pool.length) continue;
+      const start = hash(`${key}:${band}`) % pool.length;
+      for (
+        let step = 0;
+        step < pool.length && picked.length < CHOICES_PER_PROBLEM - 1;
+        step += 1
+      ) {
+        const candidate = pool[(start + step) % pool.length];
+        if (eligible(candidate)) picked.push(candidate.word);
+      }
+      if (picked.length === CHOICES_PER_PROBLEM - 1) return picked;
+    }
   return picked;
 }
 
@@ -320,8 +368,15 @@ export function createProblemBank(
   words: Word[],
   syn: string,
   ant: string,
+  /**
+   * The difficulty band of a word. Injected rather than imported so this module
+   * stays free of data files, but it is not optional in practice: without it
+   * every question is drawn against the whole bank and a child is offered rare
+   * words as the wrong answers to an easy one.
+   */
+  levelOf: (id: string) => number = () => 3,
 ): Problem[] {
-  const context = buildDistractorContext(words);
+  const context = buildDistractorContext(words, levelOf);
   const byId = new Map(words.map((w) => [w.id, w]));
   const multiple = (type: QuestionType, key: string, prompt: string, answer: string) => {
     const word = byId.get(key.slice(key.indexOf(":") + 1))!;

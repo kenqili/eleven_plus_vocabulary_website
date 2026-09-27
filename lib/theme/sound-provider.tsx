@@ -8,6 +8,7 @@ import {
   useRef,
 } from "react";
 import { useSoundToggle } from "./sound-toggle";
+import { useTapSound } from "./use-sounds";
 import {
   CLASSIC_VOICE,
   SOUNDS,
@@ -46,6 +47,9 @@ const createAudio = (): AudioContext | null => {
  */
 export function SoundProvider({ children }: { children: React.ReactNode }) {
   const { on, setOn } = useSoundToggle();
+  // Mounted here so every tappable thing in the app makes the same click,
+  // rather than each screen having to remember to wire it up.
+  useTapSound();
   const context = useRef<AudioContext | null>(null);
   const voice = useRef<Voice>(CLASSIC_VOICE);
   /** True once a gesture has happened. Not the same as the context running. */

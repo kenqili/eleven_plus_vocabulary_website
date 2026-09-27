@@ -2,7 +2,9 @@
 import { createPortal } from "react-dom";
 import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import type { Word } from "@/lib/challenge/words";
-import { storyMeaning, storyRelated } from "@/lib/challenge/story-meanings";
+// Only the small per-story context file is imported here. The 434KB
+// plain-language help file is loaded on the server and arrives with the story.
+import { storyRelated } from "@/lib/challenge/story-meanings";
 import { pauseAutoNext } from "@/lib/client/auto-next";
 import Pronunciation from "./pronunciation";
 
@@ -15,7 +17,8 @@ export default function WordHint({
   storyId,
 }: {
   text: string;
-  word: Word;
+  /** A story target word, with the server's plain-language help attached. */
+  word: Word & { help?: string };
   storyId: string;
 }) {
   const id = useId();
@@ -145,7 +148,9 @@ export default function WordHint({
                 ×
               </button>
             </div>
-            <span>{storyMeaning(word, storyId)}</span>
+            {/* The help is worked out on the server; the definition is the
+                fallback for a word the help file does not cover. */}
+            <span>{word.help || word.definition}</span>
             <Pronunciation word={word.word} id={word.id} />
             {has(related.syn) && (
               <span>

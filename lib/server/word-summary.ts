@@ -13,6 +13,7 @@ import {
   isAlreadyInBank,
   toCustomWord,
 } from "@/lib/challenge/added-words";
+import { isAllowedWord } from "./free-words";
 import { database } from "./db";
 export async function wordSummary(
   userId: string,
@@ -82,7 +83,7 @@ export async function wordSummary(
   const levelsById = levels.words as Record<string, DifficultyInfo>;
   return [
     ...words
-      .filter((word) => !wordIds || wordIds.has(word.id))
+      .filter((word) => !wordIds || isAllowedWord(word.id, wordIds))
       .filter((word) => !excluded.has(word.id))
       .map((word) => {
         const difficulty = levelsById[word.id];
@@ -93,13 +94,12 @@ export async function wordSummary(
         return summarise(word, difficulty);
       }),
     // A parent's own words have no level snapshot, so difficulty is estimated
-    // from length. They are not part of the free-tier selection.
-    ...(!wordIds
-      ? added
-          .filter((row) => !isAlreadyInBank(row.word, words))
-          .map(toCustomWord)
-          .filter((word) => !excluded.has(word.id))
-          .map((word) => summarise(word, difficultyForAddedWord(word.word)))
-      : []),
+    // from length. They are not part of the free collection, so they are added
+    // whatever tier the account is on.
+    ...added
+      .filter((row) => !isAlreadyInBank(row.word, words))
+      .map(toCustomWord)
+      .filter((word) => !excluded.has(word.id))
+      .map((word) => summarise(word, difficultyForAddedWord(word.word))),
   ];
 }

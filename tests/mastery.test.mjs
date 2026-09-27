@@ -205,8 +205,8 @@ test("A slow answer is positive evidence and a clue is not", () => {
   assert.equal(clued.recalls, 0, "a clue clears the recalls");
   assert.equal(
     clued.correct,
-    3,
-    "a clued answer still counts towards the total",
+    2,
+    "the clue does not increment the total; only the two unaided answers did",
   );
   assert.equal(clued.mastered, false);
   // Using the clue must never be a cheaper route to mastery than knowing the word.
@@ -215,11 +215,18 @@ test("A slow answer is positive evidence and a clue is not", () => {
     play(5, ["assisted", "assisted", "assisted", "assisted"]).mastered,
     false,
   );
+  // Not even eventually. A word nobody recalled unaided is not retired, however
+  // many times the clue is pressed.
   assert.equal(
     play(5, ["assisted", "assisted", "assisted", "assisted", "assisted"])
       .mastered,
-    true,
-    "only the cumulative floor finally retires a word nobody recalled",
+    false,
+    "a clued answer must not be a route to mastery at any length",
+  );
+  assert.equal(
+    play(20, Array(20).fill("assisted")).correct,
+    0,
+    "a clued answer is not a correct answer",
   );
   assert.equal(
     play(5, ["assisted", "assisted", "assisted", "assisted"]).run,

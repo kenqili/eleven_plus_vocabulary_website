@@ -7,6 +7,7 @@ import { mergeWordSources } from "./words";
 import syn from "@/data/syn.csv?raw";
 import ant from "@/data/ant.csv?raw";
 import { createProblemBank } from "./problems";
+import levels from "@/data/word-levels/levels.json";
 export const words = mergeWordSources({
   flash_card_1: flash1,
   flash_card_2: flash2,
@@ -14,7 +15,10 @@ export const words = mergeWordSources({
   vocabquest,
   curriculum,
 });
-export const problems = createProblemBank(words, syn, ant);
+/** The difficulty band the word list and the story library already publish. */
+const levelOf = (id: string) =>
+  (levels.words as Record<string, { difficulty: number }>)[id]?.difficulty ?? 3;
+export const problems = createProblemBank(words, syn, ant, levelOf);
 export const problemById = new Map(
   problems.map((problem) => [problem.id, problem]),
 );

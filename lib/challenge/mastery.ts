@@ -98,10 +98,12 @@ export function advanceMastery(
       : evidence === "uncertain"
         ? prior.recalls
         : 0;
-  const correct = Math.min(
-    CUMULATIVE_FLOOR,
-    prior.correct + (known || evidence === "assisted" ? 1 : 0),
-  );
+  // A clued answer is not counted as a correct answer. It used to be, and
+  // because the cumulative floor is one of the three routes to mastery, five
+  // answers made with the clue showing would retire a word on the levels where
+  // the run target is out of reach. The clue is an admission of uncertainty and
+  // the counters have to agree with that.
+  const correct = Math.min(CUMULATIVE_FLOOR, prior.correct + (known ? 1 : 0));
   const mastered =
     Boolean(prior.mastered) ||
     (evidence === "recalled" && recalls >= recallTarget(level)) ||

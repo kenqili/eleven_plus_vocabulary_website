@@ -8,9 +8,11 @@ import type { SoundName } from "./sounds";
  * Plays a sound when an event happens, at most once per event.
  *
  * The identity of the event is passed in rather than a list of dependencies,
- * because the interesting transitions are values, not functions: a streak
- * going from 2 to 3 is a different event from the same streak staying at 3.
- * React would treat a callback identity as stable and never fire twice.
+ * because the interesting transitions are values, not functions. The event
+ * identity has to be genuinely unique per event: a key built from the values
+ * that happen to be on screen fires once and then goes silent for every
+ * subsequent event that looks the same, which is how a run of correct answers
+ * produced one chime and then nothing.
  */
 export function useEventSound(key: string | number | null, sound: SoundName) {
   const play = usePlaySound();
@@ -28,15 +30,17 @@ export function useEventSound(key: string | number | null, sound: SoundName) {
  * and wrong: revealing the answer is not a failure, and a word finally
  * mastered is a bigger moment than a correct answer.
  */
-export function useAnswerSound(feedback: {
-  correct: boolean;
-  skipped: boolean;
-  streak?: number;
-  mastered?: boolean;
-  award?: { total?: number };
-} | null) {
-  const sound: SoundName | null = !feedback
-    ? null
+export function useAnswerSound(
+  feedback: {
+    correct: boolean;
+    skipped: boolean;
+    streak?: number;
+    mastered?: boolean;
+    attemptId?: string;
+  } | null,
+) {
+  const sound: SoundName = !feedback
+    ? "select"
     : feedback.skipped
       ? "reveal"
       : !feedback.correct
@@ -46,10 +50,17 @@ export function useAnswerSound(feedback: {
           : feedback.streak && feedback.streak >= 3
             ? "streak"
             : "correct";
-  useEventSound(feedback ? `${feedback.correct}-${feedback.streak ?? 0}` : null, sound ?? "select");
+  // The attempt id identifies this answer and nothing else. Everything that
+  // could repeat is deliberately left out, including the streak, because two
+  // right answers with the same streak are still two answers.
+  useEventSound(feedback ? (feedback.attemptId ?? null) : null, sound);
 }
 
-/** A short blip under a tap, so a button feels like it was pressed. */
+/**
+ * A short blip under a tap, so a button feels like it was pressed. Mounted
+ * once at the root rather than per screen, which is what makes every tappable
+ * thing in the app make the same noise.
+ */
 export function useTapSound() {
   const play = usePlaySound();
   const { on } = useSoundToggle();

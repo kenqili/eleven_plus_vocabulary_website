@@ -47,7 +47,11 @@ export function configuredFreeTrialDays() {
 }
 export function configuredFreeWordLimit() {
   const configured = setting("FREE_WORD_LIMIT");
-  if (!configured) return 20;
+  // Two hundred and twenty four is a real working vocabulary for a child
+  // working through the easiest bands, rather than a single sitting's taste.
+  // Twenty was so small that the daily mission, which asks for twenty
+  // questions, exhausted the whole free library on day one.
+  if (!configured) return 224;
   // Derived from the bank so the cap cannot fall behind the word count.
   const ceiling = words.length;
   if (!/^(?:0|[1-9]\d*)$/.test(configured))

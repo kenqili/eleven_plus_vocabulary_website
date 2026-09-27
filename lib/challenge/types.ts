@@ -17,7 +17,14 @@ export type Question = {
 };
 export type Stats = {
   mission?: import("./mission").Mission;
+  /** Words this account may practise, which is the free set on a free tier. */
   total: number;
+  /**
+   * Words in the whole collection. Needed because "subscribe to unlock all
+   * twenty words" is otherwise what a parent reads at the moment we ask them
+   * to pay.
+   */
+  collection: number;
   mastered: number;
   correct: number;
   todaySeconds: number;
@@ -36,6 +43,14 @@ export type Feedback = {
   mastery?: import("./mastery").MasteryProgress;
   /** True only on the answer that finished a word, so the moment is distinguishable. */
   newlyMastered?: boolean;
+  /** The plain-language help for this word, worked out on the server. */
+  help?: string;
+  /**
+   * Identifies this one answer. It is what the sound layer uses to tell one
+   * answer from the next, so two right answers in a row are two sounds rather
+   * than one sound and silence.
+   */
+  attemptId?: string;
   award?: import("./rewards").Award;
   type: QuestionType;
   answer: string;

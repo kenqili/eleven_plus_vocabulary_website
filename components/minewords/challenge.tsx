@@ -43,8 +43,12 @@ export default function Challenge() {
       ? {
           correct: feedback.correct,
           skipped: feedback.skipped,
-          streak: feedback.award?.streak,
+          // currentStreak is the run of right answers. award.streak is the
+          // number of bonus credits that run earned, which is 5 or 0 and so
+          // was making every right answer look identical to the one before it.
+          streak: feedback.award?.currentStreak,
           mastered: feedback.newlyMastered,
+          attemptId: feedback.attemptId,
         }
       : null,
   );
@@ -406,7 +410,7 @@ export default function Challenge() {
                     {study.gated
                       ? "Your saved progress is safe. Subscribe to keep practising the full word collection, reviewing your progress and exporting revision sheets."
                       : study.freeTier
-                        ? `You have mastered every word in your free ${study.freeWordCount ?? 20}-word collection. Subscribe to unlock all ${stats.total} words.`
+                        ? `You have mastered every word in your free collection of ${stats.total}. Subscribe to practise all ${stats.collection}.`
                         : demo
                           ? `Create a free account for ${study.trialDaysConfigured ?? 7} days of full access to every word and practice feature.`
                           : study.level !== null

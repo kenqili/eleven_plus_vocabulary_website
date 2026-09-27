@@ -71,7 +71,7 @@ export default function ProgressPanel({
           value={stats.total ? (stats.mastered / stats.total) * 100 : 0}
         />
         <div className="progress-label">
-          {stats.mastered} of {stats.total} words mastered
+          {stats.mastered} of {stats.total} words in your collection mastered
         </div>
         <div
           className="status-tabs"
