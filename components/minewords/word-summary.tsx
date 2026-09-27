@@ -1,5 +1,5 @@
 "use client";
-import Pronunciation from "./pronunciation";
+import Pronunciation, { WarmAudioIndex } from "./pronunciation";
 import ExcludeWordButton from "./exclude-word";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -101,6 +101,7 @@ export default function WordSummaryPage() {
   }
   return (
     <>
+      <WarmAudioIndex />
       <Header />
       <main className="workspace words-workspace">
         <Link className="text-button" href="/">

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { BookOpen, Pause, Play } from "lucide-react";
 import { releaseAudio, takeAudio } from "@/lib/client/audio";
 import { pauseAutoNext } from "@/lib/client/auto-next";
+import { prefetchWhenIdle } from "@/lib/client/prefetch-idle";
 let manifest: Promise<Record<string, string | null>> | undefined;
 function storyFiles() {
   return (manifest ??= fetch("/audio/stories/manifest.json")
@@ -17,6 +18,14 @@ function storyFiles() {
       manifest = undefined;
       throw error;
     }));
+}
+
+/** Warmed once per page, for the same reason as the word index. */
+export function WarmStoryAudioIndex() {
+  useEffect(() => {
+    prefetchWhenIdle("/audio/stories/manifest.json");
+  }, []);
+  return null;
 }
 export default function StoryAudio({
   id,

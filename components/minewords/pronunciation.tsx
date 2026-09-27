@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Volume2 } from "lucide-react";
 import { releaseAudio, takeAudio } from "@/lib/client/audio";
 import { pauseAutoNext } from "@/lib/client/auto-next";
+import { prefetchWhenIdle } from "@/lib/client/prefetch-idle";
 let activeAudio: HTMLAudioElement | null = null;
 let sequence = 0;
 export function isPronouncing() {
@@ -22,6 +23,20 @@ function audioFiles() {
       manifest = undefined;
       throw error;
     }));
+}
+
+/**
+ * Warms the index once per page, not once per word.
+ *
+ * Every Listen control on a screen shares one fetch, so warming it from each
+ * would be the same request many times. The control that is actually pressed
+ * reads the same promise and gets the cached response.
+ */
+export function WarmAudioIndex() {
+  useEffect(() => {
+    prefetchWhenIdle("/audio/vocabulary/manifest.json");
+  }, []);
+  return null;
 }
 export default function Pronunciation({
   word,

@@ -1,4 +1,3 @@
-import levels from "@/data/word-levels/levels.json";
 import {
   CUMULATIVE_FLOOR,
   advanceMastery,
@@ -14,7 +13,7 @@ import { storyMeaning, wordClue } from "@/lib/challenge/story-meanings";
 import { missionFor } from "./mission";
 import { localDay } from "@/lib/challenge/rewards";
 import { chooseWord, reviewDueAt } from "@/lib/challenge/ordering";
-import { words, problems, distractorContext } from "@/lib/challenge/bank";
+import { choicesForProblem, levelOf, words, problems } from "@/lib/challenge/bank";
 import { isAllowedWord } from "./free-words";
 import { problemsForAddedWords } from "@/lib/challenge/problems";
 import {
@@ -23,7 +22,7 @@ import {
   practiceWordsFor,
 } from "./parent-words";
 import { difficultyForAddedWord } from "@/lib/challenge/added-words";
-import { choicesFor, shuffle, type Word } from "@/lib/challenge/words";
+import { shuffle, type Word } from "@/lib/challenge/words";
 import { type QuestionType } from "@/lib/challenge/config";
 import type { Difficulty } from "@/lib/challenge/difficulty";
 import type { Question, Stats } from "@/lib/challenge/types";
@@ -97,9 +96,9 @@ const glossLookup = (word: string) => {
 };
 
 export const levelFor = (id: string) =>
-  (levels.words as Record<string, { difficulty: number }>)[id]?.difficulty ??
-  // A parent's own word has no level snapshot, so fall back to its length.
-  difficultyForAddedWord(id.replace(/^own:/, "")).difficulty;
+  // The generated bank carries the level for every word it holds. A parent's own
+  // word is not in it, so it falls back to the word's length.
+  levelOf.get(id) ?? difficultyForAddedWord(id.replace(/^own:/, "")).difficulty;
 /** Credit-bearing correct answers per word, so a mastered word cannot farm credits. */
 const ELIGIBLE_ANSWERS = 5;
 type WordProgress = {
@@ -322,9 +321,7 @@ export async function nextQuestion(
     id: attemptId,
     word_id: word.id,
     choices: JSON.stringify(
-      problem.choices
-        ? shuffle(problem.choices)
-        : choicesFor(word, distractorContext, attemptId),
+      shuffle(choicesForProblem(problem)),
     ),
     question_type: problem.type,
     answer: problem.answer,

@@ -5,11 +5,10 @@ import { readFileSync } from "node:fs";
 import {
   mergeWordSources,
   parseWordCsv,
-  choicesFor,
   SOURCE_ORDER,
 } from "../lib/challenge/words.ts";
+import { problems } from "../lib/challenge/bank.ts";
 import { words, sources } from "../scripts/load-word-bank.mjs";
-import { buildDistractorContext } from "../lib/challenge/problems.ts";
 import { hashPassword, verifyPassword } from "../lib/server/password.ts";
 import { verifyStripeSignature } from "../lib/server/webhook.ts";
 test("Runtime bank feeds every source, so the served app matches the validators", () => {
@@ -17,15 +16,23 @@ test("Runtime bank feeds every source, so the served app matches the validators"
   // `?raw` imports that a plain Node test cannot evaluate. Assert instead that
   // it names every source, so adding one to SOURCE_ORDER without wiring it here
   // cannot silently ship a smaller bank than the scripts and tests check.
-  const runtime = readFileSync(
-    new URL("../lib/challenge/bank.ts", import.meta.url),
+  // The runtime bank is generated from these files rather than reading them, so
+  // the check is that the generated file still carries every source. Otherwise
+  // adding a sixth source would pass every check and quietly ship a smaller
+  // bank than the validators see.
+  const generated = readFileSync(
+    new URL("../data/problem-bank.json", import.meta.url),
     "utf8",
   );
+  const bankSources = new Set(
+    [...generated.matchAll(/"(flash_card_1|flash_card_2|blue_book|vocabquest|curriculum)"/g)].map(
+      (match) => match[1],
+    ),
+  );
   for (const source of SOURCE_ORDER) {
-    assert.match(
-      runtime,
-      new RegExp(`\\b${source}\\b`),
-      `lib/challenge/bank.ts does not reference the ${source} source`,
+    assert.ok(
+      bankSources.has(source),
+      `the generated bank carries no words from ${source}`,
     );
     assert.ok(
       sources[source] !== undefined && sources[source].length > 0,
@@ -40,12 +47,29 @@ test("Merged CSV bank keeps the first occurrence and produces four distinct choi
       if (!expected.has(word.id)) expected.set(word.id, word);
   }
   assert.deepEqual(words, [...expected.values()]);
-  const context = buildDistractorContext(words);
-  for (const word of words) {
-    const choices = choicesFor(word, context, `test:${word.id}`);
-    assert.equal(choices.length, 4);
-    assert.equal(new Set(choices).size, 4);
-    assert.equal(choices.filter((x) => x === word.definition).length, 1);
+  for (const problem of problems) {
+    const pool = problem.choices ?? problem.defPool;
+    assert.ok(pool, `${problem.id} has no options at all`);
+    assert.equal(new Set(pool).size, pool.length, `${problem.id} has a repeated option`);
+    assert.ok(
+      !pool.includes(problem.answer),
+      `${problem.id} offers its own answer as a wrong option`,
+    );
+    // Three wrong options is the minimum a four-way question needs. A
+    // definition question keeps a larger pool so a repeat can differ.
+    assert.ok(
+      pool.length >= 3,
+      `${problem.id} has ${pool.length} options, which is not enough`,
+    );
+  }
+  // And the pool for a definition question has to be bigger than three, or every
+  // repeat of that word would show exactly the same question.
+  for (const problem of problems) {
+    if (problem.type !== "def") continue;
+    assert.ok(
+      (problem.defPool?.length ?? 0) >= 4,
+      `${problem.id} keeps only three wrong definitions, so it cannot vary`,
+    );
   }
 });
 test("First-wins deduplication retains source and all fields, including within a file", () => {

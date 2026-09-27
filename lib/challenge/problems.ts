@@ -324,10 +324,23 @@ const STOP_TERMS = new Set(
   ),
 );
 /** Same 0.6 overlap rule as similarDefinitions, but over pre-tokenised sets. */
-const overlapRatio = (x: Set<string>, y: Set<string>) =>
-  x.size && y.size
-    ? [...x].filter((term) => y.has(term)).length / Math.min(x.size, y.size) >= 0.6
-    : false;
+/**
+ * Whether two definitions read alike enough that offering one as a wrong option
+ * for the other would give a second answer.
+ *
+ * It walks the smaller set and counts shared terms, rather than spreading the
+ * larger one into an array to filter it. The spread version allocated an array
+ * on every call, and this is called twice for every candidate the distractor
+ * walk considers, which is tens of millions of times when the whole bank is
+ * built. It was the largest remaining cost in loading the module.
+ */
+const overlapRatio = (x: Set<string>, y: Set<string>) => {
+  if (!x.size || !y.size) return false;
+  const [small, large] = x.size <= y.size ? [x, y] : [y, x];
+  let shared = 0;
+  for (const term of small) if (large.has(term)) shared += 1;
+  return shared / small.size >= 0.6;
+};
 
 /**
  * Definitions can only read alike if they share a significant word, so the
@@ -341,6 +354,21 @@ export type DistractorContext = {
   blocked: Map<string, Set<string>>;
   /** Bank order, fixed once, so a seeded walk is deterministic. */
   ordered: Word[];
+  /**
+   * The same list keyed by word.
+   *
+   * This exists because of a measurement, not a guess. Building the question
+   * bank calls pickDistractors about nine thousand times, and the first thing
+   * that function did was look the answer up with `ordered.find`, which is a
+   * linear scan of every word in the bank. That was roughly twenty million
+   * string comparisons, and it was almost the whole cost of loading the module:
+   * 1.39 seconds of the 1.77.
+   *
+   * A Worker charges for the compute of a request, and the first request on a
+   * cold isolate pays for loading the module, so this number decides whether
+   * the app can run on a plan with a ten millisecond budget at all.
+   */
+  byWord: Map<string, Word>;
   defTerms: Map<string, Set<string>>;
   /** The same scattered order, split by difficulty band. */
   byLevel: Map<number, Word[]>;
@@ -375,7 +403,15 @@ export function buildDistractorContext(
     if (bucket) bucket.push(word);
     else byLevel.set(level, [word]);
   }
-  return { related, blocked, defTerms, ordered, byLevel, levelOf };
+  return {
+    related,
+    blocked,
+    defTerms,
+    ordered,
+    byWord: new Map(words.map((w) => [w.word.toLowerCase(), w])),
+    byLevel,
+    levelOf,
+  };
 }
 
 /**
@@ -415,9 +451,7 @@ export function pickDistractors(
   answer: string,
   context: DistractorContext,
 ): string[] {
-  const answerWord = context.ordered.find(
-    (w) => w.id === answer.toLowerCase(),
-  );
+  const answerWord = context.byWord.get(answer.toLowerCase());
   const answerTerms = answerWord
     ? context.defTerms.get(answerWord.id)!
     : new Set<string>();
@@ -474,6 +508,15 @@ export function pickDefinitionDistractors(
   key: string,
   word: Word,
   context: DistractorContext,
+  /**
+   * How many wrong definitions to return. Three is what a question needs, and
+   * the walk stops as soon as it has them, which is the cheap behaviour.
+   *
+   * The build asks for more, because a definition question keeps a pool rather
+   * than a fixed three: asking the same word twice should not show the same
+   * question, and returning exactly three makes that impossible.
+   */
+  wanted: number = CHOICES_PER_PROBLEM - 1,
 ): string[] {
   const mine = context.defTerms.get(word.id) ?? significantTerms(word.definition);
   const blocked = context.blocked.get(word.id) ?? new Set<string>();
@@ -494,14 +537,14 @@ export function pickDefinitionDistractors(
       const start = hash(`${key}:def:${band}`) % pool.length;
       for (
         let step = 0;
-        step < pool.length && picked.length < CHOICES_PER_PROBLEM - 1;
+        step < pool.length && picked.length < wanted;
         step += 1
       ) {
         const candidate = pool[(start + step) % pool.length];
         if (eligible(candidate) && !picked.includes(candidate.definition))
           picked.push(candidate.definition);
       }
-      if (picked.length === CHOICES_PER_PROBLEM - 1) return picked;
+      if (picked.length === wanted) return picked;
     }
   return picked;
 }
@@ -636,12 +679,18 @@ export function createProblemBank(
    * words as the wrong answers to an easy one.
    */
   levelOf: (id: string) => number = () => 3,
+  /**
+   * The caller's context, if it has one. Building the bank used to build its
+   * own, which meant the index and the term sets were built twice for every
+   * load of the module, and the two copies could disagree.
+   */
+  context?: DistractorContext,
 ): Problem[] {
-  const context = buildDistractorContext(words, levelOf);
+  const index = context ?? buildDistractorContext(words, levelOf);
   const byId = new Map(words.map((w) => [w.id, w]));
   const multiple = (type: QuestionType, key: string, prompt: string, answer: string) => {
     const word = byId.get(key.slice(key.indexOf(":") + 1))!;
-    const distractors = pickDistractors(key, word, answer, context);
+    const distractors = pickDistractors(key, word, answer, index);
     if (distractors.length !== CHOICES_PER_PROBLEM - 1) return null;
     const choices = [...distractors];
     choices.splice(hash(key) % CHOICES_PER_PROBLEM, 0, answer);

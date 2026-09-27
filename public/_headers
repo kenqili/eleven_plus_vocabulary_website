@@ -1,0 +1,39 @@
+# Content-hashed build output. The framework writes this rule into a _headers
+# file of its own, and this file replaces that file rather than adding to it, so
+# the rule is restated here. Without it every JavaScript chunk would be
+# revalidated on every page load.
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# The audio library.
+#
+# The clips are 167 MB across 2,369 files, and they are by far the largest thing
+# this site serves. Without a cache header a child who taps Listen on the same
+# word twice downloads it twice, and every clip is fetched again on a return
+# visit.
+#
+# The clip file names are stable, because a child bookmarks nothing and the app
+# has to find a clip by word. The content hash lives in the query string
+# instead - the manifest resolves "abandon" to
+# "/audio/vocabulary/6162616e646f6e.mp3?v=c6a69774efb9" - so a regenerated clip
+# gets a new URL and an old cached one is never served in its place. That is
+# what makes immutable safe here: the URL changes exactly when the bytes do.
+#
+# A year is not a guess. A clip is a recording of one word, it is regenerated
+# only when the voice or the word changes, and in both cases the URL changes.
+
+/audio/vocabulary/*.mp3
+  Cache-Control: public, max-age=31536000, immutable
+
+/audio/stories/*.mp3
+  Cache-Control: public, max-age=31536000, immutable
+
+# The manifests are the index, not the audio. They must not be cached hard,
+# because a clip regenerated after a deploy has to be found. Revalidating on
+# every use costs a conditional request of a few kilobytes, which is nothing
+# next to a clip.
+/audio/vocabulary/manifest.json
+  Cache-Control: public, max-age=300, must-revalidate
+
+/audio/stories/manifest.json
+  Cache-Control: public, max-age=300, must-revalidate

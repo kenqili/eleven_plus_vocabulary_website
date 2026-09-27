@@ -1,8 +1,8 @@
 import { interleaveQuestions } from "@/lib/challenge/ordering";
 import { optionGlosses } from "@/lib/challenge/option-gloss";
 import { storyMeaning, wordClue } from "@/lib/challenge/story-meanings";
-import { words, problems, distractorContext } from "@/lib/challenge/bank";
-import { choicesFor, shuffle } from "@/lib/challenge/words";
+import { choicesForProblem, words, problems } from "@/lib/challenge/bank";
+import { shuffle } from "@/lib/challenge/words";
 import { parsePracticeLevel, parseQuestionTypes } from "@/lib/challenge/config";
 import { currentUser, requireUser, rateLimit } from "@/lib/server/auth";
 import { configuredFreeTrialDays, membership } from "@/lib/server/billing";
@@ -103,9 +103,7 @@ export async function GET(request: Request) {
               // table just to label a question.
               difficulty: levelFor(word.id),
               number: index + 1,
-              choices: problem.choices
-                ? shuffle(problem.choices)
-                : choicesFor(word, distractorContext, `demo:${problem.id}`),
+              choices: shuffle(choicesForProblem(problem)),
             })),
         ),
       ),

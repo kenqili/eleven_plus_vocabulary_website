@@ -574,3 +574,61 @@ test("the nonce reaches the request the page is rendered from", () => {
     "middleware has no matcher, so it may not run on every request",
   );
 });
+
+test("the audio is served as a static asset the browser will keep", () => {
+  // The clips are 167 MB across 2,369 files and are the largest thing this site
+  // serves. Without a cache header a child who taps Listen twice downloads the
+  // clip twice, and every clip is re-fetched on a return visit.
+  const headers = read("public/_headers");
+
+  // Immutable is only safe because the manifest content-hashes every clip URL,
+  // so a regenerated clip has a different URL. Checked rather than assumed,
+  // because immutable on a stable URL is how a stale clip survives a redeploy.
+  for (const folder of ["vocabulary", "stories"])
+    assert.match(
+      headers,
+      new RegExp(`/audio/${folder}/\\*\\.mp3[\\s\\S]*?max-age=31536000, immutable`),
+      `${folder} clips are not cached for a year`,
+    );
+
+  // The manifests are the index and must be revalidated: a clip generated after
+  // a deploy has to be findable.
+  assert.match(headers, /vocabulary\/manifest\.json[\s\S]*?must-revalidate/);
+  assert.match(headers, /stories\/manifest\.json[\s\S]*?must-revalidate/);
+
+  // Our file replaces the framework's rather than merging with it, so the rule
+  // for build output has to be restated in it.
+  assert.match(
+    headers,
+    /\/_next\/static\/\*[\s\S]*?immutable/,
+    "the framework's rule for build output was lost, so every chunk is revalidated on every page load",
+  );
+
+  // And the hash that safe caching depends on has to actually be there.
+  const manifest = JSON.parse(read("public/audio/vocabulary/manifest.json"));
+  const urls = Object.values(manifest.words).filter(Boolean);
+  assert.ok(urls.length > 2000, `expected a full catalogue, found ${urls.length}`);
+  const unhashed = urls.filter((url) => !/[?&]v=[0-9a-f]{6,}/.test(url));
+  assert.equal(
+    unhashed.length,
+    0,
+    `${unhashed.length} clip URLs carry no content hash, so immutable caching would serve a stale clip`,
+  );
+});
+
+test("a clip index is fetched when nobody is waiting, not on the first tap", () => {
+  // 2,369 clips cannot be preloaded, but the 159 KB index can. It is otherwise
+  // fetched as a round trip at the moment of the first tap, which is the moment
+  // a nine-year-old is least patient. A prefetch pays the whole cost at a moment
+  // nobody is waiting for.
+  for (const file of [
+    "components/minewords/pronunciation.tsx",
+    "components/minewords/story-audio.tsx",
+  ]) {
+    const source = read(file);
+    assert.ok(
+      source.includes("prefetch") || source.includes("requestIdleCallback"),
+      `${file} still fetches its index at the moment of the first tap`,
+    );
+  }
+});

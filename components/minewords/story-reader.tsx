@@ -11,7 +11,7 @@ import {
   type ReadingProgress,
 } from "@/lib/challenge/stories";
 import WordHint from "./word-hint";
-import StoryAudio from "./story-audio";
+import StoryAudio, { WarmStoryAudioIndex } from "./story-audio";
 import type { Catalog } from "./story-library";
 import { useReadingClock } from "./use-reading-clock";
 import DailyMission from "./daily-mission";
@@ -176,6 +176,7 @@ function Reading({ story }: { story: StoryDetail }) {
             question at the end.
           </p>
         </details>
+        <WarmStoryAudioIndex />
         <StoryAudio id={story.id} title={story.title} />
         <button className="text-button" onClick={bookmark.startAgain}>
           Start again
