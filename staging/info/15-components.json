@@ -1,0 +1,137 @@
+{
+  "sections": [
+    {
+      "id": "the-four-components",
+      "group": "The papers",
+      "heading": "The four components, and what each one is",
+      "summary": "What a child is actually being asked to do in each of the four papers.",
+      "body": [
+        "Not every test has all four, and this is the first thing to get straight: which components your child sits, and in what balance, is decided by the school or the local authority, not by you. GL covers five areas across ages 7 to 14: verbal reasoning, non-verbal reasoning, spatial reasoning, English and maths. Cambridge Select Insight covers three: numerical, verbal and non-verbal ability. Ask your school which of its own components apply before you buy anything.",
+        "Verbal reasoning is the one most people mean when they say reasoning, and it is not reading comprehension. It is reasoning with words: following an argument, spotting which of two statements follows from a set of rules, working out what a word means from how it is used. GL's description is that these tests identify pupils whose strengths lie in English, history, languages and the arts, and that they are less reliant on curriculum exposure or rehearsed content. That last clause is the important one: it is designed so that having done the syllabus does not hand you the paper.",
+        "Non-verbal reasoning is reasoning with shapes and patterns rather than words, and GL describes it as less reliant on language, curriculum exposure or rehearsed content. It is the component Gloucestershire is removing from 2028, on the stated grounds that it is the one that typically features in private tutoring. So it is the component most exposed to commercial preparation, and the one the profession is moving away from.",
+        "English is a curriculum paper, and the content ceiling matters. GL says its English and maths papers are based mainly on curriculum content reached during the early part of Year 6, and elsewhere says up to the end of Year 5. This is the component where a child's school work is most directly the preparation, which is why a family whose child reads widely has already done a good deal of it without knowing.",
+        "Maths is the other curriculum paper, and it is the one the evidence says tutoring helps least with. The EEF finds the effect of one-to-one tuition in maths is about two months against about six in literacy. It is also the component with the least room for reading, so a family with a strong reader and a weaker maths child should be clear that the two problems need different answers.",
+        "Spatial reasoning appears in GL's list of areas but is not one of the four standard components, and is worth being careful about. If a school mentions it, it is a bespoke paper, and the specification will be the school's own."
+      ],
+      "table": {
+        "head": ["Component", "What it asks", "What helps"],
+        "rows": [
+          ["Verbal reasoning", "Reasoning with words: following an argument, applying a rule, working out meaning from use", "Reading widely. Designed to be resistant to syllabus coverage."],
+          ["Non-verbal reasoning", "Reasoning with shapes and patterns rather than words", "Practice with unfamiliar formats, not with content"],
+          ["English", "Curriculum content, mainly to the end of Year 5 or early Year 6", "School work, and reading for pleasure"],
+          ["Maths", "Curriculum content, same period", "School work. Tutoring helps least here of any component."],
+          ["Spatial reasoning", "Three-dimensional reasoning", "Only appears in bespoke papers, and the school's own specification applies"]
+        ],
+        "note": "Which of these a child sits, and in what balance, is the school's or the local authority's decision. GL declines to state a format for the 11+ at all and points parents to their admissions department."
+      },
+      "sources": [
+        {
+          "title": "Admissions tests for state and independent schools",
+          "publisher": "GL Assessment",
+          "url": "https://www.gl-assessment.co.uk/products/admissions-for-state-and-independent-schools/"
+        },
+        {
+          "title": "11+ frequently asked questions",
+          "publisher": "GL Assessment",
+          "url": "https://11plus.gl-assessment.co.uk/pages/faqs"
+        },
+        {
+          "title": "One to one tuition",
+          "publisher": "Education Endowment Foundation",
+          "url": "https://educationendowmentfoundation.org.uk/education-evidence/teaching-learning-toolkit/one-to-one-tuition"
+        },
+        {
+          "title": "Gloucestershire grammar schools to adopt new accessible test",
+          "publisher": "BBC News, 16 April 2026",
+          "url": "https://www.bbc.co.uk/news/articles/cy01185ypdwo"
+        }
+      ]
+    },
+    {
+      "id": "a-plain-english-glossary",
+      "group": "Start here",
+      "heading": "A plain-English glossary",
+      "summary": "The words that turn up in admissions paperwork and prospectuses, defined.",
+      "body": [
+        "Most of the confusion around the 11+ is vocabulary rather than substance. These are the terms that turn up in prospectuses, admissions emails and conversations with other parents, defined as plainly as the sources allow.",
+        "This is the one place on the page where we would rather be short than thorough. A term can mean different things to different providers, and where that is true we say so rather than picking one meaning and hoping."
+      ],
+      "table": {
+        "head": ["Term", "What it means"],
+        "rows": [
+          ["11+ / eleven-plus", "Selection for secondary school, most often at age 11, entering Year 7. It is an admissions process, not an exam with a single name."],
+          ["Admission authority", "The body that sets the admissions rules and decides who gets a place. For a maintained grammar school this is the school's own governing body, not the council."],
+          ["Normal admissions round", "The annual process for the September intake, run by the local authority as one co-ordinated application in which you rank your preferences."],
+          ["Oversubscription", "When more children qualify for a school than there are places. The remaining criteria then decide who fills them, and the school must publish which criteria it uses."],
+          ["Selective school", "A school allowed to select its whole intake on ability. Only designated grammar schools may do this in England."],
+          ["Standard Age Score (SAS)", "A raw mark converted to account for the child's exact age in years and months, on a scale where 100 is average and 115 is one standard deviation above."],
+          ["Age standardisation", "Adjusting a score for the age of the candidate, so a child sat in June and a child sat in September are compared fairly."],
+          ["Common Entrance (CE)", "An ISEB exam used mainly for independent schools. At 13+ it has three compulsory papers, English, maths and science, plus optionals across eight subjects."],
+          ["Common Pre-Tests", "ISEB's four adaptive online multiple-choice tests in English, maths, verbal and non-verbal reasoning, taking about two hours fifteen minutes in total. Marketed as the 11+ but also used by several schools as the first stage of 13+ selection."],
+          ["Bursary", "Means-tested fee assistance at an independent school. Separate from a scholarship, which is usually awarded on academic merit alone."],
+          ["GL Assessment", "The largest provider of 11+ tests to schools in England, delivering over 300,000 papers a year. A commercial company, which matters when reading its claims."],
+          ["Cambridge Select Insight", "Cambridge's digital 11+, about sixty minutes, covering numerical, verbal and non-verbal ability. Sells no practice papers, on the grounds that this makes the test tutor-proof."],
+          ["FSCE / CSSE", "Not-for-profit test providers. FSCE, founded by Reading School, tests for twelve grammar schools; CSSE serves ten member schools in Essex."],
+          ["GL, CEM, ISEB", "The three names you will see most. GL Assessment and ISEB are separate companies; CEM was the old Cambridge 11+ brand and now sits inside Cambridge Insight."]
+        ]
+      },
+      "sources": [
+        {
+          "title": "School Admissions Code 2021, including the glossary of terms",
+          "publisher": "Department for Education",
+          "url": "https://www.gov.uk/government/publications/school-admissions-code"
+        },
+        {
+          "title": "A guide to standardised tests",
+          "publisher": "GL Assessment",
+          "url": "https://www.gl-assessment.co.uk/guides/a-guide-to-standardised-tests/"
+        },
+        {
+          "title": "Common Entrance at 13+ for schools",
+          "publisher": "ISEB",
+          "url": "https://www.iseb.co.uk/assessments/common-entrance/at-13-for-schools/"
+        },
+        {
+          "title": "Common Pre-Tests for families",
+          "publisher": "ISEB",
+          "url": "https://www.iseb.co.uk/assessments/common-pre-tests/for-families/"
+        }
+      ]
+    },
+    {
+      "id": "registering-and-applying-are-different",
+      "group": "Start here",
+      "heading": "Registering and applying are different jobs",
+      "summary": "A genuinely common mistake, and the one deadline families miss.",
+      "body": [
+        "This trips up more families than anything else on the page, so it is worth saying on its own. Registering for a test and applying for a school place are two separate processes, usually with two separate deadlines, and doing the first does not do the second.",
+        "Registering is what you do with the exam provider or the admissions authority to get a test. Applying for a place is what you do through your local authority's single co-ordinated form, where you rank your preferences, by 31 October. Miss the registration deadline and there may be no test to sit. Miss the application deadline and the test result has nowhere to go. The second is national and fixed. The first is local and often much earlier.",
+        "The order is usually registration first, then the test, then results, then applying. In the 2027 cycle, Warwickshire opened registration for the test on 8 May 2026 and Lancaster Girls' Grammar School closed registration on 9 September 2026, while the national application deadline was 31 October 2026. That gap is about seven weeks, and it is not a gap any of those schools will chase you about.",
+        "Two more mechanical points. A school may not charge you for the process, including for tests and even for a refundable deposit, so a school asking for payment to sit its entrance test is acting outside the Code. And if you are refused, you have at least 20 school days from the notification to lodge an appeal, with the authority's timetable published by 28 February."
+      ],
+      "points": [
+        "Registering for a test is not applying for a place. They have different deadlines and one does not do the other.",
+        "The registration deadline is local and often much earlier than 31 October.",
+        "The application deadline is national: 31 October, every year, no exceptions.",
+        "No school may charge for tests, contributions or even refundable deposits."
+      ],
+      "sources": [
+        {
+          "title": "School Admissions Code 2021",
+          "publisher": "Department for Education",
+          "url": "https://www.gov.uk/government/publications/school-admissions-code"
+        },
+        {
+          "title": "School Admission Appeals Code 2022",
+          "publisher": "Department for Education",
+          "url": "https://www.gov.uk/government/publications/school-admission-appeals-code"
+        },
+        {
+          "title": "Year 7 admissions, with registration dates",
+          "publisher": "Lancaster Girls' Grammar School",
+          "url": "https://www.lggs.org.uk/admissions/year-7-admissions"
+        }
+      ]
+    }
+  ]
+}

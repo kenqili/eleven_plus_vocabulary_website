@@ -76,8 +76,8 @@ export default function ManageWordsPage() {
   return (
     <div className="site">
       <Header />
-      <main className="workspace guides-workspace">
-        <section className="guides-hero">
+      <main className="workspace prose-workspace">
+        <section className="page-hero">
           <div>
             <div className="eyebrow">PARENT SETTINGS</div>
             <h1>Choose the words your child practises.</h1>
@@ -181,7 +181,7 @@ export default function ManageWordsPage() {
                   <div>
                     <strong>{row.word}</strong>
                     {row.alreadyInBank ? (
-                      <span className="guide-chip">We already teach this</span>
+                      <span className="soft-chip">We already teach this</span>
                     ) : null}
                     <p>{row.definition}</p>
                     {row.example ? <em>{row.example}</em> : null}

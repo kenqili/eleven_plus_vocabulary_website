@@ -1,0 +1,69 @@
+{
+  "sections": [
+    {
+      "id": "mixed-grammar-school-competition",
+      "group": "Mixed grammar schools",
+      "heading": "What competing for a co-ed place is actually like",
+      "summary": "It is geographic, not structural, and the honest national statistics will not tell you.",
+      "body": [
+        "Most children who sit the 11+ in England are applying to a co-educational grammar school, so this is the section that probably describes your situation. The process is the one set out elsewhere on this page: one test, one ranked application through your local authority, 31 October, offers on 1 March. Nothing about a mixed school is different in the mechanics.",
+        "What differs is the range of scores behind the offer. A co-ed school draws from the widest catchment of any of the three types, so the distance between the offer threshold and the school's floor tends to be wider than at a single-sex school in a single-sex town. Practically, that means a mixed school is more likely to be a genuine stretch for a strong candidate and more likely to be a realistic target for a middling one, within the same town.",
+        "On how hard it is to get in, the national statistics are close to useless here, and it is worth saying why rather than just declining to quote them. The 83.6% first-choice rate covers every secondary applicant in England, and the overwhelming majority of those applicants are applying to non-selective schools where a place is not in question. The DfE does publish a breakdown by whether an authority has selective schools; we could not retrieve it. So the honest position is that no reliable national figure for grammar school competition exists in the public releases we could reach.",
+        "What can be said is geographic, and it is a genuinely useful thing for a family to know. Only 35 local authorities in England have any grammar school at all, and around 60% of them sit in just 11 authorities. So most families are not competing for a grammar place at all, because there is no grammar school to compete for. A few are competing for the most selective thing they will ever do, and in those areas the competition is intense. There is very little in between.",
+        "Two local signals are more informative than any national percentage. A catchment area where the grammar draws noticeably fewer disadvantaged pupils than the rest of the area is a catchment where the admissions test is doing less work than the school's results suggest, and Schools Week reported in September 2026 that free school meal rates at the average grammar were 9.2 percentage points lower than elsewhere in their own catchments. And a raw number is more useful than a percentage: in Gloucestershire about 2,500 children a year sit for seven grammar schools, which is the kind of ratio that actually tells a family something about their chances."
+      ],
+      "points": [
+        "Co-ed schools draw from the widest catchment, so the gap between the offer threshold and the floor is usually wider than at a single-sex school in a single-sex town.",
+        "35 local authorities have any grammar school; around 60% of them are in 11. Most families are not competing at all, and a few are competing hard.",
+        "A grammar drawing fewer disadvantaged pupils than its own catchment is a place where the admissions test is doing less work than the results suggest."
+      ],
+      "sources": [
+        {
+          "title": "Grammar schools research briefing",
+          "publisher": "House of Commons Library",
+          "url": "https://commonslibrary.parliament.uk/research-briefings/sn07070/"
+        },
+        {
+          "title": "£600 for practice tests creates 11-plus tutoring arms race",
+          "publisher": "Schools Week, 3 September 2026",
+          "url": "https://schoolsweek.co.uk/600-for-practice-tests-creates-11-plus-tutoring-arms-race/"
+        },
+        {
+          "title": "Gloucestershire grammar schools to adopt new accessible test",
+          "publisher": "BBC News, 16 April 2026",
+          "url": "https://www.bbc.co.uk/news/articles/cy01185ypdwo"
+        }
+      ]
+    },
+    {
+      "id": "a-test-redesign-case-study",
+      "group": "Mixed grammar schools",
+      "heading": "What happens when a council redesigns the test",
+      "summary": "Gloucestershire changed everything at once. It is the clearest recent example of what to ask about.",
+      "body": [
+        "If you are in an area where the test is being reconsidered, Gloucestershire is the worked example, and it is worth reading as a template of the questions to ask your own council.",
+        "The seven Gloucestershire grammar schools appointed the not-for-profit Future Stories Community Enterprise to run their Year 7 entrance test for entry from 2028, first sitting in summer 2027. Three things changed at once. The test moved from September of Year 6 to the summer term of Year 5, which is two years earlier and is designed to stop children losing focus over the summer. It became based on the national curriculum rather than reasoning-style questions. And non-verbal reasoning was removed entirely, on the stated grounds that it is the component that typically features in private tutoring.",
+        "The reasoning behind the second and third changes is worth noting carefully, because it is a system arguing against itself. The profession identified non-verbal reasoning as the component most dependent on commercial tutoring, and in the same county, most exposed to the commercial tutoring market. Removing it reduces the value of that market to families in the area.",
+        "What has happened since is the more useful part. Families interviewed by the BBC were not persuaded. One said they would probably still tutor because everyone else is and you have to try to level the playing field for your own child. Another said it was really expensive and they knew parents who had paid for years and whose children did not get in. A local tutor's assessment was that tutoring will adapt rather than disappear, and that as long as school provision and resources differ, some children will remain better positioned than others.",
+        "So if your own council is reviewing its test, the realistic expectation is that the test will get easier to prepare for and the commercial tutoring market will find something else to sell. Plan for the second."
+      ],
+      "points": [
+        "Gloucestershire's redesign: test moved two years earlier, made curriculum-based, and non-verbal reasoning removed.",
+        "The stated reason for removing non-verbal reasoning is that it is the component that typically features in private tutoring.",
+        "Families in the county were not persuaded that the change would reduce tutoring, and their reasons are worth hearing."
+      ],
+      "sources": [
+        {
+          "title": "Gloucestershire grammar schools to adopt new accessible test",
+          "publisher": "BBC News, 16 April 2026",
+          "url": "https://www.bbc.co.uk/news/articles/cy01185ypdwo"
+        },
+        {
+          "title": "Parents say grammar test changes won't end tutoring advantage",
+          "publisher": "BBC News, 7 June 2026",
+          "url": "https://www.bbc.co.uk/news/articles/clyple9qpldo"
+        }
+      ]
+    }
+  ]
+}

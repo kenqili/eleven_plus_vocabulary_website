@@ -342,7 +342,7 @@ export default function WordSummaryPage() {
                             <Pronunciation word={word.word} id={word.id} />
                             <p>{word.definition}</p>
                             {word.custom ? (
-                              <span className="guide-chip">Added by you</span>
+                              <span className="soft-chip">Added by you</span>
                             ) : null}
                             <details>
                               <summary>Example & related words</summary>

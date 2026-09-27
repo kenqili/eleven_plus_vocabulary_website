@@ -40,8 +40,8 @@ export default function PrintSheetPage() {
   return (
     <div className="site">
       <Header />
-      <main className="workspace guides-workspace">
-        <section className="guides-hero">
+      <main className="workspace prose-workspace">
+        <section className="page-hero">
           <div>
             <div className="eyebrow">PRINTABLE WORD SHEETS</div>
             <h1>Print a sheet that fits your page.</h1>

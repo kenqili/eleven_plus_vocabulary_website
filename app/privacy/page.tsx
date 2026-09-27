@@ -13,8 +13,8 @@ export default function PrivacyPage() {
   return (
     <div className="site">
       <Header />
-      <main className="workspace guides-workspace">
-        <section className="guides-hero">
+      <main className="workspace prose-workspace">
+        <section className="page-hero">
           <div>
             <div className="eyebrow">PRIVACY</div>
             <h1>What this app stores, and how to get rid of it.</h1>
@@ -26,7 +26,7 @@ export default function PrivacyPage() {
           </div>
         </section>
 
-        <article className="guide-article">
+        <article className="prose-body">
           <h2>Who this is for</h2>
           <p>
             The account belongs to the grown-up. A child never needs to create
