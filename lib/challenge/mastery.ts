@@ -42,10 +42,18 @@ const levelIndex = (level: number) =>
 export const recallTarget = (level: number) => RECALL_TARGET[levelIndex(level)];
 export const runTarget = (level: number) => RUN_TARGET[levelIndex(level)];
 
-/** Reading budget for one question: a full read of all four options. */
+/**
+ * Reading budget for one question: a full unhurried read of all four options.
+ *
+ * Generous on purpose. It used to allow about nineteen seconds for four
+ * definitions, which a Year 5 child reading carefully exceeded, and the app
+ * told them their care did not matter while the only number they could see
+ * stayed at zero. A window that punishes careful reading is not measuring
+ * recall, it is measuring speed with extra steps.
+ */
 export function answerWindow(choices: string[]): number {
   const readingWords = choices.join(" ").trim().split(/\s+/).length;
-  return Math.min(30, Math.max(12, 8 + Math.ceil(readingWords / 4)));
+  return Math.min(60, Math.max(25, 15 + Math.ceil(readingWords / 3)));
 }
 
 /**
@@ -104,10 +112,13 @@ export function advanceMastery(
   // the run target is out of reach. The clue is an admission of uncertainty and
   // the counters have to agree with that.
   const correct = Math.min(CUMULATIVE_FLOOR, prior.correct + (known ? 1 : 0));
+  // The run route requires at least one genuine recall. Without that, a run of
+  // answers too fast to have been read counted as knowing the word, and three
+  // reflex clicks retired the easiest words in the collection.
   const mastered =
     Boolean(prior.mastered) ||
     (evidence === "recalled" && recalls >= recallTarget(level)) ||
-    run >= runTarget(level) ||
+    (run >= runTarget(level) && recalls > 0) ||
     correct >= CUMULATIVE_FLOOR;
   return {
     correct,
@@ -145,6 +156,11 @@ export const masteryProgress = (
 });
 
 /** "2 sure recalls for Level 0, 3 sure recalls for Levels 1-2 and 4 sure recalls for Levels 3-5" */
+/**
+ * The rule as it actually runs, in the words a parent would use. The run route
+ * needs at least one real recall, so "in a row on its own" would be a
+ * description of a route that does not exist.
+ */
 export function describeRecallTargets(): string {
   const groups: Array<{ from: number; to: number; target: number }> = [];
   RECALL_TARGET.forEach((target, level) => {

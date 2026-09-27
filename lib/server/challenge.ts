@@ -41,6 +41,32 @@ type Attempt = {
   answer: string | null;
   prompt: string | null;
 };
+/**
+ * The easiest bands, for an account that has never answered a question. Returns
+ * null once there is any history, or when the pool is too narrow for the
+ * restriction to leave anything to ask.
+ */
+const STARTER_BANDS: Difficulty[] = [0, 1, 2];
+export async function starterBand(
+  userId: string,
+  available: readonly Word[],
+): Promise<Word[] | null> {
+  const answered = (
+    await database()
+      .prepare(
+        "SELECT COUNT(*) AS count FROM attempts WHERE user_id=? AND answered_at IS NOT NULL",
+      )
+      .bind(userId)
+      .first<{ count: number }>()
+  )?.count;
+  if (answered) return null;
+  const easy = available.filter((word) =>
+    STARTER_BANDS.includes(levelFor(word.id) as Difficulty),
+  );
+  // Never narrow a pool to nothing.
+  return easy.length >= 8 ? easy : null;
+}
+
 export const levelFor = (id: string) =>
   (levels.words as Record<string, { difficulty: number }>)[id]?.difficulty ??
   // A parent's own word has no level snapshot, so fall back to its length.
@@ -206,6 +232,13 @@ export async function nextQuestion(
       !hasMastered(byId.get(w.id) ?? initialMastery),
   );
   if (!available.length) return null;
+  // A child who has never answered anything starts on the easier bands rather
+  // than being handed a uniformly random word out of 2,249, which is a
+  // one-in-six chance of opening on a Level 5 word like "incontrovertible" with
+  // no idea what it means. The wider range opens as soon as there is any
+  // history, and a chosen level always overrides this.
+  const chosen = await starterBand(userId, available);
+  const startable = chosen ?? available;
   const count =
     (
       await db
@@ -222,7 +255,7 @@ export async function nextQuestion(
       .all<{ word_id: string }>()
   ).results;
   const chosenId = chooseWord(
-    available.map((word) => ({
+    startable.map((word) => ({
       id: word.id,
       seen: byId.get(word.id)?.seen || 0,
       retryAt: byId.get(word.id)?.retry_at ?? null,
@@ -230,7 +263,7 @@ export async function nextQuestion(
     recent.map((attempt) => attempt.word_id),
     count,
   );
-  const word = available.find((word) => word.id === chosenId)!;
+  const word = startable.find((word) => word.id === chosenId)!;
   const wordProblems = eligible.filter((problem) => problem.wordId === word.id);
   // Cycle through eligible types for a word before repeating, while selection remains word-based.
   const history = (

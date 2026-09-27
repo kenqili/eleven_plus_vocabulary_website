@@ -125,15 +125,27 @@ test("Level 0 masters on two sure recalls, never on one lucky guess", () => {
 });
 
 test("Harder words need more sure recalls, and blind guesses cannot shortcut them", () => {
-  // Level 0 is the one band where three right answers in a row are enough on their own.
-  assert.equal(play(0, ["uncertain", "uncertain", "uncertain"]).mastered, true);
-  for (let level = 1; level < 6; level++) {
+  // A run on its own never masters a word, at any level. Too fast to have been
+  // read is not knowing it, and three reflex clicks used to retire the easiest
+  // words in the collection.
+  for (let level = 0; level < 6; level++)
     assert.equal(
-      play(level, ["uncertain", "uncertain", "uncertain"]).mastered,
+      play(level, ["uncertain", "uncertain", "uncertain", "uncertain"]).mastered,
       false,
-      `level ${level}: three guesses must not master a word`,
+      `level ${level}: four clicks must not master a word`,
     );
-  }
+  // Five correct answers still retire a word at every level, because that is the
+  // floor the app describes to parents. Guessing a four-option question right
+  // five times in a row is not a realistic way to do it.
+  for (let level = 0; level < 6; level++)
+    assert.equal(
+      play(level, ["uncertain", "uncertain", "uncertain", "uncertain", "uncertain"]).mastered,
+      true,
+      `level ${level}: the cumulative floor still applies`,
+    );
+  // A run that includes a real recall does count, and the harder bands need more.
+  assert.equal(play(0, ["recalled", "uncertain", "uncertain"]).mastered, true);
+  assert.equal(play(1, ["recalled", "uncertain", "uncertain"]).mastered, false);
   assert.equal(play(1, ["recalled", "recalled", "recalled"]).mastered, true);
   assert.equal(play(1, ["recalled", "recalled", "uncertain"]).mastered, false);
   assert.equal(
@@ -159,21 +171,28 @@ test("Harder words need more sure recalls, and blind guesses cannot shortcut the
 });
 
 test("Right answers in a row master a word when the timing was unconvincing", () => {
+  // The run route exists for a child who is reading carefully enough that the
+  // window is sometimes exceeded. It needs one genuine recall to count at all.
   assert.equal(play(0, ["recalled", "uncertain", "uncertain"]).mastered, true);
-  assert.equal(play(0, ["uncertain", "uncertain", "uncertain"]).mastered, true);
+  assert.equal(play(0, ["uncertain", "uncertain", "uncertain"]).mastered, false);
   assert.equal(
-    play(1, ["uncertain", "uncertain", "uncertain"]).mastered,
+    play(1, ["recalled", "uncertain", "uncertain"]).mastered,
     false,
     "level 1 needs four in a row, not three",
   );
   assert.equal(
-    play(1, ["uncertain", "uncertain", "uncertain", "uncertain"]).mastered,
+    play(1, ["recalled", "uncertain", "uncertain", "uncertain"]).mastered,
     true,
   );
+  // The hardest band needs five in a row, because its run target is five.
   assert.equal(
-    play(5, ["uncertain", "uncertain", "uncertain", "uncertain"]).mastered,
+    play(5, ["recalled", "uncertain", "uncertain", "uncertain"]).mastered,
     false,
-    "the hardest words need the cumulative floor instead",
+    "level 5 needs five in a row, not four",
+  );
+  assert.equal(
+    play(5, ["recalled", "uncertain", "uncertain", "uncertain", "uncertain"]).mastered,
+    true,
   );
   assert.equal(
     play(5, ["uncertain", "uncertain", "uncertain", "uncertain", "uncertain"])
@@ -274,19 +293,18 @@ test("One definition of a finished word drives rotation, stats and the word list
 test("The reading budget and the child-facing rule come from the same numbers", () => {
   assert.equal(
     answerWindow(["a", "b", "c", "d"]),
-    12,
-    "a floor keeps tiny options fair",
+    25,
+    "a floor keeps tiny options fair, and generous enough to read properly",
   );
-  assert.equal(
-    answerWindow([
-      "one two three four five six seven eight",
-      "nine ten eleven twelve",
-      "thirteen fourteen fifteen",
-      "sixteen seventeen",
-    ]),
-    13,
-  );
-  assert.equal(answerWindow([Array(200).fill("word").join(" ")]), 30, "capped");
+  // A longer question gets a longer budget, and an enormous one is capped.
+  const longer = answerWindow([
+    "one two three four five six seven eight",
+    "nine ten eleven twelve",
+    "thirteen fourteen fifteen",
+    "sixteen seventeen",
+  ]);
+  assert.ok(longer >= 25, `a real question got ${longer}s`);
+  assert.equal(answerWindow([Array(200).fill("word").join(" ")]), 60, "capped");
   const progress = masteryProgress(
     { correct: 1, run: 1, recalls: 1, mastered: false },
     3,

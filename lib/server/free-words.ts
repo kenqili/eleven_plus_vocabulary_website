@@ -32,13 +32,21 @@ export function freeWords(limit = configuredFreeWordLimit()): Word[] {
         return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
       }),
   );
+  // The easy bands contribute more per round than the hard ones, so the free
+  // collection starts readable and still works its way up. A flat round robin
+  // put a Level 3 and a Level 5 word in every first six, which is a poor first
+  // impression for a child who has not seen the app before.
+  const EASY = 2;
   const selected: Word[] = [];
   while (selected.length < Math.min(limit, words.length)) {
     let added = false;
-    for (const bucket of buckets) {
-      if (!bucket.length || selected.length >= limit) continue;
-      selected.push(bucket.shift()!);
-      added = true;
+    for (const [index, bucket] of buckets.entries()) {
+      const take = index <= 2 ? EASY : 1;
+      for (let i = 0; i < take; i += 1) {
+        if (!bucket.length || selected.length >= limit) break;
+        selected.push(bucket.shift()!);
+        added = true;
+      }
     }
     if (!added) break;
   }

@@ -21,6 +21,7 @@ async function snapshot(userId: string) {
     excludedWordIds(userId),
   ]);
   const byId = new Map(bankWords.map((word) => [word.id, word.word]));
+  for (const row of added) byId.set(`own:${normalise(row.word)}`, row.word);
   return {
     excluded: [...excluded]
       .map((id) => ({ id, word: byId.get(id) ?? id }))
@@ -124,13 +125,26 @@ export async function POST(request: Request) {
       const id = typeof input.id === "string" ? input.id : "";
       if (!id) throw new HttpError(400, "Choose one of your words to remove.");
       await rateLimit(`custom-words:${user.id}`, 120);
+      // The exclusion is keyed by the word, not by the row id, so the row has to
+      // be read before it can be cleaned up.
+      const row = await db
+        .prepare("SELECT word FROM custom_words WHERE user_id=? AND id=?")
+        .bind(user.id, id)
+        .first<{ word: string }>();
+      if (!row) throw new HttpError(404, "That word is already gone.");
       await db
         .prepare("DELETE FROM custom_words WHERE user_id=? AND id=?")
         .bind(user.id, id)
         .run();
       await db
         .prepare("DELETE FROM word_exclusions WHERE user_id=? AND word_id=?")
-        .bind(user.id, `own:${normalise(id)}`)
+        .bind(user.id, `own:${normalise(row.word)}`)
+        .run();
+      // Any progress recorded against it would otherwise linger forever under
+      // an id nothing can select again.
+      await db
+        .prepare("DELETE FROM progress WHERE user_id=? AND word_id=?")
+        .bind(user.id, `own:${normalise(row.word)}`)
         .run();
       return json(await snapshot(user.id));
     }

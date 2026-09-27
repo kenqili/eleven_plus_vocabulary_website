@@ -273,18 +273,30 @@ export default function Challenge() {
                       <button
                         key={`${question.id}-${i}`}
                         className={`answer ${feedback && choice === feedback.answer ? "correct" : ""} ${feedback && feedback.selected === i && !feedback.correct ? "incorrect" : ""}`}
-                        disabled={busy || Boolean(feedback)}
+                        aria-disabled={busy || Boolean(feedback)}
                         aria-keyshortcuts={`${String.fromCharCode(65 + i)} ${i + 1}`}
-                        onClick={() => void study.answer(i)}
+                        onClick={() => {
+                          if (busy || feedback) return;
+                          void study.answer(i);
+                        }}
                       >
                         <span>{String.fromCharCode(65 + i)}</span>
                         {choice}
                         {feedback && choice === feedback.answer && (
-                          <span aria-label="Correct answer">✓</span>
+                          <span aria-label="The correct answer">✓</span>
                         )}
+                        {feedback &&
+                          !feedback.correct &&
+                          feedback.selected === i && (
+                            <span aria-label="Your answer">✗</span>
+                          )}
                       </button>
                     ))}
                   </div>
+                  <p className="sr-only" role="status">
+                    {question.word}. {TYPE_INSTRUCTIONS[question.type]}{" "}
+                    {question.prompt}
+                  </p>
                   {feedback && (
                     <div className="feedback" role="status">
                       <strong>

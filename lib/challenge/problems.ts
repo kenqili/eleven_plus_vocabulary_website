@@ -54,15 +54,29 @@ export function blankExample(
   example: string,
   word: string,
 ): string | null {
-  for (const form of inflectionsOf(word)) {
-    if (!hasWholeWord(example, form)) continue;
-    return example.replace(
-      new RegExp(`(?:^|\\W)${escapeRegExp(form)}(?=\\W|$)`, "i"),
-      (match) => `${match.startsWith(" ") ? " " : ""}${CLOZE_BLANK}`,
-    );
-  }
-  return null;
+  // Every whole-word occurrence of every inflection is blanked, not just the
+  // first. A sentence that used the word twice used to leave the second one
+  // sitting in plain sight, and with the plural appearing first the base form
+  // was the one left unblanked, so the child could read the answer out of the
+  // gap. Two gaps in a sentence read perfectly naturally.
+  const forms = inflectionsOf(word)
+    .filter((form) => hasWholeWord(example, form))
+    .map(escapeRegExp);
+  if (!forms.length) return null;
+  const pattern = new RegExp(
+    `(?:^|\\W)(${[...new Set(forms)].join("|")})(?=\\W|$)`,
+    "gi",
+  );
+  let blanks = 0;
+  const out = example.replace(pattern, (match, hit: string) => {
+    blanks += 1;
+    // The leading whitespace is outside the group, so it is kept and the gap
+    // does not leave a double space where the word was.
+    return `${match.startsWith(" ") ? " " : ""}${CLOZE_BLANK}${hit.slice(0, 0)}`;
+  });
+  return blanks ? out : null;
 }
+
 
 /**
  * Words that must never appear as a distractor for a given word: the word

@@ -131,3 +131,46 @@ test("distractors are stable for the same word and avoid the answer's relations"
     assert.ok(!related.get("abandon").has(choice.toLowerCase()), choice);
   }
 });
+
+test("no cloze question leaves any form of its own answer in the gap", () => {
+  // A sentence that used the word twice used to leave the second one in plain
+  // sight, and where the plural came first the base form was the one left
+  // unblanked, so the answer could be read straight out of the question.
+  const byId = new Map(words.map((word) => [word.id, word]));
+  const escaped = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const leaks = [];
+  for (const problem of problems) {
+    if (problem.type !== "cloze") continue;
+    const word = byId.get(problem.wordId);
+    if (!word) continue;
+    for (const form of inflectionsOf(word.word)) {
+      // Very short forms produce false positives against ordinary text.
+      if (form.length < 3) continue;
+      if (new RegExp(`\\b${escaped(form)}\\b`, "i").test(problem.prompt)) {
+        leaks.push(`${problem.id}: ${problem.prompt}`);
+        break;
+      }
+    }
+  }
+  assert.deepEqual(leaks.slice(0, 5), [], "cloze questions that give away the answer");
+});
+
+test("a word used twice in one sentence gets a gap in both places", () => {
+  const twice = blankExample(
+    "The poem had three stanzas; each stanza contained four lines.",
+    "stanza",
+  );
+  assert.equal(
+    twice?.split(CLOZE_BLANK).length - 1,
+    2,
+    "both occurrences must be blanked",
+  );
+  assert.ok(!/stanza/i.test(twice ?? ""), "no form may survive");
+});
+
+test("blanking keeps the sentence readable", () => {
+  const out = blankExample("She walked slowly towards the gates.", "walk");
+  assert.equal(out, `She ${CLOZE_BLANK} slowly towards the gates.`);
+  // A word that is not there yields no question rather than an invented one.
+  assert.equal(blankExample("Nothing here matches.", "quaff"), null);
+});
