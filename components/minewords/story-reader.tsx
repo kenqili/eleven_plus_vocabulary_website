@@ -16,6 +16,7 @@ import type { Catalog } from "./story-library";
 import { useReadingClock } from "./use-reading-clock";
 import DailyMission from "./daily-mission";
 import { useReadingBookmark } from "./use-reading-bookmark";
+import { useEventSound } from "@/lib/theme/use-sounds";
 
 function Reading({ story }: { story: StoryDetail }) {
   const [progress, setProgress] = useState(story.progress);
@@ -27,6 +28,9 @@ function Reading({ story }: { story: StoryDetail }) {
   const prose = useRef<HTMLElement>(null);
   const bookmark = useReadingBookmark(story, prose);
   const [finishedVisit, setFinishedVisit] = useState(false);
+  // Finishing a story is the biggest moment in the app, so it gets the sound
+  // that says so, once per story rather than on every render.
+  useEventSound(finishedVisit ? story.id : null, "reward");
   const savedLevel = useRef(false);
   const [catalog, setCatalog] = useState<Catalog | null>(null);
   useEffect(() => {

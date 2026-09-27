@@ -456,6 +456,9 @@ export async function answerQuestion(
       },
       level,
     ),
+    // Only the answer that finishes a word reports it, so the app can mark the
+    // moment rather than congratulating a child on every answer from then on.
+    newlyMastered: paidMastery,
     type: attempt.question_type,
     answer,
     correct: Boolean(saved?.is_correct),

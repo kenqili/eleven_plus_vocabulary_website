@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { BookOpen, Menu, UserRound, X } from "lucide-react";
+import ThemePicker from "./theme-picker";
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const toggle = useRef<HTMLButtonElement>(null);
@@ -70,6 +71,7 @@ export default function Header() {
         <Link className="account-link" href="/account">
           <UserRound size={18} /> Your account
         </Link>
+        <ThemePicker />
       </nav>
     </header>
   );

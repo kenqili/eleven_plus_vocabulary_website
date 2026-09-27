@@ -23,6 +23,7 @@ import Header from "./header";
 import ProgressPanel from "./progress-panel";
 import DailyMission from "./daily-mission";
 import WordExplanation from "./word-explanation";
+import { useAnswerSound } from "@/lib/theme/use-sounds";
 import { useChallenge } from "./use-challenge";
 const levelLabel = (difficulty: number) =>
   difficulty in DIFFICULTY_LEVELS
@@ -35,6 +36,18 @@ export default function Challenge() {
   const mastery = feedback?.mastery ?? question?.mastery;
   const questionLevel =
     question?.difficulty !== undefined ? levelLabel(question.difficulty) : "";
+  // The answer sound depends on more than right and wrong: revealing is not a
+  // failure, and mastering a word is a bigger moment than getting one right.
+  useAnswerSound(
+    feedback
+      ? {
+          correct: feedback.correct,
+          skipped: feedback.skipped,
+          streak: feedback.award?.streak,
+          mastered: feedback.newlyMastered,
+        }
+      : null,
+  );
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (event.altKey || event.ctrlKey || event.metaKey) return;

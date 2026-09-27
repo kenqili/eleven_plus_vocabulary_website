@@ -394,6 +394,7 @@ export function useChallenge() {
             ...current,
             feedback: {
               mastery: masteryProgress(mastery, difficulty ?? 1),
+              newlyMastered: justMastered,
               type: word.type,
               answer: word.answer,
               correct,

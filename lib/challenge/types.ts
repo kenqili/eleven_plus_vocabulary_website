@@ -34,6 +34,8 @@ export type Stats = {
 };
 export type Feedback = {
   mastery?: import("./mastery").MasteryProgress;
+  /** True only on the answer that finished a word, so the moment is distinguishable. */
+  newlyMastered?: boolean;
   award?: import("./rewards").Award;
   type: QuestionType;
   answer: string;

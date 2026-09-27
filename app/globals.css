@@ -4250,3 +4250,108 @@ hr {
     -apple-system, "Segoe UI", sans-serif;
   --font-read: "Iowan Old Style", Georgia, "Times New Roman", serif;
 }
+
+/* Theme picker */
+.theme-picker {
+  position: relative;
+  flex-shrink: 0;
+}
+.theme-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink-2);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.theme-button:hover {
+  background: var(--surface-3);
+  color: var(--ink);
+}
+.theme-button:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+.theme-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 60;
+  width: min(310px, calc(100vw - 32px));
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: 0 12px 30px var(--shadow-3);
+}
+.theme-menu-note {
+  margin: 4px 8px 8px;
+  color: var(--ink-3);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.theme-option {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  padding: 10px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.theme-option:hover {
+  background: var(--surface-3);
+}
+.theme-option:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: -2px;
+}
+.theme-swatch {
+  display: flex;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+.theme-swatch > span {
+  flex: 1;
+}
+.theme-option-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.theme-option-text strong {
+  font-size: 14px;
+}
+.theme-option-text small {
+  color: var(--ink-3);
+  font-size: 12px;
+  line-height: 1.4;
+}
+.theme-check {
+  flex-shrink: 0;
+  margin-left: auto;
+  color: var(--ink-brand-2);
+}
+@media (max-width: 720px) {
+  .theme-menu {
+    right: auto;
+    left: 0;
+  }
+}
