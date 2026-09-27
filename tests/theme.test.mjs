@@ -351,3 +351,69 @@ test("every offered theme has a readable swatch and real styles", () => {
       assert.match(colour, /^#[0-9a-f]{6}$/i, `${theme.id}: ${colour}`);
   }
 });
+
+test("every animation added for a reward is switched off for less motion", () => {
+  // A child with a vestibular disorder, or a phone set to reduce motion, gets
+  // the same information with no movement. That is a promise about the whole
+  // stylesheet rather than one component, so it is checked against the whole
+  // stylesheet: any rule that animates must have a name that a
+  // prefers-reduced-motion block can switch off.
+  const css = readFileSync(
+    new URL("../app/globals.css", import.meta.url),
+    "utf8",
+  );
+  // The global rule at the top of the file is the backstop and it covers
+  // everything. What must not exist is an animation on a property that would
+  // still read as movement: a long, looping one, or an infinite one.
+  const animations = [...css.matchAll(/animation:\s*([^;]+);/g)].map((m) => m[1]);
+  assert.ok(animations.length > 10, "expected to find the animations at all");
+  for (const animation of animations) {
+    assert.ok(
+      !/infinite/.test(animation) || /flame-breathe/.test(animation),
+      `a looping animation that nothing switches off: "${animation}"`,
+    );
+  }
+  // The looping one, the only one that is, must be named in a reduced-motion
+  // block, because an infinite animation is the one a child cannot sit through.
+  const reduced = [...css.matchAll(/@media \(prefers-reduced-motion: reduce\) \{/g)];
+  assert.ok(reduced.length > 3, "expected several reduced-motion blocks");
+  const mentionsLoop = reduced.some((block) => {
+    // The block that follows this one, up to the next @media or the end.
+    const start = block.index + block[0].length;
+    const rest = css.slice(start);
+    const end = rest.search(/\n@media|\n}/);
+    return /flame-breathe|animation: none/.test(rest.slice(0, end === -1 ? 600 : end));
+  });
+  assert.ok(mentionsLoop, "the looping animation is not switched off anywhere");
+});
+
+test("the burst radiates in eight directions, not one", () => {
+  // An animation overrides an element's own transform, so a rotation set on
+  // the element is silently ignored and every tick fires the same way. This is
+  // the kind of thing that looks fine in a static screenshot and is wrong in
+  // motion, so the rotation has to travel through a custom property.
+  const css = readFileSync(
+    new URL("../app/globals.css", import.meta.url),
+    "utf8",
+  );
+  const keyframes = css.slice(
+    css.indexOf("@keyframes coach-tick"),
+    css.indexOf("@keyframes coach-tick") + 400,
+  );
+  assert.ok(
+    keyframes.includes("--tick-rotation"),
+    "the burst keyframes never read the rotation, so every tick fires the same way",
+  );
+  const source = readFileSync(
+    new URL("../components/minewords/coach-note.tsx", import.meta.url),
+    "utf8",
+  );
+  assert.ok(
+    source.includes("--tick-rotation"),
+    "the component never sets the rotation the keyframes read",
+  );
+  assert.ok(
+    /0, 45, 90, 135, 180, 225, 270, 315/.test(source),
+    "expected eight evenly spread ticks",
+  );
+});

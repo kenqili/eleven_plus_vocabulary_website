@@ -46,6 +46,18 @@ export type Feedback = {
   mastery?: import("./mastery").MasteryProgress;
   /** True only on the answer that finished a word, so the moment is distinguishable. */
   newlyMastered?: boolean;
+  /**
+   * How well the child actually did, which is not the same as being right. A
+   * right answer inside the reading window reads as a reflex rather than
+   * recall, and the wording after it should not claim otherwise.
+   */
+  evidence?: import("./mastery").Evidence;
+  /**
+   * Whole days since this word was last shown, or absent if it is new. The
+   * spaced-retrieval fact is the one a child can feel working, so the app says
+   * it out loud when there is one.
+   */
+  daysSince?: number;
   /** The plain-language help for this word, worked out on the server. */
   help?: string;
   /**

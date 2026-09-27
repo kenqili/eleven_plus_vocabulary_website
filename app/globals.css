@@ -366,6 +366,42 @@ h1 {
   box-shadow: 0 6px 25px var(--shadow-1);
   border-top: 4px solid var(--line-brand-2);
 }
+/* A new question arrives rather than being swapped under the child. Keyed on
+   the question id in the component, so it plays once per question and not on
+   every re-render. */
+.question-entering {
+  animation: question-in 300ms cubic-bezier(0.2, 0.8, 0.3, 1) both;
+}
+@keyframes question-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* The options follow the card in, a little apart, so the eye is led down the
+   list the way it is read. Staggered rather than delayed together, and short
+   enough that a child who answers fast never waits for it. */
+.answers-entering .answer {
+  animation: option-in 260ms cubic-bezier(0.2, 0.8, 0.3, 1) both;
+}
+.answers-entering .answer:nth-child(1) { animation-delay: 40ms; }
+.answers-entering .answer:nth-child(2) { animation-delay: 80ms; }
+.answers-entering .answer:nth-child(3) { animation-delay: 120ms; }
+.answers-entering .answer:nth-child(4) { animation-delay: 160ms; }
+@keyframes option-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 .question-meta {
   display: flex;
   justify-content: space-between;
@@ -5199,5 +5235,348 @@ hr {
   }
   .info-figures {
     grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   What the app says after an answer.
+
+   Each moment is a different kind of thing, not a different shade of the same
+   thing, because a child should be able to tell them apart before reading. The
+   three that are worth marking get a burst; the rest arrive quietly. A miss is
+   the quietest of all: a burst on a wrong answer would be the app celebrating
+   the child being stuck.
+
+   The entrance replays per answer because the component's key changes with the
+   attempt, and every duration here collapses to nothing under the global
+   prefers-reduced-motion rule at the top of this file.
+   --------------------------------------------------------------------------- */
+.coach {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 18px;
+  margin-bottom: 4px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  animation: coach-in 280ms cubic-bezier(0.2, 0.8, 0.3, 1) both;
+}
+@keyframes coach-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.coach-mark {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--surface-3);
+  color: var(--ink-2);
+  animation: coach-mark-in 360ms cubic-bezier(0.2, 1.3, 0.4, 1) both;
+}
+@keyframes coach-mark-in {
+  from {
+    opacity: 0;
+    transform: scale(0.5) rotate(-14deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+.coach-body {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.coach-label {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.coach-line {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.45;
+  color: var(--ink);
+}
+.coach-detail {
+  margin: 5px 0 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--ink-3);
+}
+
+/* One moment, one treatment. The mark's colour comes from the same token group
+   the rest of the app uses for that kind of thing, so a theme change carries
+   these too. */
+.coach-mastered,
+.coach-hard-won {
+  border-color: var(--line-amber-3);
+  background: var(--surface-gold);
+}
+.coach-mastered .coach-mark,
+.coach-hard-won .coach-mark {
+  background: var(--surface-cream);
+  color: var(--ink-amber-5);
+}
+.coach-mastered .coach-line,
+.coach-hard-won .coach-line {
+  color: var(--ink-amber-deep);
+}
+.coach-streak {
+  border-color: var(--line-amber-2);
+  background: var(--surface-cream);
+}
+.coach-streak .coach-mark {
+  background: var(--surface-gold);
+  color: var(--ink-amber-5);
+}
+.coach-streak .coach-line {
+  color: var(--ink-amber-deep);
+}
+.coach-first-meeting {
+  border-color: var(--line-teal);
+  background: var(--surface-brand-2);
+}
+.coach-first-meeting .coach-mark {
+  background: var(--surface-ice);
+  color: var(--ink-navy);
+}
+.coach-first-meeting .coach-line {
+  color: var(--ink-navy);
+}
+.coach-returning {
+  border-color: var(--line-brand-2);
+  background: var(--surface-3);
+}
+.coach-returning .coach-mark {
+  background: var(--surface-brand-3);
+  color: var(--ink-brand-2);
+}
+.coach-clean-recall,
+.coach-steady {
+  border-color: var(--line-success);
+  background: var(--surface-success);
+}
+.coach-clean-recall .coach-mark,
+.coach-steady .coach-mark {
+  background: var(--surface-success-2);
+  color: var(--ink-success);
+}
+.coach-clean-recall .coach-line,
+.coach-steady .coach-line {
+  color: var(--ink-success-3);
+}
+/* Being helped is not a lesser answer, so it is not styled as one. It gets the
+   reading clue does, and is plainly named. */
+.coach-assisted {
+  border-color: var(--line-brand-2);
+  background: var(--surface-3);
+}
+.coach-assisted .coach-mark {
+  background: var(--surface-brand-2);
+  color: var(--ink-brand-2);
+}
+.coach-assisted .coach-line {
+  color: var(--ink-2);
+}
+/* A miss is plain. It says what happened and where the word has gone, and it
+   does not apologise, console, or pretend the answer was nearly right. */
+.coach-missed,
+.coach-revealed {
+  border-color: var(--line-2);
+  background: var(--surface-2);
+}
+.coach-missed .coach-mark,
+.coach-revealed .coach-mark {
+  background: var(--surface-3);
+  color: var(--ink-3);
+}
+.coach-missed .coach-line,
+.coach-revealed .coach-line {
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+/* The burst: eight short-lived ticks radiating from the mark. On the three
+   moments worth marking only, and not at all under reduced motion. */
+.coach-burst {
+  position: absolute;
+  top: 36px;
+  left: 36px;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.coach-burst span {
+  position: absolute;
+  top: -6px;
+  left: 2px;
+  width: 4px;
+  height: 12px;
+  margin: 0 0 0 -2px;
+  border-radius: 2px;
+  background: currentColor;
+  color: var(--ink-brand-2);
+  transform-origin: 2px 2px;
+  animation: coach-tick 720ms ease-out both;
+}
+.coach-mastered .coach-burst span,
+.coach-hard-won .coach-burst span {
+  color: var(--ink-amber-5);
+}
+.coach-streak .coach-burst span {
+  color: var(--ink-success-2);
+}
+@keyframes coach-tick {
+  0% {
+    opacity: 0.9;
+    transform: rotate(var(--tick-rotation, 0deg)) translateY(4px) scaleY(0.4);
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(var(--tick-rotation, 0deg)) translateY(30px) scaleY(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .coach,
+  .coach-mark {
+    animation: none;
+  }
+  .coach-burst {
+    display: none;
+  }
+}
+@media (max-width: 560px) {
+  .coach {
+    gap: 11px;
+    padding: 13px 14px;
+  }
+  .coach-mark {
+    width: 34px;
+    height: 34px;
+  }
+  .coach-line {
+    font-size: 1rem;
+  }
+  .coach-detail {
+    font-size: 0.8rem;
+  }
+}
+
+/* The mastery bar fills rather than jumping, because the number beside it is the
+   child's own and the movement is what makes a single answer feel like it did
+   something. Slow enough to follow, quick enough not to hold up the next
+   question. */
+.progress-panel [data-slot="progress-indicator"] {
+  transition: transform 700ms cubic-bezier(0.3, 0.8, 0.3, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .progress-panel [data-slot="progress-indicator"] {
+    transition: none;
+  }
+}
+
+/* The streak flame breathes while the run is live, and only then. A flame that
+   animates at zero is a decoration pretending to be a state. */
+.streak-summary [data-lucide="flame"],
+.streak-summary .lucide-flame {
+  color: var(--ink-amber-5);
+  transform-origin: 50% 85%;
+}
+.streak-live .streak-summary .lucide-flame {
+  animation: flame-breathe 2.4s ease-in-out infinite;
+}
+@keyframes flame-breathe {
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+  35% {
+    transform: scale(1.12) rotate(-4deg);
+  }
+  65% {
+    transform: scale(0.97) rotate(3deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .streak-live .streak-summary .lucide-flame {
+    animation: none;
+  }
+}
+
+/* The tick markers fill one at a time as the run grows, so the bonus is a thing
+   the child watches approaching rather than a rule they are told about. */
+.streak-markers span.filled {
+  animation: marker-land 340ms cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+@keyframes marker-land {
+  from {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .streak-markers span.filled {
+    animation: none;
+  }
+}
+
+/* The mastered count ticks up when a word is retired, and only then. */
+.mastered strong {
+  display: inline-block;
+}
+/* The animation sets a colour, which needs a transition or it snaps. */
+.mastered strong {
+  transition: color 200ms ease-out;
+}
+.mastered-count-bump {
+  animation: count-bump 460ms cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+@keyframes count-bump {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.18);
+    color: var(--ink-amber-deep);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mastered-count-bump {
+    animation: none;
+  }
+}
+
+/* The question card and its options, above, collapse to nothing under the
+   global reduced-motion rule. Named here as well so the intent is readable next
+   to the rules that would otherwise be left to that one block. */
+@media (prefers-reduced-motion: reduce) {
+  .question-entering,
+  .answers-entering .answer {
+    animation: none;
   }
 }

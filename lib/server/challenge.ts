@@ -68,6 +68,22 @@ export async function starterBand(
   return easy.length >= 8 ? easy : null;
 }
 
+/**
+ * Whole days between the last day this word was shown and today, or undefined
+ * if it has not been shown before.
+ *
+ * Counted in reporting days rather than 24-hour blocks, so "yesterday" means
+ * yesterday to the child rather than whatever hour the session started.
+ */
+function daysSince(lastSeen: string | null | undefined): number | undefined {
+  if (!lastSeen) return undefined;
+  const then = Date.parse(`${lastSeen}T00:00:00Z`);
+  const now = Date.parse(`${localDay(Date.now())}T00:00:00Z`);
+  if (!Number.isFinite(then) || !Number.isFinite(now)) return undefined;
+  const days = Math.round((now - then) / 86400000);
+  return days > 0 ? days : undefined;
+}
+
 /** Resolves a lower-cased word to its bank entry, for the wrong-answer gloss. */
 const glossLookup = (word: string) => {
   const entry = words.find((candidate) => candidate.word.toLowerCase() === word);
@@ -93,6 +109,8 @@ type WordProgress = {
   word_id: string;
   correct: number;
   seen: number;
+  /** The reporting day this word was last shown, so feedback can say how long ago. */
+  last_seen: string | null;
   retry_at: number | null;
 };
 export async function statsFor(
@@ -334,9 +352,9 @@ export async function nextQuestion(
         ),
       db
         .prepare(
-          "INSERT INTO progress (user_id,word_id,correct,seen,retry_at) VALUES (?,?,0,1,NULL) ON CONFLICT(user_id,word_id) DO UPDATE SET seen=seen+1,retry_at=NULL",
+          "INSERT INTO progress (user_id,word_id,correct,seen,last_seen,retry_at) VALUES (?,?,0,1,?,NULL) ON CONFLICT(user_id,word_id) DO UPDATE SET seen=seen+1,last_seen=excluded.last_seen,retry_at=NULL",
         )
-        .bind(userId, word.id),
+        .bind(userId, word.id, localDay(Date.now())),
     ]);
   } catch (error) {
     // A second tab may have created a pending question concurrently.
@@ -361,6 +379,7 @@ export async function nextQuestion(
     run: prior?.run ?? 0,
     recalls: prior?.recalls ?? 0,
     seen: (prior?.seen || 0) + 1,
+    last_seen: localDay(Date.now()),
     retry_at: null,
   });
 }
@@ -433,7 +452,7 @@ export async function answerQuestion(
   const prior =
     (await db
       .prepare(
-        "SELECT correct,run,recalls,mastered FROM progress WHERE user_id=? AND word_id=?",
+        "SELECT correct,run,recalls,mastered,last_seen FROM progress WHERE user_id=? AND word_id=?",
       )
       .bind(userId, word.id)
       .first<WordProgress>()) ?? initialMastery;
@@ -517,7 +536,7 @@ export async function answerQuestion(
   const progress =
     (await db
       .prepare(
-        "SELECT correct,run,recalls,mastered FROM progress WHERE user_id=? AND word_id=?",
+        "SELECT correct,run,recalls,mastered,last_seen FROM progress WHERE user_id=? AND word_id=?",
       )
       .bind(userId, word.id)
       .first<WordProgress>()) ?? prior;
@@ -534,6 +553,14 @@ export async function answerQuestion(
     // Only the answer that finishes a word reports it, so the app can mark the
     // moment rather than congratulating a child on every answer from then on.
     newlyMastered: paidMastery,
+    // How well the child actually did, as opposed to whether the answer was
+    // right. The feedback wording is built from this, so "correct" and
+    // "recalled" never get conflated: a child who got it right by reflex is
+    // not told they knew it.
+    evidence,
+    // How long ago this word was last shown, in whole days, so the app can
+    // say the thing that makes spacing visible: that it came back and stayed.
+    daysSince: daysSince((prior as WordProgress | undefined)?.last_seen),
     // The plain-language help travels with the answer, so the learning-help
     // data never has to be downloaded by the browser.
     help: storyMeaning(word),

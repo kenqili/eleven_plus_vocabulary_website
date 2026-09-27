@@ -175,6 +175,17 @@ export const progress = sqliteTable(
     /** Superseded by run/recalls; kept so existing deployments never rewrite the table. */
     fastStreak: integer("fast_streak").notNull().default(0),
     seen: integer("seen").notNull().default(0),
+    /**
+     * The reporting day this word was last shown, as a YYYY-MM-DD string.
+     *
+     * The app can already say "that is your fifth look at this word", which is
+     * feedback the child can check. This adds the half that matters more: how
+     * long ago it was. "You last saw this eleven days ago and it stayed" is the
+     * only line in the app that shows a child that spacing out is working, and
+     * spacing out is the entire method. The attempts table cannot be used
+     * instead, because retired attempts are pruned.
+     */
+    lastSeen: text("last_seen"),
     retryAt: integer("retry_at"),
   },
   (t) => [primaryKey({ columns: [t.userId, t.wordId] })],

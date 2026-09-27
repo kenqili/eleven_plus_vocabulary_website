@@ -425,6 +425,7 @@ export function useChallenge() {
               mastery: masteryProgress(mastery, difficulty ?? 1),
               newlyMastered: justMastered,
               attemptId: `demo-${demoIndex.current}-${demoIndex.current}-${demoAttempt.current++}`,
+              evidence,
               help: word.help,
               chosen: demoChosen(word, selected, word.answer),
               type: word.type,
@@ -443,6 +444,7 @@ export function useChallenge() {
           return {
             help: word.help,
             attemptId: `demo-return-${demoAttempt.current++}`,
+            evidence,
             chosen: demoChosen(word, selected, word.answer),
             type: word.type,
             answer: word.answer,

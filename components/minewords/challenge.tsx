@@ -22,6 +22,7 @@ import Header from "./header";
 import ProgressPanel from "./progress-panel";
 import DailyMission from "./daily-mission";
 import WordExplanation from "./word-explanation";
+import { CoachNote } from "./coach-note";
 import {
   NEXT_DELAYS,
   NEXT_DELAY_LABELS,
@@ -41,6 +42,9 @@ export default function Challenge() {
   const [clueQuestion, setClueQuestion] = useState<string | null>(null);
   const { question, feedback, stats, demo, busy, error } = study;
   const mastery = feedback?.mastery ?? question?.mastery;
+  // The run the child just extended, which is the one the coach names. Before
+  // an answer there is nothing to say about a run that has not happened.
+  const streak = feedback?.award?.currentStreak ?? 0;
   const questionLevel =
     question?.difficulty !== undefined ? levelLabel(question.difficulty) : "";
   // The answer sound depends on more than right and wrong: revealing is not a
@@ -209,7 +213,10 @@ export default function Challenge() {
               </span>
             </div>
             <article
-              className={`question-card question-${question?.type || "def"} ${feedback ? "question-answered" : ""}`}
+              className={`question-card question-${question?.type || "def"} ${feedback ? "question-answered" : ""} ${question ? "question-entering" : ""}`}
+              // Keyed on the question, so the entrance plays once per question
+              // rather than on every re-render of the same one.
+              key={question?.id || "empty"}
               aria-busy={busy}
             >
               {question ? (
@@ -270,7 +277,7 @@ export default function Challenge() {
                       )}
                     </div>
                   )}
-                  <div className="answers">
+                  <div className={`answers${!feedback ? " answers-entering" : ""}`}>
                     {question.choices.map((choice, i) => (
                       <button
                         key={`${question.id}-${i}`}
@@ -301,13 +308,16 @@ export default function Challenge() {
                   </p>
                   {feedback && (
                     <div className="feedback" role="status">
-                      <strong>
-                        {feedback.correct
-                          ? "Correct. Nicely done!"
-                          : feedback.skipped
-                            ? "Take a moment to learn this one."
-                            : "Not quite. Let’s learn this one."}
-                      </strong>
+                      {/* What the app says, built from this child's own record on
+                          this word rather than from a fixed list of praise. */}
+                      <CoachNote
+                        feedback={feedback}
+                        streak={streak}
+                        word={question.word}
+                        seen={question.seen}
+                        correctCount={question.correctCount}
+                        difficulty={question.difficulty}
+                      />
                       {!!feedback.award?.total && (
                         <div className="reward-notice" key={question.id}>
                           <strong>

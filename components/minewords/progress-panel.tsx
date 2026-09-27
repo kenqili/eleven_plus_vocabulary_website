@@ -4,6 +4,7 @@ import { Flame, GraduationCap, Sparkles } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import type { Stats } from "@/lib/challenge/types";
 import { emptyPeriod, studyDuration } from "@/lib/challenge/rewards";
+import { BumpingNumber } from "./bumping-number";
 export default function ProgressPanel({
   stats,
   demo,
@@ -46,7 +47,7 @@ export default function ProgressPanel({
             <div className="credit-balance">
               <strong>{stats.rewards?.balance || 0}</strong> credits
             </div>
-            <div className="streak-summary">
+            <div className={`streak-summary${streak > 0 ? " streak-live" : ""}`}>
               <Flame size={18} />
               <span><strong>{streak}</strong> correct in a row</span>
               <span className="streak-best">Best {stats.rewards?.bestStreak || 0}</span>
@@ -71,7 +72,7 @@ export default function ProgressPanel({
           <h3>My word adventure</h3>
         </div>
         <div className="mastered">
-          <strong>{stats.mastered}</strong>
+          <BumpingNumber value={stats.mastered} />
           <span>words you know</span>
         </div>
         <Progress
