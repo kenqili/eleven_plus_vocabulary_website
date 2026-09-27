@@ -139,6 +139,40 @@ freshness window, and it is the one route that deliberately does **not** check
 the `Origin` header, because Stripe is not a browser. Nothing else in the API is
 exempt.
 
+### 7. The audio, and the clone problem
+
+`public/audio/` is gitignored and **nothing in it is committed**: 2,371 files,
+169 MB. That is the right decision for a repository, and it means **a fresh
+clone builds a site with no audio at all.** The Listen controls then show "This
+story is still being recorded" rather than failing loudly, so this is easy to
+miss and easy to ship.
+
+Three ways to handle it, in order of preference:
+
+**a) Keep the clips in object storage and point the manifest at it.** The app
+fetches a `manifest.json` at runtime, so if the manifest's URLs can be absolute
+this needs no rebuild when the clips move. Best long-term answer, and it also
+takes 169 MB off every deploy.
+
+**b) Store the clips in CI as a build artefact.** Generate once, upload, restore
+per build. Needs `AZURE_SPEECH_KEY` in the CI secret store, or the artefact
+store alone if you only ever restore.
+
+**c) Generate them in CI before the build.** Needs the Azure keys. The
+generators skip work that is already current, so it is not slow on every build,
+but it is 169 MB of generation on the first one.
+
+Whichever you pick, run the validators in CI or you will not find out:
+
+```sh
+npm run audio:validate
+npm run audio:stories:validate
+```
+
+Both exit non-zero when a clip is missing or no longer matches its source. A
+story clip counts as stale when the prose in `data/stories/level-*.txt` has
+changed, so re-run the generator after editing any story.
+
 ---
 
 ## Deploying
@@ -201,6 +235,10 @@ Then, by hand, in a browser:
 - A saved dark theme still applies before the first paint, with no white flash.
 - Sign in, sign out, change password, sign out everywhere.
 - The print sheet and the A4 export.
+- **Listen works on a word and on a story.** The audio is not in the repository,
+  so a deploy built from a fresh clone has none of it, and the Listen control
+  degrades to a recording message rather than an error. This is the single
+  easiest thing in this runbook to ship broken.
 - The Stripe checkout, on a real price, ending in a cancelled payment. **Do not
   complete a real payment until you have checked the webhook log.**
 
