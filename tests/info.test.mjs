@@ -171,3 +171,54 @@ test("callers cannot mutate the shared data", () => {
   assert.ok(!(second.sections[0].table?.rows ?? []).flat().includes("mutation-test"));
   assert.ok(!(second.sections[0].points ?? []).includes("mutation-test"));
 });
+
+test("every contents link points at a section that exists", () => {
+  // The contents list is built from the same groups as the body, so a link that
+  // goes nowhere means the two were generated differently. That is the whole
+  // failure mode of a hand-maintained table of contents, and it is invisible
+  // until somebody clicks it.
+  const ids = new Set(infoSectionIds());
+  for (const group of infoGroups())
+    for (const section of group.sections) {
+      const href = `#${section.id}`;
+      assert.ok(ids.has(section.id), `contents links to ${href}, which has no section`);
+    }
+});
+
+test("the page renders without an empty list or a pointless table", () => {
+  // Each of these renders a visible element. An empty one is a stray bullet or
+  // an empty table border, which reads as a mistake even though it is only
+  // missing content.
+  for (const section of page.sections) {
+    if (section.points !== undefined)
+      assert.ok(section.points.length > 0, `${section.id}: renders an empty list`);
+    if (section.figures !== undefined)
+      assert.ok(section.figures.length > 0, `${section.id}: renders empty figures`);
+    for (const figure of section.figures ?? [])
+      assert.ok(
+        figure.label.trim() && figure.value.trim(),
+        `${section.id}: a figure with no label or no value`,
+      );
+    if (section.sources !== undefined)
+      assert.ok(section.sources.length > 0, `${section.id}: renders an empty disclosure`);
+  }
+});
+
+test("the standfirst claims nothing the sources cannot back", () => {
+  // It is the first thing a parent reads and it is the line they judge the
+  // page by, so it is held to the same standard as the body.
+  assert.ok(
+    !/\bguarantee/i.test(page.standfirst),
+    "the standfirst promises something",
+  );
+  assert.ok(
+    !/\b(100|one hundred) free\b/i.test(page.standfirst),
+    "the standfirst repeats the unsubstantiated free-papers claim",
+  );
+  // The page shows a "checked against the exam providers" line, but only when
+  // there is a source to have checked against, so the two can never disagree.
+  assert.ok(
+    page.sources.length > 0,
+    "the page has no sources, so it must not claim to have been checked against any",
+  );
+});
