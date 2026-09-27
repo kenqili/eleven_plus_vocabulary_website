@@ -5,7 +5,11 @@
       "title": "What the 11+ actually involves",
       "summary": "There is no single 11+ exam in the UK. Different areas and schools use different providers, papers and combinations of subjects, so the first job is to work out exactly what your child will sit.",
       "readMinutes": 7,
-      "tags": ["tests", "providers", "admissions"],
+      "tags": [
+        "tests",
+        "providers",
+        "admissions"
+      ],
       "sections": [
         {
           "heading": "There is no single 11+",
@@ -86,7 +90,11 @@
       "title": "The four parts of most 11+ tests",
       "summary": "Most 11+ tests draw on four components: English, verbal reasoning, non-verbal reasoning and mathematics. Here is what each one actually measures and the question types your child will meet.",
       "readMinutes": 8,
-      "tags": ["components", "question-types", "tests"],
+      "tags": [
+        "components",
+        "question-types",
+        "tests"
+      ],
       "sections": [
         {
           "heading": "Not every test has all four",
@@ -167,7 +175,11 @@
       "title": "Building vocabulary that actually helps",
       "summary": "Vocabulary breadth is one of the strongest predictors of reading comprehension, and verbal reasoning depends on knowing words. Here is why reading widely beats word lists, and what the research says about how many words children need.",
       "readMinutes": 8,
-      "tags": ["vocabulary", "reading", "revision"],
+      "tags": [
+        "vocabulary",
+        "reading",
+        "revision"
+      ],
       "sections": [
         {
           "heading": "Why vocabulary carries so much weight",
@@ -247,7 +259,11 @@
       "title": "A realistic preparation timeline",
       "summary": "A calm, year-by-year plan from Year 3 to the exam year, and the reason building reading habits early matters more than long sessions near the deadline.",
       "readMinutes": 7,
-      "tags": ["timeline", "planning", "year-groups"],
+      "tags": [
+        "timeline",
+        "planning",
+        "year-groups"
+      ],
       "sections": [
         {
           "heading": "Year 3: build the reading habit",
@@ -327,7 +343,11 @@
       "title": "How to practise in a way that helps",
       "summary": "Why past papers matter, when to use a clock, how to review properly, and why mixing question types beats doing more of the same.",
       "readMinutes": 8,
-      "tags": ["practice", "technique", "revision"],
+      "tags": [
+        "practice",
+        "technique",
+        "revision"
+      ],
       "sections": [
         {
           "heading": "Real papers, and why they matter",
@@ -407,7 +427,11 @@
       "title": "Common mistakes parents make",
       "summary": "Six widely repeated approaches that tend to backfire, from starting too late to over-focusing on maths, and what to do instead of each one.",
       "readMinutes": 7,
-      "tags": ["advice", "mistakes", "parents"],
+      "tags": [
+        "advice",
+        "mistakes",
+        "parents"
+      ],
       "sections": [
         {
           "heading": "Starting too late",
@@ -494,7 +518,11 @@
       "title": "Managing pressure, at home and on the day",
       "summary": "Practical ways to keep the final months manageable: proportionate pressure, avoiding comparison, protecting sleep, handling nerves and knowing when a child needs adjustments.",
       "readMinutes": 8,
-      "tags": ["wellbeing", "sleep", "exam-day"],
+      "tags": [
+        "wellbeing",
+        "sleep",
+        "exam-day"
+      ],
       "sections": [
         {
           "heading": "Some pressure, but not too much",
@@ -574,7 +602,11 @@
       "title": "A plain-English glossary of 11+ jargon",
       "summary": "What the acronyms and phrases used by schools, tutors and exam boards actually mean, including one term that has nothing to do with the 11+ at all.",
       "readMinutes": 6,
-      "tags": ["glossary", "jargon", "reference"],
+      "tags": [
+        "glossary",
+        "jargon",
+        "reference"
+      ],
       "sections": [
         {
           "heading": "The components",
@@ -647,6 +679,158 @@
           "title": "ISEB Pre-Tests: information for families",
           "publisher": "Independent Schools Examinations Board (ISEB)",
           "url": "https://www.iseb.co.uk/assessments/common-pre-tests/for-families/"
+        }
+      ]
+    },
+    {
+      "slug": "tailoring-practice-to-your-child",
+      "title": "Tailoring practice to your child",
+      "summary": "A practice app that teaches every word to every child will always be wrong for somebody. How to set aside what does not suit your child, and add the words that matter to them.",
+      "readMinutes": 7,
+      "tags": [
+        "parents",
+        "practice",
+        "technique"
+      ],
+      "keyPoints": [
+        "Words that are too easy are not harmless. They teach a child that effort is unnecessary.",
+        "Setting a word aside hides it from the word list and from practice, and bringing it back keeps the progress already recorded.",
+        "Add the words your child is actually reading, rather than words you think they should know.",
+        "A word you add needs only three things: the word, what it means, and a sentence showing it used.",
+        "Adding a word the app already teaches is refused, so the same word never appears twice with two different definitions."
+      ],
+      "sections": [
+        {
+          "heading": "Why a fixed list cannot be right for everyone",
+          "body": [
+            "Vocabulary size between children of the same age varies enormously. Published estimates of how many words an adult knows differ by more than a factor of five depending on how a word is counted, and the same variation shows up between children well before the 11+. A list calibrated to the middle of that range will be simultaneously too easy for some children and too hard for others.",
+            "This is not an argument against having a large list. It is an argument for having a large list and a way to narrow it. The goal is for a child to spend their practice time on the words that will actually move their understanding, and to avoid the two failure modes at either end: boredom on words they mastered months ago, and silence on words that are too hard to engage with at all.",
+            "The evidence on parental engagement points the same way. What helps a child at home is not the quantity of what a parent does but whether it is responsive to that particular child, which implies giving the parent some control over what is on offer."
+          ]
+        },
+        {
+          "heading": "Setting words aside",
+          "body": [
+            "Some words do not suit a given child. A word may be far too common to be worth practising, or so specialised that it appears once in a chapter and never again. Others may be perfectly pitched on paper but cause a difficulty, which is useful information rather than a reason to remove them. The sensible default is to set aside only what is clearly out of range, and to use the levels instead for anything that is merely hard.",
+            "Setting a word aside removes it from the word list and stops it appearing in practice. The progress already recorded against it is kept rather than discarded, so a word set aside over the summer and brought back in September resumes where it left off. That matters because progress in this kind of practice is slow and cumulative, and resetting it would be a real cost to the child for a decision made for administrative reasons.",
+            "It is worth resisting the urge to set aside a great many words. A list that has been narrowed to a few dozen entries stops being preparation and becomes a workbook. Set aside what does not fit, add what is missing, and then leave the rest of the list alone."
+          ]
+        },
+        {
+          "heading": "Adding your own words",
+          "body": [
+            "The words worth adding are the ones a child meets in their own reading. A word that appears in a book they are enjoying, in a topic they care about, or in something the family talks about is worth far more than an equally difficult word from a list, because it has somewhere to be used. Adding words from a child's actual reading is one of the more reliable ways to make practice feel relevant rather than like more schoolwork.",
+            "Adding a word takes three things: the word itself, what it means, and a sentence showing it being used. That is deliberately all. Synonyms and antonyms are not collected for a word you add, and where the interface would normally show them it shows the same marker it uses for any word with no related word recorded. This is an honest gap rather than a filled one, and it is why words you add appear in three of the five question types rather than all five.",
+            "If you add a word the app already teaches, the addition is refused rather than quietly creating a second entry with a different definition. Two definitions of the same word, chosen at random, is worse for a child than either one alone."
+          ]
+        },
+        {
+          "heading": "Which question types to use",
+          "body": [
+            "Mixing question types matters, because drilling one type only improves that type. A child who has only ever matched words to definitions has practised recognition, and recognition is not the same as recall. The same word asked as a definition question, a synonyms question, an antonyms question, a word-from-a-meaning question and a word-in-a-sentence question exercises genuinely different knowledge.",
+            "With a parent's own words added, three of those five types are available automatically, because the definition, the word-from-a-meaning and the word-in-a-sentence questions need nothing beyond the three things collected. The synonym and antonym questions need relations, and for a word you added there are none.",
+            "If practice is short, vary the type rather than lengthening the session. The evidence on spacing suggests that the same total time split across days beats a longer single sitting, so a short mixed session on several days is worth more than a long one on the weekend."
+          ]
+        },
+        {
+          "heading": "A sensible starting point",
+          "body": [
+            "Leave everything as it is, practise at the level suggested by the progress figures, and change nothing for the first fortnight. Most of what looks like a problem with a child's vocabulary is a problem with matching material to the child, and it is worth seeing the unedited picture before editing anything.",
+            "After that, set aside perhaps a dozen words that are clearly out of range, add ten or so from the child's current reading, and use the levels to steer the rest. Change the settings again only when something specific changes, such as a new book, a new school year, or a teacher who has flagged particular words."
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "title": "Making a Difference with Effective Tutoring",
+          "publisher": "Education Endowment Foundation",
+          "url": "https://educationendowmentfoundation.org.uk/education-evidence/effective-tutoring"
+        },
+        {
+          "title": "How Many Words Do We Know? Practical Estimates of Vocabulary Size",
+          "publisher": "Frontiers in Psychology",
+          "url": "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2016.01116/full"
+        },
+        {
+          "title": "Children and young people's reading in 2025",
+          "publisher": "National Literacy Trust",
+          "url": "https://literacytrust.org.uk/research-services/research-reports/children-and-young-peoples-reading-in-2025/"
+        }
+      ]
+    },
+    {
+      "slug": "printable-vocabulary-sheets",
+      "title": "Using printable vocabulary sheets",
+      "summary": "Printed word lists are not a worse version of an app. For some children, and for some kinds of learning, paper is the better tool. How to choose a layout and use it well.",
+      "readMinutes": 6,
+      "tags": [
+        "practice",
+        "technique",
+        "revision"
+      ],
+      "keyPoints": [
+        "A sheet that fits a real A4 page can hold twelve words or sixty, and the right number depends on the child, not on the page.",
+        "Showing the meaning and asking the child to write it is recall. Showing the meaning and letting them read it is recognition, and it tests far less.",
+        "The tightest layouts are only offered for the words alone, because below a certain size text stops being readable rather than becoming small.",
+        "Print a level the child finds hard but not hopeless, and let the sheet show the meaning so the effort goes into recall rather than decoding.",
+        "A finished sheet is worth more than a long session, because it shows exactly which words were shaky and can be reused for the next round."
+      ],
+      "sections": [
+        {
+          "heading": "When paper is the better tool",
+          "body": [
+            "There is a particular kind of learning that paper does better, and it is worth being clear about which kind that is. Writing a word down from a meaning is a retrieval task with a visible product. The child has to hold the meaning, find the word, and produce it unaided, and the result is a page that can be looked at again later. An app can test the same thing, but it cannot show the whole attempt at once, and it cannot be annotated, dated and kept.",
+            "That visible product is what makes sheets useful beyond the practice itself. A page of a child's own handwriting, with the words they got wrong circled, is a record of what was shaky on a particular day in a particular week. It can be kept, compared with last month's page, and used to choose what to work on next. It also makes the volume of work obvious to the child in a way that a streak counter does not.",
+            "The case against sheets is that they cannot adapt, and cannot tell you why a word was wrong. A question that is answered wrongly by guessing looks identical to one answered wrongly by not knowing. For that reason sheets work best alongside adaptive practice rather than instead of it."
+          ]
+        },
+        {
+          "heading": "Choosing a layout",
+          "body": [
+            "A sheet is a grid, and how much fits in one cell decides how much can be shown in that cell. The layouts available run from twelve words on an A4 page in a large box, through twenty-four, forty, down to sixty in a small one. Choosing between them is a trade between how much the child can write in each box and how many words get covered.",
+            "For a child who is learning to recall, the large layouts are better. There is room to write a word, to correct it, and to check a list without feeling rushed, and nothing forces a child to write in a space too small for their handwriting. For an older child reviewing a large vocabulary, the tighter layouts get through far more words in the same sitting, and the writing involved is a single word rather than a full meaning.",
+            "The amount of text shown per word is a separate choice, and the two are not independent. A word on its own leaves the most room in each cell. A word with its meaning shows what is expected but tests much less, because the child is reading rather than recalling. A word with its meaning and an example is a reference sheet rather than a test, and is genuinely useful for reading through once, for talking about, and for keeping."
+          ]
+        },
+        {
+          "heading": "Why small text stops working",
+          "body": [
+            "There is a floor below which reducing the font size stops making a sheet efficient and starts making it unusable, and the size of that floor depends on the cell. A sixty-word sheet on A4 gives each word roughly thirty-four by nineteen millimetres. There is room there for a word set at a readable size, and no room at all for a meaning.",
+            "This is why the tighter layouts are only offered for the words alone. Rather than letting a parent choose a combination and then discover on the printed page that the meaning has turned into grey mush, the options that cannot be read are simply not offered. Where a layout can carry a meaning but not comfortably, the meaning is shortened and marked with an ellipsis so that nothing looks like it has been silently cut off.",
+            "The same reasoning sets the type size. A sheet is fitted so that the longest entry in the whole collection, not the average one, still fits inside its cell, with a little room to spare. A sheet that works for the median word and clips the longest is worse than useless, because the child cannot tell which words were clipped."
+          ]
+        },
+        {
+          "heading": "Making the effort count",
+          "body": [
+            "Print with the meaning showing, and ask for the meaning written from memory, rather than printing the word alone and letting the child copy. Copying is a handwriting exercise. Recall is a memory exercise. They feel similar and they are not, and the second is what the 11+ is testing.",
+            "Keep the sheet for the child to keep. If a page is finished in four minutes, the pace was wrong and the layout should be roomier. If it is still unfinished after twenty minutes, the words are too hard and the level should come down. Both are useful signals, and both are lost if the sheet is thrown away.",
+            "Finish by reading the sheet back, out loud, word by word. Reading correctly is a weaker test than writing correctly, and it is a good final check, but it is a check rather than the practice itself."
+          ]
+        },
+        {
+          "heading": "Where this fits alongside the app",
+          "body": [
+            "A sensible division of labour is to use the app to find out which words are shaky, and paper to work on those words. The app is better at spacing, at keeping a record of which words were guessed rather than known, and at not letting a child revisit a word they have already mastered. Paper is better at sustained effort on a visible list, at handwriting, and at producing something a child is willing to look at again.",
+            "Print the words the app says need practice. Do not print the whole level. A sheet of forty words the child already knows will be finished in a few minutes and will tell nobody anything useful, and the sense of having done work is not the same as having done the work."
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "title": "The science of effective learning with spacing and retrieval practice",
+          "publisher": "Nature Reviews Psychology",
+          "url": "https://www.nature.com/articles/s44159-022-00089-1"
+        },
+        {
+          "title": "Free familiarisation materials",
+          "publisher": "GL Assessment",
+          "url": "https://11plus.gl-assessment.co.uk/pages/free-materials"
+        },
+        {
+          "title": "Making a Difference with Effective Tutoring",
+          "publisher": "Education Endowment Foundation",
+          "url": "https://educationendowmentfoundation.org.uk/education-evidence/effective-tutoring"
         }
       ]
     }
