@@ -1131,6 +1131,15 @@ hr {
   padding-top: 23px;
   padding-bottom: 22px;
 }
+.question-card h2 {
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+@media (max-width: 560px) {
+  .question-card h2 {
+    font-size: clamp(30px, 9vw, 44px);
+  }
+}
 .question-answered h2 {
   margin-top: 13px;
   margin-bottom: 5px;

@@ -67,8 +67,17 @@ test("denser grids get smaller cells and less content", () => {
 test("every content mode has a grid that fits it", () => {
   for (const mode of CONTENT_MODES) {
     const best = bestDensityFor(mode);
-    assert.equal(best.maxContent, mode, `${mode} needs a grid for itself`);
+    assert.ok(
+      CONTENT_MODES.indexOf(mode) <= CONTENT_MODES.indexOf(best.maxContent),
+      `${mode} has no grid that can carry it`,
+    );
     assert.ok(CONTENT_LABELS[mode]);
+    // And it is the first such grid, so a parent starts with the most room.
+    const first = DENSITIES.find(
+      (entry) =>
+        CONTENT_MODES.indexOf(mode) <= CONTENT_MODES.indexOf(entry.maxContent),
+    );
+    assert.equal(best.id, first.id, mode);
   }
 });
 
@@ -91,15 +100,48 @@ test("a content mode is only paired with a grid that can hold it", () => {
 test("a nonsense layout or mode falls back instead of throwing", () => {
   // Nothing asked for means the default, word plus meaning, on the roomiest
   // grid that can hold it.
+  // Nothing asked for means the default, word plus meaning, on the roomiest
+  // grid that can hold it. That grid is the one a child can read.
   const fallback = resolveSheet(null, null);
   assert.equal(fallback.content, "meaning");
-  assert.equal(fallback.density.id, "4x10");
+  assert.equal(fallback.density.id, "2x6");
   assert.ok(fallback.bodyPt >= MIN_BODY_PT);
-  assert.equal(resolveSheet("9x99", "word").density.id, "5x12");
+  assert.equal(resolveSheet("9x99", "word").density.id, "2x6");
+  // A combination that cannot be printed at a readable size falls back to the
+  // roomiest one that can. The picker disables these, so this only happens for
+  // a hand-edited link, and readable is the right answer when it does.
+  for (const [layout, content] of [
+    ["5x12", "meaning"],
+    ["4x10", "example"],
+    ["5x12", "example"],
+  ])
+    assert.equal(
+      resolveSheet(layout, content).density.id,
+      "2x6",
+      `${layout}/${content}`,
+    );
   assert.equal(resolveSheet("DROP TABLE", "nonsense").content, "meaning");
   assert.equal(resolveSheet("3x8", "banana").density.id, "3x8");
   assert.ok(isDensity("2x6") && !isDensity("2x7"));
   assert.ok(isContentMode("word") && !isContentMode("words"));
+});
+
+test("nothing is offered in a size a child cannot read", () => {
+  // A sheet a ten-year-old cannot read is not a faster sheet. Every combination
+  // the picker offers has to clear the floor, which means the tighter grids
+  // quietly stop carrying meanings rather than printing them in contract type.
+  assert.ok(MIN_BODY_PT >= 10, `the floor is ${MIN_BODY_PT}pt`);
+  for (const density of DENSITIES)
+    for (const content of CONTENT_MODES) {
+      if (!canShow(density, content)) continue;
+      const sheet = fitSheet(density, content);
+      assert.ok(
+        sheet.bodyPt >= MIN_BODY_PT,
+        `${density.id}/${content} is offered at ${sheet.bodyPt}pt`,
+      );
+    }
+  // And the roomy grid, which is what a child gets by default, is properly big.
+  assert.ok(fitSheet(densityFor("2x6"), "meaning").bodyPt >= 13);
 });
 
 test("body text never drops below a legible size", () => {

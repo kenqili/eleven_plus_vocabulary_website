@@ -352,12 +352,10 @@ export default function WordSummaryPage() {
                             <span className="difficulty-tag">
                               {DIFFICULTY_LEVELS[word.difficulty]}
                             </span>
+                            {/* The corpus frequency is a psycholinguistics
+                                scale. It is in the CSV export for a parent who
+                                wants it, and nowhere near a child's list. */}
                             <small>{word.letterCount} letters</small>
-                            <small>
-                              {word.frequencyKind === "unavailable"
-                                ? "Frequency unavailable"
-                                : `Frequency: ${word.frequencyZipf.toFixed(2)} Zipf${word.frequencyKind === "phrase-estimate" ? " (phrase estimate)" : ""}`}
-                            </small>
                           </td>
                           <td>
                             <span

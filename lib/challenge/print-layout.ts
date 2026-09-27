@@ -102,8 +102,11 @@ export const CONTENT_LABELS: Record<ContentMode, string> = {
   example: "Word, meaning and example",
 };
 
-/** Below this a printed reference sheet stops being usable. */
-export const MIN_BODY_PT = 8;
+/**
+ * Below this a printed reference sheet stops being usable. A child reading a
+ * sheet is reading it, not skimming it, and 8pt is contract fine print.
+ */
+export const MIN_BODY_PT = 10;
 /** Above this the type stops looking like a study sheet. */
 export const MAX_BODY_PT = 22;
 
@@ -255,9 +258,19 @@ export const canShow = (entry: Density, content: ContentMode) =>
   CONTENT_MODES.indexOf(content) <= CONTENT_MODES.indexOf(entry.maxContent);
 
 /** The densest grid that can carry the requested content. */
+/**
+ * The grid a parent should start from for a given content mode: the roomiest
+ * one that can carry it.
+ *
+ * Roomiest, not densest, because this is the default. It is what a child opens,
+ * and a sheet is worth more with space to write in and a font big enough to read
+ * off the page than with three times as many words on it. Tightening it is then
+ * a deliberate choice rather than the thing that happens by default.
+ */
 export const bestDensityFor = (content: ContentMode) =>
-  DENSITIES.find((entry) => entry.maxContent === content) ??
-  DENSITIES[DENSITIES.length - 1];
+  DENSITIES.find(
+    (entry) => CONTENT_MODES.indexOf(content) <= CONTENT_MODES.indexOf(entry.maxContent),
+  ) ?? DENSITIES[DENSITIES.length - 1];
 
 /**
  * A grid is only offered for content it can actually show, so a parent never
@@ -267,6 +280,9 @@ export function resolveSheet(
   layout: string | null,
   content: string | null,
 ): Sheet {
+  // Word plus meaning, and the roomiest grid, because that is what a child can
+  // actually read. A denser grid that fits the same text smaller is not a
+  // better sheet.
   const wanted: ContentMode = isContentMode(content ?? "")
     ? (content as ContentMode)
     : "meaning";

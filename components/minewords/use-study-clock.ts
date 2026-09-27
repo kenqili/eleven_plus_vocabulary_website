@@ -30,6 +30,10 @@ export function useStudyClock(
   const flush = useCallback(async () => {
     if (running.current) return running.current;
     if (!current.current.enabled || !current.current.attemptId) return;
+    // Nothing accrued and nothing to retry, so there is no request to make.
+    // Sending one anyway doubled the round trips per question and held the
+    // card disabled for the duration of an empty call.
+    if (!unflushed.current && !retry.current) return;
     if (!owner.current) owner.current = crypto.randomUUID();
     const work = async () => {
       lastSend.current = Date.now();

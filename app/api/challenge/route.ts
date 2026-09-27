@@ -117,7 +117,12 @@ export async function POST(request: Request) {
         402,
         "Your free collection is disabled. Subscribe to continue practising.",
       );
-    await rateLimit(`practice:${user.id}`, 250);
+    // Two requests per question, and a child working briskly can ask for a
+    // question every few seconds. The old ceiling of 250 locked a determined
+    // player out after about eight minutes, so playing fast was the thing the
+    // app punished hardest. It is already behind a session and a same-origin
+    // check, so the limit is here to stop a runaway script rather than a child.
+    await rateLimit(`practice:${user.id}`, 4000);
     const input = await body(request);
     if (input.action === "next") {
       let types, level;
