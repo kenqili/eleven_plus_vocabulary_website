@@ -212,6 +212,13 @@ The daily goal is **20 attempted questions and one story**. Children can ask for
 
 ## Deployment
 
+**Start at [docs/DEPLOY.md](docs/DEPLOY.md)** for the full production runbook, and
+[docs/HOSTING.md](docs/HOSTING.md) for why the hosting is Cloudflare Workers with
+an EU-jurisdiction D1 database, and what the alternatives cost. The two things to
+know before a first deploy: the generated `dist/server/wrangler.json` reverts to a
+placeholder database id on every build and has to be re-patched, and nothing in
+either document has been run against a live deployment.
+
 `.openai/hosting.json` identifies the Site and its logical D1 binding. Keep generated migrations in source control. Never edit a migration already applied; add another migration instead. Build output is in `dist/`, ready for the Sites packaging/deployment flow. Hosted account data is separate from local preview data.
 
 Speech audio is **not** committed: `public/audio/` is gitignored because the clips are large binaries. Generate them before packaging, with `AZURE_SPEECH_KEY` and `AZURE_SPEECH_REGION` set in the local `.env`:

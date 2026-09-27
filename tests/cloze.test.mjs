@@ -14,6 +14,8 @@ import {
 } from "../lib/challenge/problems.ts";
 import { problems } from "../scripts/load-problem-bank.mjs";
 import { words } from "../scripts/load-word-bank.mjs";
+import { typeAsksForTheWord } from "../lib/challenge/config.ts";
+import { typeAllowsClue } from "../lib/challenge/story-meanings.ts";
 
 const byId = new Map(words.map((word) => [word.id, word]));
 const relationTerms = (value) =>
@@ -42,8 +44,32 @@ for (const word of words) {
   }
 }
 
-test("inflections cover the forms a sentence is likely to use", () => {
-  const forms = inflectionsOf("abandon");
+test("the card hides the word for exactly the types whose answer is the word", () => {
+  // The question card used to print the word above the options on every type,
+  // so a word or cloze question handed over its own answer. The card decides
+  // with typeAsksForTheWord, and the clue uses the same rule, so both are
+  // checked here against the real bank rather than against a restated list.
+  for (const problem of problems) {
+    const word = byId.get(problem.wordId);
+    if (!word) continue;
+    const answerIsTheWord = problem.answer.toLowerCase() === word.word.toLowerCase();
+    assert.equal(
+      typeAsksForTheWord(problem.type),
+      answerIsTheWord,
+      `${problem.type}:${problem.wordId} prints the word but its answer is not the word, or hides a word it needs`,
+    );
+    assert.equal(
+      typeAllowsClue(problem.type),
+      !answerIsTheWord,
+      `${problem.type}:${problem.wordId} clue rule disagrees with the card`,
+    );
+  }
+  // A type added later must be classified explicitly, not fall through as safe.
+  for (const type of ["def", "syn", "ant", "word", "cloze"])
+    assert.equal(typeof typeAsksForTheWord(type), "boolean", `${type} is classified`);
+});
+
+test("inflections cover the forms a sentence is likely to use", () => {  const forms = inflectionsOf("abandon");
   for (const form of ["abandon", "abandons", "abandoned", "abandoning"]) {
     assert.ok(forms.includes(form), `missing ${form}`);
   }

@@ -10,6 +10,8 @@ import {
   TYPE_BUTTONS,
   TYPE_INSTRUCTIONS,
   TYPE_LABELS,
+  TYPE_SUMMARIES,
+  typeAsksForTheWord,
   type QuestionType,
 } from "@/lib/challenge/config";
 import {
@@ -121,6 +123,9 @@ export default function Challenge() {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [study, question, feedback, busy]);
+  // A word or cloze question asks the child to produce the word, so the card
+  // must not print it or play it above the options.
+  const asksForWord = question ? typeAsksForTheWord(question.type) : false;
   return (
     <div className="site">
       <Header />
@@ -156,6 +161,7 @@ export default function Challenge() {
                     className={`practice-type practice-type-${type}`}
                   >
                     <span>{TYPE_BUTTONS[type]}</span>
+                    <small>{TYPE_SUMMARIES[type]}</small>
                   </ToggleGroupItem>
                 ))}
               </ToggleGroup>
@@ -238,14 +244,20 @@ export default function Challenge() {
                       </span>
                     </span>
                   </div>
-                  <div className="question-word">
-                    <h2>{question.word}</h2>
-                    <Pronunciation
-                      key={question.id}
-                      word={question.word}
-                      id={question.wordId}
-                    />
-                  </div>
+                  {/* A word or cloze question asks the child to produce the word,
+                      so the card must not print it or play it above the options:
+                      the answer would already be on screen. The server blanks the
+                      word out of the cloze sentence for the same reason. */}
+                  {!asksForWord && (
+                    <div className="question-word">
+                      <h2>{question.word}</h2>
+                      <Pronunciation
+                        key={question.id}
+                        word={question.word}
+                        id={question.wordId}
+                      />
+                    </div>
+                  )}
                   {/* Two of the five question types carry no question of their
                       own: a word question shows a bare definition and a cloze
                       shows a sentence with a gap. The instructions say which is
@@ -303,7 +315,8 @@ export default function Challenge() {
                     ))}
                   </div>
                   <p className="sr-only" role="status">
-                    {question.word}. {TYPE_INSTRUCTIONS[question.type]}{" "}
+                    {asksForWord ? "" : `${question.word}. `}
+                    {TYPE_INSTRUCTIONS[question.type]}{" "}
                     {question.prompt}
                   </p>
                   {feedback && (

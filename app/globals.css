@@ -915,6 +915,19 @@ hr {
   border-color: var(--line-amber);
   color: var(--ink-amber-5);
 }
+/* "Name the word" and "Fill the gap" work in the opposite direction from the
+   other three, so they get their own pair, the same one their question card
+   and badge already use. Both pairs are contrast checked in theme.test.mjs. */
+.practice-types .practice-type-word[data-state="on"] {
+  background: var(--surface-ice);
+  border-color: var(--line-sky);
+  color: var(--ink-navy);
+}
+.practice-types .practice-type-cloze[data-state="on"] {
+  background: var(--surface-purple-2);
+  border-color: var(--line-purple);
+  color: var(--ink-violet);
+}
 .practice-types .practice-type:disabled {
   opacity: 0.6;
 }

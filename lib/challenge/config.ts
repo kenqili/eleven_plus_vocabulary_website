@@ -35,6 +35,27 @@ export const TYPE_BUTTONS: Record<QuestionType, string> = {
   word: "Name the word",
   cloze: "Fill the gap",
 };
+/**
+ * One line of background under each picker label, saying which way round the
+ * question runs. "Name the word" and "Fill the gap" are the two that work in
+ * the opposite direction from the rest, and a label alone does not say so.
+ */
+export const TYPE_SUMMARIES: Record<QuestionType, string> = {
+  def: "See the word, pick its meaning",
+  syn: "See the word, pick a close match",
+  ant: "See the word, pick its opposite",
+  word: "See the meaning, name the word",
+  cloze: "Spot the word in a real sentence",
+};
+/**
+ * The word and cloze types ask the child to produce the word itself, so the
+ * answer is the whole point of the question. The card must not print the word
+ * or play it, and no clue can be offered either, because every example
+ * sentence names the word it is blanking.
+ */
+export function typeAsksForTheWord(type: QuestionType): boolean {
+  return type === "word" || type === "cloze";
+}
 export function parseQuestionTypes(value: unknown): QuestionType[] {
   if (value === undefined || value === null) return [...QUESTION_TYPES];
   if (

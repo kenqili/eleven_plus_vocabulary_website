@@ -11,6 +11,10 @@ import {
   THEME_SCRIPT_HASH,
 } from "../lib/theme/theme-script.ts";
 import { THEMES, themeById, isThemeId, THEME_STORAGE_KEY } from "../lib/theme/themes.ts";
+import { TYPE_BUTTONS, TYPE_SUMMARIES } from "../lib/challenge/config.ts";
+
+const read = (path) =>
+  readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
 const css = readFileSync(new URL("../app/globals.css", import.meta.url), "utf8");
 const noComments = css.replace(/\/\*[\s\S]*?\*\//g, "");
@@ -290,6 +294,36 @@ test("the surfaces a child actually reads stay readable in every theme", () => {
     }
 });
 
+test("every practice type is given its own colour when it is selected", () => {
+  // Only the three original types had a selected-state rule, so "Name the word"
+  // and "Fill the gap" were marked as chosen by a thicker border alone. A new
+  // type must not be able to ship colourless, so the count is derived from the
+  // type list rather than restated.
+  const types = Object.keys(TYPE_BUTTONS);
+  assert.ok(types.length >= 5, "the practice type list is readable");
+  for (const type of types) {
+    const rule = noComments.match(
+      new RegExp(
+        `\\.practice-type-${type}\\[data-state="on"\\]\\s*\\{([\\s\\S]*?)\\n\\}`,
+      ),
+    );
+    assert.ok(rule, `${type} has no selected-state colour`);
+    for (const property of ["background", "border-color", "color"])
+      assert.match(
+        rule[1],
+        new RegExp(`${property}\\s*:`),
+        `${type} selected state is missing ${property}`,
+      );
+  }
+  // A summary line sits under each label, so the two types that run the
+  // opposite way round say so without the child having to try one.
+  for (const type of types)
+    assert.ok(
+      TYPE_SUMMARIES[type]?.trim(),
+      `${type} has no background line under its label`,
+    );
+});
+
 test("the progress bar's fill is distinguishable from its track", () => {
   // A bar whose fill and track are within 1.03:1 of each other is not a bar,
   // and the "words mastered" progress vanished entirely in one theme.
@@ -449,18 +483,19 @@ test("the Content-Security-Policy hash matches the script it has to allow", () =
     THEME_SCRIPT_HASH,
     "the exported hash is not the hash of the exported script",
   );
-  const config = readFileSync(
-    new URL("../next.config.ts", import.meta.url),
+  // The policy lives in middleware, because it needs a per-response nonce.
+  const policy = readFileSync(
+    new URL("../middleware.ts", import.meta.url),
     "utf8",
   );
   assert.ok(
-    config.includes("THEME_SCRIPT_HASH"),
-    "the policy does not use the computed hash, so it is either absent or hardcoded",
+    policy.includes("THEME_SCRIPT_HASH"),
+    "the policy does not use the computed hash, so the theme script would be blocked",
   );
   assert.doesNotMatch(
-    config,
+    policy,
     /sha256-[A-Za-z0-9+/=]{20,}/,
-    "a literal hash in the config can go stale; it must be computed",
+    "a literal hash can go stale; it must be computed from the script",
   );
   // The layout has to render the very same string, not a copy of it.
   const layout = readFileSync(
@@ -474,28 +509,68 @@ test("the Content-Security-Policy hash matches the script it has to allow", () =
   );
 });
 
-test("the policy allows inline styles and nothing looser", () => {
+test("the policy allows inline styles and nothing looser, for scripts", () => {
   // style-src needs unsafe-inline because React writes inline styles for the
   // progress bar transform and the burst rotation. script-src must not, because
-  // that is the one thing that would let an injected script run.
-  const config = readFileSync(
-    new URL("../next.config.ts", import.meta.url),
-    "utf8",
+  // that is the one thing that would let an injected script run: the framework's
+  // own inline scripts are nonced instead.
+  const policy = read("middleware.ts");
+  const scriptSrc = policy.slice(
+    policy.indexOf("script-src"),
+    policy.indexOf("style-src"),
   );
-  const policy = config.slice(config.indexOf('"default-src'), config.indexOf('].join("; ");'));
-  assert.ok(policy.includes("'unsafe-inline'"), "expected the style allowance");
-  const scriptSrc = policy.slice(policy.indexOf("script-src"), policy.indexOf("style-src"));
   assert.doesNotMatch(
     scriptSrc,
     /unsafe-inline|unsafe-eval/,
     `script-src is looser than it needs to be: "${scriptSrc}"`,
   );
-  assert.ok(policy.includes("object-src 'none'"), "plugins should be denied");
-  assert.ok(policy.includes("frame-ancestors 'none'"), "framing should be denied");
+  assert.match(scriptSrc, /'nonce-\$\{nonce\}'/, "the scripts are not nonced");
+  // A static nonce in the response is no better than allowing inline script,
+  // because the response carries the policy and therefore the nonce.
+  assert.match(
+    policy,
+    /randomBytes\(/,
+    "the nonce is not random, so it is not a nonce",
+  );
+  for (const directive of [
+    "object-src 'none'",
+    "frame-ancestors 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "connect-src 'self'",
+  ])
+    assert.ok(policy.includes(directive), `${directive} is not restricted`);
   // Nothing is loaded from anywhere else, so nothing is allowed from anywhere
   // else. An analytics tag or a font CDN added later would need this revisited,
   // and that is the point of asserting it.
-  for (const directive of ["connect-src 'self'", "img-src 'self'", "font-src 'self'"]) {
-    assert.ok(policy.includes(directive), `${directive} is not restricted to this origin`);
-  }
+  assert.doesNotMatch(
+    policy,
+    /https?:\/\//,
+    "the policy allows an absolute origin, which is a third party this app does not use",
+  );
+});
+
+test("the nonce reaches the request the page is rendered from", () => {
+  // The framework reads the nonce back out of this header and stamps it on the
+  // scripts it generates, so it has to be on the request as well as the
+  // response. Setting only the response would render a page whose scripts the
+  // policy then blocks, which is worse than having no policy.
+  const policy = read("middleware.ts");
+  assert.match(
+    policy,
+    /requestHeaders\.set\("content-security-policy"/,
+    "the policy is not on the request the renderer sees",
+  );
+  assert.match(
+    policy,
+    /response\.headers\.set\("Content-Security-Policy"/,
+    "the policy is not on the response the browser reads",
+  );
+  // And it must cover the static asset routes too, or a cached asset is served
+  // without the policy on the page that referenced it.
+  assert.match(
+    policy,
+    /matcher:/,
+    "middleware has no matcher, so it may not run on every request",
+  );
 });

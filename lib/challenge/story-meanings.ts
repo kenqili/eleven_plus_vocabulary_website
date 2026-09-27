@@ -1,5 +1,6 @@
 import help from "../../data/learning/word-help.json" with { type: "json" };
 import storyHelp from "../../data/learning/story-meanings.json" with { type: "json" };
+import { typeAsksForTheWord, type QuestionType } from "./config.ts";
 import type { Word } from "./words";
 const meanings: Record<string, { meaning: string; clue: string }> = help;
 const contexts: Record<
@@ -19,10 +20,12 @@ export function storyMeaning(
 /**
  * The word and cloze types ask for the word itself, and every example
  * sentence names it or an inflection of it, so no clue can be offered for
- * those without handing over the answer.
+ * those without handing over the answer. Delegates to the shared rule so the
+ * clue and the printed word can never disagree about which types reveal the
+ * answer.
  */
 export function typeAllowsClue(type: string) {
-  return type !== "word" && type !== "cloze";
+  return !typeAsksForTheWord(type as QuestionType);
 }
 export function wordClue(id: string, answer: string, type?: string): string {
   if (type !== undefined && !typeAllowsClue(type)) return "";
