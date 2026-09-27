@@ -250,14 +250,22 @@ export default function WordSummaryPage() {
                         : `Export CSV (${matching.length})`}
                     </button>
                     {matching.length > 0 && (
-                      <a
-                        className="secondary-button"
-                        href={`/api/words/export?${exportParams}&format=print`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Print / Save PDF ({matching.length}) ↗
-                      </a>
+                      <>
+                        <a
+                          className="secondary-button"
+                          href={`/api/words/export?${exportParams}&format=print`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Print list ({matching.length}) ↗
+                        </a>
+                        <Link
+                          className="secondary-button"
+                          href="/words/print"
+                        >
+                          A4 word sheets ↗
+                        </Link>
+                      </>
                     )}
                   </div>
                 ) : (

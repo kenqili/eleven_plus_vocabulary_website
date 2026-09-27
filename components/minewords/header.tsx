@@ -49,6 +49,9 @@ export default function Header() {
         <Link className="account-link" href="/words/manage">
           Manage words
         </Link>
+        <Link className="account-link" href="/words/print">
+          Print sheets
+        </Link>
         <Link className="account-link" href="/calendar">
           Calendar
         </Link>
