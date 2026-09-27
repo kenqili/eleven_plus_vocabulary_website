@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useEffect, useState, type FormEvent } from "react";
 import Header from "./header";
 import { api } from "@/lib/client/api";
+import DeleteAccount from "./delete-account";
 type User = { id: string; email: string };
 type Billing = {
   active: boolean;
@@ -183,6 +184,13 @@ export default function Account() {
                   Manage billing
                 </button>
               )}
+              <nav className="account-links" aria-label="Your account pages">
+                <Link href="/words">Word list</Link>
+                <Link href="/words/manage">Choose which words to practise</Link>
+                <Link href="/words/print">Printable word sheets</Link>
+                <Link href="/calendar">Practice calendar</Link>
+                <Link href="/guides">11+ guides for parents</Link>
+              </nav>
               <div className="control-row">
                 <button
                   className="text-button"
@@ -202,6 +210,7 @@ export default function Account() {
                   Sign out
                 </button>
               </div>
+              <DeleteAccount />
             </>
           ) : (
             <>
@@ -230,10 +239,13 @@ export default function Account() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  minLength={12}
+                  minLength={8}
                   maxLength={128}
                 />
-                <p className="muted">Use at least 12 characters.</p>
+                <p className="muted">
+                  At least 8 characters. A short phrase you will remember works
+                  better than a long one you will not.
+                </p>
                 <button className="primary-button" disabled={busy}>
                   {busy
                     ? "Please wait…"

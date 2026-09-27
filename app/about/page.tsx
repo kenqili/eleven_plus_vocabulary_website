@@ -11,6 +11,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import Header from "@/components/minewords/header";
+import PrivacySummary from "@/components/minewords/privacy-summary";
 
 const steps = [
   {
@@ -242,7 +243,7 @@ export default function AboutPage() {
             <p>
               When you’re ready, membership brings the full vocabulary
               collection, focused revision and printable word lists together.
-              Visit your account for trial details and membership pricing.
+              <PrivacySummary />
             </p>
           </div>
           <Link className="primary-button" href="/account">

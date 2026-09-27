@@ -4705,3 +4705,88 @@ hr {
     margin-top: 8px;
   }
 }
+
+/* Deleting an account, and the links a parent wants from the page they came to
+   check on things. */
+.account-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 18px 0;
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.account-links a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--ink-brand);
+  font-size: 14px;
+  font-weight: 700;
+}
+.account-links a:hover {
+  color: var(--ink);
+}
+.account-danger {
+  margin-top: 30px;
+  padding: 20px 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+.account-danger h2 {
+  margin: 0 0 8px;
+  font-size: 19px;
+  color: var(--ink-danger);
+}
+.account-danger p {
+  margin: 0 0 12px;
+  color: var(--ink-2);
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 60ch;
+}
+.account-danger label {
+  display: block;
+  margin: 12px 0 5px;
+  color: var(--ink-2);
+  font-size: 13px;
+  font-weight: 700;
+}
+.account-danger input {
+  width: 100%;
+  max-width: 340px;
+  min-height: 44px;
+  padding: 10px 13px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  font: inherit;
+  font-size: 15px;
+}
+.privacy-summary {
+  margin: 22px 0;
+  padding: 20px 24px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+.privacy-summary h2 {
+  margin: 18px 0 6px;
+  font-size: 17px;
+  color: var(--ink);
+}
+.privacy-summary h2:first-child { margin-top: 0; }
+.privacy-summary p {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 14px;
+  line-height: 1.7;
+  max-width: 68ch;
+}
+.privacy-summary a { color: var(--ink-brand); font-weight: 700; }
+.guide-article ul { color: var(--ink-2); line-height: 1.7; padding-left: 22px; }
+.guide-article li { margin-bottom: 8px; }
+.guide-article a { color: var(--ink-brand); font-weight: 700; }
+.guide-article h2 { margin-top: 30px; }

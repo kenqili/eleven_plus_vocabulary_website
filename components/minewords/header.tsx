@@ -34,6 +34,7 @@ const FOR_GROWN_UPS = [
   { href: "/words/manage", label: "Choose which words to practise" },
   { href: "/words/print", label: "Printable word sheets" },
   { href: "/about", label: "About MineWords" },
+  { href: "/privacy", label: "What we store, and how to delete it" },
 ];
 
 export default function Header() {

@@ -2,12 +2,14 @@ import { database } from "@/lib/server/db";
 import {
   configuredFreeTrialDays,
   configuredFreeWordLimit,
+  configuredPriceLabel,
 } from "@/lib/server/billing";
 import { body, boundary, HttpError, json, sameOrigin } from "@/lib/server/http";
 import {
   createSession,
   currentUser,
   rateLimit,
+  requireUser,
   sessionCookie,
 } from "@/lib/server/auth";
 import {
@@ -22,6 +24,11 @@ export async function GET(request: Request) {
       user: await currentUser(request),
       freeTrialDays: configuredFreeTrialDays(),
       freeWordLimit: configuredFreeWordLimit(),
+      // Shown before anyone creates an account. A parent should not have to
+      // make an account with a twelve-character password to find out what it
+      // costs, and a page that says "visit your account for pricing" is asking
+      // for an account before it will answer the question.
+      price: configuredPriceLabel(),
     }),
   );
 }
@@ -48,6 +55,46 @@ export async function POST(
         "Set-Cookie": sessionCookie("", request, 0),
       });
     }
+    if (action === "delete") {
+      // A child's app that cannot be deleted is a child's app a parent cannot
+      // leave. Every table cascades from users, so this is one delete, but the
+      // password is checked first and the count is returned so the parent is
+      // told what is going rather than being asked to trust it.
+      const user = await requireUser(request);
+      const input = await body(request);
+      const password = typeof input.password === "string" ? input.password : "";
+      if (!password) throw new HttpError(400, "Enter your password to confirm.");
+      const account = (
+        await database()
+          .prepare("SELECT password_hash FROM users WHERE id=?")
+          .bind(user.id)
+          .first<{ password_hash: string }>()
+      )?.password_hash;
+      // A dummy verify on an unknown account, so the timing of this response
+      // does not reveal whether the account exists.
+      if (!account || !(await verifyPassword(password, account)))
+        throw new HttpError(401, "That password does not match.");
+      await rateLimit(`delete-account:${user.id}`, 5);
+      const recorded = (
+        await database()
+          .prepare(
+            "SELECT COUNT(*) AS count FROM learning_events WHERE user_id=?",
+          )
+          .bind(user.id)
+          .first<{ count: number }>()
+      )?.count ?? 0;
+      // One row per answer is kept in aggregate form on the account, so the
+      // detail has to go first or the cascade will be refused.
+      await database()
+        .prepare("DELETE FROM users WHERE id=?")
+        .bind(user.id)
+        .run();
+      return json(
+        { ok: true, removed: { records: recorded } },
+        200,
+        { "Set-Cookie": sessionCookie("", request, 0) },
+      );
+    }
     if (action !== "register" && action !== "login")
       throw new HttpError(404, "Unknown action.");
     const input = await body(request);
@@ -57,7 +104,7 @@ export async function POST(
     if (
       !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
       email.length > 254 ||
-      password.length < 12 ||
+      password.length < 8 ||
       password.length > 128
     )
       throw new HttpError(

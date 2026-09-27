@@ -45,6 +45,26 @@ export function configuredFreeTrialDays() {
     throw new Error("FREE_TRIAL_DAYS must be a whole number from 0 to 365.");
   return days;
 }
+/**
+ * What a parent is charged, in pence per month, read from configuration so it
+ * can be shown before anyone creates an account. Null when it is not set, and
+ * the pages then say so rather than inventing a number.
+ */
+export function configuredMonthlyPricePence(): number | null {
+  const configured = setting("MONTHLY_PRICE_PENCE") ?? setting("SUBSCRIPTION_PRICE_PENCE");
+  if (!configured) return null;
+  if (!/^[1-9]\d{0,6}$/.test(configured))
+    throw new Error("MONTHLY_PRICE_PENCE must be a whole number of pence.");
+  return Number(configured);
+}
+
+/** The price as it would be written, or null when it is not configured. */
+export function configuredPriceLabel(): string | null {
+  const pence = configuredMonthlyPricePence();
+  if (pence === null) return null;
+  return `£${(pence / 100).toFixed(pence % 100 === 0 ? 0 : 2)} a month`;
+}
+
 export function configuredFreeWordLimit() {
   const configured = setting("FREE_WORD_LIMIT");
   // Two hundred and twenty four is a real working vocabulary for a child
