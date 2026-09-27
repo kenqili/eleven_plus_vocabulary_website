@@ -2,6 +2,22 @@
 @import "tw-animate-css";
 
 /**
+ * Motion is the reward in a practice app, so it is reduced only when the person
+ * has asked for that, and then all of it at once. The two specific rules below
+ * stay because they also change what the card looks like.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/**
  * Theme tokens.
  *
  * Every colour in the app is one of these names, grouped by the job it does:
@@ -4581,4 +4597,52 @@ hr {
 }
 .manage-action.destructive:hover:not(:disabled) {
   background: var(--surface-danger);
+}
+
+/* The story question offered a thirteen-pixel native radio dot as its only
+   confirmation that the tap had registered, so a child tapped, could not tell,
+   and tapped again. The chosen option is now visibly chosen, and the wrong one
+   is marked after submitting rather than only tinted. */
+.story-finish label:has(input:checked) {
+  border-color: var(--line-brand-2);
+  border-width: 2px;
+  background: var(--surface-brand);
+  color: var(--ink);
+  font-weight: 700;
+}
+.story-finish label:has(input:focus-visible) {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+.story-finish label {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+.story-finish label:has(input:checked) .story-option-mark {
+  visibility: visible;
+}
+.story-option-mark {
+  visibility: hidden;
+  margin-left: auto;
+  color: var(--ink-brand-2);
+  font-weight: 800;
+}
+.story-finish label[data-outcome="correct"] {
+  border-color: var(--line-success-2);
+  background: var(--surface-success-2);
+  color: var(--ink-success);
+  font-weight: 700;
+}
+.story-finish label[data-outcome="wrong"] {
+  border-color: var(--line-danger-2);
+  background: var(--surface-danger-2);
+  color: var(--ink-danger);
+  font-weight: 700;
+}
+.story-finish label[data-outcome="wrong"] .story-option-mark,
+.story-finish label[data-outcome="correct"] .story-option-mark {
+  visibility: visible;
 }

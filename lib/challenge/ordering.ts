@@ -22,7 +22,7 @@ export function chooseWord(
   );
   if (due.length) {
     // Reviews override ordinary spacing and exposure counts. Oldest due first.
-    const earliest = Math.min(...due.map((word) => word.retryAt!));
+    const earliest = due.reduce((low, word) => Math.min(low, word.retryAt!), Infinity);
     const oldest = due.filter((word) => word.retryAt === earliest);
     return oldest[Math.floor(random() * oldest.length)].id;
   }
@@ -38,7 +38,7 @@ export function chooseWord(
     ),
   );
   const pool = available.filter((word) => !excluded.has(word.id));
-  const leastSeen = Math.min(...pool.map((word) => word.seen));
+  const leastSeen = pool.reduce((low, word) => Math.min(low, word.seen), Infinity);
   const balanced = pool.filter((word) => word.seen === leastSeen);
   return balanced[Math.floor(random() * balanced.length)].id;
 }

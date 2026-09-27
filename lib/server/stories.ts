@@ -248,13 +248,21 @@ export async function completeStory(
   if (seconds < storyMinimumSeconds(story))
     throw new HttpError(
       409,
-      "Take a little more time with the story before finishing. A reread needs fresh reading time today. Your time saves while this tab is active.",
+      `A little more reading first — ${Math.ceil(storyMinimumSeconds(story) - seconds)} seconds to go. Your reading time saves while this tab is open, so you can come back to it.`,
     );
-  if (answer !== story.question.answer)
-    throw new HttpError(
-      422,
-      "Not quite! Have another look at the story and try again. You won’t lose any credits.",
-    );
+  if (answer !== story.question.answer) {
+    // Not an error. The story stays open, the right answer is revealed and the
+    // evidence is named, because a child who guessed wrong and was shown a red
+    // box learned nothing and had to guess again with the same information.
+    return {
+      complete: false as const,
+      correct: false as const,
+      // Which option was right, so the reader can mark it rather than leaving
+      // the child to work it out from a red box.
+      answer: story.question.answer,
+      credits: 0,
+    };
+  }
   const [inserted] = await database().batch([
     database()
       .prepare(

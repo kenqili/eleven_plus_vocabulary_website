@@ -19,10 +19,18 @@ export async function currentUser(request: Request): Promise<User | null> {
 }
 export async function requireUser(request: Request) {
   const user = await currentUser(request);
-  if (!user) throw new HttpError(401, "Please sign in to save your progress.");
+  if (!user)
+    throw new HttpError(401, "Please sign in again to keep your progress.");
   return user;
 }
-export function sessionCookie(token: string, request: Request, age = 604800) {
+/** How long a session lasts, and how long it slides for on use. */
+export const SESSION_TTL_MS = 604800000;
+
+export function sessionCookie(
+  token: string,
+  request: Request,
+  age = SESSION_TTL_MS / 1000,
+) {
   return `mw_session=${token}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${age}${new URL(request.url).protocol === "https:" ? "; Secure" : ""}`;
 }
 export async function createSession(userId: string, request: Request) {

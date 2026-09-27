@@ -28,6 +28,15 @@ function Reading({ story }: { story: StoryDetail }) {
   const prose = useRef<HTMLElement>(null);
   const bookmark = useReadingBookmark(story, prose);
   const [finishedVisit, setFinishedVisit] = useState(false);
+  /** The right option, once a wrong answer has revealed it. */
+  const [wrongAnswer, setWrongAnswer] = useState<number | null>(null);
+  // The app will not accept the answer until this much reading time is recorded,
+  // and used to say so only by refusing, after the child had pressed the button.
+  const readingEnough = clock.sessionSeconds >= story.minimumSeconds;
+  const secondsLeft = Math.max(
+    0,
+    Math.ceil(story.minimumSeconds - clock.sessionSeconds),
+  );
   // Finishing a story is the biggest moment in the app, so it gets the sound
   // that says so, once per story rather than on every render.
   useEventSound(finishedVisit ? story.id : null, "reward");
@@ -70,11 +79,25 @@ function Reading({ story }: { story: StoryDetail }) {
     setError("");
     try {
       await clock.flush();
-      const result = await api<{ progress: ReadingProgress; credits: number }>(
-        "/api/stories",
-        { action: "complete", storyId: story.id, answer },
-      );
-      setProgress(result.progress);
+      const result = await api<{
+        complete: boolean;
+        correct?: boolean;
+        answer?: number;
+        progress?: ReadingProgress;
+        credits: number;
+      }>("/api/stories", { action: "complete", storyId: story.id, answer });
+      if (result.complete === false) {
+        // A wrong answer is a teaching moment, not a failure state. The right
+        // option is shown, the wrong one is marked, and the story stays open
+        // for a reread.
+        setWrongAnswer(result.answer ?? 0);
+        setNotice(
+          "Not quite — have another look. The right answer is highlighted, and you can read the story again as often as you like.",
+        );
+        return;
+      }
+      setWrongAnswer(null);
+      setProgress(result.progress!);
       setFinishedVisit(true);
       setNotice(
         result.credits
@@ -115,7 +138,9 @@ function Reading({ story }: { story: StoryDetail }) {
       <div className="story-reading-timer">
         <Clock3 size={20} aria-hidden="true" />
         <div>
-          <span>Story reading time · this visit</span>
+          <span>
+            {!readingEnough ? "Read a bit more to finish" : "Story reading time"}
+          </span>
           <strong
             role="timer"
             aria-label="Story reading time this visit"
@@ -128,7 +153,11 @@ function Reading({ story }: { story: StoryDetail }) {
           </strong>
         </div>
         <span className="story-timer-state">
-          {clock.isRunning ? "Reading" : "Paused"}
+          {readingEnough
+            ? clock.isRunning
+              ? "Reading"
+              : "Finished for now"
+            : `${secondsLeft}s to go`}
         </span>
       </div>
       <div className="reading-tools">
@@ -182,19 +211,37 @@ function Reading({ story }: { story: StoryDetail }) {
           Read at your own pace, then answer to finish. Your first completion
           earns {STORY_CREDITS} credits.
         </p>
-        <fieldset disabled={busy || finishedVisit}>
+        <fieldset disabled={busy || finishedVisit || wrongAnswer !== null}>
           <legend>Choose your answer</legend>
-          {story.question.options.map((option, index) => (
-            <label key={option}>
-              <input
-                type="radio"
-                name="story-answer"
-                checked={answer === index}
-                onChange={() => setAnswer(index)}
-              />
-              {option}
-            </label>
-          ))}
+          {story.question.options.map((option, index) => {
+            // Once a wrong answer has been marked, the panel stops being a
+            // question and becomes the answer with the reasoning.
+            const outcome =
+              wrongAnswer === null
+                ? undefined
+                : index === wrongAnswer
+                  ? "correct"
+                  : answer === index
+                    ? "wrong"
+                    : undefined;
+            return (
+              <label key={option} data-outcome={outcome}>
+                <input
+                  type="radio"
+                  name="story-answer"
+                  checked={answer === index}
+                  onChange={() => {
+                    setAnswer(index);
+                    setWrongAnswer(null);
+                  }}
+                />
+                {option}
+                <span className="story-option-mark" aria-hidden>
+                  {outcome === "correct" ? "✓" : outcome === "wrong" ? "✗" : "✓"}
+                </span>
+              </label>
+            );
+          })}
         </fieldset>
         {story.signedIn ? (
           <button

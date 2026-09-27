@@ -56,6 +56,13 @@ export const learningEvents = sqliteTable(
   (t) => [
     index("learning_user_date").on(t.userId, t.createdAt),
     index("learning_user_word").on(t.userId, t.wordId),
+    /**
+     * Covers the per-word first and last day lookup that every practice request
+     * makes. Without the day in the index, SQLite had to fetch every matching
+     * row to read it, so the practice endpoint got slower the longer a child
+     * had used the app.
+     */
+    index("learning_user_word_day").on(t.userId, t.wordId, t.day),
   ],
 );
 
