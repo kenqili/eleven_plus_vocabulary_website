@@ -1,0 +1,311 @@
+{
+  "sections": [
+    {
+      "id": "what-a-grammar-school-is",
+      "group": "Start here",
+      "heading": "What a grammar school is, in law",
+      "summary": "State-funded, locally maintained, not locally controlled, and free to refuse you.",
+      "figures": [
+        {
+          "label": "In England",
+          "value": "163"
+        },
+        {
+          "label": "In Wales",
+          "value": "none"
+        },
+        {
+          "label": "In Northern Ireland",
+          "value": "65 or 69"
+        }
+      ],
+      "body": [
+        "A grammar school is a state-funded school that selects all of its pupils by academic ability. There are 163 in England, listed by statute under the Education (Grammar School Ballots) Regulations 1998. There are none in Wales, which closed or converted them in the 1970s, and none in Scotland in this sense, though a few historic schools keep the name. Northern Ireland has a substantial separate system, and its grammar schools work differently: since the 1989 open enrolment reform they must take pupils up to capacity rather than selecting to a fixed number. The number of Northern Irish grammar schools is genuinely disputed between sources, which say 65, 67 or 69.",
+        "The legal position confuses parents, so it is worth stating plainly. A maintained grammar school is funded and infrastructure-supported by the local authority but not controlled by it. The authority has a duty to fund the school; the school's own governors decide who gets a place. The admissions rules are set by the governing body, which is what the law calls the admission authority. The statutory basis is the School Standards and Framework Act 1998.",
+        "Two consequences follow that most families do not expect. First, selection is protected: only designated grammar schools may select their entire intake on academic ability. Second, and more surprisingly, they do not have to fill their places. Under the School Admissions Code, a grammar school that offers nobody a place it should have is acting lawfully. There is no obligation to offer a place to a child who meets the standard if the school has decided it wants fewer pupils.",
+        "One historical detail that explains the geography. Almost all the English comprehensives of the 1960s and 70s came out of grammar-school conversions, leaving a small residue where ending selection was tried. Only one ballot to abolish selection has ever been held, at Ripon Grammar School in 2000, and parents rejected the change by two to one. That is why the 163 schools are clustered in particular counties and local authorities rather than spread evenly: only 35 local authorities have any grammar school at all, and around 60% of them sit in just eleven.",
+        "A source of confusion worth flagging: many English grammar schools have since converted to academies. An academy grammar school is no longer council-maintained, but it still selects. So the phrase local authority grammar school is not quite the same set as the 163."
+      ],
+      "points": [
+        "The campaigning body is the National Grammar Schools Association. There is no British Grammar School Association, and the Grammar Schools Association does not exist under that name either.",
+        "The NGSA's own website has not been updated since 2017 and still claims 164 schools, which is why the statutory figure of 163 is the one used here."
+      ],
+      "sources": [
+        {
+          "title": "List of grammar schools in England",
+          "publisher": "Wikipedia, from the 1998 regulations",
+          "url": "https://en.wikipedia.org/wiki/List_of_grammar_schools_in_England"
+        },
+        {
+          "title": "School Admissions Code 2021",
+          "publisher": "Department for Education",
+          "url": "https://www.gov.uk/government/publications/school-admissions-code"
+        },
+        {
+          "title": "Grammar schools research briefing",
+          "publisher": "House of Commons Library",
+          "url": "https://commonslibrary.parliament.uk/research-briefings/sn07070/"
+        },
+        {
+          "title": "National Grammar Schools Association",
+          "publisher": "NGSA",
+          "url": "https://ngsa.org.uk/"
+        }
+      ]
+    },
+    {
+      "id": "how-your-child-gets-a-place",
+      "group": "Start here",
+      "heading": "How your child actually gets a place",
+      "summary": "One hard national date, one ranked application, and a set of rules schools must follow when places run out.",
+      "body": [
+        "Everything is governed by the School Admissions Code 2021, statutory guidance in force since September 2021. There is one hard national date in the whole process: 31 October, the national closing date for secondary school applications. For a September 2026 start that meant applying by 31 October 2025. Your local authority runs a single co-ordinated application in which you rank your preferences, usually three, though London authorities generally allow up to six.",
+        "How the place is then decided varies, and the variation matters. Where a grammar system survives across a district, the test is used to identify a subset of children and the remaining criteria allocate places among them if too many qualify. In an isolated grammar school, places go in rank order of test performance alone. The Code is deliberately not prescriptive and offers no definitive list of acceptable oversubscription criteria, but the common ones are a sibling already at the school, distance from the school or from a named measurement point, catchment areas, feeder schools, and social or medical need. A school must state precisely how it defines home and from which point it measures distance.",
+        "One rule catches parents out: a school may not charge for the process. Not for tests, not for contributions, and not even for a refundable deposit. A school asking you to pay to sit its entrance test is acting outside the Code.",
+        "If you are refused, appeals are governed separately, by the School Admission Appeals Code 2022. You must be given at least 20 school days from notification of refusal to lodge an appeal, at least 10 school days' notice of the hearing, and a normal-round appeal must be heard within 40 school days of the deadline. Every authority must publish its appeals timetable by 28 February each year. If a panel upholds your appeal the school must admit your child. You can also ask for an interim decision, an early place while the appeal runs, if you have applied elsewhere and your child would otherwise be without a school."
+      ],
+      "table": {
+        "head": [
+          "The rule",
+          "What it means"
+        ],
+        "rows": [
+          [
+            "31 October",
+            "The national closing date for secondary applications. No exceptions."
+          ],
+          [
+            "Rank your preferences",
+            "Usually three, up to six in London authorities."
+          ],
+          [
+            "No charge, ever",
+            "A school may not charge for tests, contributions or even refundable deposits."
+          ],
+          [
+            "20 school days",
+            "Your minimum window to lodge an appeal after a refusal."
+          ],
+          [
+            "10 school days' notice",
+            "The minimum notice you must get of an appeal hearing."
+          ],
+          [
+            "40 school days",
+            "The maximum time from appeal deadline to hearing."
+          ],
+          [
+            "28 February",
+            "Every authority must have published its appeals timetable by this date."
+          ]
+        ]
+      },
+      "sources": [
+        {
+          "title": "School Admissions Code 2021",
+          "publisher": "Department for Education",
+          "url": "https://www.gov.uk/government/publications/school-admissions-code"
+        },
+        {
+          "title": "School Admission Appeals Code 2022",
+          "publisher": "Department for Education",
+          "url": "https://www.gov.uk/government/publications/school-admission-appeals-code"
+        }
+      ]
+    },
+    {
+      "id": "how-competitive-a-place-is",
+      "group": "Start here",
+      "heading": "How competitive a place really is",
+      "summary": "The national offer rate is reassuring in a way that is misleading, and no waiting-list figures are published.",
+      "body": [
+        "For September 2026 entry, 83.6% of secondary applicants got their first choice and 96.4% got one of their ranked preferences. Those are the official figures, and they are true. They are also close to useless for a family applying to a grammar school, because they are dominated by the non-selective schools where the great majority of applicants go.",
+        "The DfE does publish a breakdown by whether an authority has selective schools, but we could not retrieve it, so the honest answer is that we cannot give you a grammar-school-specific offer rate. The closest thing to a comparable figure came from Schools Week in September 2026, reporting that free school meal rates at the average grammar were 9.2 percentage points lower than elsewhere in their own catchment areas in 2024. A catchment where the grammar draws noticeably fewer disadvantaged pupils is not a catchment where the test is doing much work.",
+        "On waiting lists, we have to be blunt: we could not find a single authoritative, current, published count of grammar-school waiting-list lengths anywhere. You will see numbers quoted. Treat them as unverified. What can be said is structural: only 35 local authorities have any grammar school at all, and around 60% of them are in eleven authorities, so in most of the country a place at the nearest grammar is not a competitive exercise at all, while in a handful it is the most competitive thing a family will ever do."
+      ],
+      "figures": [
+        {
+          "label": "First choice, all secondary",
+          "value": "83.6%"
+        },
+        {
+          "label": "One of their choices, all secondary",
+          "value": "96.4%"
+        },
+        {
+          "label": "Local authorities with any grammar school",
+          "value": "35"
+        }
+      ],
+      "points": [
+        "The 83.6% and 96.4% figures cover all secondary applicants. Do not read them as grammar school statistics.",
+        "No authoritative current published count of grammar-school waiting lists could be found.",
+        "In Gloucestershire about 2,500 children a year sit for seven grammar schools, which is a reasonable illustration of the ratio in a genuinely competitive area."
+      ],
+      "sources": [
+        {
+          "title": "Primary and secondary school applications and offers: 2026",
+          "publisher": "Department for Education, 18 June 2026",
+          "url": "https://explore-education-statistics.service.gov.uk/find-statistics/secondary-and-primary-school-applications-and-offers"
+        },
+        {
+          "title": "£600 for practice tests creates 11-plus tutoring arms race",
+          "publisher": "Schools Week, 3 September 2026",
+          "url": "https://schoolsweek.co.uk/600-for-practice-tests-creates-11-plus-tutoring-arms-race/"
+        },
+        {
+          "title": "Gloucestershire grammar schools to adopt new accessible test",
+          "publisher": "BBC News, 16 April 2026",
+          "url": "https://www.bbc.co.uk/news/articles/cy01185ypdwo"
+        }
+      ]
+    },
+    {
+      "id": "the-timeline",
+      "group": "Start here",
+      "heading": "The timeline, with dates",
+      "summary": "The part you can plan around. Only some of these dates are national; the test date is set locally.",
+      "table": {
+        "head": [
+          "When",
+          "What happens"
+        ],
+        "rows": [
+          [
+            "May of Year 5",
+            "Registration for the test typically opens. Warwickshire opened registration for 2027 entry on 8 May 2026."
+          ],
+          [
+            "Summer of Year 5 to September of Year 6",
+            "The test sits, traditionally in September of Year 6. Gloucestershire is moving to the summer term of Year 5 from 2027."
+          ],
+          [
+            "October of Year 6",
+            "Results come back, in time for applications to be ranked."
+          ],
+          [
+            "31 October",
+            "National closing date for secondary applications. The one hard date in the process."
+          ],
+          [
+            "28 February",
+            "Every authority must have published its appeals timetable."
+          ],
+          [
+            "1 March, or next working day",
+            "National Offer Day. For September 2026 entry this fell on 2 March, because 1 March was a Sunday."
+          ],
+          [
+            "Within 20 school days of the refusal",
+            "Deadline to lodge an appeal. Each school sets its own date within that limit."
+          ],
+          [
+            "Within 40 school days of that deadline",
+            "The appeal is heard, with a decision letter within 5 school days where possible."
+          ],
+          [
+            "September",
+            "The new Year 7 intake starts."
+          ]
+        ]
+      },
+      "body": [
+        "The 28 February date is the one to put in a diary now, even if you are years away. Every authority has to publish its appeals timetable by then, and it is the document that tells you what to do if something goes wrong. Reading it in advance rather than in a panic afterwards is the whole point of it being published months ahead.",
+        "One trend worth noticing: test dates are moving earlier, out of the summer holidays and into the summer term of Year 5. Gloucestershire has committed to this, and reporting in 2026 suggested other areas were considering it too, the stated reason being that children lose focus over the summer. If your child is three or more years out, expect the date you are planning around to shift."
+      ],
+      "points": [
+        "Entry later than 11 does happen, but through late transfer rather than the normal round. Cambridge sells a late-transfer version of its assessment designed for Years 8, 9 and 10, roughly ages 12 to 14, and admissions authorities run their own tests for mid-year entry. It is per-school and competitive on its own terms.",
+        "The overwhelming norm is entry at 11, into Year 7."
+      ],
+      "sources": [
+        {
+          "title": "School Admissions Code 2021",
+          "publisher": "Department for Education",
+          "url": "https://www.gov.uk/government/publications/school-admissions-code"
+        },
+        {
+          "title": "School Admission Appeals Code 2022",
+          "publisher": "Department for Education",
+          "url": "https://www.gov.uk/government/publications/school-admission-appeals-code"
+        },
+        {
+          "title": "Gloucestershire grammar schools to adopt new accessible test",
+          "publisher": "BBC News, 16 April 2026",
+          "url": "https://www.bbc.co.uk/news/articles/cy01185ypdwo"
+        },
+        {
+          "title": "Entrance assessments, including late transfer",
+          "publisher": "Cambridge Select Insight",
+          "url": "https://www.cem.org/entrance-assessments"
+        }
+      ]
+    },
+    {
+      "id": "mixed-grammar-schools",
+      "group": "Mixed grammar schools",
+      "heading": "Mixed grammar schools",
+      "summary": "The largest and least distinctive group, and the one most families are actually applying to.",
+      "body": [
+        "Most children who sit the 11+ in England are applying to a co-educational grammar school, and for them the process is the one described in the sections above: one test, one ranked application, 31 October, 1 March. There is nothing different about a mixed school in the process itself, which is worth saying because it is the question families most often ask and the answer is usually duller than they expect.",
+        "What varies between mixed schools is the paper, not the system. A mixed school in Warwickshire sits a GL paper shared with five other grammars, three of which are single-sex. A mixed school in Buckinghamshire reports a 50/25/25 split between English and verbal reasoning combined, maths, and non-verbal reasoning. A mixed school in Gloucestershire, from 2028, will sit a curriculum-based test with non-verbal reasoning removed entirely.",
+        "The other thing that varies is competition, and it is geographic rather than structural. In a district with one grammar school and a healthy oversubscription, the test matters. In a district with two and a catchment of manageable size, it may not. Thirty-five local authorities have any grammar school at all, so most families in England have no decision to make here."
+      ],
+      "points": [
+        "The co-ed schools are the ones with the widest spread of entry scores, because they draw from the widest range of catchments.",
+        "A single consortium paper shared across single-sex and co-ed schools means the weighting is identical for all of them, which is worth knowing if you have heard that one sex is weighted differently."
+      ],
+      "sources": [
+        {
+          "title": "Admissions tests for state and independent schools",
+          "publisher": "GL Assessment",
+          "url": "https://www.gl-assessment.co.uk/products/admissions-for-state-and-independent-schools/"
+        },
+        {
+          "title": "Gloucestershire grammar schools to adopt new accessible test",
+          "publisher": "BBC News, 16 April 2026",
+          "url": "https://www.bbc.co.uk/news/articles/cy01185ypdwo"
+        },
+        {
+          "title": "Grammar schools research briefing",
+          "publisher": "House of Commons Library",
+          "url": "https://commonslibrary.parliament.uk/research-briefings/sn07070/"
+        }
+      ]
+    },
+    {
+      "id": "what-changed-in-2026",
+      "group": "Start here",
+      "heading": "What changed in 2026, and what did not",
+      "summary": "Free school meals widened substantially. The admissions cycle did not move at all.",
+      "body": [
+        "From the start of the 2026 to 2027 academic year, all children in households receiving Universal Credit are entitled to a free school meal in maintained schools, academies and free schools, which includes maintained grammar schools. This was made a legal requirement by the Children's Wellbeing and Schools Act 2026. There are now two categories. Targeted free school meals cover Universal Credit households with annual earnings of 7,400 pounds or less and keep the associated pupil premium and disadvantage funding. Expanded free school meals cover Universal Credit households above that figure and are meals only. Transitional protections ended at the end of 2025 to 2026, so eligibility is now reassessed annually, and you still have to apply.",
+        "This matters for admissions rather than for lunch. Pupil premium and free school meal status feature in the oversubscription criteria of some authorities, and Buckinghamshire goes further, recording that some of its grammar schools have a limited number of places for children in receipt of pupil premium who achieve a certain score, at a slightly lower threshold than the usual qualification score. That is a genuine, checkable adjustment, and it is not available everywhere.",
+        "Gloucestershire has made the most significant change of any single authority. Its seven grammar schools appointed the not-for-profit Future Stories Community Enterprise to run their Year 7 entrance test for entry from 2028, first sitting in summer 2027. The test moves from September of Year 6 to the summer term of Year 5, is based on the national curriculum, and removes non-verbal reasoning, on the stated grounds that it is the component that typically features in private tutoring.",
+        "Expansion is happening school by school rather than through any national programme. We looked for a Grammar School Expansion Programme on GOV.UK and could not find one under that name, so we are not going to describe one. What is verifiable is individual expansions: Oakwood Park Grammar School in Maidstone had a 7.3 million pound expansion approved, taking Year 7 places from 160 to 190 from September 2027,. In Maidstone, about 55% of Year 7 grammar places are for girls and 45% for boys.",
+        "And the thing that has not changed is the thing most families plan around: the School Admissions Code 2021 remains in force, 31 October is still the closing date, and National Offer Day is still 1 March or the next working day. The 2026 cycle ran to those dates."
+      ],
+      "sources": [
+        {
+          "title": "Free school meals: guidance for schools and local authorities, updated 16 September 2026",
+          "publisher": "Department for Education",
+          "url": "https://www.gov.uk/government/publications/free-school-meals-guidance-for-schools-and-local-authorities"
+        },
+        {
+          "title": "Guide to moving up to secondary school, including pupil premium places",
+          "publisher": "Buckinghamshire County Council",
+          "url": "https://www.buckinghamshire.gov.uk/schools-libraries-and-parks/school-admissions-and-appeals/guides-and-policies/guide-to-moving-up-to-secondary-school/admission-rules"
+        },
+        {
+          "title": "Gloucestershire grammar schools to adopt new accessible test",
+          "publisher": "BBC News, 16 April 2026",
+          "url": "https://www.bbc.co.uk/news/articles/cy01185ypdwo"
+        },
+        {
+          "title": "Council approves £7.3m grammar school expansion",
+          "publisher": "BBC News, 17 August 2026",
+          "url": "https://www.bbc.co.uk/news/articles/cvg7yd19yl0o"
+        }
+      ]
+    }
+  ]
+}

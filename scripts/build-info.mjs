@@ -25,8 +25,10 @@ const GROUP_ORDER = [
 const page = JSON.parse(readFileSync(OUT, "utf8"));
 
 // Every section lives in a staged file, including the ones about this app, so
-// the page data file is a build product and there is one place to edit.
-const staged = readdirSync(STAGE)
+// the page data file is a build product and staging/info/ is the only place a
+// section is ever edited. Running this overwrites the page data file entirely,
+// which is the point: there is no second copy to fall out of step.
+const merged = readdirSync(STAGE)
   .filter((name) => name.endsWith(".json"))
   .sort()
   .flatMap((name) => {
@@ -35,13 +37,6 @@ const staged = readdirSync(STAGE)
       throw new Error(`${name}: expected a sections array`);
     return data.sections;
   });
-
-if (page.sections.length)
-  throw new Error(
-    "The page data file has sections in it. They belong in staging/info/ so the page stays a build product.",
-  );
-
-const merged = staged;
 
 const order = new Map(GROUP_ORDER.map((name, index) => [name, index]));
 for (const section of merged)

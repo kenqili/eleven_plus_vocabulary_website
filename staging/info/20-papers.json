@@ -1,0 +1,234 @@
+{
+  "sections": [
+    {
+      "id": "the-papers-what-is-actually-sat",
+      "group": "The papers",
+      "heading": "What is actually sat",
+      "summary": "There is no single 11+ in England. Not one paper, not one provider, and not regulated by any national body.",
+      "body": [
+        "The single most useful thing to understand about the English 11+ is that it does not exist as a national exam. It is not regulated by Ofqual or any national exams body, there is no common format, and no two authorities sit the same paper. What exists is a market of providers, and a patchwork of local decisions about which of their papers to use.",
+        "GL Assessment describes itself as the largest provider of 11+ tests to schools in England, delivering over 300,000 papers a year, covering ages 7 to 14 across verbal reasoning, non-verbal reasoning, spatial reasoning, English and maths, on paper, multiple choice, thirty minutes upwards. Cambridge, trading as Cambridge Select Insight, sells a digital assessment averaging sixty minutes with three sections: numerical, verbal and non-verbal ability, for entry into Years 7 to 10. Schools' own and not-for-profit providers are now a real part of the market: the not-for-profit Future Stories Community Enterprise, founded by Reading School, provides tests for 12 grammar schools with more than 8,000 pupils sitting its papers each year, and the not-for-profit Consortium for Selective Schools in Essex provides the same test to 10 member schools.",
+        "GL's own explanation of why the papers differ is the important one, and it is worth reading in full: tests vary because local authorities or individual schools decide which subjects to test, as well as the balance of question types, and an authority or school may add its own questions to those from a provider. In other words the test is designed locally, by the school your child is applying to.",
+        "A common parental belief is that most papers contain a verbal reasoning test because it is the best predictor of future potential. That claim comes from GL, and GL is the commercial supplier of verbal reasoning, so it is interested testimony. The underlying research is real; the emphasis belongs to the seller."
+      ],
+      "points": [
+        "GL: the largest 11+ provider in England, 300,000+ papers a year, ages 7 to 14, paper and multiple choice, 30 minutes upwards.",
+        "Cambridge Select Insight: digital, about 60 minutes, numerical, verbal and non-verbal sections, for Years 7 to 10.",
+        "FSCE: a not-for-profit founded by Reading School, testing for 12 grammar schools and 8,000+ pupils a year.",
+        "CSSE: a not-for-profit running since 1993, serving 10 Essex member schools.",
+        "Cambridge states it does not sell practice materials and does not endorse commercial resources, on the grounds that this makes the test harder to tutor to."
+      ],
+      "sources": [
+        {
+          "title": "Admissions tests for state and independent schools",
+          "publisher": "GL Assessment",
+          "url": "https://www.gl-assessment.co.uk/products/admissions-for-state-and-independent-schools/"
+        },
+        {
+          "title": "11+ frequently asked questions",
+          "publisher": "GL Assessment",
+          "url": "https://11plus.gl-assessment.co.uk/pages/faqs"
+        },
+        {
+          "title": "Entrance assessments",
+          "publisher": "Cambridge Select Insight",
+          "url": "https://www.cem.org/entrance-assessments"
+        },
+        {
+          "title": "£600 for practice tests creates 11-plus tutoring arms race",
+          "publisher": "Schools Week, 3 September 2026",
+          "url": "https://schoolsweek.co.uk/600-for-practice-tests-creates-11-plus-tutoring-arms-race/"
+        }
+      ]
+    },
+    {
+      "id": "the-papers-standardised-scores",
+      "group": "The papers",
+      "heading": "What a score actually means",
+      "summary": "A standardised score says how your child did against others of the same age. It is not a measure of ability, and it does not travel between schools.",
+      "body": [
+        "A raw mark, meaning the number of questions right, is close to meaningless on its own. A paper sat by Year 5 children in June is a different paper-sitting from Year 6 children in September, so the providers convert raw marks into a standardised score adjusted to what an average child of the same age and month would have achieved. The scale is centred so that 100 is average, and 115 is one standard deviation above average.",
+        "The consequence parents most often miss is this: a standardised score is a statement about your child relative to other children of the same age. It is not an absolute measure of ability, and a score from one school cannot be compared with a score from another. Two children with the same standardised score at two different schools have not necessarily done equally well, because the two papers are not the same paper.",
+        "You will usually not be given raw marks. Reports indicate that raw marks are not disclosed by all schools, and parents are given Standard Age Scores instead. There is a checkable oddity here, and it is worth knowing: asked under the Freedom of Information Act for its 11+ data, Altrincham Grammar School for Boys replied that its exam provider is not subject to the Act, as it is not a public body. So some of the detail families would find useful is not obtainable from either the school or the provider.",
+        "GL publishes no conversion table and no worked example for its 11+ papers. It describes the standardisation process, and it points parents asking about format to their admissions department. If you need the specifics, your school is the only route to them."
+      ],
+      "points": [
+        "100 is average. 115 is one standard deviation above.",
+        "GL's public guide explains standardisation for its school tests such as CAT4, not for the 11+ papers, and gives no 11+ conversion table.",
+        "GL declines to state the format of the 11+ at all: contact your local grammar school or local authority."
+      ],
+      "sources": [
+        {
+          "title": "A guide to standardised tests",
+          "publisher": "GL Assessment",
+          "url": "https://www.gl-assessment.co.uk/guides/a-guide-to-standardised-tests/"
+        },
+        {
+          "title": "Admissions testing and standardisation",
+          "publisher": "GL Assessment",
+          "url": "https://www.gl-assessment.co.uk/solutions/admissions-testing/"
+        },
+        {
+          "title": "Freedom of Information request on 11+ data",
+          "publisher": "What Do They Know",
+          "url": "https://www.whatdotheyknow.com/request/request_for_report_on_11_exam"
+        }
+      ]
+    },
+    {
+      "id": "the-papers-what-is-genuinely-free",
+      "group": "The papers",
+      "heading": "What is genuinely free, and what is advertising",
+      "summary": "An audit, because this is where parents are most often misled.",
+      "body": [
+        "There is a widely repeated claim that there are a hundred free 11+ practice papers available. We could not find a primary source for it. GL never makes that claim; GL says it offers ten hours of free familiarisation materials. Treat the hundred-paper figure as unverified.",
+        "What is real falls into three categories, and telling them apart matters more than any single resource.",
+        "Genuinely free, with no strings: GL publishes six ZIP downloads on one page with no email capture, covering verbal reasoning, non-verbal reasoning, English, maths, non-verbal reasoning with maths, and verbal skills. Between them they contain twelve test booklets, answer sheets and a parent's guide for each. ISEB publishes a free walkthrough and several free PDFs including a test framework.",
+        "Free but gated: Bond, published by Oxford University Press, offers hundreds of free practice questions, but you have to log in to a Bond account to reach them. Free in the way that a supermarket sample is free.",
+        "Advertising for something else: this is the category to be most careful with. ISEB's own guidance on third-party preparation platforms is blunt: in all but one case ISEB has not worked with these companies and has not supplied them any questions, and ISEB cannot guarantee the accuracy of any other third-party platform. Exactly one platform is ISEB-endorsed.",
+        "Two caveats on GL's genuinely free material, both read from the documents themselves. The print dates run from June 2017 to January 2024, so the newest free pack is over two years old. And GL restricts redistribution: private tutors and other organisations may not feature the page or copy, reproduce or distribute the materials. That restriction is why you will find a lot of the free papers circulating as downloads elsewhere rather than as links to GL."
+      ],
+      "table": {
+        "head": ["What is free", "Who", "What you get"],
+        "rows": [
+          [
+            "GL familiarisation papers",
+            "GL Assessment",
+            "Six ZIPs, twelve booklets, answer sheets and a parent's guide each. No email wall. The newest is dated January 2024."
+          ],
+          [
+            "Pre-Tests walkthrough and PDFs",
+            "ISEB",
+            "A walkthrough and downloadable PDFs including a test framework"
+          ],
+          [
+            "Free practice questions",
+            "Bond (Oxford University Press)",
+            "Hundreds of questions, behind a free account login"
+          ]
+        ]
+      },
+      "sources": [
+        {
+          "title": "Free familiarisation materials",
+          "publisher": "GL Assessment",
+          "url": "https://11plus.gl-assessment.co.uk/pages/free-materials"
+        },
+        {
+          "title": "Preparing for the Pre-Tests, and the third-party platform warning",
+          "publisher": "ISEB",
+          "url": "https://www.iseb.co.uk/families-hub/pre-tests-admissions-toolkit/preparing-for-the-pre-tests/"
+        },
+        {
+          "title": "Free practice",
+          "publisher": "Bond",
+          "url": "https://www.bond11plus.co.uk/free-practice"
+        },
+        {
+          "title": "Pre-Tests walkthrough",
+          "publisher": "ISEB",
+          "url": "https://iseb.eva.tech/walkthrough/"
+        }
+      ]
+    },
+    {
+      "id": "the-papers-what-they-cost",
+      "group": "The papers",
+      "heading": "What the paid material costs",
+      "summary": "Real prices, and what the largest single spend reported in the press was.",
+      "figures": [
+        { "label": "A single GL practice pack", "value": "£9.99" },
+        { "label": "All 12 GL packs", "value": "£82.50" },
+        { "label": "ISEB Pre-Tests prep pack", "value": "£149" },
+        { "label": "Reported top-end spend", "value": "about £600 a year" }
+      ],
+      "table": {
+        "head": ["Provider", "What", "Price"],
+        "rows": [
+          ["GL Assessment", "One practice pack, any subject", "£9.99"],
+          ["GL Assessment", "All three packs in one subject", "£26.66"],
+          ["GL Assessment", "The bundle of all twelve packs", "£82.50"],
+          ["ISEB", "Pre-Tests 11+ prep pack, 65+ resources", "£149.00"],
+          ["ISEB", "Parent Power Toolkit, part 1", "£29.95"],
+          ["ISEB", "Parent Power Toolkit, parts 2 and 3", "£39.95 each"],
+          ["Bond", "10 Minute Tests, English or maths or reasoning", "£7.99 each"],
+          ["Bond", "Multibuy discount", "20% on two, 30% on eleven, 50% on fifty"]
+        ]
+      },
+      "body": [
+        "Those are the prices, and they are not extreme. The figure that should make a parent pause is the one from the press: an investigation in September 2026 found the most expensive preparation costing about 600 pounds a year, with GL bundles at 99 pounds, one commercial package at around 670 pounds a year, and the Essex consortium's packs at 19 pounds, noting that the consortium's 2024 pack was free for children on free school meals but families must pay for more recent years.",
+        "The head of Reading School put the reason plainly. Selling practice papers to families creates a tutoring arms race which is unfair upon the most disadvantaged, and the 11+ must not be a high-stakes assessment which needs years of tutoring and hours of practice papers. He is the person whose own school sells papers through the not-for-profit it founded, so it is worth reading his position as a caveat rather than a verdict.",
+        "Families interviewed by the BBC in Gloucestershire, after that county changed its test, said the things parents actually feel. One: I feel guilty that we are giving my daughter an advantage over other people because we're paying for her to be tutored. Another: I think we probably will still tutor because everyone else is. And in counterpoint: it's really expensive and we know parents who paid for tutoring for years and then their children didn't get in."
+      ],
+      "sources": [
+        {
+          "title": "Practice paper prices",
+          "publisher": "GL Assessment",
+          "url": "https://11plus.gl-assessment.co.uk/products.json"
+        },
+        {
+          "title": "Preparing for the Pre-Tests, with product prices",
+          "publisher": "ISEB",
+          "url": "https://www.iseb.co.uk/families-hub/pre-tests-admissions-toolkit/preparing-for-the-pre-tests/"
+        },
+        {
+          "title": "Bond shop",
+          "publisher": "Bond",
+          "url": "https://www.bond11plus.co.uk/shop/category/12-books"
+        },
+        {
+          "title": "£600 for practice tests creates 11-plus tutoring arms race",
+          "publisher": "Schools Week, 3 September 2026",
+          "url": "https://schoolsweek.co.uk/600-for-practice-tests-creates-11-plus-tutoring-arms-race/"
+        },
+        {
+          "title": "Parents say grammar test changes won't end tutoring advantage",
+          "publisher": "BBC News, 7 June 2026",
+          "url": "https://www.bbc.co.uk/news/articles/clyple9qpldo"
+        }
+      ]
+    },
+    {
+      "id": "the-papers-what-the-evidence-says",
+      "group": "The papers",
+      "heading": "What the evidence actually says about practice",
+      "summary": "Be clear about the quality of this evidence, because it is weaker than anyone selling you a course will tell you.",
+      "body": [
+        "We found no controlled research quantifying how much practice raises an 11+ score, and no authoritative guidance on the best age to start. What follows is provider design claims, practitioner argument and reported family behaviour. If you are about to spend money on the strength of a number, this is the number you should look at, and the honest answer is that it is not the one the courses advertise.",
+        "On tutoring generally, the Education Endowment Foundation reports a headline effect of about five months of additional progress for one-to-one tuition, described as a moderate impact for moderate cost based on moderate evidence, from 123 studies, last reviewed in July 2021. In primary schools the effect is larger than in secondary, and in maths it is much lower than in literacy. The recommended shape is specific: about thirty minutes, three to five times a week, over a set period of up to ten weeks.",
+        "The DfE's independent evaluation of the National Tutoring Programme, Year 3, is a much more sobering document, and it is about the real world rather than a trial. It found that although many results reached statistical significance, the effect sizes were small and equated to one month's additional progress or less. Two years on, at Key Stage 4, effects equated to less than one month's additional progress, and it detected no other longer-term benefits.",
+        "The EEF attaches a caveat that matters here more than most of its caveats: evaluations conducted by organisations connected with the approach, for example commercial providers, typically have larger effects, which may influence the overall impact. In other words, if a tutoring company published the research, expect a bigger number.",
+        "The exam boards are consistent about what they built their tests to resist. GL says its tests are designed to be less influenced by intensive or repeated preparation, and that the reasoning components are less reliant on curriculum exposure or rehearsed content. Cambridge says it introduces new assessment paradigms to reduce the predictability of assessment content. ISEB says adaptive testing means children do not spend time on questions that are too hard or too easy, and states flatly that the Pre-Tests are based on the national curriculum so additional preparation is not a requirement."
+      ],
+      "points": [
+        "EEF, one-to-one tuition: about five months' additional progress, moderate evidence, 123 studies.",
+        "EEF, individualised instruction: about four months, based on limited evidence, 198 studies.",
+        "DfE, National Tutoring Programme Year 3: one month's progress or less at Key Stage 2, and less than one month two years later.",
+        "The EEF's caveat: commercial-provider evaluations report larger effects and may skew the overall figure.",
+        "No controlled study of how much 11+ practice helps was found, by us or, as far as we can tell, by anyone else."
+      ],
+      "sources": [
+        {
+          "title": "One to one tuition",
+          "publisher": "Education Endowment Foundation",
+          "url": "https://educationendowmentfoundation.org.uk/education-evidence/teaching-learning-toolkit/one-to-one-tuition"
+        },
+        {
+          "title": "Individualised instruction",
+          "publisher": "Education Endowment Foundation",
+          "url": "https://educationendowmentfoundation.org.uk/education-evidence/teaching-learning-toolkit/individualised-instruction"
+        },
+        {
+          "title": "National Tutoring Programme year 3 impact evaluation",
+          "publisher": "Department for Education, 27 September 2024",
+          "url": "https://assets.publishing.service.gov.uk/media/66f2e30d7da73f17177640e8/National_Tutoring_Programme_year_3_impact_evaluation_-_Sep_24.pdf"
+        },
+        {
+          "title": "Admissions tests for state and independent schools",
+          "publisher": "GL Assessment",
+          "url": "https://www.gl-assessment.co.uk/products/admissions-for-state-and-independent-schools/"
+        }
+      ]
+    }
+  ]
+}

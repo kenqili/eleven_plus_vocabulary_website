@@ -6,8 +6,577 @@
     "Most parents arrive at the 11+ with the same three questions and no answer to any of them: what is actually being tested, when does it happen, and how much of this is worth doing. The advice on offer rarely answers them. It sells either alarm or reassurance, and both are easier to say than the truth, which is duller and more useful.",
     "This page is the version we wanted and could not find: the process as it actually is, with the sources shown, written for a parent rather than a tutor. Where the evidence is weak we say so. Where the honest answer is that a question depends on the school, we say that instead of picking a number to look decisive."
   ],
-  "keyPoints": [],
+  "keyPoints": [
+    "There is no single 11+ in England. Not one paper, one provider, or one format. Each school or local authority decides which tests to use, and there is no national regulator.",
+    "One date is fixed for everyone: 31 October is the national closing date for secondary applications. Everything else, including the test date, is set locally.",
+    "England has 163 grammar schools in 35 local authorities, and about 60% of them are in just 11. Most families therefore have no grammar school to compete for. A few have the most competitive thing they will ever do.",
+    "The official offer rate of 83.6% for first choices covers all secondary applicants and is not a grammar school figure. No authority publishes current waiting-list lengths, so any number you see quoted is unverified.",
+    "A standardised score of 115 means one standard deviation above average for a child of that age. It is not a measure of ability, and a score from one school cannot be compared with a score from another.",
+    "The exam providers are all explicit that their tests are built so coaching does not help much. Cambridge sells no practice papers at all, on the grounds that it makes the test tutor-proof.",
+    "The best free material genuinely is free: GL publishes six downloads of familiarisation papers with no email wall, and ISEB publishes a walkthrough. The much-repeated claim of a hundred free practice papers has no primary source.",
+    "A 13+ place at a school like Eton or Westminster is a different process from an 11+, at a different age, and the same test is used for both. 11+ practice papers are not preparation for it.",
+    "Nobody publishes an application-to-offer ratio for the most selective schools, and the interview weighting is not published either. Any parent site giving you those numbers is inventing them.",
+    "The honest evidence on practice is weaker than any course will tell you. The EEF reports about five months for one-to-one tuition; the DfE's own evaluation of the national tutoring programme found one month or less.",
+    "Reading for pleasure is doing more for the 11+ than any practice paper, and the statistics on how much children are reading are going the wrong way: 32.7% of 8 to 18 year olds said they enjoyed reading in their free time, the lowest in 20 years."
+  ],
   "sections": [
+    {
+      "id": "what-a-grammar-school-is",
+      "group": "Start here",
+      "heading": "What a grammar school is, in law",
+      "summary": "State-funded, locally maintained, not locally controlled, and free to refuse you.",
+      "figures": [
+        {
+          "label": "In England",
+          "value": "163"
+        },
+        {
+          "label": "In Wales",
+          "value": "none"
+        },
+        {
+          "label": "In Northern Ireland",
+          "value": "65 or 69"
+        }
+      ],
+      "body": [
+        "A grammar school is a state-funded school that selects all of its pupils by academic ability. There are 163 in England, listed by statute under the Education (Grammar School Ballots) Regulations 1998. There are none in Wales, which closed or converted them in the 1970s, and none in Scotland in this sense, though a few historic schools keep the name. Northern Ireland has a substantial separate system, and its grammar schools work differently: since the 1989 open enrolment reform they must take pupils up to capacity rather than selecting to a fixed number. The number of Northern Irish grammar schools is genuinely disputed between sources, which say 65, 67 or 69.",
+        "The legal position confuses parents, so it is worth stating plainly. A maintained grammar school is funded and infrastructure-supported by the local authority but not controlled by it. The authority has a duty to fund the school; the school's own governors decide who gets a place. The admissions rules are set by the governing body, which is what the law calls the admission authority. The statutory basis is the School Standards and Framework Act 1998.",
+        "Two consequences follow that most families do not expect. First, selection is protected: only designated grammar schools may select their entire intake on academic ability. Second, and more surprisingly, they do not have to fill their places. Under the School Admissions Code, a grammar school that offers nobody a place it should have is acting lawfully. There is no obligation to offer a place to a child who meets the standard if the school has decided it wants fewer pupils.",
+        "One historical detail that explains the geography. Almost all the English comprehensives of the 1960s and 70s came out of grammar-school conversions, leaving a small residue where ending selection was tried. Only one ballot to abolish selection has ever been held, at Ripon Grammar School in 2000, and parents rejected the change by two to one. That is why the 163 schools are clustered in particular counties and local authorities rather than spread evenly: only 35 local authorities have any grammar school at all, and around 60% of them sit in just eleven.",
+        "A source of confusion worth flagging: many English grammar schools have since converted to academies. An academy grammar school is no longer council-maintained, but it still selects. So the phrase local authority grammar school is not quite the same set as the 163."
+      ],
+      "points": [
+        "The campaigning body is the National Grammar Schools Association. There is no British Grammar School Association, and the Grammar Schools Association does not exist under that name either.",
+        "The NGSA's own website has not been updated since 2017 and still claims 164 schools, which is why the statutory figure of 163 is the one used here."
+      ],
+      "sources": [
+        {
+          "title": "List of grammar schools in England",
+          "publisher": "Wikipedia, from the 1998 regulations",
+          "url": "https://en.wikipedia.org/wiki/List_of_grammar_schools_in_England"
+        },
+        {
+          "title": "School Admissions Code 2021",
+          "publisher": "Department for Education",
+          "url": "https://www.gov.uk/government/publications/school-admissions-code"
+        },
+        {
+          "title": "Grammar schools research briefing",
+          "publisher": "House of Commons Library",
+          "url": "https://commonslibrary.parliament.uk/research-briefings/sn07070/"
+        },
+        {
+          "title": "National Grammar Schools Association",
+          "publisher": "NGSA",
+          "url": "https://ngsa.org.uk/"
+        }
+      ]
+    },
+    {
+      "id": "how-your-child-gets-a-place",
+      "group": "Start here",
+      "heading": "How your child actually gets a place",
+      "summary": "One hard national date, one ranked application, and a set of rules schools must follow when places run out.",
+      "body": [
+        "Everything is governed by the School Admissions Code 2021, statutory guidance in force since September 2021. There is one hard national date in the whole process: 31 October, the national closing date for secondary school applications. For a September 2026 start that meant applying by 31 October 2025. Your local authority runs a single co-ordinated application in which you rank your preferences, usually three, though London authorities generally allow up to six.",
+        "How the place is then decided varies, and the variation matters. Where a grammar system survives across a district, the test is used to identify a subset of children and the remaining criteria allocate places among them if too many qualify. In an isolated grammar school, places go in rank order of test performance alone. The Code is deliberately not prescriptive and offers no definitive list of acceptable oversubscription criteria, but the common ones are a sibling already at the school, distance from the school or from a named measurement point, catchment areas, feeder schools, and social or medical need. A school must state precisely how it defines home and from which point it measures distance.",
+        "One rule catches parents out: a school may not charge for the process. Not for tests, not for contributions, and not even for a refundable deposit. A school asking you to pay to sit its entrance test is acting outside the Code.",
+        "If you are refused, appeals are governed separately, by the School Admission Appeals Code 2022. You must be given at least 20 school days from notification of refusal to lodge an appeal, at least 10 school days' notice of the hearing, and a normal-round appeal must be heard within 40 school days of the deadline. Every authority must publish its appeals timetable by 28 February each year. If a panel upholds your appeal the school must admit your child. You can also ask for an interim decision, an early place while the appeal runs, if you have applied elsewhere and your child would otherwise be without a school."
+      ],
+      "table": {
+        "head": [
+          "The rule",
+          "What it means"
+        ],
+        "rows": [
+          [
+            "31 October",
+            "The national closing date for secondary applications. No exceptions."
+          ],
+          [
+            "Rank your preferences",
+            "Usually three, up to six in London authorities."
+          ],
+          [
+            "No charge, ever",
+            "A school may not charge for tests, contributions or even refundable deposits."
+          ],
+          [
+            "20 school days",
+            "Your minimum window to lodge an appeal after a refusal."
+          ],
+          [
+            "10 school days' notice",
+            "The minimum notice you must get of an appeal hearing."
+          ],
+          [
+            "40 school days",
+            "The maximum time from appeal deadline to hearing."
+          ],
+          [
+            "28 February",
+            "Every authority must have published its appeals timetable by this date."
+          ]
+        ]
+      },
+      "sources": [
+        {
+          "title": "School Admissions Code 2021",
+          "publisher": "Department for Education",
+          "url": "https://www.gov.uk/government/publications/school-admissions-code"
+        },
+        {
+          "title": "School Admission Appeals Code 2022",
+          "publisher": "Department for Education",
+          "url": "https://www.gov.uk/government/publications/school-admission-appeals-code"
+        }
+      ]
+    },
+    {
+      "id": "how-competitive-a-place-is",
+      "group": "Start here",
+      "heading": "How competitive a place really is",
+      "summary": "The national offer rate is reassuring in a way that is misleading, and no waiting-list figures are published.",
+      "body": [
+        "For September 2026 entry, 83.6% of secondary applicants got their first choice and 96.4% got one of their ranked preferences. Those are the official figures, and they are true. They are also close to useless for a family applying to a grammar school, because they are dominated by the non-selective schools where the great majority of applicants go.",
+        "The DfE does publish a breakdown by whether an authority has selective schools, but we could not retrieve it, so the honest answer is that we cannot give you a grammar-school-specific offer rate. The closest thing to a comparable figure came from Schools Week in September 2026, reporting that free school meal rates at the average grammar were 9.2 percentage points lower than elsewhere in their own catchment areas in 2024. A catchment where the grammar draws noticeably fewer disadvantaged pupils is not a catchment where the test is doing much work.",
+        "On waiting lists, we have to be blunt: we could not find a single authoritative, current, published count of grammar-school waiting-list lengths anywhere. You will see numbers quoted. Treat them as unverified. What can be said is structural: only 35 local authorities have any grammar school at all, and around 60% of them are in eleven authorities, so in most of the country a place at the nearest grammar is not a competitive exercise at all, while in a handful it is the most competitive thing a family will ever do."
+      ],
+      "figures": [
+        {
+          "label": "First choice, all secondary",
+          "value": "83.6%"
+        },
+        {
+          "label": "One of their choices, all secondary",
+          "value": "96.4%"
+        },
+        {
+          "label": "Local authorities with any grammar school",
+          "value": "35"
+        }
+      ],
+      "points": [
+        "The 83.6% and 96.4% figures cover all secondary applicants. Do not read them as grammar school statistics.",
+        "No authoritative current published count of grammar-school waiting lists could be found.",
+        "In Gloucestershire about 2,500 children a year sit for seven grammar schools, which is a reasonable illustration of the ratio in a genuinely competitive area."
+      ],
+      "sources": [
+        {
+          "title": "Primary and secondary school applications and offers: 2026",
+          "publisher": "Department for Education, 18 June 2026",
+          "url": "https://explore-education-statistics.service.gov.uk/find-statistics/secondary-and-primary-school-applications-and-offers"
+        },
+        {
+          "title": "£600 for practice tests creates 11-plus tutoring arms race",
+          "publisher": "Schools Week, 3 September 2026",
+          "url": "https://schoolsweek.co.uk/600-for-practice-tests-creates-11-plus-tutoring-arms-race/"
+        },
+        {
+          "title": "Gloucestershire grammar schools to adopt new accessible test",
+          "publisher": "BBC News, 16 April 2026",
+          "url": "https://www.bbc.co.uk/news/articles/cy01185ypdwo"
+        }
+      ]
+    },
+    {
+      "id": "the-timeline",
+      "group": "Start here",
+      "heading": "The timeline, with dates",
+      "summary": "The part you can plan around. Only some of these dates are national; the test date is set locally.",
+      "table": {
+        "head": [
+          "When",
+          "What happens"
+        ],
+        "rows": [
+          [
+            "May of Year 5",
+            "Registration for the test typically opens. Warwickshire opened registration for 2027 entry on 8 May 2026."
+          ],
+          [
+            "Summer of Year 5 to September of Year 6",
+            "The test sits, traditionally in September of Year 6. Gloucestershire is moving to the summer term of Year 5 from 2027."
+          ],
+          [
+            "October of Year 6",
+            "Results come back, in time for applications to be ranked."
+          ],
+          [
+            "31 October",
+            "National closing date for secondary applications. The one hard date in the process."
+          ],
+          [
+            "28 February",
+            "Every authority must have published its appeals timetable."
+          ],
+          [
+            "1 March, or next working day",
+            "National Offer Day. For September 2026 entry this fell on 2 March, because 1 March was a Sunday."
+          ],
+          [
+            "Within 20 school days of the refusal",
+            "Deadline to lodge an appeal. Each school sets its own date within that limit."
+          ],
+          [
+            "Within 40 school days of that deadline",
+            "The appeal is heard, with a decision letter within 5 school days where possible."
+          ],
+          [
+            "September",
+            "The new Year 7 intake starts."
+          ]
+        ]
+      },
+      "body": [
+        "The 28 February date is the one to put in a diary now, even if you are years away. Every authority has to publish its appeals timetable by then, and it is the document that tells you what to do if something goes wrong. Reading it in advance rather than in a panic afterwards is the whole point of it being published months ahead.",
+        "One trend worth noticing: test dates are moving earlier, out of the summer holidays and into the summer term of Year 5. Gloucestershire has committed to this, and reporting in 2026 suggested other areas were considering it too, the stated reason being that children lose focus over the summer. If your child is three or more years out, expect the date you are planning around to shift."
+      ],
+      "points": [
+        "Entry later than 11 does happen, but through late transfer rather than the normal round. Cambridge sells a late-transfer version of its assessment designed for Years 8, 9 and 10, roughly ages 12 to 14, and admissions authorities run their own tests for mid-year entry. It is per-school and competitive on its own terms.",
+        "The overwhelming norm is entry at 11, into Year 7."
+      ],
+      "sources": [
+        {
+          "title": "School Admissions Code 2021",
+          "publisher": "Department for Education",
+          "url": "https://www.gov.uk/government/publications/school-admissions-code"
+        },
+        {
+          "title": "School Admission Appeals Code 2022",
+          "publisher": "Department for Education",
+          "url": "https://www.gov.uk/government/publications/school-admission-appeals-code"
+        },
+        {
+          "title": "Gloucestershire grammar schools to adopt new accessible test",
+          "publisher": "BBC News, 16 April 2026",
+          "url": "https://www.bbc.co.uk/news/articles/cy01185ypdwo"
+        },
+        {
+          "title": "Entrance assessments, including late transfer",
+          "publisher": "Cambridge Select Insight",
+          "url": "https://www.cem.org/entrance-assessments"
+        }
+      ]
+    },
+    {
+      "id": "what-changed-in-2026",
+      "group": "Start here",
+      "heading": "What changed in 2026, and what did not",
+      "summary": "Free school meals widened substantially. The admissions cycle did not move at all.",
+      "body": [
+        "From the start of the 2026 to 2027 academic year, all children in households receiving Universal Credit are entitled to a free school meal in maintained schools, academies and free schools, which includes maintained grammar schools. This was made a legal requirement by the Children's Wellbeing and Schools Act 2026. There are now two categories. Targeted free school meals cover Universal Credit households with annual earnings of 7,400 pounds or less and keep the associated pupil premium and disadvantage funding. Expanded free school meals cover Universal Credit households above that figure and are meals only. Transitional protections ended at the end of 2025 to 2026, so eligibility is now reassessed annually, and you still have to apply.",
+        "This matters for admissions rather than for lunch. Pupil premium and free school meal status feature in the oversubscription criteria of some authorities, and Buckinghamshire goes further, recording that some of its grammar schools have a limited number of places for children in receipt of pupil premium who achieve a certain score, at a slightly lower threshold than the usual qualification score. That is a genuine, checkable adjustment, and it is not available everywhere.",
+        "Gloucestershire has made the most significant change of any single authority. Its seven grammar schools appointed the not-for-profit Future Stories Community Enterprise to run their Year 7 entrance test for entry from 2028, first sitting in summer 2027. The test moves from September of Year 6 to the summer term of Year 5, is based on the national curriculum, and removes non-verbal reasoning, on the stated grounds that it is the component that typically features in private tutoring.",
+        "Expansion is happening school by school rather than through any national programme. We looked for a Grammar School Expansion Programme on GOV.UK and could not find one under that name, so we are not going to describe one. What is verifiable is individual expansions: Oakwood Park Grammar School in Maidstone had a 7.3 million pound expansion approved, taking Year 7 places from 160 to 190 from September 2027,. In Maidstone, about 55% of Year 7 grammar places are for girls and 45% for boys.",
+        "And the thing that has not changed is the thing most families plan around: the School Admissions Code 2021 remains in force, 31 October is still the closing date, and National Offer Day is still 1 March or the next working day. The 2026 cycle ran to those dates."
+      ],
+      "sources": [
+        {
+          "title": "Free school meals: guidance for schools and local authorities, updated 16 September 2026",
+          "publisher": "Department for Education",
+          "url": "https://www.gov.uk/government/publications/free-school-meals-guidance-for-schools-and-local-authorities"
+        },
+        {
+          "title": "Guide to moving up to secondary school, including pupil premium places",
+          "publisher": "Buckinghamshire County Council",
+          "url": "https://www.buckinghamshire.gov.uk/schools-libraries-and-parks/school-admissions-and-appeals/guides-and-policies/guide-to-moving-up-to-secondary-school/admission-rules"
+        },
+        {
+          "title": "Gloucestershire grammar schools to adopt new accessible test",
+          "publisher": "BBC News, 16 April 2026",
+          "url": "https://www.bbc.co.uk/news/articles/cy01185ypdwo"
+        },
+        {
+          "title": "Council approves £7.3m grammar school expansion",
+          "publisher": "BBC News, 17 August 2026",
+          "url": "https://www.bbc.co.uk/news/articles/cvg7yd19yl0o"
+        }
+      ]
+    },
+    {
+      "id": "the-papers-what-is-actually-sat",
+      "group": "The papers",
+      "heading": "What is actually sat",
+      "summary": "There is no single 11+ in England. Not one paper, not one provider, and not regulated by any national body.",
+      "body": [
+        "The single most useful thing to understand about the English 11+ is that it does not exist as a national exam. It is not regulated by Ofqual or any national exams body, there is no common format, and no two authorities sit the same paper. What exists is a market of providers, and a patchwork of local decisions about which of their papers to use.",
+        "GL Assessment describes itself as the largest provider of 11+ tests to schools in England, delivering over 300,000 papers a year, covering ages 7 to 14 across verbal reasoning, non-verbal reasoning, spatial reasoning, English and maths, on paper, multiple choice, thirty minutes upwards. Cambridge, trading as Cambridge Select Insight, sells a digital assessment averaging sixty minutes with three sections: numerical, verbal and non-verbal ability, for entry into Years 7 to 10. Schools' own and not-for-profit providers are now a real part of the market: the not-for-profit Future Stories Community Enterprise, founded by Reading School, provides tests for 12 grammar schools with more than 8,000 pupils sitting its papers each year, and the not-for-profit Consortium for Selective Schools in Essex provides the same test to 10 member schools.",
+        "GL's own explanation of why the papers differ is the important one, and it is worth reading in full: tests vary because local authorities or individual schools decide which subjects to test, as well as the balance of question types, and an authority or school may add its own questions to those from a provider. In other words the test is designed locally, by the school your child is applying to.",
+        "A common parental belief is that most papers contain a verbal reasoning test because it is the best predictor of future potential. That claim comes from GL, and GL is the commercial supplier of verbal reasoning, so it is interested testimony. The underlying research is real; the emphasis belongs to the seller."
+      ],
+      "points": [
+        "GL: the largest 11+ provider in England, 300,000+ papers a year, ages 7 to 14, paper and multiple choice, 30 minutes upwards.",
+        "Cambridge Select Insight: digital, about 60 minutes, numerical, verbal and non-verbal sections, for Years 7 to 10.",
+        "FSCE: a not-for-profit founded by Reading School, testing for 12 grammar schools and 8,000+ pupils a year.",
+        "CSSE: a not-for-profit running since 1993, serving 10 Essex member schools.",
+        "Cambridge states it does not sell practice materials and does not endorse commercial resources, on the grounds that this makes the test harder to tutor to."
+      ],
+      "sources": [
+        {
+          "title": "Admissions tests for state and independent schools",
+          "publisher": "GL Assessment",
+          "url": "https://www.gl-assessment.co.uk/products/admissions-for-state-and-independent-schools/"
+        },
+        {
+          "title": "11+ frequently asked questions",
+          "publisher": "GL Assessment",
+          "url": "https://11plus.gl-assessment.co.uk/pages/faqs"
+        },
+        {
+          "title": "Entrance assessments",
+          "publisher": "Cambridge Select Insight",
+          "url": "https://www.cem.org/entrance-assessments"
+        },
+        {
+          "title": "£600 for practice tests creates 11-plus tutoring arms race",
+          "publisher": "Schools Week, 3 September 2026",
+          "url": "https://schoolsweek.co.uk/600-for-practice-tests-creates-11-plus-tutoring-arms-race/"
+        }
+      ]
+    },
+    {
+      "id": "the-papers-standardised-scores",
+      "group": "The papers",
+      "heading": "What a score actually means",
+      "summary": "A standardised score says how your child did against others of the same age. It is not a measure of ability, and it does not travel between schools.",
+      "body": [
+        "A raw mark, meaning the number of questions right, is close to meaningless on its own. A paper sat by Year 5 children in June is a different paper-sitting from Year 6 children in September, so the providers convert raw marks into a standardised score adjusted to what an average child of the same age and month would have achieved. The scale is centred so that 100 is average, and 115 is one standard deviation above average.",
+        "The consequence parents most often miss is this: a standardised score is a statement about your child relative to other children of the same age. It is not an absolute measure of ability, and a score from one school cannot be compared with a score from another. Two children with the same standardised score at two different schools have not necessarily done equally well, because the two papers are not the same paper.",
+        "You will usually not be given raw marks. Reports indicate that raw marks are not disclosed by all schools, and parents are given Standard Age Scores instead. There is a checkable oddity here, and it is worth knowing: asked under the Freedom of Information Act for its 11+ data, Altrincham Grammar School for Boys replied that its exam provider is not subject to the Act, as it is not a public body. So some of the detail families would find useful is not obtainable from either the school or the provider.",
+        "GL publishes no conversion table and no worked example for its 11+ papers. It describes the standardisation process, and it points parents asking about format to their admissions department. If you need the specifics, your school is the only route to them."
+      ],
+      "points": [
+        "100 is average. 115 is one standard deviation above.",
+        "GL's public guide explains standardisation for its school tests such as CAT4, not for the 11+ papers, and gives no 11+ conversion table.",
+        "GL declines to state the format of the 11+ at all: contact your local grammar school or local authority."
+      ],
+      "sources": [
+        {
+          "title": "A guide to standardised tests",
+          "publisher": "GL Assessment",
+          "url": "https://www.gl-assessment.co.uk/guides/a-guide-to-standardised-tests/"
+        },
+        {
+          "title": "Admissions testing and standardisation",
+          "publisher": "GL Assessment",
+          "url": "https://www.gl-assessment.co.uk/solutions/admissions-testing/"
+        },
+        {
+          "title": "Freedom of Information request on 11+ data",
+          "publisher": "What Do They Know",
+          "url": "https://www.whatdotheyknow.com/request/request_for_report_on_11_exam"
+        }
+      ]
+    },
+    {
+      "id": "the-papers-what-is-genuinely-free",
+      "group": "The papers",
+      "heading": "What is genuinely free, and what is advertising",
+      "summary": "An audit, because this is where parents are most often misled.",
+      "body": [
+        "There is a widely repeated claim that there are a hundred free 11+ practice papers available. We could not find a primary source for it. GL never makes that claim; GL says it offers ten hours of free familiarisation materials. Treat the hundred-paper figure as unverified.",
+        "What is real falls into three categories, and telling them apart matters more than any single resource.",
+        "Genuinely free, with no strings: GL publishes six ZIP downloads on one page with no email capture, covering verbal reasoning, non-verbal reasoning, English, maths, non-verbal reasoning with maths, and verbal skills. Between them they contain twelve test booklets, answer sheets and a parent's guide for each. ISEB publishes a free walkthrough and several free PDFs including a test framework.",
+        "Free but gated: Bond, published by Oxford University Press, offers hundreds of free practice questions, but you have to log in to a Bond account to reach them. Free in the way that a supermarket sample is free.",
+        "Advertising for something else: this is the category to be most careful with. ISEB's own guidance on third-party preparation platforms is blunt: in all but one case ISEB has not worked with these companies and has not supplied them any questions, and ISEB cannot guarantee the accuracy of any other third-party platform. Exactly one platform is ISEB-endorsed.",
+        "Two caveats on GL's genuinely free material, both read from the documents themselves. The print dates run from June 2017 to January 2024, so the newest free pack is over two years old. And GL restricts redistribution: private tutors and other organisations may not feature the page or copy, reproduce or distribute the materials. That restriction is why you will find a lot of the free papers circulating as downloads elsewhere rather than as links to GL."
+      ],
+      "table": {
+        "head": [
+          "What is free",
+          "Who",
+          "What you get"
+        ],
+        "rows": [
+          [
+            "GL familiarisation papers",
+            "GL Assessment",
+            "Six ZIPs, twelve booklets, answer sheets and a parent's guide each. No email wall. The newest is dated January 2024."
+          ],
+          [
+            "Pre-Tests walkthrough and PDFs",
+            "ISEB",
+            "A walkthrough and downloadable PDFs including a test framework"
+          ],
+          [
+            "Free practice questions",
+            "Bond (Oxford University Press)",
+            "Hundreds of questions, behind a free account login"
+          ]
+        ]
+      },
+      "sources": [
+        {
+          "title": "Free familiarisation materials",
+          "publisher": "GL Assessment",
+          "url": "https://11plus.gl-assessment.co.uk/pages/free-materials"
+        },
+        {
+          "title": "Preparing for the Pre-Tests, and the third-party platform warning",
+          "publisher": "ISEB",
+          "url": "https://www.iseb.co.uk/families-hub/pre-tests-admissions-toolkit/preparing-for-the-pre-tests/"
+        },
+        {
+          "title": "Free practice",
+          "publisher": "Bond",
+          "url": "https://www.bond11plus.co.uk/free-practice"
+        },
+        {
+          "title": "Pre-Tests walkthrough",
+          "publisher": "ISEB",
+          "url": "https://iseb.eva.tech/walkthrough/"
+        }
+      ]
+    },
+    {
+      "id": "the-papers-what-they-cost",
+      "group": "The papers",
+      "heading": "What the paid material costs",
+      "summary": "Real prices, and what the largest single spend reported in the press was.",
+      "figures": [
+        {
+          "label": "A single GL practice pack",
+          "value": "£9.99"
+        },
+        {
+          "label": "All 12 GL packs",
+          "value": "£82.50"
+        },
+        {
+          "label": "ISEB Pre-Tests prep pack",
+          "value": "£149"
+        },
+        {
+          "label": "Reported top-end spend",
+          "value": "about £600 a year"
+        }
+      ],
+      "table": {
+        "head": [
+          "Provider",
+          "What",
+          "Price"
+        ],
+        "rows": [
+          [
+            "GL Assessment",
+            "One practice pack, any subject",
+            "£9.99"
+          ],
+          [
+            "GL Assessment",
+            "All three packs in one subject",
+            "£26.66"
+          ],
+          [
+            "GL Assessment",
+            "The bundle of all twelve packs",
+            "£82.50"
+          ],
+          [
+            "ISEB",
+            "Pre-Tests 11+ prep pack, 65+ resources",
+            "£149.00"
+          ],
+          [
+            "ISEB",
+            "Parent Power Toolkit, part 1",
+            "£29.95"
+          ],
+          [
+            "ISEB",
+            "Parent Power Toolkit, parts 2 and 3",
+            "£39.95 each"
+          ],
+          [
+            "Bond",
+            "10 Minute Tests, English or maths or reasoning",
+            "£7.99 each"
+          ],
+          [
+            "Bond",
+            "Multibuy discount",
+            "20% on two, 30% on eleven, 50% on fifty"
+          ]
+        ]
+      },
+      "body": [
+        "Those are the prices, and they are not extreme. The figure that should make a parent pause is the one from the press: an investigation in September 2026 found the most expensive preparation costing about 600 pounds a year, with GL bundles at 99 pounds, one commercial package at around 670 pounds a year, and the Essex consortium's packs at 19 pounds, noting that the consortium's 2024 pack was free for children on free school meals but families must pay for more recent years.",
+        "The head of Reading School put the reason plainly. Selling practice papers to families creates a tutoring arms race which is unfair upon the most disadvantaged, and the 11+ must not be a high-stakes assessment which needs years of tutoring and hours of practice papers. He is the person whose own school sells papers through the not-for-profit it founded, so it is worth reading his position as a caveat rather than a verdict.",
+        "Families interviewed by the BBC in Gloucestershire, after that county changed its test, said the things parents actually feel. One: I feel guilty that we are giving my daughter an advantage over other people because we're paying for her to be tutored. Another: I think we probably will still tutor because everyone else is. And in counterpoint: it's really expensive and we know parents who paid for tutoring for years and then their children didn't get in."
+      ],
+      "sources": [
+        {
+          "title": "Practice paper prices",
+          "publisher": "GL Assessment",
+          "url": "https://11plus.gl-assessment.co.uk/products.json"
+        },
+        {
+          "title": "Preparing for the Pre-Tests, with product prices",
+          "publisher": "ISEB",
+          "url": "https://www.iseb.co.uk/families-hub/pre-tests-admissions-toolkit/preparing-for-the-pre-tests/"
+        },
+        {
+          "title": "Bond shop",
+          "publisher": "Bond",
+          "url": "https://www.bond11plus.co.uk/shop/category/12-books"
+        },
+        {
+          "title": "£600 for practice tests creates 11-plus tutoring arms race",
+          "publisher": "Schools Week, 3 September 2026",
+          "url": "https://schoolsweek.co.uk/600-for-practice-tests-creates-11-plus-tutoring-arms-race/"
+        },
+        {
+          "title": "Parents say grammar test changes won't end tutoring advantage",
+          "publisher": "BBC News, 7 June 2026",
+          "url": "https://www.bbc.co.uk/news/articles/clyple9qpldo"
+        }
+      ]
+    },
+    {
+      "id": "the-papers-what-the-evidence-says",
+      "group": "The papers",
+      "heading": "What the evidence actually says about practice",
+      "summary": "Be clear about the quality of this evidence, because it is weaker than anyone selling you a course will tell you.",
+      "body": [
+        "We found no controlled research quantifying how much practice raises an 11+ score, and no authoritative guidance on the best age to start. What follows is provider design claims, practitioner argument and reported family behaviour. If you are about to spend money on the strength of a number, this is the number you should look at, and the honest answer is that it is not the one the courses advertise.",
+        "On tutoring generally, the Education Endowment Foundation reports a headline effect of about five months of additional progress for one-to-one tuition, described as a moderate impact for moderate cost based on moderate evidence, from 123 studies, last reviewed in July 2021. In primary schools the effect is larger than in secondary, and in maths it is much lower than in literacy. The recommended shape is specific: about thirty minutes, three to five times a week, over a set period of up to ten weeks.",
+        "The DfE's independent evaluation of the National Tutoring Programme, Year 3, is a much more sobering document, and it is about the real world rather than a trial. It found that although many results reached statistical significance, the effect sizes were small and equated to one month's additional progress or less. Two years on, at Key Stage 4, effects equated to less than one month's additional progress, and it detected no other longer-term benefits.",
+        "The EEF attaches a caveat that matters here more than most of its caveats: evaluations conducted by organisations connected with the approach, for example commercial providers, typically have larger effects, which may influence the overall impact. In other words, if a tutoring company published the research, expect a bigger number.",
+        "The exam boards are consistent about what they built their tests to resist. GL says its tests are designed to be less influenced by intensive or repeated preparation, and that the reasoning components are less reliant on curriculum exposure or rehearsed content. Cambridge says it introduces new assessment paradigms to reduce the predictability of assessment content. ISEB says adaptive testing means children do not spend time on questions that are too hard or too easy, and states flatly that the Pre-Tests are based on the national curriculum so additional preparation is not a requirement."
+      ],
+      "points": [
+        "EEF, one-to-one tuition: about five months' additional progress, moderate evidence, 123 studies.",
+        "EEF, individualised instruction: about four months, based on limited evidence, 198 studies.",
+        "DfE, National Tutoring Programme Year 3: one month's progress or less at Key Stage 2, and less than one month two years later.",
+        "The EEF's caveat: commercial-provider evaluations report larger effects and may skew the overall figure.",
+        "No controlled study of how much 11+ practice helps was found, by us or, as far as we can tell, by anyone else."
+      ],
+      "sources": [
+        {
+          "title": "One to one tuition",
+          "publisher": "Education Endowment Foundation",
+          "url": "https://educationendowmentfoundation.org.uk/education-evidence/teaching-learning-toolkit/one-to-one-tuition"
+        },
+        {
+          "title": "Individualised instruction",
+          "publisher": "Education Endowment Foundation",
+          "url": "https://educationendowmentfoundation.org.uk/education-evidence/teaching-learning-toolkit/individualised-instruction"
+        },
+        {
+          "title": "National Tutoring Programme year 3 impact evaluation",
+          "publisher": "Department for Education, 27 September 2024",
+          "url": "https://assets.publishing.service.gov.uk/media/66f2e30d7da73f17177640e8/National_Tutoring_Programme_year_3_impact_evaluation_-_Sep_24.pdf"
+        },
+        {
+          "title": "Admissions tests for state and independent schools",
+          "publisher": "GL Assessment",
+          "url": "https://www.gl-assessment.co.uk/products/admissions-for-state-and-independent-schools/"
+        }
+      ]
+    },
     {
       "id": "girls-grammar-schools",
       "group": "Girls' grammar schools",
@@ -67,9 +636,9 @@
           "url": "https://www.cheltladiescollege.org/join/11-entry"
         },
         {
-          "title": "GL Assessment 11+ tests",
+          "title": "11+ frequently asked questions",
           "publisher": "GL Assessment",
-          "url": "https://11plus.gl-assessment.co.uk/"
+          "url": "https://11plus.gl-assessment.co.uk/pages/faqs"
         },
         {
           "title": "Common Entrance at 11+ for schools",
@@ -188,14 +757,579 @@
           "url": "https://www.lggs.org.uk/admissions/year-7-admissions"
         },
         {
-          "title": "GL Assessment 11+ tests, familiarisation and practice papers",
+          "title": "11+ frequently asked questions",
           "publisher": "GL Assessment",
-          "url": "https://11plus.gl-assessment.co.uk/"
+          "url": "https://11plus.gl-assessment.co.uk/pages/faqs"
         },
         {
           "title": "Expanding free school meals: what parents need to know",
           "publisher": "Department for Education",
           "url": "https://educationhub.blog.gov.uk/2026/09/expanding-free-school-meals-what-parents-need-to-know/"
+        }
+      ]
+    },
+    {
+      "id": "mixed-grammar-schools",
+      "group": "Mixed grammar schools",
+      "heading": "Mixed grammar schools",
+      "summary": "The largest and least distinctive group, and the one most families are actually applying to.",
+      "body": [
+        "Most children who sit the 11+ in England are applying to a co-educational grammar school, and for them the process is the one described in the sections above: one test, one ranked application, 31 October, 1 March. There is nothing different about a mixed school in the process itself, which is worth saying because it is the question families most often ask and the answer is usually duller than they expect.",
+        "What varies between mixed schools is the paper, not the system. A mixed school in Warwickshire sits a GL paper shared with five other grammars, three of which are single-sex. A mixed school in Buckinghamshire reports a 50/25/25 split between English and verbal reasoning combined, maths, and non-verbal reasoning. A mixed school in Gloucestershire, from 2028, will sit a curriculum-based test with non-verbal reasoning removed entirely.",
+        "The other thing that varies is competition, and it is geographic rather than structural. In a district with one grammar school and a healthy oversubscription, the test matters. In a district with two and a catchment of manageable size, it may not. Thirty-five local authorities have any grammar school at all, so most families in England have no decision to make here."
+      ],
+      "points": [
+        "The co-ed schools are the ones with the widest spread of entry scores, because they draw from the widest range of catchments.",
+        "A single consortium paper shared across single-sex and co-ed schools means the weighting is identical for all of them, which is worth knowing if you have heard that one sex is weighted differently."
+      ],
+      "sources": [
+        {
+          "title": "Admissions tests for state and independent schools",
+          "publisher": "GL Assessment",
+          "url": "https://www.gl-assessment.co.uk/products/admissions-for-state-and-independent-schools/"
+        },
+        {
+          "title": "Gloucestershire grammar schools to adopt new accessible test",
+          "publisher": "BBC News, 16 April 2026",
+          "url": "https://www.bbc.co.uk/news/articles/cy01185ypdwo"
+        },
+        {
+          "title": "Grammar schools research briefing",
+          "publisher": "House of Commons Library",
+          "url": "https://commonslibrary.parliament.uk/research-briefings/sn07070/"
+        }
+      ]
+    },
+    {
+      "id": "what-super-selective-means",
+      "group": "Super selective schools",
+      "heading": "What \"super selective\" actually means",
+      "summary": "It is not an official category. It describes schools that select almost entirely at 13, do not roll admissions, and are heavily oversubscribed.",
+      "body": [
+        "Super selective is not an official term. It has no legal, regulatory or exam-board status; we checked the ISEB site and the admissions pages of Winchester, Westminster and Dulwich, and the phrase appears on none of them. It is descriptive language from the education press, and it is worth defining functionally rather than treating as a category.",
+        "The four features the schools have in common are these. Almost all new pupils arrive at one age, usually 13. Selection happens at 13, by entrance test, interview and a report from the current school. They do not accept applications throughout the year, unlike most independent schools. And they are heavily oversubscribed.",
+        "The distinction that matters most is from the state system, and it is the age. State grammar schools select at 11. These select at 13. A family that has spent two years preparing for an 11+ is not two-thirds of the way to one of these; they are at the start of a different process."
+      ],
+      "points": [
+        "Eton takes boys aged 13 to 18 into Year 9, with a sixth-form intake of about 20 places.",
+        "Westminster's Under School takes 4+, 7+ and 11+, and the 11+ place is a through-school place into Year 9 with no further entry testing.",
+        "St Paul's runs a prep school for 7 to 13 and a senior school for 13 to 18.",
+        "Tonbridge is unusual in offering three entry points: Year 9, Year 10 and Year 12.",
+        "Whitgift offers 11+, 13+, 14+ and 16+. Dulwich covers 7 to 18 with entry in Year 7, Year 9 and Year 12."
+      ],
+      "sources": [
+        {
+          "title": "Entry to Eton, Year 9",
+          "publisher": "Eton College",
+          "url": "https://www.etoncollege.com/admissions/year-9-13/"
+        },
+        {
+          "title": "13+ entry",
+          "publisher": "Westminster School",
+          "url": "https://www.westminster.org.uk/admissions/13-entry-westminster-school/"
+        },
+        {
+          "title": "Joining in Year 9 (13+)",
+          "publisher": "Winchester College",
+          "url": "https://www.winchestercollege.org/admissions/joining-in-year-9-13/"
+        },
+        {
+          "title": "Year 9 entry",
+          "publisher": "Dulwich College",
+          "url": "https://www.dulwich.org.uk/admissions/year-9-entry"
+        },
+        {
+          "title": "Year 9 entry",
+          "publisher": "Tonbridge School",
+          "url": "https://www.tonbridge-school.co.uk/admissions/year-9-13-entry/"
+        }
+      ]
+    },
+    {
+      "id": "super-selective-schools-do-not-share-an-exam",
+      "group": "Super selective schools",
+      "heading": "They do not share an exam",
+      "summary": "Checking the arrangements one school at a time, because generalising here is how families go wrong.",
+      "table": {
+        "head": [
+          "School",
+          "First stage",
+          "What happens after"
+        ],
+        "rows": [
+          [
+            "Eton",
+            "ISEB Common Pre-Tests, taken in the autumn of Year 6, with a head's report",
+            "Interview, plus an online predictive test of ability and potential"
+          ],
+          [
+            "Winchester",
+            "Its own General Ability Testing, school references and a writing assessment",
+            "Interview. The Winchester Entrance papers sat in Year 8 are explicitly not decisive"
+          ],
+          [
+            "Westminster",
+            "ISEB Common Pre-Tests, age-adjusted",
+            "Separate 40-minute maths and English papers in early January, then interview"
+          ],
+          [
+            "St Paul's",
+            "ISEB online pre-test, free to register",
+            "Its own published-syllabus papers: 75 minutes of maths, 45 of English, then interview"
+          ],
+          [
+            "Harrow",
+            "ISEB Common Pre-Test required of all boys in the autumn of Year 6",
+            "Interview, then Year 8 exams, conditional on Common Entrance or a scholarship"
+          ],
+          [
+            "Dulwich",
+            "Its own written English and maths papers plus online reasoning tests",
+            "Interview. ISEB is explicitly not used for deferred entry"
+          ],
+          [
+            "Tonbridge",
+            "No ISEB at all: an Experience Afternoon of activities and a one-to-one interview, plus a confidential school reference",
+            "Provisional exams and interview in the spring of Year 7"
+          ],
+          [
+            "Whitgift",
+            "Its own exams in English, maths and science",
+            "Interview"
+          ]
+        ],
+        "note": "Seven schools commonly named in this tier could not be reached for this page: Christ's Hospital, Highgate, Imperial College London International School, King's College School, Millfield, Sevenoaks and Radley. Their arrangements are unconfirmed here and should not be assumed to mirror the schools above."
+      },
+      "body": [
+        "Three arrangements are worth pulling out, because they are the ones that surprise people.",
+        "Winchester does not use ISEB at all. Selection is its own General Ability Testing, school references, a writing assessment and an interview. It then publishes, in plain terms, that the Winchester Entrance papers its candidates sit in April and May of Year 8 are not decisive: entry is not dependent on the results, and the papers are an indicator of academic progress rather than a gate. The school's own academic scholarship exam, called Election, is taken in Year 8.",
+        "Dulwich excludes ISEB for one whole route. For deferred entry to Year 9 it states that candidates sit its own tests at the College, and says directly: we do not use the ISEB pre-test for deferred entry applicants.",
+        "St Paul's is a hybrid, and a candid one. ISEB does the first filter, St Paul's own papers on a published syllabus do the second, and an interview does the third. It publishes sample questions for its own papers, which is a reasonable thing for a school to do and not many do."
+      ],
+      "sources": [
+        {
+          "title": "Winchester Entrance, and what it is for",
+          "publisher": "Winchester College",
+          "url": "https://www.winchestercollege.org/admissions/winchester-entrance/"
+        },
+        {
+          "title": "Selection procedure for 13+",
+          "publisher": "St Paul's School",
+          "url": "https://www.stpaulsschool.org.uk/admissions/entry-to-st-pauls-13/selection-procedure/"
+        },
+        {
+          "title": "Year 9 entry, including deferred entry",
+          "publisher": "Dulwich College",
+          "url": "https://www.dulwich.org.uk/admissions/year-9-entry"
+        },
+        {
+          "title": "13+ entry",
+          "publisher": "Whitgift School",
+          "url": "https://www.whitgift.co.uk/admissions/13-entry"
+        },
+        {
+          "title": "Year 9 entry",
+          "publisher": "Harrow School",
+          "url": "https://www.harrowschool.org.uk/admissions/year-9-entry"
+        }
+      ]
+    },
+    {
+      "id": "super-selective-11-plus-is-not-13-plus",
+      "group": "Super selective schools",
+      "heading": "The 11+ is not the 13+, and one test is used for both",
+      "summary": "The label on a test tells you nothing about the age you take it or what it selects for.",
+      "body": [
+        "This confuses more families than any other point on this page, and it confuses them for a specific reason: the ISEB Pre-Tests are marketed as the 11+. ISEB itself describes them as sometimes referred to as the 11+, the Pre-Tests, or the ISEB, and as four adaptive online multiple-choice tests used by leading independent senior schools.",
+        "But Eton, Westminster, Harrow and St Paul's all use those same Pre-Tests in Year 6 as the first stage of thirteen-plus selection. Eton calls it Stage 1 of assessment for a conditional place. Harrow requires all boys to sit it in the autumn of Year 6. The same paper, sold as a primary-age test, is doing a secondary-age job.",
+        "The two processes differ in ways that matter. A thirteen-plus route adds writing and reading analysis that do not exist at 11+; Dulwich's writing test is twenty minutes, five of planning and fifteen of writing. The school report carries real weight, and at Tonbridge the whole route is built around it. The interview is a substantial part of the decision, and there is no 11+ equivalent of it. And at several schools the two are mutually exclusive: St Paul's says it is not possible to sit both the 11+ and 13+ processes and the offer is only for the entry point assessed, and Westminster says those applying for its Under School cannot at the same time apply for 13+ to the senior school.",
+        "So if a family has bought 11+ practice papers and mock exams written for nine-year-olds, that is not preparation for any of these. It is preparation for a different exam, at a different age, for a different thing."
+      ],
+      "points": [
+        "ISEB Common Entrance at 13+ has three compulsory papers, English, maths and science, plus optionals across eight subjects.",
+        "Eton, Westminster, St Paul's and Tonbridge all request a head teacher's report or reference.",
+        "St Paul's runs a second-chance route: candidates who show potential but cannot be offered a place are invited back in Year 8.",
+        "Winchester's 11+ route runs through its feeder school, The Pilgrims' School.",
+        "St Paul's says that for boys from state primaries, the 11+ entry point is the most appropriate, because it allows two years in the junior school."
+      ],
+      "sources": [
+        {
+          "title": "Common Pre-Tests for families",
+          "publisher": "ISEB",
+          "url": "https://www.iseb.co.uk/assessments/common-pre-tests/for-families/"
+        },
+        {
+          "title": "Common Entrance at 13+ for schools",
+          "publisher": "ISEB",
+          "url": "https://www.iseb.co.uk/assessments/common-entrance/at-13-for-schools/"
+        },
+        {
+          "title": "Selection procedure for 13+",
+          "publisher": "St Paul's School",
+          "url": "https://www.stpaulsschool.org.uk/admissions/entry-to-st-pauls-13/selection-procedure/"
+        }
+      ]
+    },
+    {
+      "id": "super-selective-fees-and-bursaries",
+      "group": "Super selective schools",
+      "heading": "What it costs, and what help exists",
+      "summary": "Fees per term, the non-refundable extras, and the bursary programmes in the schools' own figures.",
+      "figures": [
+        {
+          "label": "Day fees, lowest",
+          "value": "£10,470"
+        },
+        {
+          "label": "Boarding, lowest",
+          "value": "£17,322"
+        },
+        {
+          "label": "Boarding, highest",
+          "value": "£23,094"
+        },
+        {
+          "label": "VAT on fees",
+          "value": "20% since Jan 2025"
+        }
+      ],
+      "table": {
+        "head": [
+          "School",
+          "Day, per term",
+          "Boarding, per term"
+        ],
+        "rows": [
+          [
+            "Eton",
+            "No day places",
+            "£21,891 per half"
+          ],
+          [
+            "Westminster",
+            "£16,456 at 13+",
+            "£23,094"
+          ],
+          [
+            "Winchester",
+            "£15,318",
+            "£20,700"
+          ],
+          [
+            "Harrow",
+            "No day places",
+            "£21,990"
+          ],
+          [
+            "St Paul's",
+            "£12,666",
+            "£19,181"
+          ],
+          [
+            "Dulwich",
+            "£10,706",
+            "£22,472 full, £21,001 weekly"
+          ],
+          [
+            "Tonbridge",
+            "£16,069",
+            "£21,417"
+          ],
+          [
+            "Whitgift",
+            "£10,470",
+            "£20,538 full, £17,322 weekly"
+          ]
+        ],
+        "note": "Per term, for 2026 to 2027, as published by each school. Term structures differ, so these do not add up to comparable annual totals without checking how many terms each school bills. Extras are charged on top: Eton says usually £500 to £1,500 per half, Tonbridge £300 to £1,500 per term."
+      },
+      "body": [
+        "Fees are reviewed every year, and the movement is visible in the published figures. Whitgift's day fee went from £10,080 in 2025 to £10,470 for 2026. Westminster says the governing body typically reviews next year's fees by the end of the summer term, publishing updates in early July. Dulwich says the governors reserve the right to review fees at any time. So treat any figure here as a snapshot and re-check.",
+        "There are also non-refundable charges before a child has started: Eton £480 registration and £3,840 acceptance, Westminster £360, St Paul's £240, Harrow £450 registration plus £2,400 entry and £2,400 final confirmation deposits, Tonbridge £350 registration and £2,250 admissions fee, Whitgift £205 entrance exam fee.",
+        "All four headline schools run means-tested bursaries, and all four are explicit that the money is limited. Eton's budget for scholarships and bursaries was £9.7 million in 2024 to 2025, and in the year before that 247 boys received fee reductions, 99 paid nothing at all, and the average award was 71% of the fee, with 18% of boys receiving support. Eton publishes no income thresholds and assesses case by case, and says plainly that it is still not possible to support all applications. Winchester runs a programme of more than £5 million a year and calls it one of the most generous in the country, with awards from 5% to 100% of fees and help with extras such as laptops and trips. Westminster's programme is around £2 million, with means-tested bursaries of up to 100% of day fees. St Paul's is the only one of the four publishing income thresholds: up to £144,000 gross household income, and from 2025 to 2026 a 100% fee award for households below £78,000.",
+        "One thing worth knowing about process: at Westminster you must declare an intention to apply for a bursary at the point of registration, and the application itself is only completed if a place is offered. Missing that step is not recoverable."
+      ],
+      "sources": [
+        {
+          "title": "Fees",
+          "publisher": "Eton College",
+          "url": "https://www.etoncollege.com/admissions/fees/"
+        },
+        {
+          "title": "Financial aid",
+          "publisher": "Eton College",
+          "url": "https://www.etoncollege.com/admissions/financial-aid/"
+        },
+        {
+          "title": "Fees",
+          "publisher": "Winchester College",
+          "url": "https://www.winchestercollege.org/admissions/fees/"
+        },
+        {
+          "title": "Financial support",
+          "publisher": "Winchester College",
+          "url": "https://www.winchestercollege.org/admissions/financial-support/"
+        },
+        {
+          "title": "Bursaries and scholarships",
+          "publisher": "Westminster School",
+          "url": "https://www.westminster.org.uk/admissions/bursaries-and-scholarships/"
+        },
+        {
+          "title": "Founder's Awards and bursaries",
+          "publisher": "St Paul's School",
+          "url": "https://www.stpaulsschool.org.uk/admissions/founders-awards-bursaries/"
+        },
+        {
+          "title": "Fees",
+          "publisher": "Whitgift School",
+          "url": "https://www.whitgift.co.uk/admissions/fees"
+        },
+        {
+          "title": "VAT on private school fees",
+          "publisher": "GOV.UK",
+          "url": "https://www.gov.uk/government/publications/vat-on-private-school-fees"
+        }
+      ]
+    },
+    {
+      "id": "super-selective-how-competitive",
+      "group": "Super selective schools",
+      "heading": "How competitive, honestly",
+      "summary": "The published figures are shortlisting figures, not offer rates, and the difference matters.",
+      "body": [
+        "This is where a lot of published material misleads, so it is worth being precise about what the numbers are.",
+        "Westminster publishes that it receives around 500 applications and invites approximately 250 for interview. Dulwich publishes how many it invites: 40 boys for Year 9 entry in September 2027, and 120 for deferred entry in September 2029. Harrow takes around 160 boys into Year 9 and warns that boys registering after 30 September of Year 6 will be competing for fewer places.",
+        "Those are invitation-stage figures. They tell you about shortlisting, not about how many offers followed. Westminster's 500 to 250 says nothing about the offer rate at the end, and that number is not published. No school we checked publishes an application-to-offer ratio, and Eton and Winchester do not publish application or offer numbers at all. A figure you will see repeated, that around 400 boys apply to Winchester each year for roughly 140 places, appears only on commercial tutoring websites; we could not verify it against any school or press source, so it is not repeated here as fact.",
+        "What can be said plainly is that the funnel keeps going well past the interview. A typical round runs about eighteen months, from registration in Year 5 or 6 through interviews in the spring of Year 8, and several schools require a Year 8 exam after the interview that can still be failed. St Paul's runs a second-chance route in Year 8 for candidates who showed potential but were not offered a place, which tells you something useful about what these schools are looking for: not a single test taken once."
+      ],
+      "points": [
+        "No school in this tier publishes an application-to-offer ratio.",
+        "Eton's admissions policy is not public; it is available on request or through the parent portal.",
+        "None of these schools publishes a weighting between the written test and the interview. The closest published statement is Dulwich's, which names three components without weights: the examination, an interview, and a reference from the head of the current school."
+      ],
+      "sources": [
+        {
+          "title": "13+ entry",
+          "publisher": "Westminster School",
+          "url": "https://www.westminster.org.uk/admissions/13-entry-westminster-school/"
+        },
+        {
+          "title": "Year 9 entry",
+          "publisher": "Dulwich College",
+          "url": "https://www.dulwich.org.uk/admissions/year-9-entry"
+        },
+        {
+          "title": "Year 9 entry",
+          "publisher": "Harrow School",
+          "url": "https://www.harrowschool.org.uk/admissions/year-9-entry"
+        },
+        {
+          "title": "Entry to Eton",
+          "publisher": "Eton College",
+          "url": "https://www.etoncollege.com/admissions/entry-to-eton/"
+        }
+      ]
+    },
+    {
+      "id": "super-selective-what-schools-ask-for",
+      "group": "Super selective schools",
+      "heading": "What these schools say they are looking for",
+      "summary": "In their own words, and the answer is not practice papers.",
+      "body": [
+        "The most striking thing about this group is how little they ask for. Westminster says its pre-interview tests are online and that there is no need for special preparation. Winchester says the process should not be stressful or require additional tutoring. ISEB, the exam board that sets the papers, says your child is already excellently prepared because the Pre-Tests are based on the national curriculum, and that additional preparation is not required.",
+        "What the interviews reward is described just as plainly. Winchester looks for personal qualities as much as academic potential: curiosity, kindness, integrity, resilience, and a willingness to contribute to the life of a house, conducted by a member of the pastoral care team. St Paul's looks at numeracy, the ability to critically analyse source material, co-curricular interests and general conversation. Tonbridge describes what it wants as talent that can move from asking the right questions to challenging the answers.",
+        "Read those three descriptions together and the implication is consistent. Reading, conversation about what a child actually does, and a real account of their interests are what is being assessed. Those are the things a family has either been doing or has not.",
+        "One honest tension worth naming: ISEB sells paid preparation materials, including a Pre-Tests prep pack and a parent toolkit, while stating elsewhere that additional preparation is not required. Both are true. The exam board is selling you revision for a test your child is already ready for, and saying so in the same breath."
+      ],
+      "points": [
+        "Winchester: curiosity, kindness, integrity, resilience, willingness to contribute.",
+        "St Paul's: numeracy, critical analysis of source material, co-curricular interests, general conversation.",
+        "Tonbridge: talent that moves from asking the right questions to challenging the answers.",
+        "Tonbridge's Experience Afternoon is group activities followed by a one-to-one interview, with no written test at first stage."
+      ],
+      "sources": [
+        {
+          "title": "Joining in Year 9 (13+)",
+          "publisher": "Winchester College",
+          "url": "https://www.winchestercollege.org/admissions/joining-in-year-9-13/"
+        },
+        {
+          "title": "Selection procedure for 13+",
+          "publisher": "St Paul's School",
+          "url": "https://www.stpaulsschool.org.uk/admissions/entry-to-st-pauls-13/selection-procedure/"
+        },
+        {
+          "title": "Pre-Tests Admissions Toolkit",
+          "publisher": "ISEB",
+          "url": "https://www.iseb.co.uk/families-hub/pre-tests-admissions-toolkit/"
+        },
+        {
+          "title": "Common Pre-Tests for families",
+          "publisher": "ISEB",
+          "url": "https://www.iseb.co.uk/assessments/common-pre-tests/for-families/"
+        }
+      ]
+    },
+    {
+      "id": "when-to-start",
+      "group": "Preparing",
+      "heading": "When to start, and what that means at each age",
+      "summary": "No authority publishes a year-by-year schedule. This is assembled from what the providers and the evidence actually say.",
+      "body": [
+        "We should say plainly that no authority publishes a year-by-year 11+ preparation schedule, and we could not find one. What follows is a reasoned default built from the sourced principles, not doctrine. Treat it as a starting position you can adjust for your child.",
+        "Years 1 to 4: no 11+ work at all. Reading for pleasure and classroom fluency. This is not timidity, it is what the evidence supports. The EEF finds individualised instruction's effects are actually smaller in primary schools than secondary, and ISEB states the tests follow the national curriculum, so there is nothing to pre-empt in Years 1 to 4.",
+        "Year 5, age 9 to 10: learn the format, not the content. Work through one free GL familiarisation booklet per subject at your own pace. This is the point where the timings and the mechanics get rehearsed: a paper, multiple choice, answers in pencil because the sheets are computer-marked, and the instruction pages are not timed, only the numbered questions. GL's own guidance is to familiarise children with the style and format of the test, which is a different and much smaller claim than teaching them the test.",
+        "Summer before Year 6: one timed paper per subject. GL says tackling a practice paper under timed conditions gives children valuable experience of managing their time effectively, which is the actual skill being trained.",
+        "Year 6: if you buy anything, buy one subject at a time and use it diagnostically rather than as a measure. A practice score should create a picture of your child's strengths and weaknesses, which is a different use from deciding whether they are good enough. Keep the EEF's dosage shape in mind, which is short and regular over a set period rather than a cram, and note its own finding that maths gains much less from tuition than literacy does.",
+        "A content ceiling worth knowing: GL says its English and maths papers are based mainly on curriculum content reached during the early part of Year 6, and elsewhere says up to the end of Year 5. Slightly different wording, same meaning. If your child is comfortably past that, the content is not the thing to practise; the format is."
+      ],
+      "points": [
+        "Years 1 to 4: reading and classroom fluency, nothing test-shaped.",
+        "Year 5: the format, using the free familiarisation papers.",
+        "Summer before Year 6: one timed paper per subject.",
+        "Year 6: one subject at a time, used to find weaknesses rather than to measure worth."
+      ],
+      "sources": [
+        {
+          "title": "11+ frequently asked questions",
+          "publisher": "GL Assessment",
+          "url": "https://11plus.gl-assessment.co.uk/pages/faqs"
+        },
+        {
+          "title": "Free familiarisation materials",
+          "publisher": "GL Assessment",
+          "url": "https://11plus.gl-assessment.co.uk/pages/free-materials"
+        },
+        {
+          "title": "Common Pre-Tests for families",
+          "publisher": "ISEB",
+          "url": "https://www.iseb.co.uk/assessments/common-pre-tests/for-families/"
+        },
+        {
+          "title": "One to one tuition",
+          "publisher": "Education Endowment Foundation",
+          "url": "https://educationendowmentfoundation.org.uk/education-evidence/teaching-learning-toolkit/one-to-one-tuition"
+        },
+        {
+          "title": "Individualised instruction",
+          "publisher": "Education Endowment Foundation",
+          "url": "https://educationendowmentfoundation.org.uk/education-evidence/teaching-learning-toolkit/individualised-instruction"
+        }
+      ]
+    },
+    {
+      "id": "the-case-against-over-preparation",
+      "group": "Preparing",
+      "heading": "The case against over-preparation",
+      "summary": "Not a counter-argument for its own sake. It is what the schools, the exam boards and the DfE's own evaluation say.",
+      "body": [
+        "The strongest evidence here comes from the Department for Education's independent evaluation of the National Tutoring Programme, Year 3, published in September 2024. It found that although many results reached statistical significance, the effect sizes were small and equated to one month's additional progress or less. Two years later, at Key Stage 4, effects equated to less than one month's additional progress. It detected a small longer-term benefit on Key Stage 2 maths only, and no other longer-term benefits at all.",
+        "That is a far more modest return than the EEF's five months for well-targeted tuition, and the DfE notes two reasons the figure may even overstate what happened: dilution, where schools bought tuition for more children than could be served, and selection bias, where the children who got it were not a random sample. It says the true impact may be consistent with the expected impact from previous research, which is the fair reading.",
+        "The exam boards take the same position from the other direction, because they design against it. GL says its tests are designed to be less influenced by intensive or repeated preparation. Cambridge says it introduces new assessment paradigms to reduce the predictability of assessment content, and sells no practice papers at all. ISEB says adaptive testing means children do not spend time on questions that are too hard or too easy, and states that the Pre-Tests are based on the national curriculum so additional preparation is not a requirement.",
+        "On the anxiety question, one school leader said something that is worth more than any general warning. When Gloucestershire moved its test to the summer of Year 5, one of the justifications was that children lose their ability to focus on the test over the summer holidays when they are not at school. That is a head teacher saying that a summer spent drilling is measurably counterproductive. It is also, not coincidentally, the argument for moving the test earlier.",
+        "And the thing parents most often report, from the BBC's coverage of the Gloucestershire change: some parents paid for tutoring for years and their children did not get in. That is not an argument that tutoring is useless. It is an argument that the thing being bought is not a guarantee, and the page earlier in this section on competitiveness is where the numbers for that live."
+      ],
+      "points": [
+        "DfE, National Tutoring Programme Year 3: one month's progress or less at Key Stage 2, less than one month at Key Stage 4, no other longer-term benefit detected.",
+        "The DfE flags dilution and selection bias as reasons the figure may be optimistic.",
+        "GL, Cambridge and ISEB all state in their own words that they design their tests to be resistant to coaching.",
+        "A summer spent drilling is described by a school leader as reducing a child's ability to focus on the test."
+      ],
+      "sources": [
+        {
+          "title": "National Tutoring Programme year 3 impact evaluation, 27 September 2024",
+          "publisher": "Department for Education",
+          "url": "https://assets.publishing.service.gov.uk/media/66f2e30d7da73f17177640e8/National_Tutoring_Programme_year_3_impact_evaluation_-_Sep_24.pdf"
+        },
+        {
+          "title": "Gloucestershire grammar schools to adopt new accessible test",
+          "publisher": "BBC News, 16 April 2026",
+          "url": "https://www.bbc.co.uk/news/articles/cy01185ypdwo"
+        },
+        {
+          "title": "Parents say grammar test changes won't end tutoring advantage",
+          "publisher": "BBC News, 7 June 2026",
+          "url": "https://www.bbc.co.uk/news/articles/clyple9qpldo"
+        },
+        {
+          "title": "Entrance assessments",
+          "publisher": "Cambridge Select Insight",
+          "url": "https://www.cem.org/entrance-assessments"
+        }
+      ]
+    },
+    {
+      "id": "reading-is-the-real-preparation",
+      "group": "Preparing",
+      "heading": "What a child can do that is not preparation",
+      "summary": "The statistics on children's reading are the most alarming numbers on this page, and they are not about the 11+.",
+      "figures": [
+        {
+          "label": "Enjoy reading in their free time",
+          "value": "32.7%"
+        },
+        {
+          "label": "Read something daily",
+          "value": "18.7%"
+        },
+        {
+          "label": "Down since 2005",
+          "value": "36% and 20 points"
+        }
+      ],
+      "body": [
+        "The National Literacy Trust's annual survey, run in early 2025 with nearly 115,000 responses from 5 to 18 year olds, is the current benchmark. It found that 32.7% of 8 to 18 year olds said they enjoyed reading in their free time, which the Trust describes as the lowest in 20 years and a 36% fall since 2005. Only 18.7% read something daily in their free time, again the lowest recorded, down nearly 20 percentage points since 2005. Among the youngest children, those aged 5 to 8, daily reading fell to 44.5%.",
+        "Those are the numbers to sit with. A generation of children is reading less for pleasure than at any point in twenty years, in the run-up to the exam that tests comprehension and verbal reasoning. Whatever else a family does, this is the thing that will matter most.",
+        "The Trust also reports what pulls children in, which is useful practically: material tied to a favourite film or TV series, at 38.1%, and material matching their own interests, at 37.1%. A child who will not read a book will read something connected to the thing they care about.",
+        "On parents of very young children, the Trust's 2026 survey found 51% read with their child daily and 74% chatted daily, and noted that daily engagement remains below 2019 levels across every activity it measures.",
+        "One thing we want to be straight about: we could not verify, from a peer-reviewed source read for this page, the size of the link between reading for pleasure and later 11+ scores. That link is widely asserted and intuitively obvious, but it is not quantified here, and this page does not put a number on it. What the survey does show, unambiguously, is that children are reading less."
+      ],
+      "points": [
+        "32.7% of 8 to 18 year olds enjoy reading in their free time: the lowest in 20 years, down 36% since 2005.",
+        "18.7% read something daily in their free time, also the lowest recorded.",
+        "Among 5 to 8 year olds, daily reading fell to 44.5%.",
+        "What works practically: a favourite film or TV series, at 38.1%, and matching the child's own interests, at 37.1%."
+      ],
+      "sources": [
+        {
+          "title": "Children and young people's reading in 2025",
+          "publisher": "National Literacy Trust",
+          "url": "https://literacytrust.org.uk/research-services/research-reports/children-and-young-peoples-reading-in-2025/"
+        },
+        {
+          "title": "Parents' support for young children's literacy at home in 2026",
+          "publisher": "National Literacy Trust",
+          "url": "https://literacytrust.org.uk/research-services/research-reports/parents-support-for-young-childrens-literacy-at-home-in-2026/"
+        }
+      ]
+    },
+    {
+      "id": "vocabulary-in-the-11-plus",
+      "group": "Preparing",
+      "heading": "Where vocabulary actually fits",
+      "summary": "Honest about the size of it, because the honest size is still worth doing every day.",
+      "body": [
+        "We will not tell you vocabulary wins the 11+. It does not, on its own, and anyone who says otherwise is selling something. What the papers do is test comprehension, verbal reasoning, maths and non-verbal reasoning, and a child cannot do any of those well without words. A child who does not know what a word means cannot reason about a sentence that contains it, and verbal reasoning in particular is reasoning with words rather than reading comprehension, which is why GL includes it in most papers.",
+        "So the honest claim is narrow. Vocabulary is a floor, not a ceiling. It is the thing that has to be in place before any of the reasoning work is possible, it is the one component a family can work on at home daily without buying anything, and it is cumulative in a way that timed papers under pressure are not. A word learned in Year 4 is still there in Year 6.",
+        "What vocabulary practice should not be is a list to memorise the night before. That produces a child who can define a word they have never seen used, which is not what any of these papers asks for. Every paper in the range requires the word in a sentence, in context, to be understood or produced. A child who has only ever met a word on a flashcard has not met the word.",
+        "That is also why this app asks for a word from five different directions rather than drilling one. A word that can be defined but never spotted in a sentence is not learned, and the app is built so that it keeps coming back until it is."
+      ],
+      "points": [
+        "GL: most 11+ papers contain a verbal reasoning test because it is, in GL's words, the best predictor of future academic potential. GL sells that test, so treat the emphasis as interested.",
+        "A word learned in Year 4 is still there in Year 6. Vocabulary is the one component that compounds quietly.",
+        "It is a floor rather than a ceiling, and it is the only major component a family can practise daily at no cost."
+      ],
+      "sources": [
+        {
+          "title": "11+ frequently asked questions",
+          "publisher": "GL Assessment",
+          "url": "https://11plus.gl-assessment.co.uk/pages/faqs"
+        },
+        {
+          "title": "Admissions tests for state and independent schools",
+          "publisher": "GL Assessment",
+          "url": "https://www.gl-assessment.co.uk/products/admissions-for-state-and-independent-schools/"
         }
       ]
     },
@@ -250,9 +1384,44 @@
   ],
   "sources": [
     {
+      "title": "Gloucestershire grammar schools to adopt new accessible test",
+      "publisher": "BBC News, 16 April 2026",
+      "url": "https://www.bbc.co.uk/news/articles/cy01185ypdwo"
+    },
+    {
+      "title": "Council approves £7.3m grammar school expansion",
+      "publisher": "BBC News, 17 August 2026",
+      "url": "https://www.bbc.co.uk/news/articles/cvg7yd19yl0o"
+    },
+    {
+      "title": "Parents say grammar test changes won't end tutoring advantage",
+      "publisher": "BBC News, 7 June 2026",
+      "url": "https://www.bbc.co.uk/news/articles/clyple9qpldo"
+    },
+    {
+      "title": "Bond shop",
+      "publisher": "Bond",
+      "url": "https://www.bond11plus.co.uk/shop/category/12-books"
+    },
+    {
+      "title": "Free practice",
+      "publisher": "Bond",
+      "url": "https://www.bond11plus.co.uk/free-practice"
+    },
+    {
+      "title": "Guide to moving up to secondary school, including pupil premium places",
+      "publisher": "Buckinghamshire County Council",
+      "url": "https://www.buckinghamshire.gov.uk/schools-libraries-and-parks/school-admissions-and-appeals/guides-and-policies/guide-to-moving-up-to-secondary-school/admission-rules"
+    },
+    {
       "title": "Entrance assessments",
       "publisher": "Cambridge",
       "url": "https://www.cambridge.org/insight/entrance-assessments"
+    },
+    {
+      "title": "Entrance assessments",
+      "publisher": "Cambridge Select Insight",
+      "url": "https://www.cem.org/entrance-assessments"
     },
     {
       "title": "11+ entry, with key dates",
@@ -265,12 +1434,107 @@
       "url": "https://educationhub.blog.gov.uk/2026/09/expanding-free-school-meals-what-parents-need-to-know/"
     },
     {
-      "title": "GL Assessment 11+ tests, familiarisation and practice papers",
-      "publisher": "GL Assessment",
-      "url": "https://11plus.gl-assessment.co.uk/"
+      "title": "Free school meals: guidance for schools and local authorities, updated 16 September 2026",
+      "publisher": "Department for Education",
+      "url": "https://www.gov.uk/government/publications/free-school-meals-guidance-for-schools-and-local-authorities"
     },
     {
-      "title": "Grammar schools: research briefing",
+      "title": "National Tutoring Programme year 3 impact evaluation, 27 September 2024",
+      "publisher": "Department for Education",
+      "url": "https://assets.publishing.service.gov.uk/media/66f2e30d7da73f17177640e8/National_Tutoring_Programme_year_3_impact_evaluation_-_Sep_24.pdf"
+    },
+    {
+      "title": "School Admission Appeals Code 2022",
+      "publisher": "Department for Education",
+      "url": "https://www.gov.uk/government/publications/school-admission-appeals-code"
+    },
+    {
+      "title": "School Admissions Code 2021",
+      "publisher": "Department for Education",
+      "url": "https://www.gov.uk/government/publications/school-admissions-code"
+    },
+    {
+      "title": "Primary and secondary school applications and offers: 2026",
+      "publisher": "Department for Education, 18 June 2026",
+      "url": "https://explore-education-statistics.service.gov.uk/find-statistics/secondary-and-primary-school-applications-and-offers"
+    },
+    {
+      "title": "Year 9 entry",
+      "publisher": "Dulwich College",
+      "url": "https://www.dulwich.org.uk/admissions/year-9-entry"
+    },
+    {
+      "title": "Individualised instruction",
+      "publisher": "Education Endowment Foundation",
+      "url": "https://educationendowmentfoundation.org.uk/education-evidence/teaching-learning-toolkit/individualised-instruction"
+    },
+    {
+      "title": "One to one tuition",
+      "publisher": "Education Endowment Foundation",
+      "url": "https://educationendowmentfoundation.org.uk/education-evidence/teaching-learning-toolkit/one-to-one-tuition"
+    },
+    {
+      "title": "Entry to Eton",
+      "publisher": "Eton College",
+      "url": "https://www.etoncollege.com/admissions/entry-to-eton/"
+    },
+    {
+      "title": "Entry to Eton, Year 9",
+      "publisher": "Eton College",
+      "url": "https://www.etoncollege.com/admissions/year-9-13/"
+    },
+    {
+      "title": "Fees",
+      "publisher": "Eton College",
+      "url": "https://www.etoncollege.com/admissions/fees/"
+    },
+    {
+      "title": "Financial aid",
+      "publisher": "Eton College",
+      "url": "https://www.etoncollege.com/admissions/financial-aid/"
+    },
+    {
+      "title": "11+ frequently asked questions",
+      "publisher": "GL Assessment",
+      "url": "https://11plus.gl-assessment.co.uk/pages/faqs"
+    },
+    {
+      "title": "A guide to standardised tests",
+      "publisher": "GL Assessment",
+      "url": "https://www.gl-assessment.co.uk/guides/a-guide-to-standardised-tests/"
+    },
+    {
+      "title": "Admissions testing and standardisation",
+      "publisher": "GL Assessment",
+      "url": "https://www.gl-assessment.co.uk/solutions/admissions-testing/"
+    },
+    {
+      "title": "Admissions tests for state and independent schools",
+      "publisher": "GL Assessment",
+      "url": "https://www.gl-assessment.co.uk/products/admissions-for-state-and-independent-schools/"
+    },
+    {
+      "title": "Free familiarisation materials",
+      "publisher": "GL Assessment",
+      "url": "https://11plus.gl-assessment.co.uk/pages/free-materials"
+    },
+    {
+      "title": "Practice paper prices",
+      "publisher": "GL Assessment",
+      "url": "https://11plus.gl-assessment.co.uk/products.json"
+    },
+    {
+      "title": "VAT on private school fees",
+      "publisher": "GOV.UK",
+      "url": "https://www.gov.uk/government/publications/vat-on-private-school-fees"
+    },
+    {
+      "title": "Year 9 entry",
+      "publisher": "Harrow School",
+      "url": "https://www.harrowschool.org.uk/admissions/year-9-entry"
+    },
+    {
+      "title": "Grammar schools research briefing",
       "publisher": "House of Commons Library",
       "url": "https://commonslibrary.parliament.uk/research-briefings/sn07070/"
     },
@@ -278,6 +1542,11 @@
       "title": "Common Entrance at 11+ for schools",
       "publisher": "ISEB",
       "url": "https://www.iseb.co.uk/assessments/common-entrance/at-11-for-schools/"
+    },
+    {
+      "title": "Common Entrance at 13+ for schools",
+      "publisher": "ISEB",
+      "url": "https://www.iseb.co.uk/assessments/common-entrance/at-13-for-schools/"
     },
     {
       "title": "Common Entrance exam dates",
@@ -290,9 +1559,34 @@
       "url": "https://www.iseb.co.uk/assessments/common-pre-tests/for-families/"
     },
     {
+      "title": "Pre-Tests Admissions Toolkit",
+      "publisher": "ISEB",
+      "url": "https://www.iseb.co.uk/families-hub/pre-tests-admissions-toolkit/"
+    },
+    {
+      "title": "Pre-Tests walkthrough",
+      "publisher": "ISEB",
+      "url": "https://iseb.eva.tech/walkthrough/"
+    },
+    {
+      "title": "Preparing for the Pre-Tests, with product prices",
+      "publisher": "ISEB",
+      "url": "https://www.iseb.co.uk/families-hub/pre-tests-admissions-toolkit/preparing-for-the-pre-tests/"
+    },
+    {
       "title": "Year 7 admissions and test design",
       "publisher": "Lancaster Girls' Grammar School",
       "url": "https://www.lggs.org.uk/admissions/year-7-admissions"
+    },
+    {
+      "title": "Children and young people's reading in 2025",
+      "publisher": "National Literacy Trust",
+      "url": "https://literacytrust.org.uk/research-services/research-reports/children-and-young-peoples-reading-in-2025/"
+    },
+    {
+      "title": "Parents' support for young children's literacy at home in 2026",
+      "publisher": "National Literacy Trust",
+      "url": "https://literacytrust.org.uk/research-services/research-reports/parents-support-for-young-childrens-literacy-at-home-in-2026/"
     },
     {
       "title": "National Grammar Schools Association",
@@ -300,9 +1594,74 @@
       "url": "https://ngsa.org.uk/"
     },
     {
+      "title": "£600 for practice tests creates 11-plus tutoring arms race",
+      "publisher": "Schools Week, 3 September 2026",
+      "url": "https://schoolsweek.co.uk/600-for-practice-tests-creates-11-plus-tutoring-arms-race/"
+    },
+    {
+      "title": "Founder's Awards and bursaries",
+      "publisher": "St Paul's School",
+      "url": "https://www.stpaulsschool.org.uk/admissions/founders-awards-bursaries/"
+    },
+    {
+      "title": "Selection procedure for 13+",
+      "publisher": "St Paul's School",
+      "url": "https://www.stpaulsschool.org.uk/admissions/entry-to-st-pauls-13/selection-procedure/"
+    },
+    {
+      "title": "Year 9 entry",
+      "publisher": "Tonbridge School",
+      "url": "https://www.tonbridge-school.co.uk/admissions/year-9-13-entry/"
+    },
+    {
+      "title": "13+ entry",
+      "publisher": "Westminster School",
+      "url": "https://www.westminster.org.uk/admissions/13-entry-westminster-school/"
+    },
+    {
+      "title": "Bursaries and scholarships",
+      "publisher": "Westminster School",
+      "url": "https://www.westminster.org.uk/admissions/bursaries-and-scholarships/"
+    },
+    {
+      "title": "Freedom of Information request on 11+ data",
+      "publisher": "What Do They Know",
+      "url": "https://www.whatdotheyknow.com/request/request_for_report_on_11_exam"
+    },
+    {
+      "title": "13+ entry",
+      "publisher": "Whitgift School",
+      "url": "https://www.whitgift.co.uk/admissions/13-entry"
+    },
+    {
+      "title": "Fees",
+      "publisher": "Whitgift School",
+      "url": "https://www.whitgift.co.uk/admissions/fees"
+    },
+    {
       "title": "List of grammar schools in England",
       "publisher": "Wikipedia, from the 1998 regulations",
       "url": "https://en.wikipedia.org/wiki/List_of_grammar_schools_in_England"
+    },
+    {
+      "title": "Fees",
+      "publisher": "Winchester College",
+      "url": "https://www.winchestercollege.org/admissions/fees/"
+    },
+    {
+      "title": "Financial support",
+      "publisher": "Winchester College",
+      "url": "https://www.winchestercollege.org/admissions/financial-support/"
+    },
+    {
+      "title": "Joining in Year 9 (13+)",
+      "publisher": "Winchester College",
+      "url": "https://www.winchestercollege.org/admissions/joining-in-year-9-13/"
+    },
+    {
+      "title": "Winchester Entrance, and what it is for",
+      "publisher": "Winchester College",
+      "url": "https://www.winchestercollege.org/admissions/winchester-entrance/"
     }
   ]
 }

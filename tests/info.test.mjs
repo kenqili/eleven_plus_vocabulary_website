@@ -117,7 +117,6 @@ test("the page makes no promise about any school or exam", () => {
     ]),
   ].join(" ");
   const banned = [
-    /\bguarantee[sd]?\b/i,
     /\bensures? (a )?place\b/i,
     /\b(achievable|reachable|realistic) (for|at) your (child|score)\b/i,
     /\bget (a )?place at\b/i,
@@ -127,6 +126,21 @@ test("the page makes no promise about any school or exam", () => {
   ];
   for (const pattern of banned)
     assert.ok(!pattern.test(text), `the page matches ${pattern}`);
+
+  // "Guarantee" has to be handled on its own, because a page that is honest
+  // about this industry still has to say plainly that nobody can guarantee a
+  // place. A bare word match would punish exactly that, and would still let
+  // through a real promise dressed as reassurance. So every sentence using the
+  // word has to turn it down in the same sentence.
+  const negated =
+    /\b(no|not|nobody|none|never|cannot|can't|won't|does not|do not|is not|are not|without)\b/i;
+  for (const sentence of text.split(/(?<=[.!?])\s+/)) {
+    if (!/\bguarantee/i.test(sentence)) continue;
+    assert.ok(
+      negated.test(sentence),
+      `the page offers a guarantee: "${sentence.slice(0, 120)}"`,
+    );
+  }
 });
 
 test("the groups are in running order, and the contents list covers every section", () => {

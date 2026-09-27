@@ -6,9 +6,18 @@
       "heading": "Girls' grammar schools",
       "summary": "About 61 state grammar schools, entry at 11, and a folklore about English weighting that the evidence does not support.",
       "figures": [
-        { "label": "State grammar schools, England", "value": "163" },
-        { "label": "Of which girls-only", "value": "about 61" },
-        { "label": "Entry age", "value": "usually 11" }
+        {
+          "label": "State grammar schools, England",
+          "value": "163"
+        },
+        {
+          "label": "Of which girls-only",
+          "value": "about 61"
+        },
+        {
+          "label": "Entry age",
+          "value": "usually 11"
+        }
       ],
       "body": [
         "England has 163 fully selective grammar schools, listed by the 1998 Grammar School Ballots Regulations. Around 61 of them are girls-only, 56 are boys-only, and the rest take both. Those three numbers come from counting that statutory list by hand, so treat them as indicative rather than official: the Department for Education publishes no equivalent breakdown, and the figures circulating on the web mostly trace back to a Wikipedia list.",
@@ -50,9 +59,9 @@
           "url": "https://www.cheltladiescollege.org/join/11-entry"
         },
         {
-          "title": "GL Assessment 11+ tests",
+          "title": "11+ frequently asked questions",
           "publisher": "GL Assessment",
-          "url": "https://11plus.gl-assessment.co.uk/"
+          "url": "https://11plus.gl-assessment.co.uk/pages/faqs"
         },
         {
           "title": "Common Entrance at 11+ for schools",
@@ -67,16 +76,52 @@
       "heading": "A real girls' school timeline, with dates",
       "summary": "What a family with a September 2027 entry has already done and what is still ahead.",
       "table": {
-        "head": ["Step", "Lancaster Girls' Grammar", "Cheltenham Ladies' College"],
+        "head": [
+          "Step",
+          "Lancaster Girls' Grammar",
+          "Cheltenham Ladies' College"
+        ],
         "rows": [
-          ["Registration opened", "1 June 2026", "Already open"],
-          ["Registration closed", "9 September 2026", "21 September 2026"],
-          ["Test or assessment day", "26 September 2026", "1, 5 and 6 October 2026"],
-          ["Results to parents", "17 October 2026", "With offers, November 2026"],
-          ["Council application deadline", "31 October 2026", "n/a, direct application"],
-          ["Offers made", "1 March 2027", "November 2026"],
-          ["Accept or decline by", "15 March 2027", "Early March 2027"],
-          ["Waiting lists from", "1 April 2027", "n/a"]
+          [
+            "Registration opened",
+            "1 June 2026",
+            "Already open"
+          ],
+          [
+            "Registration closed",
+            "9 September 2026",
+            "21 September 2026"
+          ],
+          [
+            "Test or assessment day",
+            "26 September 2026",
+            "1, 5 and 6 October 2026"
+          ],
+          [
+            "Results to parents",
+            "17 October 2026",
+            "With offers, November 2026"
+          ],
+          [
+            "Council application deadline",
+            "31 October 2026",
+            "n/a, direct application"
+          ],
+          [
+            "Offers made",
+            "1 March 2027",
+            "November 2026"
+          ],
+          [
+            "Accept or decline by",
+            "15 March 2027",
+            "Early March 2027"
+          ],
+          [
+            "Waiting lists from",
+            "1 April 2027",
+            "n/a"
+          ]
         ],
         "note": "Two schools, chosen because both publish their dates in full. Most do not, and a school that does not publish its dates is not hiding them so much as not having fixed them yet."
       },
@@ -135,9 +180,9 @@
           "url": "https://www.lggs.org.uk/admissions/year-7-admissions"
         },
         {
-          "title": "GL Assessment 11+ tests, familiarisation and practice papers",
+          "title": "11+ frequently asked questions",
           "publisher": "GL Assessment",
-          "url": "https://11plus.gl-assessment.co.uk/"
+          "url": "https://11plus.gl-assessment.co.uk/pages/faqs"
         },
         {
           "title": "Expanding free school meals: what parents need to know",

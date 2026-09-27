@@ -1,0 +1,323 @@
+{
+  "sections": [
+    {
+      "id": "what-super-selective-means",
+      "group": "Super selective schools",
+      "heading": "What \"super selective\" actually means",
+      "summary": "It is not an official category. It describes schools that select almost entirely at 13, do not roll admissions, and are heavily oversubscribed.",
+      "body": [
+        "Super selective is not an official term. It has no legal, regulatory or exam-board status; we checked the ISEB site and the admissions pages of Winchester, Westminster and Dulwich, and the phrase appears on none of them. It is descriptive language from the education press, and it is worth defining functionally rather than treating as a category.",
+        "The four features the schools have in common are these. Almost all new pupils arrive at one age, usually 13. Selection happens at 13, by entrance test, interview and a report from the current school. They do not accept applications throughout the year, unlike most independent schools. And they are heavily oversubscribed.",
+        "The distinction that matters most is from the state system, and it is the age. State grammar schools select at 11. These select at 13. A family that has spent two years preparing for an 11+ is not two-thirds of the way to one of these; they are at the start of a different process."
+      ],
+      "points": [
+        "Eton takes boys aged 13 to 18 into Year 9, with a sixth-form intake of about 20 places.",
+        "Westminster's Under School takes 4+, 7+ and 11+, and the 11+ place is a through-school place into Year 9 with no further entry testing.",
+        "St Paul's runs a prep school for 7 to 13 and a senior school for 13 to 18.",
+        "Tonbridge is unusual in offering three entry points: Year 9, Year 10 and Year 12.",
+        "Whitgift offers 11+, 13+, 14+ and 16+. Dulwich covers 7 to 18 with entry in Year 7, Year 9 and Year 12."
+      ],
+      "sources": [
+        {
+          "title": "Entry to Eton, Year 9",
+          "publisher": "Eton College",
+          "url": "https://www.etoncollege.com/admissions/year-9-13/"
+        },
+        {
+          "title": "13+ entry",
+          "publisher": "Westminster School",
+          "url": "https://www.westminster.org.uk/admissions/13-entry-westminster-school/"
+        },
+        {
+          "title": "Joining in Year 9 (13+)",
+          "publisher": "Winchester College",
+          "url": "https://www.winchestercollege.org/admissions/joining-in-year-9-13/"
+        },
+        {
+          "title": "Year 9 entry",
+          "publisher": "Dulwich College",
+          "url": "https://www.dulwich.org.uk/admissions/year-9-entry"
+        },
+        {
+          "title": "Year 9 entry",
+          "publisher": "Tonbridge School",
+          "url": "https://www.tonbridge-school.co.uk/admissions/year-9-13-entry/"
+        }
+      ]
+    },
+    {
+      "id": "super-selective-schools-do-not-share-an-exam",
+      "group": "Super selective schools",
+      "heading": "They do not share an exam",
+      "summary": "Checking the arrangements one school at a time, because generalising here is how families go wrong.",
+      "table": {
+        "head": ["School", "First stage", "What happens after"],
+        "rows": [
+          [
+            "Eton",
+            "ISEB Common Pre-Tests, taken in the autumn of Year 6, with a head's report",
+            "Interview, plus an online predictive test of ability and potential"
+          ],
+          [
+            "Winchester",
+            "Its own General Ability Testing, school references and a writing assessment",
+            "Interview. The Winchester Entrance papers sat in Year 8 are explicitly not decisive"
+          ],
+          [
+            "Westminster",
+            "ISEB Common Pre-Tests, age-adjusted",
+            "Separate 40-minute maths and English papers in early January, then interview"
+          ],
+          [
+            "St Paul's",
+            "ISEB online pre-test, free to register",
+            "Its own published-syllabus papers: 75 minutes of maths, 45 of English, then interview"
+          ],
+          [
+            "Harrow",
+            "ISEB Common Pre-Test required of all boys in the autumn of Year 6",
+            "Interview, then Year 8 exams, conditional on Common Entrance or a scholarship"
+          ],
+          [
+            "Dulwich",
+            "Its own written English and maths papers plus online reasoning tests",
+            "Interview. ISEB is explicitly not used for deferred entry"
+          ],
+          [
+            "Tonbridge",
+            "No ISEB at all: an Experience Afternoon of activities and a one-to-one interview, plus a confidential school reference",
+            "Provisional exams and interview in the spring of Year 7"
+          ],
+          [
+            "Whitgift",
+            "Its own exams in English, maths and science",
+            "Interview"
+          ]
+        ],
+        "note": "Seven schools commonly named in this tier could not be reached for this page: Christ's Hospital, Highgate, Imperial College London International School, King's College School, Millfield, Sevenoaks and Radley. Their arrangements are unconfirmed here and should not be assumed to mirror the schools above."
+      },
+      "body": [
+        "Three arrangements are worth pulling out, because they are the ones that surprise people.",
+        "Winchester does not use ISEB at all. Selection is its own General Ability Testing, school references, a writing assessment and an interview. It then publishes, in plain terms, that the Winchester Entrance papers its candidates sit in April and May of Year 8 are not decisive: entry is not dependent on the results, and the papers are an indicator of academic progress rather than a gate. The school's own academic scholarship exam, called Election, is taken in Year 8.",
+        "Dulwich excludes ISEB for one whole route. For deferred entry to Year 9 it states that candidates sit its own tests at the College, and says directly: we do not use the ISEB pre-test for deferred entry applicants.",
+        "St Paul's is a hybrid, and a candid one. ISEB does the first filter, St Paul's own papers on a published syllabus do the second, and an interview does the third. It publishes sample questions for its own papers, which is a reasonable thing for a school to do and not many do."
+      ],
+      "sources": [
+        {
+          "title": "Winchester Entrance, and what it is for",
+          "publisher": "Winchester College",
+          "url": "https://www.winchestercollege.org/admissions/winchester-entrance/"
+        },
+        {
+          "title": "Selection procedure for 13+",
+          "publisher": "St Paul's School",
+          "url": "https://www.stpaulsschool.org.uk/admissions/entry-to-st-pauls-13/selection-procedure/"
+        },
+        {
+          "title": "Year 9 entry, including deferred entry",
+          "publisher": "Dulwich College",
+          "url": "https://www.dulwich.org.uk/admissions/year-9-entry"
+        },
+        {
+          "title": "13+ entry",
+          "publisher": "Whitgift School",
+          "url": "https://www.whitgift.co.uk/admissions/13-entry"
+        },
+        {
+          "title": "Year 9 entry",
+          "publisher": "Harrow School",
+          "url": "https://www.harrowschool.org.uk/admissions/year-9-entry"
+        }
+      ]
+    },
+    {
+      "id": "super-selective-11-plus-is-not-13-plus",
+      "group": "Super selective schools",
+      "heading": "The 11+ is not the 13+, and one test is used for both",
+      "summary": "The label on a test tells you nothing about the age you take it or what it selects for.",
+      "body": [
+        "This confuses more families than any other point on this page, and it confuses them for a specific reason: the ISEB Pre-Tests are marketed as the 11+. ISEB itself describes them as sometimes referred to as the 11+, the Pre-Tests, or the ISEB, and as four adaptive online multiple-choice tests used by leading independent senior schools.",
+        "But Eton, Westminster, Harrow and St Paul's all use those same Pre-Tests in Year 6 as the first stage of thirteen-plus selection. Eton calls it Stage 1 of assessment for a conditional place. Harrow requires all boys to sit it in the autumn of Year 6. The same paper, sold as a primary-age test, is doing a secondary-age job.",
+        "The two processes differ in ways that matter. A thirteen-plus route adds writing and reading analysis that do not exist at 11+; Dulwich's writing test is twenty minutes, five of planning and fifteen of writing. The school report carries real weight, and at Tonbridge the whole route is built around it. The interview is a substantial part of the decision, and there is no 11+ equivalent of it. And at several schools the two are mutually exclusive: St Paul's says it is not possible to sit both the 11+ and 13+ processes and the offer is only for the entry point assessed, and Westminster says those applying for its Under School cannot at the same time apply for 13+ to the senior school.",
+        "So if a family has bought 11+ practice papers and mock exams written for nine-year-olds, that is not preparation for any of these. It is preparation for a different exam, at a different age, for a different thing."
+      ],
+      "points": [
+        "ISEB Common Entrance at 13+ has three compulsory papers, English, maths and science, plus optionals across eight subjects.",
+        "Eton, Westminster, St Paul's and Tonbridge all request a head teacher's report or reference.",
+        "St Paul's runs a second-chance route: candidates who show potential but cannot be offered a place are invited back in Year 8.",
+        "Winchester's 11+ route runs through its feeder school, The Pilgrims' School.",
+        "St Paul's says that for boys from state primaries, the 11+ entry point is the most appropriate, because it allows two years in the junior school."
+      ],
+      "sources": [
+        {
+          "title": "Common Pre-Tests for families",
+          "publisher": "ISEB",
+          "url": "https://www.iseb.co.uk/assessments/common-pre-tests/for-families/"
+        },
+        {
+          "title": "Common Entrance at 13+ for schools",
+          "publisher": "ISEB",
+          "url": "https://www.iseb.co.uk/assessments/common-entrance/at-13-for-schools/"
+        },
+        {
+          "title": "Selection procedure for 13+",
+          "publisher": "St Paul's School",
+          "url": "https://www.stpaulsschool.org.uk/admissions/entry-to-st-pauls-13/selection-procedure/"
+        }
+      ]
+    },
+    {
+      "id": "super-selective-fees-and-bursaries",
+      "group": "Super selective schools",
+      "heading": "What it costs, and what help exists",
+      "summary": "Fees per term, the non-refundable extras, and the bursary programmes in the schools' own figures.",
+      "figures": [
+        { "label": "Day fees, lowest", "value": "£10,470" },
+        { "label": "Boarding, lowest", "value": "£17,322" },
+        { "label": "Boarding, highest", "value": "£23,094" },
+        { "label": "VAT on fees", "value": "20% since Jan 2025" }
+      ],
+      "table": {
+        "head": ["School", "Day, per term", "Boarding, per term"],
+        "rows": [
+          ["Eton", "No day places", "£21,891 per half"],
+          ["Westminster", "£16,456 at 13+", "£23,094"],
+          ["Winchester", "£15,318", "£20,700"],
+          ["Harrow", "No day places", "£21,990"],
+          ["St Paul's", "£12,666", "£19,181"],
+          ["Dulwich", "£10,706", "£22,472 full, £21,001 weekly"],
+          ["Tonbridge", "£16,069", "£21,417"],
+          ["Whitgift", "£10,470", "£20,538 full, £17,322 weekly"]
+        ],
+        "note": "Per term, for 2026 to 2027, as published by each school. Term structures differ, so these do not add up to comparable annual totals without checking how many terms each school bills. Extras are charged on top: Eton says usually £500 to £1,500 per half, Tonbridge £300 to £1,500 per term."
+      },
+      "body": [
+        "Fees are reviewed every year, and the movement is visible in the published figures. Whitgift's day fee went from £10,080 in 2025 to £10,470 for 2026. Westminster says the governing body typically reviews next year's fees by the end of the summer term, publishing updates in early July. Dulwich says the governors reserve the right to review fees at any time. So treat any figure here as a snapshot and re-check.",
+        "There are also non-refundable charges before a child has started: Eton £480 registration and £3,840 acceptance, Westminster £360, St Paul's £240, Harrow £450 registration plus £2,400 entry and £2,400 final confirmation deposits, Tonbridge £350 registration and £2,250 admissions fee, Whitgift £205 entrance exam fee.",
+        "All four headline schools run means-tested bursaries, and all four are explicit that the money is limited. Eton's budget for scholarships and bursaries was £9.7 million in 2024 to 2025, and in the year before that 247 boys received fee reductions, 99 paid nothing at all, and the average award was 71% of the fee, with 18% of boys receiving support. Eton publishes no income thresholds and assesses case by case, and says plainly that it is still not possible to support all applications. Winchester runs a programme of more than £5 million a year and calls it one of the most generous in the country, with awards from 5% to 100% of fees and help with extras such as laptops and trips. Westminster's programme is around £2 million, with means-tested bursaries of up to 100% of day fees. St Paul's is the only one of the four publishing income thresholds: up to £144,000 gross household income, and from 2025 to 2026 a 100% fee award for households below £78,000.",
+        "One thing worth knowing about process: at Westminster you must declare an intention to apply for a bursary at the point of registration, and the application itself is only completed if a place is offered. Missing that step is not recoverable."
+      ],
+      "sources": [
+        {
+          "title": "Fees",
+          "publisher": "Eton College",
+          "url": "https://www.etoncollege.com/admissions/fees/"
+        },
+        {
+          "title": "Financial aid",
+          "publisher": "Eton College",
+          "url": "https://www.etoncollege.com/admissions/financial-aid/"
+        },
+        {
+          "title": "Fees",
+          "publisher": "Winchester College",
+          "url": "https://www.winchestercollege.org/admissions/fees/"
+        },
+        {
+          "title": "Financial support",
+          "publisher": "Winchester College",
+          "url": "https://www.winchestercollege.org/admissions/financial-support/"
+        },
+        {
+          "title": "Bursaries and scholarships",
+          "publisher": "Westminster School",
+          "url": "https://www.westminster.org.uk/admissions/bursaries-and-scholarships/"
+        },
+        {
+          "title": "Founder's Awards and bursaries",
+          "publisher": "St Paul's School",
+          "url": "https://www.stpaulsschool.org.uk/admissions/founders-awards-bursaries/"
+        },
+        {
+          "title": "Fees",
+          "publisher": "Whitgift School",
+          "url": "https://www.whitgift.co.uk/admissions/fees"
+        },
+        {
+          "title": "VAT on private school fees",
+          "publisher": "GOV.UK",
+          "url": "https://www.gov.uk/government/publications/vat-on-private-school-fees"
+        }
+      ]
+    },
+    {
+      "id": "super-selective-how-competitive",
+      "group": "Super selective schools",
+      "heading": "How competitive, honestly",
+      "summary": "The published figures are shortlisting figures, not offer rates, and the difference matters.",
+      "body": [
+        "This is where a lot of published material misleads, so it is worth being precise about what the numbers are.",
+        "Westminster publishes that it receives around 500 applications and invites approximately 250 for interview. Dulwich publishes how many it invites: 40 boys for Year 9 entry in September 2027, and 120 for deferred entry in September 2029. Harrow takes around 160 boys into Year 9 and warns that boys registering after 30 September of Year 6 will be competing for fewer places.",
+        "Those are invitation-stage figures. They tell you about shortlisting, not about how many offers followed. Westminster's 500 to 250 says nothing about the offer rate at the end, and that number is not published. No school we checked publishes an application-to-offer ratio, and Eton and Winchester do not publish application or offer numbers at all. A figure you will see repeated, that around 400 boys apply to Winchester each year for roughly 140 places, appears only on commercial tutoring websites; we could not verify it against any school or press source, so it is not repeated here as fact.",
+        "What can be said plainly is that the funnel keeps going well past the interview. A typical round runs about eighteen months, from registration in Year 5 or 6 through interviews in the spring of Year 8, and several schools require a Year 8 exam after the interview that can still be failed. St Paul's runs a second-chance route in Year 8 for candidates who showed potential but were not offered a place, which tells you something useful about what these schools are looking for: not a single test taken once."
+      ],
+      "points": [
+        "No school in this tier publishes an application-to-offer ratio.",
+        "Eton's admissions policy is not public; it is available on request or through the parent portal.",
+        "None of these schools publishes a weighting between the written test and the interview. The closest published statement is Dulwich's, which names three components without weights: the examination, an interview, and a reference from the head of the current school."
+      ],
+      "sources": [
+        {
+          "title": "13+ entry",
+          "publisher": "Westminster School",
+          "url": "https://www.westminster.org.uk/admissions/13-entry-westminster-school/"
+        },
+        {
+          "title": "Year 9 entry",
+          "publisher": "Dulwich College",
+          "url": "https://www.dulwich.org.uk/admissions/year-9-entry"
+        },
+        {
+          "title": "Year 9 entry",
+          "publisher": "Harrow School",
+          "url": "https://www.harrowschool.org.uk/admissions/year-9-entry"
+        },
+        {
+          "title": "Entry to Eton",
+          "publisher": "Eton College",
+          "url": "https://www.etoncollege.com/admissions/entry-to-eton/"
+        }
+      ]
+    },
+    {
+      "id": "super-selective-what-schools-ask-for",
+      "group": "Super selective schools",
+      "heading": "What these schools say they are looking for",
+      "summary": "In their own words, and the answer is not practice papers.",
+      "body": [
+        "The most striking thing about this group is how little they ask for. Westminster says its pre-interview tests are online and that there is no need for special preparation. Winchester says the process should not be stressful or require additional tutoring. ISEB, the exam board that sets the papers, says your child is already excellently prepared because the Pre-Tests are based on the national curriculum, and that additional preparation is not required.",
+        "What the interviews reward is described just as plainly. Winchester looks for personal qualities as much as academic potential: curiosity, kindness, integrity, resilience, and a willingness to contribute to the life of a house, conducted by a member of the pastoral care team. St Paul's looks at numeracy, the ability to critically analyse source material, co-curricular interests and general conversation. Tonbridge describes what it wants as talent that can move from asking the right questions to challenging the answers.",
+        "Read those three descriptions together and the implication is consistent. Reading, conversation about what a child actually does, and a real account of their interests are what is being assessed. Those are the things a family has either been doing or has not.",
+        "One honest tension worth naming: ISEB sells paid preparation materials, including a Pre-Tests prep pack and a parent toolkit, while stating elsewhere that additional preparation is not required. Both are true. The exam board is selling you revision for a test your child is already ready for, and saying so in the same breath."
+      ],
+      "points": [
+        "Winchester: curiosity, kindness, integrity, resilience, willingness to contribute.",
+        "St Paul's: numeracy, critical analysis of source material, co-curricular interests, general conversation.",
+        "Tonbridge: talent that moves from asking the right questions to challenging the answers.",
+        "Tonbridge's Experience Afternoon is group activities followed by a one-to-one interview, with no written test at first stage."
+      ],
+      "sources": [
+        {
+          "title": "Joining in Year 9 (13+)",
+          "publisher": "Winchester College",
+          "url": "https://www.winchestercollege.org/admissions/joining-in-year-9-13/"
+        },
+        {
+          "title": "Selection procedure for 13+",
+          "publisher": "St Paul's School",
+          "url": "https://www.stpaulsschool.org.uk/admissions/entry-to-st-pauls-13/selection-procedure/"
+        },
+        {
+          "title": "Pre-Tests Admissions Toolkit",
+          "publisher": "ISEB",
+          "url": "https://www.iseb.co.uk/families-hub/pre-tests-admissions-toolkit/"
+        },
+        {
+          "title": "Common Pre-Tests for families",
+          "publisher": "ISEB",
+          "url": "https://www.iseb.co.uk/assessments/common-pre-tests/for-families/"
+        }
+      ]
+    }
+  ]
+}

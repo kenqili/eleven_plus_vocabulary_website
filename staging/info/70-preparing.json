@@ -1,0 +1,157 @@
+{
+  "sections": [
+    {
+      "id": "when-to-start",
+      "group": "Preparing",
+      "heading": "When to start, and what that means at each age",
+      "summary": "No authority publishes a year-by-year schedule. This is assembled from what the providers and the evidence actually say.",
+      "body": [
+        "We should say plainly that no authority publishes a year-by-year 11+ preparation schedule, and we could not find one. What follows is a reasoned default built from the sourced principles, not doctrine. Treat it as a starting position you can adjust for your child.",
+        "Years 1 to 4: no 11+ work at all. Reading for pleasure and classroom fluency. This is not timidity, it is what the evidence supports. The EEF finds individualised instruction's effects are actually smaller in primary schools than secondary, and ISEB states the tests follow the national curriculum, so there is nothing to pre-empt in Years 1 to 4.",
+        "Year 5, age 9 to 10: learn the format, not the content. Work through one free GL familiarisation booklet per subject at your own pace. This is the point where the timings and the mechanics get rehearsed: a paper, multiple choice, answers in pencil because the sheets are computer-marked, and the instruction pages are not timed, only the numbered questions. GL's own guidance is to familiarise children with the style and format of the test, which is a different and much smaller claim than teaching them the test.",
+        "Summer before Year 6: one timed paper per subject. GL says tackling a practice paper under timed conditions gives children valuable experience of managing their time effectively, which is the actual skill being trained.",
+        "Year 6: if you buy anything, buy one subject at a time and use it diagnostically rather than as a measure. A practice score should create a picture of your child's strengths and weaknesses, which is a different use from deciding whether they are good enough. Keep the EEF's dosage shape in mind, which is short and regular over a set period rather than a cram, and note its own finding that maths gains much less from tuition than literacy does.",
+        "A content ceiling worth knowing: GL says its English and maths papers are based mainly on curriculum content reached during the early part of Year 6, and elsewhere says up to the end of Year 5. Slightly different wording, same meaning. If your child is comfortably past that, the content is not the thing to practise; the format is."
+      ],
+      "points": [
+        "Years 1 to 4: reading and classroom fluency, nothing test-shaped.",
+        "Year 5: the format, using the free familiarisation papers.",
+        "Summer before Year 6: one timed paper per subject.",
+        "Year 6: one subject at a time, used to find weaknesses rather than to measure worth."
+      ],
+      "sources": [
+        {
+          "title": "11+ frequently asked questions",
+          "publisher": "GL Assessment",
+          "url": "https://11plus.gl-assessment.co.uk/pages/faqs"
+        },
+        {
+          "title": "Free familiarisation materials",
+          "publisher": "GL Assessment",
+          "url": "https://11plus.gl-assessment.co.uk/pages/free-materials"
+        },
+        {
+          "title": "Common Pre-Tests for families",
+          "publisher": "ISEB",
+          "url": "https://www.iseb.co.uk/assessments/common-pre-tests/for-families/"
+        },
+        {
+          "title": "One to one tuition",
+          "publisher": "Education Endowment Foundation",
+          "url": "https://educationendowmentfoundation.org.uk/education-evidence/teaching-learning-toolkit/one-to-one-tuition"
+        },
+        {
+          "title": "Individualised instruction",
+          "publisher": "Education Endowment Foundation",
+          "url": "https://educationendowmentfoundation.org.uk/education-evidence/teaching-learning-toolkit/individualised-instruction"
+        }
+      ]
+    },
+    {
+      "id": "the-case-against-over-preparation",
+      "group": "Preparing",
+      "heading": "The case against over-preparation",
+      "summary": "Not a counter-argument for its own sake. It is what the schools, the exam boards and the DfE's own evaluation say.",
+      "body": [
+        "The strongest evidence here comes from the Department for Education's independent evaluation of the National Tutoring Programme, Year 3, published in September 2024. It found that although many results reached statistical significance, the effect sizes were small and equated to one month's additional progress or less. Two years later, at Key Stage 4, effects equated to less than one month's additional progress. It detected a small longer-term benefit on Key Stage 2 maths only, and no other longer-term benefits at all.",
+        "That is a far more modest return than the EEF's five months for well-targeted tuition, and the DfE notes two reasons the figure may even overstate what happened: dilution, where schools bought tuition for more children than could be served, and selection bias, where the children who got it were not a random sample. It says the true impact may be consistent with the expected impact from previous research, which is the fair reading.",
+        "The exam boards take the same position from the other direction, because they design against it. GL says its tests are designed to be less influenced by intensive or repeated preparation. Cambridge says it introduces new assessment paradigms to reduce the predictability of assessment content, and sells no practice papers at all. ISEB says adaptive testing means children do not spend time on questions that are too hard or too easy, and states that the Pre-Tests are based on the national curriculum so additional preparation is not a requirement.",
+        "On the anxiety question, one school leader said something that is worth more than any general warning. When Gloucestershire moved its test to the summer of Year 5, one of the justifications was that children lose their ability to focus on the test over the summer holidays when they are not at school. That is a head teacher saying that a summer spent drilling is measurably counterproductive. It is also, not coincidentally, the argument for moving the test earlier.",
+        "And the thing parents most often report, from the BBC's coverage of the Gloucestershire change: some parents paid for tutoring for years and their children did not get in. That is not an argument that tutoring is useless. It is an argument that the thing being bought is not a guarantee, and the page earlier in this section on competitiveness is where the numbers for that live."
+      ],
+      "points": [
+        "DfE, National Tutoring Programme Year 3: one month's progress or less at Key Stage 2, less than one month at Key Stage 4, no other longer-term benefit detected.",
+        "The DfE flags dilution and selection bias as reasons the figure may be optimistic.",
+        "GL, Cambridge and ISEB all state in their own words that they design their tests to be resistant to coaching.",
+        "A summer spent drilling is described by a school leader as reducing a child's ability to focus on the test."
+      ],
+      "sources": [
+        {
+          "title": "National Tutoring Programme year 3 impact evaluation, 27 September 2024",
+          "publisher": "Department for Education",
+          "url": "https://assets.publishing.service.gov.uk/media/66f2e30d7da73f17177640e8/National_Tutoring_Programme_year_3_impact_evaluation_-_Sep_24.pdf"
+        },
+        {
+          "title": "Gloucestershire grammar schools to adopt new accessible test",
+          "publisher": "BBC News, 16 April 2026",
+          "url": "https://www.bbc.co.uk/news/articles/cy01185ypdwo"
+        },
+        {
+          "title": "Parents say grammar test changes won't end tutoring advantage",
+          "publisher": "BBC News, 7 June 2026",
+          "url": "https://www.bbc.co.uk/news/articles/clyple9qpldo"
+        },
+        {
+          "title": "Entrance assessments",
+          "publisher": "Cambridge Select Insight",
+          "url": "https://www.cem.org/entrance-assessments"
+        }
+      ]
+    },
+    {
+      "id": "reading-is-the-real-preparation",
+      "group": "Preparing",
+      "heading": "What a child can do that is not preparation",
+      "summary": "The statistics on children's reading are the most alarming numbers on this page, and they are not about the 11+.",
+      "figures": [
+        { "label": "Enjoy reading in their free time", "value": "32.7%" },
+        { "label": "Read something daily", "value": "18.7%" },
+        { "label": "Down since 2005", "value": "36% and 20 points" }
+      ],
+      "body": [
+        "The National Literacy Trust's annual survey, run in early 2025 with nearly 115,000 responses from 5 to 18 year olds, is the current benchmark. It found that 32.7% of 8 to 18 year olds said they enjoyed reading in their free time, which the Trust describes as the lowest in 20 years and a 36% fall since 2005. Only 18.7% read something daily in their free time, again the lowest recorded, down nearly 20 percentage points since 2005. Among the youngest children, those aged 5 to 8, daily reading fell to 44.5%.",
+        "Those are the numbers to sit with. A generation of children is reading less for pleasure than at any point in twenty years, in the run-up to the exam that tests comprehension and verbal reasoning. Whatever else a family does, this is the thing that will matter most.",
+        "The Trust also reports what pulls children in, which is useful practically: material tied to a favourite film or TV series, at 38.1%, and material matching their own interests, at 37.1%. A child who will not read a book will read something connected to the thing they care about.",
+        "On parents of very young children, the Trust's 2026 survey found 51% read with their child daily and 74% chatted daily, and noted that daily engagement remains below 2019 levels across every activity it measures.",
+        "One thing we want to be straight about: we could not verify, from a peer-reviewed source read for this page, the size of the link between reading for pleasure and later 11+ scores. That link is widely asserted and intuitively obvious, but it is not quantified here, and this page does not put a number on it. What the survey does show, unambiguously, is that children are reading less."
+      ],
+      "points": [
+        "32.7% of 8 to 18 year olds enjoy reading in their free time: the lowest in 20 years, down 36% since 2005.",
+        "18.7% read something daily in their free time, also the lowest recorded.",
+        "Among 5 to 8 year olds, daily reading fell to 44.5%.",
+        "What works practically: a favourite film or TV series, at 38.1%, and matching the child's own interests, at 37.1%."
+      ],
+      "sources": [
+        {
+          "title": "Children and young people's reading in 2025",
+          "publisher": "National Literacy Trust",
+          "url": "https://literacytrust.org.uk/research-services/research-reports/children-and-young-peoples-reading-in-2025/"
+        },
+        {
+          "title": "Parents' support for young children's literacy at home in 2026",
+          "publisher": "National Literacy Trust",
+          "url": "https://literacytrust.org.uk/research-services/research-reports/parents-support-for-young-childrens-literacy-at-home-in-2026/"
+        }
+      ]
+    },
+    {
+      "id": "vocabulary-in-the-11-plus",
+      "group": "Preparing",
+      "heading": "Where vocabulary actually fits",
+      "summary": "Honest about the size of it, because the honest size is still worth doing every day.",
+      "body": [
+        "We will not tell you vocabulary wins the 11+. It does not, on its own, and anyone who says otherwise is selling something. What the papers do is test comprehension, verbal reasoning, maths and non-verbal reasoning, and a child cannot do any of those well without words. A child who does not know what a word means cannot reason about a sentence that contains it, and verbal reasoning in particular is reasoning with words rather than reading comprehension, which is why GL includes it in most papers.",
+        "So the honest claim is narrow. Vocabulary is a floor, not a ceiling. It is the thing that has to be in place before any of the reasoning work is possible, it is the one component a family can work on at home daily without buying anything, and it is cumulative in a way that timed papers under pressure are not. A word learned in Year 4 is still there in Year 6.",
+        "What vocabulary practice should not be is a list to memorise the night before. That produces a child who can define a word they have never seen used, which is not what any of these papers asks for. Every paper in the range requires the word in a sentence, in context, to be understood or produced. A child who has only ever met a word on a flashcard has not met the word.",
+        "That is also why this app asks for a word from five different directions rather than drilling one. A word that can be defined but never spotted in a sentence is not learned, and the app is built so that it keeps coming back until it is."
+      ],
+      "points": [
+        "GL: most 11+ papers contain a verbal reasoning test because it is, in GL's words, the best predictor of future academic potential. GL sells that test, so treat the emphasis as interested.",
+        "A word learned in Year 4 is still there in Year 6. Vocabulary is the one component that compounds quietly.",
+        "It is a floor rather than a ceiling, and it is the only major component a family can practise daily at no cost."
+      ],
+      "sources": [
+        {
+          "title": "11+ frequently asked questions",
+          "publisher": "GL Assessment",
+          "url": "https://11plus.gl-assessment.co.uk/pages/faqs"
+        },
+        {
+          "title": "Admissions tests for state and independent schools",
+          "publisher": "GL Assessment",
+          "url": "https://www.gl-assessment.co.uk/products/admissions-for-state-and-independent-schools/"
+        }
+      ]
+    }
+  ]
+}
