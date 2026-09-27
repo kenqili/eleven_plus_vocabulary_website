@@ -26,9 +26,12 @@ test("Shipped question CSVs match the independently reviewed versions", () => {
       problems.filter((p) => p.type === type).length,
       recorded.currentRows,
     );
-    // Rows added after the review are recorded, not counted as reviewed.
+    // Rows added and removed after the review are both recorded, so the
+    // accounting still adds up and neither is quietly counted as reviewed.
+    const after =
+      (recorded.rowsAddedAfterReview || 0) - (recorded.rowsRemovedAfterReview || 0);
     assert.equal(
-      recorded.rowsReviewed + (recorded.rowsAddedAfterReview || 0),
+      recorded.rowsReviewed + after,
       recorded.currentRows,
       `${type}.csv row accounting`,
     );

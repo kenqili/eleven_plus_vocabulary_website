@@ -1,6 +1,7 @@
 import { readingPreference, bookmarkFor } from "./reading-position";
 import { missionFor } from "./mission";
 import { words } from "@/lib/challenge/bank";
+import { inflectionsOf } from "@/lib/challenge/problems";
 import { storyMeaning } from "@/lib/challenge/story-meanings";
 import { dayStart, localDay } from "@/lib/challenge/rewards";
 import {
@@ -106,6 +107,13 @@ export async function storyDetail(id: string, userId?: string) {
       // story.id, not wordId: the story-specific wording is keyed by story.
       return { ...word, help: storyMeaning(word, story.id) };
     }),
+    /**
+     * The spellings that actually appear in the text, so a story marking
+     * "conferred" still highlights and still looks the word up. Without this a
+     * story could not use a past tense for a word it is teaching, which is
+     * most of what a story does.
+     */
+    spellings: spellingsFor(story),
     signedIn: Boolean(userId),
     bookmarkScope: userId || "guest",
     progress: userId
@@ -114,6 +122,23 @@ export async function storyDetail(id: string, userId?: string) {
     minimumSeconds: storyMinimumSeconds(story),
   };
 }
+/** Every form of every target word that occurs in the story, mapped to it. */
+export function spellingsFor(story: {
+  wordIds: string[];
+  paragraphs: string[];
+}): Record<string, string> {
+  const out: Record<string, string> = {};
+  const text = story.paragraphs.join("\n").toLowerCase();
+  for (const wordId of story.wordIds)
+    for (const form of inflectionsOf(wordId))
+      if (new RegExp(`\\b${escapeRegExp(form)}\\b`, "i").test(text))
+        out[form] = wordId;
+  return out;
+}
+
+const escapeRegExp = (value: string) =>
+  value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
 export async function startStory(
   userId: string,
   storyId: string,

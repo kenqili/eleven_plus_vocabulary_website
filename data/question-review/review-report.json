@@ -10,7 +10,7 @@
   "final": {
     "syn": {
       "file": "data/syn.csv",
-      "sha256": "faaab489c32bc35d2f4bf0e7d7be94040fc4b62f69a9875cb0bad8ce19428bca",
+      "sha256": "bdc8f6735ddaace621bee7edc81830881ab0dbfeedcc17a9a3e8489eb2be241a",
       "rowsReviewed": 730,
       "unchangedFromInitialReview": 628,
       "changedRowsRechecked": 99,
@@ -19,11 +19,14 @@
       "allRowsHaveFourDistinctOptionsAndOneExactAnswer": true,
       "noRemainingKnownAlternativeCorrectOptions": true,
       "rowsAddedAfterReview": 1484,
-      "currentRows": 2214
+      "currentRows": 2212,
+      "rowsRemovedAfterReview": 2,
+      "changeNote": "Two rows keyed on words that were duplicate entries in the bank and have been removed, because a child should not meet 'conferred' and 'confer' as two separate words.",
+      "changedAt": "2026-09-27"
     },
     "ant": {
       "file": "data/ant.csv",
-      "sha256": "83cb8cc23a571b8b59eb3ea2895ce98ad51b05dff8754f1fd40149d314093f93",
+      "sha256": "bd90038b8725a2ceef8d75e35c7fc718614721c5eaac3dcae93a262ec4808c14",
       "rowsReviewed": 630,
       "unchangedFromInitialReview": 532,
       "changedRowsRechecked": 99,
@@ -33,7 +36,10 @@
       "noRemainingKnownAlternativeCorrectOptions": true,
       "removedAfterReview": 1,
       "rowsAddedAfterReview": 1437,
-      "currentRows": 2067
+      "currentRows": 2066,
+      "rowsRemovedAfterReview": 1,
+      "changeNote": "One row removed for the same reason.",
+      "changedAt": "2026-09-27"
     },
     "totalRows": 1360,
     "currentTotalRows": 1511
@@ -828,6 +834,22 @@
       "change": "Completed the 11+ word list: all 1385 previously missing words added to the vocabquest source, each with a definition, synonyms, antonyms, an example sentence, a help meaning and a clue, and their generated synonym and antonym questions.",
       "wordsAdded": 1385,
       "effect": "New vocabulary rows only. Every row reviewed before this change is byte-identical; no reviewed answer, distractor, option order, row type, target word, row order or removed row changed. The added rows were machine-generated from the bank synonyms and antonyms with the existing distractor exclusion rules and have not received the independent semantic review."
+    }
+  ],
+  "revisions": [
+    {
+      "date": "2026-09-27",
+      "reason": "Example-sentence and relation proof-read. Two duplicate bank entries (conferred, equipped) were removed, taking their own question rows with them. Separately 287 example sentences that never used their word were rewritten, and about eighty synonym and antonym lists were corrected or cleared where the word has no such relation.",
+      "affects": [
+        "syn.csv",
+        "ant.csv",
+        "vocabquest.csv",
+        "blue_book.csv",
+        "curriculum.csv",
+        "levels.json",
+        "stories/level-0.txt",
+        "stories/level-3.txt"
+      ]
     }
   ]
 }

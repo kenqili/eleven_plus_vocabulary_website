@@ -174,3 +174,67 @@ test("blanking keeps the sentence readable", () => {
   // A word that is not there yields no question rather than an invented one.
   assert.equal(blankExample("Nothing here matches.", "quaff"), null);
 });
+
+test("every word in the bank has an example that uses it", () => {
+  // The app builds a "fill the gap" question out of each example, so an example
+  // that never uses its word means that word can never have one. A whole
+  // source file had been written as a paraphrase of the meaning instead of a
+  // sentence using the word, and 287 words were affected before this was
+  // checked. It uses the app's own whole-word test, so it measures what the
+  // generator can actually do rather than a stricter version of it.
+  const missing = words.filter(
+    (word) =>
+      !inflectionsOf(word.word).some(
+        (form) => form.length >= 2 && hasWholeWord(word.example || "", form),
+      ),
+  );
+  assert.deepEqual(
+    missing.slice(0, 5).map((word) => word.word),
+    [],
+    `${missing.length} words have no usable example, so no fill-the-gap question can be built for them`,
+  );
+});
+
+test("the inflector produces real English, not just plausible endings", () => {
+  // These were built by appending, which produced "gorgeed" for gorge and
+  // "equiped" for equip, so a sentence saying "gorged" or "equipped" looked as
+  // though it never used the word at all.
+  const forms = (word) => inflectionsOf(word).map((f) => f.toLowerCase());
+  const real = {
+    gorge: ["gorged", "gorging"],
+    pique: ["piqued", "piquing"],
+    construe: ["construed", "construing"],
+    embrace: ["embraced", "embracing"],
+    diagnose: ["diagnosed", "diagnosing"],
+    covet: ["coveted", "coveting"],
+    deny: ["denied", "denies", "denying"],
+    flee: ["fled", "fleeing"],
+    plan: ["planned", "planning"],
+    equip: ["equipped", "equipping"],
+    carry: ["carried", "carries", "carrying"],
+    stop: ["stopped", "stopping"],
+    big: ["bigger", "biggest"],
+    happy: ["happier", "happiest"],
+    hope: ["hoped", "hoping"],
+    agree: ["agreed", "agreeing"],
+    panic: ["panicked", "panicking"],
+    picnic: ["picnicked"],
+    stride: ["strode", "strides"],
+    teach: ["taught"],
+    build: ["built"],
+    write: ["wrote"],
+    throw: ["threw"],
+    ride: ["rode"],
+    sink: ["sank"],
+    see: ["seeing"],
+    argue: ["argued", "arguing"],
+    rescue: ["rescued", "rescuing"],
+    commit: ["committed", "committing"],
+    travel: ["travelled", "travelling"],
+  };
+  for (const [word, expected] of Object.entries(real)) {
+    const have = forms(word);
+    for (const form of expected)
+      assert.ok(have.includes(form), `${word} cannot form "${form}"`);
+  }
+});

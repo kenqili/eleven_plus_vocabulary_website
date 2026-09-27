@@ -51,7 +51,6 @@
       "accompany",
       "equip",
       "equipment",
-      "equipped",
       "attached",
       "category",
       "correspond",

@@ -1,4 +1,5 @@
 import type { Difficulty } from "./difficulty.ts";
+import { inflectionsOf } from "./problems.ts";
 import type { Word } from "./words.ts";
 
 export const STORY_CREDITS = 10;
@@ -50,6 +51,8 @@ export type StoryDetail = Omit<Story, "question"> & {
   bookmark: import("../server/reading-position").ReadingBookmark | null;
   progress: ReadingProgress;
   minimumSeconds: number;
+  /** Every form of every target word that occurs in the text, mapped to the id. */
+  spellings: Record<string, string>;
 };
 export const storyLength = (story: Story) =>
   story.paragraphs.join(" ").replaceAll("**", "").split(/\s+/).length;
@@ -108,6 +111,19 @@ export function validateStories(
     )
       errors.push(prefix + "Invalid identity.");
     const targets = new Set(story.wordIds);
+    // A story marks the word as it appears in the sentence, so "conferred" is
+    // the right thing to mark when the target is "confer". The marked text is
+    // matched against the target's own inflections rather than being demanded
+    // to be identical to it, because working backwards from a tense to its
+    // stem is not something spelling can be trusted to do.
+    const targetFor = (text: string) => {
+      const lower = text.trim().toLowerCase();
+      if (bank.has(lower)) return lower;
+      for (const id of targets)
+        if (inflectionsOf(id).some((form) => form.toLowerCase() === lower))
+          return id;
+      return lower;
+    };
     if (
       targets.size !== story.wordIds.length ||
       targets.size < MIN_STORY_TARGETS ||
@@ -119,7 +135,7 @@ export function validateStories(
       );
     const marked = [
       ...story.paragraphs.join("\n").matchAll(/\*\*([^*]+)\*\*/g),
-    ].map((match) => match[1].toLowerCase());
+    ].map((match) => targetFor(match[1]));
     for (const id of targets) {
       if (!bank.has(id) || levels[id]?.difficulty !== story.level)
         errors.push(prefix + `Wrong level or unknown word: ${id}.`);

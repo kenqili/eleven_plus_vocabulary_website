@@ -11,12 +11,12 @@
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
   },
   "method": "70% rarity + 30% letter count. Rarity = 1 - clamp((Zipf - 1) / 5, 0, 1). Length = clamp((letters - 3) / 12, 0, 1). Score rounded to 4 decimals; sort original-source words by score then normalized word ID into five equal bands. Curriculum extension words use Level 0 independently, preserving the original five bands. Levels are estimates, not exam grades. Phrase frequency is estimated; missing frequency uses Zipf 0 and is flagged.",
-  "wordIdsSha256": "232341a0be7df276ed179b8bf90c1140ea5b05fe8e571eb2afc97a37c33c168b",
+  "wordIdsSha256": "e5766553a2ee89addb5228c20cfae08b14adcfe331f54c402b96212dbf80fd99",
   "counts": {
-    "0": 117,
+    "0": 116,
     "1": 427,
     "2": 426,
-    "3": 427,
+    "3": 426,
     "4": 426,
     "5": 426
   },
@@ -7041,13 +7041,6 @@
       "frequencyKind": "word",
       "score": 46.84,
       "difficulty": 2
-    },
-    "conferred": {
-      "letterCount": 9,
-      "frequencyZipf": 3.38,
-      "frequencyKind": "word",
-      "score": 51.68,
-      "difficulty": 3
     },
     "confide": {
       "letterCount": 7,
@@ -15237,13 +15230,6 @@
       "frequencyZipf": 4.88,
       "frequencyKind": "word",
       "score": 30.68,
-      "difficulty": 0
-    },
-    "equipped": {
-      "letterCount": 8,
-      "frequencyZipf": 4.28,
-      "frequencyKind": "word",
-      "score": 36.58,
       "difficulty": 0
     },
     "especially": {

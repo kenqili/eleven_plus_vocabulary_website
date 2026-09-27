@@ -22,7 +22,7 @@ haughty,Arrogantly proud and unfriendly,arrogant; disdainful,humble; friendly,Th
 sanction,Official permission or approval; also a penalty imposed to enforce a rule,authorisation; approval,prohibition; refusal,The head teacher gave her sanction for the school trip.
 rectify,To correct something that is wrong,correct; remedy,worsen; damage,We must rectify the mistake before the invitations are printed.
 feud,A long and bitter argument or conflict,conflict; quarrel,peace; reconciliation,A long feud had divided the two families.
-startle,To surprise or frighten suddenly,surprise; alarm,reassure; calm,The sudden crash startled everyone in the room.
+startle,To surprise or frighten suddenly,surprise; alarm,reassure; calm,A loud bang from the cupboard door startled my little brother.
 savage,"Fierce, violent, or cruel",fierce; brutal,gentle; civilised,The village was struck by a savage storm.
 ferocious,Extremely fierce or violent,fierce; savage,gentle; mild,A ferocious wind battered the coast.
 callous,Unkind and showing no concern for others,heartless; insensitive,compassionate; caring,His callous remarks showed no concern for her feelings.
@@ -31,7 +31,7 @@ animosity,Strong hostility or dislike,hostility; resentment,friendship; goodwill
 besotted,Completely infatuated with someone or something,infatuated; enamoured,indifferent; uninterested,He was besotted with the puppy and carried it everywhere.
 relish,To enjoy something greatly,enjoy; savour,dislike; dread,She relished the chance to compete against the best runners.
 abhor,To hate intensely,detest; loathe,adore; admire,I abhor cruelty to animals.
-loathe,To dislike or hate greatly,detest; despise,love; adore,He loathed getting up before sunrise.
+loathe,To dislike or hate greatly,detest; despise,love; adore,"My sister loathes the smell of vinegar, so the kitchen window is always open."
 enmity,A state of strong hostility,hostility; hatred,friendship; amity,The treaty brought years of enmity to an end.
 steadfast,"Firm, loyal, and not changing",resolute; loyal,fickle; wavering,She remained steadfast despite pressure to change her mind.
 supple,Flexible and able to bend easily,flexible; pliable,rigid; stiff,Regular stretching kept the gymnast's muscles supple.
@@ -68,7 +68,7 @@ fluctuate,To rise and fall or change irregularly,vary; oscillate,stabilise; rema
 concur,To agree,agree; assent,disagree; dissent,Most experts concur that the bridge needs urgent repairs.
 auspicious,Suggesting that future success is likely,promising; favourable,inauspicious; unfavourable,The clear skies were an auspicious start to the expedition.
 wander,To move around without a fixed route,roam; meander,stay; remain,We wandered through the old streets without a map.
-ramble,To walk for pleasure; or talk at unnecessary length,roam; meander,hurry; be concise,We rambled through the countryside for several hours.
+ramble,To walk for pleasure; or talk at unnecessary length,roam; meander,hurry; be concise,"We rambled along the beach all afternoon, picking up shells and stopping for ice creams."
 regal,Resembling or suitable for royalty,royal; majestic,common; humble,The queen entered the hall with a regal bearing.
 submerge,To put or go completely beneath a liquid,immerse; sink,emerge; surface,The diver watched the submarine submerge beneath the waves.
 petty,Unimportant or trivial; sometimes spitefully concerned with small matters,trivial; insignificant,important; significant,They wasted an hour arguing over a petty disagreement.
@@ -120,8 +120,8 @@ disguise,To change appearance to hide identity,camouflage; conceal,reveal; expos
 extinct,No longer existing,vanished; died out,living; extant,Dinosaurs have been extinct for millions of years.
 imposing,"Impressive because of size, appearance, or importance",impressive; grand,unimpressive; modest,An imposing stone castle stood above the town.
 adolescent,A young person developing from child to adult,teenager; youth,adult; infant,The programme offers advice to adolescent students.
-berate,To scold angrily,scold; rebuke,praise; commend,The manager berated the player for ignoring the rules.
-crave,To have a powerful desire for something,desire; yearn for,reject; dislike,"After the long run, she craved a cold drink."
+berate,To scold angrily,scold; rebuke,praise; commend,The coach berated the goalkeeper for letting the ball in twice.
+crave,To have a powerful desire for something,desire; yearn for,reject; dislike,"After the long walk, I craved a huge sandwich with loads of cheese."
 yearn,"To strongly desire something, especially something difficult to obtain",long; crave,reject; dislike,He yearned to see his family again.
 conspicuous,Easily noticed or attracting attention,noticeable; prominent,inconspicuous; hidden,Her bright yellow coat made her conspicuous in the crowd.
 conspiracy,A secret plan by a group to do something harmful or illegal,plot; scheme,—,The detectives uncovered a conspiracy to steal the jewels.
@@ -151,14 +151,14 @@ pivotal,Extremely important to the development or success of something,crucial; 
 temperate,Moderate; neither extremely hot nor cold,moderate; mild,extreme; severe,The region has a temperate climate.
 humid,Containing a lot of moisture in the air,damp; muggy,dry; arid,The air was hot and humid after the storm.
 irksome,Annoying or irritating,annoying; tiresome,pleasant; enjoyable,Filling in the same form twice was irksome.
-peddle,To sell goods by travelling from place to place,sell; hawk,buy; purchase,Traders peddled fruit and cloth in the market.
+peddle,To sell goods by travelling from place to place,sell; hawk,buy; purchase,An old man peddled apples from a barrow outside our school gates.
 vend,To sell,sell; market,buy; purchase,The machine can vend drinks and snacks.
 hawk,"To try to sell goods, often by calling out in public",peddle; sell,buy; purchase,Vendors hawked souvenirs outside the stadium.
 miser,Someone who hates spending money,skinflint; cheapskate,spendthrift; giver,The miser hated spending even a single penny.
 spurn,To reject with contempt,reject; rebuff,accept; embrace,She spurned the unfair offer.
 probate,The legal process of dealing with a dead person's will and estate,estate administration; will validation,—,The will went through probate before the estate was distributed.
 probation,A period of testing or supervised behaviour,trial period; supervision,—,The new employee completed a three-month probation period.
-dawdle,To waste time by moving or acting slowly,linger; loiter,hurry; rush,Stop dawdling or we will miss the bus.
+dawdle,To waste time by moving or acting slowly,linger; loiter,hurry; rush,We dawdled on the way to the shop and the rain started before we got there.
 refute,To prove a statement or argument wrong,disprove; rebut,confirm; substantiate,The evidence helped refute the false accusation.
 scoff,To speak about something in a mocking or scornful way,mock; jeer,praise; respect,Some people scoffed at the unusual invention.
 limp,To walk unevenly because of injury; also lacking stiffness,hobble; falter,stride; walk normally,He began to limp after twisting his ankle.
@@ -169,7 +169,7 @@ exhausted,Extremely tired,drained; fatigued,energetic; refreshed,We were exhaust
 drowsy,Sleepy,sleepy; lethargic,alert; awake,The warm room made me drowsy.
 invigorated,Filled with energy,energised; refreshed,exhausted; weary,The cold swim left her feeling invigorated.
 obtuse,Slow to understand and notice things; an angle that is more than 90 degrees but less than 180 degrees.,dull; slow-witted,astute; perceptive,He was being deliberately obtuse and ignored the obvious clue.
-abridge,To shorten a text without losing its main meaning,shorten; condense,expand; lengthen,The editor abridged the novel for younger readers.
+abridge,To shorten a text without losing its main meaning,shorten; condense,expand; lengthen,The book was abridged so that young readers could finish it in a week.
 sullen,"Bad-tempered, gloomy, and silent",gloomy; sulky,cheerful; friendly,The child sat in sullen silence.
 acute,Very severe or intense; also sharp or perceptive,severe; intense,mild; slight,She felt acute pain in her ankle.
 pensive,"Deeply thoughtful, often slightly sad",thoughtful; reflective,carefree; thoughtless,He looked pensive as he watched the sunset.
@@ -190,7 +190,7 @@ stingy,Unwilling to spend or give,miserly; mean,generous; lavish,The stingy land
 decoy,Something used to lure or trick someone,lure; bait,—,The wooden duck was used as a decoy.
 futile,Incapable of producing a useful result,pointless; useless,effective; fruitful,It was futile to argue once the decision had been made.
 impede,To delay or obstruct progress,hinder; obstruct,assist; facilitate,Heavy traffic may impede the ambulance.
-pique,To arouse interest or curiosity; also irritation,arouse; stimulate,dull; soothe,The mysterious letter piqued her curiosity.
+pique,To arouse interest or curiosity; also irritation,arouse; stimulate,dull; soothe,"The old locked chest piqued our curiosity, so we asked Grandad about it."
 smother,To cover completely or prevent breathing,suffocate; stifle,uncover; release,He used a blanket to smother the small fire.
 heed,To pay careful attention to,notice; obey,ignore; disregard,You should heed the warning signs.
 exile,Forced absence from one's country or home,banishment; expulsion,homecoming; return,The defeated ruler lived in exile for many years.
@@ -201,7 +201,7 @@ forthwith,Immediately,immediately; at once,later; eventually,The damaged machine
 sporadically,Occasionally and irregularly,occasionally; irregularly,constantly; regularly,It rained sporadically throughout the afternoon.
 intermittently,Starting and stopping at intervals,periodically; sporadically,continuously; constantly,The lights flickered intermittently during the storm.
 godsend,Something unexpectedly helpful,blessing; boon,burden; misfortune,The unexpected lift home was a godsend.
-concede,"To admit something is true, often unwillingly",admit; acknowledge,deny; dispute,He finally conceded that his opponent was correct.
+concede,"To admit something is true, often unwillingly",admit; acknowledge,deny; dispute,"After the argument, my brother conceded that he had taken the last biscuit."
 contemplate,To think about something carefully,consider; ponder,ignore; dismiss,She sat quietly to contemplate her next move.
 vowel,"A speech sound such as a, e, i, o or u",vowel sound,consonant,The letter 'a' represents a vowel in this word.
 consonant,A speech sound made by partly or completely blocking airflow,consonant sound,vowel,The word 'cat' begins with the consonant 'c'.
@@ -230,7 +230,7 @@ abstain,To deliberately avoid doing or consuming something,refrain; desist,parti
 club,A heavy stick; also an organised group,cudgel; association,—,He joined the chess club at school.
 baton,"A short stick carried by a conductor, runner, or police officer",staff; stick,—,The runner passed the baton to her teammate.
 forlorn,"Lonely, sad, and abandoned",desolate; miserable,hopeful; cheerful,The lost dog looked forlorn in the rain.
-implore,To beg someone earnestly,beg; beseech,demand; command,She implored the guard to let them through.
+implore,To beg someone earnestly,beg; beseech,demand; command,He implored his dad to let him stay for another week of holiday.
 pristine,Extremely clean and in original condition,spotless; untouched,dirty; damaged,The lake remained in pristine condition.
 grime,Dirt that has accumulated on a surface,dirt; filth,cleanliness; purity,Grime covered the old windows.
 filth,Very unpleasant dirt,dirt; grime,cleanliness; purity,The abandoned room was covered in filth.
@@ -244,7 +244,7 @@ shack,"A small, roughly built shelter",hut; cabin,mansion; palace,They found she
 abrupt,Sudden and unexpected; or rudely brief,sudden; curt,gradual; courteous,The meeting came to an abrupt end.
 opaque,Not allowing light through; difficult to understand,non-transparent; obscure,transparent; clear,The opaque glass prevented us from seeing inside.
 cellar,"A room below ground level, usually for storage",basement; storeroom,attic; loft,They stored the apples in the cool cellar.
-chastise,To scold or punish,scold; reprimand,praise; commend,The teacher chastised him for repeatedly interrupting.
+chastise,To scold or punish,scold; reprimand,praise; commend,The headteacher kept chastising the boys who had chalked on the wall.
 glut,An excessive supply of something,surplus; excess,shortage; scarcity,A glut of apples caused prices to fall.
 baffle,To confuse completely,bewilder; confuse,clarify; enlighten,The strange clue continued to baffle the detectives.
 pliable,Easily bent or influenced,flexible; supple,rigid; stiff,The warm clay became soft and pliable.
@@ -269,7 +269,7 @@ replete,Completely full or well supplied,full; well-stocked,empty; depleted,The 
 deplete,To greatly reduce the amount of something,exhaust; reduce,replenish; restore,The long drought began to deplete the reservoir.
 juvenile,Young or relating to young people,young; youthful,adult; mature,The juvenile fox remained close to its mother.
 unravel,To untangle; or solve something complicated,untangle; solve,tangle; complicate,The detective slowly began to unravel the mystery.
-tangle,A twisted mass; or to become twisted together,entangle; knot,untangle; unravel,The fishing lines became tangled together.
+tangle,A twisted mass; or to become twisted together,entangle; knot,untangle; unravel,Dad let the dog out and its lead tangled round the fence post.
 barb,A sharp backward-pointing projection; also a hurtful remark,spike; point,—,The fishhook had a sharp barb.
 despair,Complete loss of hope,hopelessness; despondency,hope; optimism,He refused to give in to despair.
 anguish,Extreme physical or emotional suffering,agony; torment,comfort; joy,She cried out in anguish when she heard the news.
@@ -280,8 +280,8 @@ stagnant,Not flowing or developing,still; inactive,flowing; developing,Mosquitoe
 mobile,Able to move; also a hanging decoration,movable; portable,stationary; fixed,The lightweight table is mobile and easy to move.
 wary,Cautious because of possible danger,cautious; vigilant,careless; trusting,The wary fox watched us from a distance.
 gullible,Easily tricked or persuaded,credulous; naive,sceptical; shrewd,A gullible person may believe the scam.
-shuffle,To walk without lifting the feet properly,scuff; drag,stride; march,The tired man shuffled slowly towards the door.
-stride,"To walk with long, confident steps",pace; march,shuffle; creep,She strode confidently onto the stage.
+shuffle,To walk without lifting the feet properly,scuff; drag,stride; march,"Grandad shuffled across the kitchen in his slippers, holding his tea."
+stride,"To walk with long, confident steps",pace; march,shuffle; creep,"My sister strides down our road every morning, bag bouncing on her back."
 dread,Great fear or anxiety,fear; apprehension,eagerness; confidence,He felt dread as the storm approached.
 fable,"A short story, often with animals, teaching a moral",parable; tale,fact; history,The fable teaches a lesson about honesty.
 myth,A traditional story or widely held but false belief,legend; fable,fact; truth,The story of the creature may be only a myth.
@@ -313,13 +313,13 @@ ajar,Slightly open,partly open; unclosed,closed; shut,She left the door ajar.
 scruffy,Untidy or shabby,untidy; shabby,neat; smart,The scruffy dog needed a bath.
 legend,A traditional story; also a very famous or admired person,myth; traditional tale,fact; history,"According to legend, treasure is buried beneath the castle."
 caption,Words explaining a picture or image,legend; description,—,The caption beneath the photograph explained where it was taken.
-chortle,To laugh with delight,chuckle; laugh,sob; weep,He chortled with delight at the joke.
+chortle,To laugh with delight,chuckle; laugh,sob; weep,The baby chortled when Grandad made his silly monster face.
 exclaim,To cry out suddenly,cry out; shout,whisper; murmur,'Watch out!' she exclaimed.
 clamour,A loud mixture of voices or demands,uproar; din,silence; quiet,A clamour of excited voices filled the hall.
 whisper,To speak very quietly,murmur; breathe,shout; yell,She whispered the secret into my ear.
 whimper,"To make quiet, weak sounds of fear or pain",whine; cry,roar; shout,The frightened puppy began to whimper.
-mumble,To speak quietly and unclearly,mutter; murmur,enunciate; speak clearly,He mumbled an apology under his breath.
-cackle,To laugh loudly and harshly,laugh harshly; squawk,—,The witch cackled loudly in the story.
+mumble,To speak quietly and unclearly,mutter; murmur,enunciate; speak clearly,He mumbled his answer and the examiner asked him to say it again.
+cackle,To laugh loudly and harshly,laugh harshly; squawk,—,My brother has such a loud cackle that we hear it from the next room.
 crack up,To burst into laughter; or suffer an emotional breakdown,,,The comedian's final joke made the audience crack up.
 snicker,To laugh quietly in a disrespectful way,snigger; chuckle,—,The boys began to snicker when the hat blew away.
 snivel,To cry or complain in an irritating way,whine; whimper,—,He continued to snivel about the tiny scratch.
@@ -440,12 +440,12 @@ bland,Lacking strong flavour or interest,tasteless; dull,flavourful; exciting,Th
 insipid,"Lacking flavour, energy, or interest",bland; tasteless,flavourful; lively,The drink was watery and insipid.
 whine,To complain in an annoying voice,complain; whimper,praise; accept,The child began to whine about having to wait.
 moan,To make a low sound of pain or complain,groan; complain,cheer; rejoice,He moaned about the cold weather all morning.
-surmise,To guess something from limited evidence,guess; infer,know; verify,"From the muddy footprints, we surmised that someone had entered."
+surmise,To guess something from limited evidence,guess; infer,know; verify,From the crumbs on the kitchen table we surmised that my brother had eaten the biscuits.
 deduct,To subtract or take away,subtract; remove,add; include,The teacher deducted two marks for the missing working.
 enchant,To delight greatly; or magically charm,delight; charm,repel; disgust,The magical story enchanted the young audience.
 skim,To read or look over quickly; or remove something from a surface,scan; glance over,study; read closely,I skimmed the article before reading it carefully.
-pare,To trim by cutting away the outer part,trim; peel,add; enlarge,She pared the apple with a small knife.
-rebuke,To sharply express disapproval,reprimand; scold,praise; commend,The coach rebuked the player for ignoring instructions.
+pare,To trim by cutting away the outer part,trim; peel,add; enlarge,Grandad pared the potatoes before he dropped them into the pan.
+rebuke,To sharply express disapproval,reprimand; scold,praise; commend,Our maths teacher rebuked us for copying from the board.
 gadget,A small useful mechanical or electronic device,device; appliance,—,This small gadget measures the room temperature.
 comprehensive,Complete and covering almost everything necessary,complete; extensive,incomplete; limited,The guide gives a comprehensive overview of the topic.
 thorough,"Careful, detailed, and complete",comprehensive; meticulous,superficial; careless,The police carried out a thorough search.

@@ -72,7 +72,14 @@ function Reading({ story }: { story: StoryDetail }) {
         ((a.number - story.number + 10) % 10) -
         ((b.number - story.number + 10) % 10),
     )[0];
-  const vocabulary = new Map(story.vocabulary.map((word) => [word.id, word]));
+  // Keyed by every spelling that actually appears in the text, so a story can
+  // teach "confer" through a sentence that says "conferred".
+  const vocabulary = new Map<string, StoryDetail["vocabulary"][number]>();
+  for (const word of story.vocabulary) {
+    vocabulary.set(word.id, word);
+    for (const [form, id] of Object.entries(story.spellings || {}))
+      if (id === word.id) vocabulary.set(form, word);
+  }
   async function finish() {
     if (busy || answer === null) return;
     setBusy(true);

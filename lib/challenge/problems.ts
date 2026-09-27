@@ -25,24 +25,222 @@ function hash(value: string) {
   return n >>> 0;
 }
 
-/** Common inflections, so a cloze can blank "coveted" for the answer "covet". */
+/**
+ * Irregular past participles, for the words in this collection whose past
+ * tense is not built by rule. Without these, an example saying "fled" looked
+ * as though it never used the word "flee", and no cloze could be built from it.
+ */
+const IRREGULAR_PAST: Record<string, string> = {
+  flee: "fled",
+  flee_: "flew",
+  bear: "bore",
+  beat: "beaten",
+  begin: "began",
+  bid: "bade",
+  bite: "bit",
+  bleed: "bled",
+  blow: "blew",
+  bear_: "borne",
+  bring: "brought",
+  build: "built",
+  burn: "burnt",
+  burst: "burst",
+  buy: "bought",
+  catch: "caught",
+  choose: "chose",
+  cleave: "clove",
+  come: "came",
+  cost: "cost",
+  creep: "crept",
+  cut: "cut",
+  deal: "dealt",
+  dig: "dug",
+  do: "did",
+  draw: "drew",
+  dream: "dreamt",
+  drink: "drank",
+  drive: "drove",
+  eat: "ate",
+  fall: "fell",
+  feed: "fed",
+  feel: "felt",
+  fight: "fought",
+  find: "found",
+  fly: "flew",
+  forget: "forgot",
+  forgive: "forgave",
+  forsake: "forsook",
+  freeze: "froze",
+  get: "got",
+  give: "gave",
+  go: "went",
+  grow: "grew",
+  hang: "hung",
+  hear: "heard",
+  hide: "hid",
+  hold: "held",
+  hurt: "hurt",
+  keep: "kept",
+  kneel: "knelt",
+  know: "knew",
+  lay: "laid",
+  lead: "led",
+  learn: "learnt",
+  leave: "left",
+  lend: "lent",
+  lie: "lay",
+  light: "lit",
+  lose: "lost",
+  make: "made",
+  mean: "meant",
+  meet: "met",
+  mistake: "mistook",
+  overcome: "overcame",
+  pay: "paid",
+  put: "put",
+  quit: "quit",
+  read: "read",
+  ride: "rode",
+  ring: "rang",
+  rise: "rose",
+  run: "ran",
+  say: "said",
+  see: "saw",
+  sell: "sold",
+  send: "sent",
+  set: "set",
+  sew: "sewed",
+  shake: "shook",
+  shed: "shed",
+  shine: "shone",
+  shoot: "shot",
+  show: "showed",
+  shrink: "shrank",
+  sing: "sang",
+  sink: "sank",
+  sit: "sat",
+  slay: "slew",
+  sleep: "slept",
+  speak: "spoke",
+  spell: "spelt",
+  spend: "spent",
+  spill: "spilt",
+  spin: "spun",
+  spit: "spat",
+  split: "split",
+  spread: "spread",
+  spring: "sprang",
+  steal: "stole",
+  stick: "stuck",
+  sting: "stung",
+  stride: "strode",
+  strike: "struck",
+  strive: "strove",
+  swear: "swore",
+  sweep: "swept",
+  swim: "swam",
+  swing: "swung",
+  take: "took",
+  teach: "taught",
+  tear: "tore",
+  tell: "told",
+  think: "thought",
+  throw: "threw",
+  understand: "understood",
+  undertake: "undertook",
+  wake: "woke",
+  wear: "wore",
+  weave: "wove",
+  weep: "wept",
+  win: "won",
+  wind: "wound",
+  withdraw: "withdrew",
+  write: "wrote",
+};
+
+/**
+ * The forms a word can take, so a cloze can blank "coveted" for the answer
+ * "covet" and an example can be recognised as using its word.
+ *
+ * These were built by appending, which produced "gorgeed", "embraceed" and
+ * "panicced" - no such word - and so a sentence saying "gorged" looked as
+ * though it never used the word at all, and no cloze question could be built
+ * from it. A silent e takes a d and loses its e, a short vowel doubles its
+ * consonant, a consonant and y turns to ied, and the irregular pasts are
+ * listed rather than guessed.
+ */
 export function inflectionsOf(word: string): string[] {
   const out = new Set<string>([word]);
   const add = (value: string) => value.trim() && out.add(value.trim());
-  if (/[^aeiou]y$/i.test(word)) {
+  const lower = word.toLowerCase();
+  /** A short vowel followed by one consonant, which doubles before a suffix. */
+  const doubles = () =>
+    /[^aeiou][aeiou][bdglmnprt]$/i.test(word) ||
+    // A final c becomes ck, so the hard sound survives: panic to panicked.
+    /[^aeiou][aeiou]c$/i.test(word);
+  /** The stem a suffix attaches to: plann for stop, panick for panic. */
+  const stem = () =>
+    /[^aeiou][aeiou]c$/i.test(word)
+      ? `${word.slice(0, -1)}ck`
+      : `${word}${word.slice(-1)}`;
+  const consonantY = () => /[^aeiou]y$/i.test(word);
+  /** Ends in a letter e, silent or not. Both spellings are generated. */
+  const endsE = () => /e$/i.test(word);
+  const irregular = IRREGULAR_PAST[lower];
+
+  if (consonantY()) {
     add(`${word.slice(0, -1)}ies`);
     add(`${word.slice(0, -1)}ied`);
+    add(`${word.slice(0, -1)}ier`);
+    add(`${word.slice(0, -1)}iest`);
+  } else {
+    add(`${word}s`);
+    if (/(s|x|z|ch|sh|o)$/i.test(word)) add(`${word}es`);
   }
-  if (/(s|x|z|ch|sh|o)$/i.test(word)) add(`${word}es`);
-  else add(`${word}s`);
-  add(`${word}ed`);
-  add(`${word}ing`);
-  if (/[^aeiou][aeiou][^aeiouwxy]$/i.test(word)) {
-    add(`${word}${word.slice(-1)}ed`);
-    add(`${word}${word.slice(-1)}ing`);
+
+  // A word ending in a silent e takes a d, and a word ending in a sounded one
+  // takes an ed: gorged against agreed. Which is which cannot be worked out
+  // from the spelling alone, because "pique" and "unique" both end in que and
+  // disagree. So both are generated. A wrong form costs nothing, because a form
+  // is only ever used when the sentence actually contains it, and English
+  // prose does not contain "piqueed". A missing form costs a question.
+  if (irregular) add(irregular);
+  if (endsE()) {
+    add(`${word}d`);
+    add(`${word}ed`);
+  } else {
+    add(`${word}ed`);
+    if (doubles()) add(`${stem()}ed`);
   }
-  add(`${word}er`);
-  add(`${word}est`);
+
+  if (endsE()) {
+    add(`${word.slice(0, -1)}ing`);
+    add(`${word}ing`);
+  } else {
+    add(`${word}ing`);
+    if (doubles()) add(`${stem()}ing`);
+  }
+
+  // Whether the last consonant doubles depends on where the stress falls,
+  // which spelling does not record: "equip" doubles to "equipped" and "big"
+  // doubles to "bigger", while "open" does not. So a word ending in a
+  // doubling consonant is given both spellings.
+  if (/[bdglmnprt]$/i.test(word)) {
+    add(`${stem()}ed`);
+    add(`${stem()}ing`);
+  }
+
+  if (doubles()) {
+    add(`${stem()}er`);
+    add(`${stem()}est`);
+  } else {
+    if (endsE()) {
+      add(`${word}r`);
+      add(`${word}st`);
+    }
+    add(`${word}er`);
+    add(`${word}est`);
+  }
   return [...out];
 }
 

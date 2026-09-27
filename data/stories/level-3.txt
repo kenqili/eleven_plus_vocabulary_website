@@ -531,7 +531,7 @@
       "concentrated",
       "concerted",
       "condone",
-      "conferred",
+      "errand",
       "confine",
       "consideration",
       "consistency",
@@ -552,7 +552,7 @@
       "They searched the floor. The **conveyor** that had carried sacks between the two levels was still there, rusted to a standstill, and it gave the most **comical** sight of the afternoon: Gus climbed into the trough wearing a bin bag and was carried four feet by his own weight before the brake jammed. Ines had to **curate** the display from what they found: millers’ tools, twelve photographs, and **copious** notes that Mr Pike’s wife had typed out in 1982 and left in a biscuit tin.",
       "Outside, the allotment strip still ran beside the river, and the class **cultivate** it every spring, which Mr Pike said was the only reason the mill survived. They were meant to **confine** themselves to the path, but somebody left a gate open and two goats got through. The laughter that followed was **contagious**, and by the time the farmer arrived the whole group was helpless. The goats were counted back into a pen, the gate was mended, and Gus wrote the date on the repair note in enormous letters.",
       "Inside, things went less well. Gus had given the day-book only a **cursory** look, announced he had found it, and then admitted he had actually found a box of old teacups. His **credibility** in the class dropped to the level of the teacup finder. The chair of the governors would not **condone** crumbs beside the photographs. \"Not in here,\" she said. \"But I will say nothing at all if you carry them out to the yard.\" Two badgers had other ideas.",
-      "The low point came at three o’clock, when Ines was close to giving up. Mr Pike returned from the dentist to find eleven children sulking. He **conferred** with Ines and asked a question she had not thought of: which machine here had never once stopped? She went to the conveyor, got Gus to hold the loose roller while she reached behind it with a torch, and found a tin box stiff with rust. Opening it in front of everybody was a **courageous** decision, and it drew cheers from a room with a dust sheet over its head.",
+      "The low point came at three o’clock, when Ines was close to giving up. Mr Pike was out on an **errand** and came back to find eleven children sulking. He stood with Ines and asked a question she had not thought of: which machine here had never once stopped? She went to the conveyor, got Gus to hold the loose roller while she reached behind it with a torch, and found a tin box stiff with rust. Opening it in front of everybody was a **courageous** decision, and it drew cheers from a room with a dust sheet over its head.",
       "Inside was the mill’s first day-book, written in copperplate in 1841, listing every sack of flour, every wage, and one note that the river had frozen so hard the boys walked to work. The class read it aloud, alternating pages, which took a certain **consistency** of voice. By the time Mr Pike locked up, the four bare tables held twelve photographs, three tools, a map and one open day-book under glass. \"When he retires in the spring,\" Ines said, \"there will be a display about him too. It can have the best light in the room.\""
     ],
     "question": {

@@ -26,7 +26,7 @@ import { difficultyForAddedWord } from "@/lib/challenge/added-words";
 import { choicesFor, shuffle, type Word } from "@/lib/challenge/words";
 import { type QuestionType } from "@/lib/challenge/config";
 import type { Difficulty } from "@/lib/challenge/difficulty";
-import type { Feedback, Question, Stats } from "@/lib/challenge/types";
+import type { Question, Stats } from "@/lib/challenge/types";
 import { chosenWordExplanation } from "@/lib/challenge/option-gloss";
 import { database } from "./db";
 import { HttpError } from "./http";
