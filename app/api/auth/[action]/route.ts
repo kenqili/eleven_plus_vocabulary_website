@@ -44,8 +44,8 @@ export async function POST(
         .get("cookie")
         ?.split(";")
         .map((x) => x.trim())
-        .find((x) => x.startsWith("mw_session="))
-        ?.slice(11);
+        .find((x) => x.startsWith("mw_session=") || x.startsWith("__Host-mw_session="))
+        ?.split("=")[1];
       if (token)
         await database()
           .prepare("DELETE FROM sessions WHERE token_hash = ?")
@@ -95,6 +95,76 @@ export async function POST(
         { "Set-Cookie": sessionCookie("", request, 0) },
       );
     }
+    if (action === "password") {
+      // A parent who suspects their password has been seen has to be able to do
+      // something about it. Changing the password and signing out every other
+      // device are the same request from a parent's point of view: changing a
+      // password someone else knows while leaving their session alive would not
+      // fix anything.
+      const user = await requireUser(request);
+      const input = await body(request);
+      const current =
+        typeof input.currentPassword === "string" ? input.currentPassword : "";
+      const next = typeof input.newPassword === "string" ? input.newPassword : "";
+      if (!current) throw new HttpError(400, "Enter your current password.");
+      if (next.length < 8 || next.length > 128)
+        throw new HttpError(400, "The new password must be 8 to 128 characters.");
+      if (next === current)
+        throw new HttpError(400, "The new password matches the old one.");
+      // Counted per account and per address: a stolen session must not be able
+      // to grind through passwords by never sending the right one, and a shared
+      // address must not be usable to lock a parent out of their own account.
+      await rateLimit(`change-password:${user.id}`, 5);
+      await rateLimit(
+        `change-password-ip:${request.headers.get("cf-connecting-ip") || "local"}`,
+        20,
+      );
+      const account = (
+        await database()
+          .prepare("SELECT password_hash FROM users WHERE id=?")
+          .bind(user.id)
+          .first<{ password_hash: string }>()
+      )?.password_hash;
+      if (!account || !(await verifyPassword(current, account)))
+        throw new HttpError(401, "That current password does not match.");
+
+      const live = (
+        await database()
+          .prepare(
+            "SELECT COUNT(*) AS count FROM sessions WHERE user_id=? AND expires_at > ?",
+          )
+          .bind(user.id, Date.now())
+          .first<{ count: number }>()
+      )?.count ?? 0;
+
+      await database()
+        .prepare("UPDATE users SET password = ? WHERE id = ?")
+        .bind(hashPassword(next), user.id)
+        .run();
+      // Deleted rather than left to expire: a token that stays valid for the rest
+      // of its week is exactly the thing being revoked. A fresh session is
+      // issued below, so the parent stays signed in here.
+      await database()
+        .prepare("DELETE FROM sessions WHERE user_id = ?")
+        .bind(user.id)
+        .run();
+      return json(
+        { ok: true, signedOut: Math.max(0, live - 1) },
+        200,
+        { "Set-Cookie": await createSession(user.id, request) },
+      );
+    }
+    if (action === "signout-all") {
+      const user = await requireUser(request);
+      await rateLimit(`signout-all:${user.id}`, 10);
+      const removed = await database()
+        .prepare("DELETE FROM sessions WHERE user_id = ?")
+        .bind(user.id)
+        .run();
+      return json({ ok: true, signedOut: removed?.meta?.changes ?? 0 }, 200, {
+        "Set-Cookie": sessionCookie("", request, 0),
+      });
+    }
     if (action !== "register" && action !== "login")
       throw new HttpError(404, "Unknown action.");
     const input = await body(request);
@@ -109,7 +179,7 @@ export async function POST(
     )
       throw new HttpError(
         400,
-        "Use a valid email and a password of 12–128 characters.",
+        "Use a valid email address and a password of 8 to 128 characters.",
       );
     await rateLimit(`auth:email:${email}`, 12);
     // cf-connecting-ip is supplied by Cloudflare; never trust X-Forwarded-For.

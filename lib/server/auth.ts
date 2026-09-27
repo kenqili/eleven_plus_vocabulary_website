@@ -7,8 +7,8 @@ export async function currentUser(request: Request): Promise<User | null> {
     .get("cookie")
     ?.split(";")
     .map((x) => x.trim())
-    .find((x) => x.startsWith("mw_session="))
-    ?.slice(11);
+    .find((x) => x.startsWith("mw_session=") || x.startsWith("__Host-mw_session="))
+    ?.split("=")[1];
   if (!token || !/^[a-f0-9]{64}$/.test(token)) return null;
   return database()
     .prepare(
@@ -31,7 +31,24 @@ export function sessionCookie(
   request: Request,
   age = SESSION_TTL_MS / 1000,
 ) {
-  return `mw_session=${token}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${age}${new URL(request.url).protocol === "https:" ? "; Secure" : ""}`;
+  // A __Host- cookie is refused by the browser unless it is Secure, has no
+  // Domain, and has Path=/, so those three cannot be broken by a later edit and
+  // a subdomain cannot overwrite or read the session. The prefix is dropped in
+  // local development, where there is no https and the browser would reject it
+  // outright, which would leave nobody able to sign in on a laptop.
+  const secure = new URL(request.url).protocol === "https:";
+  const name = secure ? "__Host-mw_session" : "mw_session";
+  const parts = [
+    `${name}=${token}`,
+    "HttpOnly",
+    // Lax still permits a top-level GET, which is what an email link would be.
+    // No route in this app changes state on a GET, so that is the right trade.
+    "SameSite=Lax",
+    "Path=/",
+    `Max-Age=${age}`,
+  ];
+  if (secure) parts.push("Secure");
+  return parts.join("; ");
 }
 export async function createSession(userId: string, request: Request) {
   const token = newToken();

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useEffect, useState, type FormEvent } from "react";
 import Header from "./header";
 import { api } from "@/lib/client/api";
+import AccountSecurity from "./account-security";
 import DeleteAccount from "./delete-account";
 type User = { id: string; email: string };
 type Billing = {
@@ -210,6 +211,7 @@ export default function Account() {
                   Sign out
                 </button>
               </div>
+              <AccountSecurity />
               <DeleteAccount />
             </>
           ) : (

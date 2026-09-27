@@ -1,6 +1,6 @@
 import { SoundProvider } from "@/lib/theme/sound-provider";
 import { ThemeProvider } from "@/lib/theme/theme-provider";
-import { THEMES, THEME_STORAGE_KEY } from "@/lib/theme/themes";
+import { APPLY_SAVED_THEME } from "@/lib/theme/theme-script";
 import "./globals.css";
 import { initializeStoryLibrary } from "@/lib/server/story-library";
 import type { Metadata } from "next";
@@ -17,21 +17,6 @@ export const metadata: Metadata = {
     shortcut: "/favicon.svg",
   },
 };
-
-/**
- * Applies the saved theme before the page paints.
- *
- * A child's theme is a small thing to ask them to choose twice, so it is read
- * here, inline and early, rather than in an effect after first paint. Without
- * this the page renders in the default colours and then snaps to the chosen
- * ones, which is jarring on a dark theme. The list is inlined rather than
- * imported so this cannot become a reason to delay rendering.
- */
-const APPLY_SAVED_THEME = `(function(){try{
-var t=localStorage.getItem(${JSON.stringify(THEME_STORAGE_KEY)});
-if(t&&${JSON.stringify(THEMES.map((theme) => theme.id))}.indexOf(t)>-1){
-document.documentElement.setAttribute("data-theme",t);
-}}catch(e){}})();`;
 
 export default async function RootLayout({
   children,

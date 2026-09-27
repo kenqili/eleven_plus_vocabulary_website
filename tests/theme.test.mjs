@@ -5,6 +5,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import {
+  APPLY_SAVED_THEME,
+  THEME_SCRIPT_HASH,
+} from "../lib/theme/theme-script.ts";
 import { THEMES, themeById, isThemeId, THEME_STORAGE_KEY } from "../lib/theme/themes.ts";
 
 const css = readFileSync(new URL("../app/globals.css", import.meta.url), "utf8");
@@ -323,19 +328,31 @@ test("the progress bar's fill is distinguishable from its track", () => {
 });
 
 test("the script that applies the theme before paint knows every theme", () => {
-  // The inline script in the root layout carries its own allowlist, because it
-  // runs before any module loads. It used to be a hand-typed copy of the theme
-  // list, so adding a theme to the switcher left the script rejecting it on the
-  // next page load and quietly resetting the child to the default.
-  const layout = readFileSync(
-    new URL("../app/layout.tsx", import.meta.url),
+  // The inline script carries its own allowlist, because it runs before any
+  // module loads. It used to be a hand-typed copy of the theme list, so adding a
+  // theme to the switcher left the script rejecting it on the next page load and
+  // quietly resetting the child to the default. The script lives in its own
+  // module now, because its hash has to be named by the Content-Security-Policy
+  // and the two strings cannot drift apart.
+  assert.match(APPLY_SAVED_THEME, /indexOf\(t\)>-1/, "the allowlist check is missing");
+  for (const theme of THEMES)
+    assert.ok(
+      APPLY_SAVED_THEME.includes(theme.id),
+      `${theme.id} is not in the script's allowlist, so the script would reject it`,
+    );
+  const source = readFileSync(
+    new URL("../lib/theme/theme-script.ts", import.meta.url),
     "utf8",
   );
-  assert.match(layout, /THEMES\.map\(\(theme\) => theme\.id\)/);
-  assert.match(layout, /THEME_STORAGE_KEY/);
   assert.ok(
-    !/"classic","minecraft"/.test(layout),
-    "the theme ids must not be typed out a second time",
+    !/"classic","minecraft"/.test(source),
+    "the theme ids must not be typed out a second time, or adding a theme to the switcher leaves this script rejecting it",
+  );
+  assert.match(source, /THEMES\.map/);
+  // The key the rest of the app writes, not a near-miss of it.
+  assert.ok(
+    APPLY_SAVED_THEME.includes(THEME_STORAGE_KEY),
+    `the script reads a different storage key than the app writes (${THEME_STORAGE_KEY})`,
   );
   for (const theme of THEMES)
     assert.ok(
@@ -416,4 +433,69 @@ test("the burst radiates in eight directions, not one", () => {
     /0, 45, 90, 135, 180, 225, 270, 315/.test(source),
     "expected eight evenly spread ticks",
   );
+});
+
+test("the Content-Security-Policy hash matches the script it has to allow", () => {
+  // The app inlines one script so a saved dark theme applies before the first
+  // paint. A Content-Security-Policy that refuses it stops the theme working;
+  // one that falls back to unsafe-inline because the hash went stale is worse
+  // than no policy at all. So the hash is computed from the script, and this
+  // checks the rendered script is still the one the policy names.
+  const actual = createHash("sha256")
+    .update(APPLY_SAVED_THEME)
+    .digest("base64");
+  assert.equal(
+    actual,
+    THEME_SCRIPT_HASH,
+    "the exported hash is not the hash of the exported script",
+  );
+  const config = readFileSync(
+    new URL("../next.config.ts", import.meta.url),
+    "utf8",
+  );
+  assert.ok(
+    config.includes("THEME_SCRIPT_HASH"),
+    "the policy does not use the computed hash, so it is either absent or hardcoded",
+  );
+  assert.doesNotMatch(
+    config,
+    /sha256-[A-Za-z0-9+/=]{20,}/,
+    "a literal hash in the config can go stale; it must be computed",
+  );
+  // The layout has to render the very same string, not a copy of it.
+  const layout = readFileSync(
+    new URL("../app/layout.tsx", import.meta.url),
+    "utf8",
+  );
+  assert.ok(
+    layout.includes("APPLY_SAVED_THEME") &&
+      !layout.includes("localStorage.getItem"),
+    "the layout must render the shared script rather than its own copy",
+  );
+});
+
+test("the policy allows inline styles and nothing looser", () => {
+  // style-src needs unsafe-inline because React writes inline styles for the
+  // progress bar transform and the burst rotation. script-src must not, because
+  // that is the one thing that would let an injected script run.
+  const config = readFileSync(
+    new URL("../next.config.ts", import.meta.url),
+    "utf8",
+  );
+  const policy = config.slice(config.indexOf('"default-src'), config.indexOf('].join("; ");'));
+  assert.ok(policy.includes("'unsafe-inline'"), "expected the style allowance");
+  const scriptSrc = policy.slice(policy.indexOf("script-src"), policy.indexOf("style-src"));
+  assert.doesNotMatch(
+    scriptSrc,
+    /unsafe-inline|unsafe-eval/,
+    `script-src is looser than it needs to be: "${scriptSrc}"`,
+  );
+  assert.ok(policy.includes("object-src 'none'"), "plugins should be denied");
+  assert.ok(policy.includes("frame-ancestors 'none'"), "framing should be denied");
+  // Nothing is loaded from anywhere else, so nothing is allowed from anywhere
+  // else. An analytics tag or a font CDN added later would need this revisited,
+  // and that is the point of asserting it.
+  for (const directive of ["connect-src 'self'", "img-src 'self'", "font-src 'self'"]) {
+    assert.ok(policy.includes(directive), `${directive} is not restricted to this origin`);
+  }
 });

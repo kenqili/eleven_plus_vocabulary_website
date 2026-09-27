@@ -5580,3 +5580,37 @@ hr {
     animation: none;
   }
 }
+
+/* Password and sign-in controls. Grouped with the account's other cards rather
+   than given their own treatment, because a parent looking for this is looking
+   for it beside "Sign out" and "Delete this account", not for something that
+   looks like a separate feature. */
+.account-security {
+  margin-top: 20px;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+.account-security h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+  font-size: 1.02rem;
+}
+.account-security form {
+  display: grid;
+  gap: 6px;
+  max-width: 26rem;
+}
+.account-security .muted {
+  margin: 2px 0 0;
+  font-size: 0.85rem;
+}
+.account-security .account-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 12px;
+}
