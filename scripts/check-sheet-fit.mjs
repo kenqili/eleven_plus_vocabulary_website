@@ -5,6 +5,14 @@
 // real content from the bank against the real cell, worst case first, and
 // reports the tightest margins for every combination the app offers.
 //
+// This checks the fit. The sheet itself is rendered by
+// app/api/words/export/route.ts, which is the only thing that decides what a
+// printed sheet looks like; this deliberately does not duplicate that, so the
+// two cannot disagree.
+//
+// The same check runs on every build as part of tests/print-layout.test.mjs.
+// This script exists to print the margins when a layout changes.
+//
 // Run: node --experimental-strip-types scripts/check-sheet-fit.mjs
 import { words } from "./load-word-bank.mjs";
 import {
