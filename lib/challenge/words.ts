@@ -1,3 +1,5 @@
+import type { DistractorContext } from "./problems.ts";
+import { pickDefinitionDistractors } from "./problems.ts";
 export const SOURCE_ORDER = [
   "flash_card_1",
   "flash_card_2",
@@ -153,26 +155,22 @@ export function shuffle<T>(items: T[], random = Math.random): T[] {
   }
   return result;
 }
+/**
+ * The four options for a definition question: the right meaning and three
+ * wrong ones, drawn through the shared distractor rules so a synonym of the
+ * answer is never offered as a second valid option.
+ */
 export function choicesFor(
   word: Word,
-  bank: Word[],
+  context: DistractorContext,
+  key: string,
   random = Math.random,
 ): string[] {
-  const definitions = [
-    ...new Set(
-      bank
-        .filter(
-          (w) =>
-            w.id !== word.id &&
-            !similarDefinitions(word.definition, w.definition),
-        )
-        .map((w) => w.definition),
-    ),
-  ];
-  if (definitions.length < 3)
+  const distractors = pickDefinitionDistractors(key, word, context);
+  if (distractors.length < 3)
     throw new Error(`Not enough distinct definitions for ${word.word}.`);
   return shuffle(
-    [word.definition, ...shuffle(definitions, random).slice(0, 3)],
+    [word.definition, ...shuffle(distractors, random).slice(0, 3)],
     random,
   );
 }

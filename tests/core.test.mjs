@@ -9,6 +9,7 @@ import {
   SOURCE_ORDER,
 } from "../lib/challenge/words.ts";
 import { words, sources } from "../scripts/load-word-bank.mjs";
+import { buildDistractorContext } from "../lib/challenge/problems.ts";
 import { hashPassword, verifyPassword } from "../lib/server/password.ts";
 import { verifyStripeSignature } from "../lib/server/webhook.ts";
 test("Runtime bank feeds every source, so the served app matches the validators", () => {
@@ -39,8 +40,9 @@ test("Merged CSV bank keeps the first occurrence and produces four distinct choi
       if (!expected.has(word.id)) expected.set(word.id, word);
   }
   assert.deepEqual(words, [...expected.values()]);
+  const context = buildDistractorContext(words);
   for (const word of words) {
-    const choices = choicesFor(word, words);
+    const choices = choicesFor(word, context, `test:${word.id}`);
     assert.equal(choices.length, 4);
     assert.equal(new Set(choices).size, 4);
     assert.equal(choices.filter((x) => x === word.definition).length, 1);

@@ -1,6 +1,6 @@
 import { interleaveQuestions } from "@/lib/challenge/ordering";
 import { storyMeaning, wordClue } from "@/lib/challenge/story-meanings";
-import { words, problems } from "@/lib/challenge/bank";
+import { words, problems, distractorContext } from "@/lib/challenge/bank";
 import { choicesFor, shuffle } from "@/lib/challenge/words";
 import { parsePracticeLevel, parseQuestionTypes } from "@/lib/challenge/config";
 import { currentUser, requireUser, rateLimit } from "@/lib/server/auth";
@@ -89,10 +89,13 @@ export async function GET(request: Request) {
               // visitor who is only trying three questions.
               clue: wordClue(word.id, problem.answer, problem.type),
               help: storyMeaning(word, word.id),
+              // Sent here so the browser never has to download the level
+              // table just to label a question.
+              difficulty: levelFor(word.id),
               number: index + 1,
               choices: problem.choices
                 ? shuffle(problem.choices)
-                : choicesFor(word, words),
+                : choicesFor(word, distractorContext, `demo:${problem.id}`),
             })),
         ),
       ),

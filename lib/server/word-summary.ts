@@ -3,7 +3,13 @@ import type { DifficultyInfo } from "@/lib/challenge/difficulty";
 import { words } from "@/lib/challenge/bank";
 import type { Word } from "@/lib/challenge/words";
 import { CUMULATIVE_FLOOR, hasMastered } from "@/lib/challenge/mastery";
-import { learningStatus, type WordSummary } from "@/lib/challenge/word-summary";
+import {
+  filterWords,
+  learningStatus,
+  type WordFilter,
+  type WordSummary,
+} from "@/lib/challenge/word-summary";
+import type { DifficultyFilter } from "@/lib/challenge/difficulty";
 import {
   customWordsFor,
   excludedWordIds,
@@ -15,6 +21,44 @@ import {
 } from "@/lib/challenge/added-words";
 import { isAllowedWord } from "./free-words";
 import { database } from "./db";
+/**
+ * The word list, a page at a time.
+ *
+ * The whole collection is 2,249 entries with a definition, an example, two
+ * relations and a progress record each, which came to about 950KB, and the
+ * page renders forty of them. The status tallies are returned alongside so the
+ * four progress cards still know the shape of the collection without the
+ * browser having been sent all of it.
+ */
+export async function wordSummaryPage(
+  userId: string,
+  options: {
+    wordIds?: ReadonlySet<string>;
+    filter?: WordFilter;
+    search?: string;
+    level?: DifficultyFilter;
+    offset?: number;
+    limit?: number;
+  } = {},
+): Promise<{
+  words: WordSummary[];
+  total: number;
+  counts: Record<string, number>;
+}> {
+  const all = await wordSummary(userId, options.wordIds);
+  const { filter = "all", search = "", level = "all", offset = 0, limit = 40 } = options;
+  // The tallies are over everything the account may see, so switching a filter
+  // does not make the other cards read as zero.
+  const counts: Record<string, number> = {};
+  for (const word of all) counts[word.status] = (counts[word.status] ?? 0) + 1;
+  const matching = filterWords(all, filter, search, level);
+  return {
+    words: matching.slice(offset, offset + limit),
+    total: matching.length,
+    counts,
+  };
+}
+
 export async function wordSummary(
   userId: string,
   wordIds?: ReadonlySet<string>,

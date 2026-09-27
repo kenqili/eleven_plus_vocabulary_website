@@ -3,6 +3,9 @@ import { words } from "@/lib/challenge/bank";
 import type { Word } from "@/lib/challenge/words";
 import { configuredFreeWordLimit } from "./billing";
 
+/** How many words the shipped collection holds. */
+export const bankSize = () => words.length;
+
 /** Prefix that marks a word a parent added, which is never part of the bank. */
 export const isAddedWordId = (id: string) => id.startsWith("own:");
 

@@ -2,7 +2,7 @@
 import Pronunciation from "./pronunciation";
 import ExcludeWordButton from "./exclude-word";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Header from "./header";
 import { api } from "@/lib/client/api";
 import {
@@ -15,13 +15,13 @@ import {
   runTarget,
 } from "@/lib/challenge/mastery";
 import {
-  filterWords,
   WORD_FILTERS,
   LEARNING_STATUS,
   type WordFilter,
   type WordSummaryData,
 } from "@/lib/challenge/word-summary";
 const pageSize = 40;
+
 export default function WordSummaryPage() {
   const [data, setData] = useState<WordSummaryData | null>(null);
   const [error, setError] = useState("");
@@ -30,29 +30,45 @@ export default function WordSummaryPage() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [exporting, setExporting] = useState(false);
+  // The server filters and pages. Sending all 2,249 entries to render forty of
+  // them was about 950KB, and the focus listener below meant every tab away and
+  // back paid it again.
+  const [total, setTotal] = useState(0);
+  const premiumRef = useRef(false);
+  const [counts, setCounts] = useState<Record<string, number>>({});
+  const query = useMemo(
+    () =>
+      new URLSearchParams({
+        filter,
+        level: String(difficulty),
+        search,
+        offset: String(page * pageSize),
+        limit: String(pageSize),
+      }),
+    [filter, difficulty, search, page],
+  );
   const refresh = useCallback(() => {
-    void api<WordSummaryData>("/api/words")
+    void api<WordSummaryData>(`/api/words?${query}`)
       .then((result) => {
+        // Membership does not change as the child pages, so it is fetched once
+        // and kept rather than being asked for on every request.
+        premiumRef.current = result.premium;
         setData(result);
+        setTotal(result.total);
+        setCounts(result.counts);
         setError("");
       })
       .catch((e: Error) => {
         setError(e.message);
         setData(null);
       });
-  }, []);
+  }, [query]);
   useEffect(() => {
     refresh();
-    window.addEventListener("focus", refresh);
-    return () => window.removeEventListener("focus", refresh);
   }, [refresh]);
-  const matching = filterWords(data?.words || [], filter, search, difficulty);
-  const pages = Math.max(1, Math.ceil(matching.length / pageSize));
+  const pages = Math.max(1, Math.ceil(total / pageSize));
   const currentPage = Math.min(page, pages - 1);
-  const visible = matching.slice(
-    currentPage * pageSize,
-    (currentPage + 1) * pageSize,
-  );
+  const visible = data?.words ?? [];
   const exportParams = new URLSearchParams({
     filter,
     search,
@@ -120,7 +136,7 @@ export default function WordSummaryPage() {
                   }}
                 >
                   <strong>
-                    {data.words.filter((word) => word.status === level).length}
+                    {counts[level] ?? 0}
                   </strong>
                   <span>{label}</span>
                 </button>
@@ -232,8 +248,7 @@ export default function WordSummaryPage() {
                   </span>
                 )}
                 <p role="status">
-                  <strong>{matching.length}</strong> of {data.words.length}{" "}
-                  words
+                  <strong>{total}</strong> of {data.collection} words
                   {filter === "mistakes" || filter === "revealed"
                     ? " · includes previously mastered words"
                     : ""}
@@ -242,14 +257,14 @@ export default function WordSummaryPage() {
                   <div className="control-row">
                     <button
                       className="primary-button"
-                      disabled={!matching.length || exporting}
+                      disabled={!total || exporting}
                       onClick={() => void download()}
                     >
                       {exporting
                         ? "Exporting…"
-                        : `Export CSV (${matching.length})`}
+                        : `Export CSV (${total})`}
                     </button>
-                    {matching.length > 0 && (
+                    {total > 0 && (
                       <>
                         <a
                           className="secondary-button"
@@ -257,7 +272,7 @@ export default function WordSummaryPage() {
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          Print list ({matching.length}) ↗
+                          Print list ({total}) ↗
                         </a>
                         <Link
                           className="secondary-button"
@@ -282,7 +297,7 @@ export default function WordSummaryPage() {
                 progress. Choose Needs practice for a focused revision sheet.
               </p>
             </section>
-            {matching.length === 0 ? (
+            {total === 0 ? (
               <section className="history-panel">
                 <h2>No words match this view.</h2>
                 <p>

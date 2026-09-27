@@ -12,7 +12,6 @@ import {
   subscribeAutoNext,
   serverAutoNext,
 } from "@/lib/client/auto-next";
-import levels from "@/data/word-levels/levels.json";
 import {
   advanceMastery,
   answerWindow,
@@ -51,6 +50,8 @@ type DemoWord = {
   number: number;
   /** Worked out on the server, so the help data is not downloaded. */
   clue: string;
+  /** The word's band, sent with the question so the level table stays put. */
+  difficulty: number;
   /** The plain-language help for this word, also from the server. */
   help: string;
   choices: string[];
@@ -143,8 +144,9 @@ export function useChallenge() {
   const flushTime = studyClock.flush;
   const demoQuestion = useCallback((index: number): Question | null => {
     const word = demoWords.current[index];
-    const difficulty = levels.words[word?.wordId as keyof typeof levels.words]
-      ?.difficulty;
+    // Sent by the server with the question, and by the demo route, rather
+    // than looked up in a 344KB table the browser had no other use for.
+    const difficulty = word?.difficulty;
     return word
       ? {
           id: word.id,
@@ -358,8 +360,7 @@ export function useChallenge() {
           const correct = word.choices[selected] === word.answer;
           const seenBefore = demoSeen.current.has(word.wordId);
           demoSeen.current.add(word.wordId);
-          const difficulty = levels.words[word.wordId as keyof typeof levels.words]
-            ?.difficulty;
+          const difficulty = word.difficulty;
           const evidence: Evidence = classify({
             correct,
             revealed: selected === -1,

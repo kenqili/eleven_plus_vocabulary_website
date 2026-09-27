@@ -14,7 +14,7 @@ import { storyMeaning, wordClue } from "@/lib/challenge/story-meanings";
 import { missionFor } from "./mission";
 import { localDay } from "@/lib/challenge/rewards";
 import { chooseWord, reviewDueAt } from "@/lib/challenge/ordering";
-import { words, problems } from "@/lib/challenge/bank";
+import { words, problems, distractorContext } from "@/lib/challenge/bank";
 import { isAllowedWord } from "./free-words";
 import { problemsForAddedWords } from "@/lib/challenge/problems";
 import {
@@ -282,11 +282,17 @@ export async function nextQuestion(
     (problem) => (counts.get(problem.type) || 0) === leastSeen,
   );
   const problem = candidates[Math.floor(Math.random() * candidates.length)];
+  // Generated first so the definition distractors can be seeded from it: the
+  // same word then comes with a different set of wrong options each time,
+  // rather than the child learning to eliminate the same three.
+  const attemptId = crypto.randomUUID();
   const attempt: Attempt = {
-    id: crypto.randomUUID(),
+    id: attemptId,
     word_id: word.id,
     choices: JSON.stringify(
-      problem.choices ? shuffle(problem.choices) : choicesFor(word, pool),
+      problem.choices
+        ? shuffle(problem.choices)
+        : choicesFor(word, distractorContext, attemptId),
     ),
     question_type: problem.type,
     answer: problem.answer,

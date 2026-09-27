@@ -259,6 +259,55 @@ export function pickDistractors(
   return picked;
 }
 
+/**
+ * Three wrong definitions for a definition question.
+ *
+ * This used to build an array of every definition in the bank and take three
+ * from it, which cost about thirty milliseconds of request-path CPU per
+ * question and grew with the collection. It also skipped the synonym and
+ * antonym blocklist the other four types honour, so on a handful of words a
+ * distractor was the definition of a listed synonym, and a child could be
+ * given two defensible answers.
+ *
+ * It now walks the same scattered, level-bucketed order the other question
+ * types use, with the same exclusions, and is O(few) rather than O(bank).
+ */
+export function pickDefinitionDistractors(
+  key: string,
+  word: Word,
+  context: DistractorContext,
+): string[] {
+  const mine = context.defTerms.get(word.id) ?? significantTerms(word.definition);
+  const blocked = context.blocked.get(word.id) ?? new Set<string>();
+  const eligible = (candidate: Word) =>
+    candidate.id !== word.id &&
+    // Two different words can share one definition. Offering that text as a
+    // wrong option hands the child two identical answers, which is the one
+    // thing a multiple choice question must never do.
+    candidate.definition !== word.definition &&
+    !blocked.has(candidate.id) &&
+    !overlapRatio(mine, context.defTerms.get(candidate.id) ?? new Set());
+  const level = context.levelOf(word.id);
+  const picked: string[] = [];
+  for (const widest of [0, 1, 2, 5])
+    for (const band of bandsFor(level, widest)) {
+      const pool = context.byLevel.get(band) ?? [];
+      if (!pool.length) continue;
+      const start = hash(`${key}:def:${band}`) % pool.length;
+      for (
+        let step = 0;
+        step < pool.length && picked.length < CHOICES_PER_PROBLEM - 1;
+        step += 1
+      ) {
+        const candidate = pool[(start + step) % pool.length];
+        if (eligible(candidate) && !picked.includes(candidate.definition))
+          picked.push(candidate.definition);
+      }
+      if (picked.length === CHOICES_PER_PROBLEM - 1) return picked;
+    }
+  return picked;
+}
+
 export function parseProblemCsv(
   text: string,
   expectedType: "syn" | "ant",

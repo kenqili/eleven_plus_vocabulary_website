@@ -34,6 +34,13 @@ export type WordSummaryData = {
   trialDaysRemaining?: number;
   trialEndsAt?: number | null;
   trialExpired?: boolean;
+  freeWordCount?: number;
+  /** How many words the account may see in total, for "n of m". */
+  collection: number;
+  /** How many words matched the current filters. */
+  total: number;
+  /** Words per learning status, so the progress cards need no list to count. */
+  counts: Record<string, number>;
 };
 export function learningStatus(progress: {
   mastered: boolean;
