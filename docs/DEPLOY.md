@@ -36,7 +36,7 @@ app is squarely in that band. Do not launch on Free.
 
 D1 on Free is the harder stop: 5 million rows read and 100,000 written **per
 day**, and 5 GB of storage across the account. The documentation says that when
-you hit the daily row limit *"you will not be able to run queries against D1"*.
+you hit the daily row limit _"you will not be able to run queries against D1"_.
 `learning_events` and `progress` both grow by rows, per child, per answer, so
 the write limit is the one that bites. Launch on paid.
 
@@ -57,8 +57,8 @@ available at this price for a database holding children's accounts.
 global network; `placement.mode: "smart"` and `placement.region` are latency
 settings, not residency controls. The product that pins execution is Regional
 Services, which is Enterprise-only. Be honest about this in the privacy policy:
-*the database is EU-resident by documented constraint; request processing is
-not.* Do not imply the whole stack is in the EU.
+_the database is EU-resident by documented constraint; request processing is
+not._ Do not imply the whole stack is in the EU.
 
 Write down the `database_id` it prints. You need it in the next step.
 
@@ -96,14 +96,37 @@ and must not be pointed at the production database.
 ### 4. Run the migrations
 
 The schema lives in `drizzle/`, applied in filename order, and the last one
+(`0011_reconcile_mastered_totals.sql`) repairs the running mastered total for
+accounts that predate the `mastered` column. The one before it
 (`0010_coach_last_seen.sql`) adds a column this app's feedback now depends on.
-A deploy without it fails on the first answer, not at boot.
+A deploy without either fails on the first answer, not at boot.
+
+**Do not use `wrangler d1 migrations apply`.** It cannot work here: wrangler
+looks for a `migrations` folder next to the config, which is
+`dist/server/migrations`, and that directory does not exist. It fails with
+"No migrations present at …/dist/server/migrations". Apply the files directly,
+in filename order, against the real database id:
 
 ```sh
-npx wrangler@latest d1 migrations apply minewords --remote
+export D1_ID=<the database_id printed by d1 create>
+for file in drizzle/*.sql; do
+  echo "applying $file"
+  npx wrangler d1 execute "$D1_ID" --remote \
+    --config dist/server/wrangler.json --file "$file"
+done
 ```
 
-Read the list it prints before confirming. It should be 10 migrations.
+**Read the output.** Each file must report its statements executed. A failure
+half-way leaves a partial schema, and the next file will fail on the missing
+table, so fix the cause and re-run only the file that failed.
+
+Keep the full trigger statements intact, including the whitespace around
+`CASE`/`END`: wrangler splits the file on statement boundaries, and the
+`learning_awards`, `badge_receipt`, `redeem_badge`, `story_read_award`,
+`story_tick_totals` and `study_tick_totals` triggers are what award credits.
+
+Applying all eleven files to an empty database produces 23 tables, 6 triggers
+and 16 custom indexes. That has been checked; it is what you should see.
 
 ### 5. Secrets
 
@@ -131,6 +154,8 @@ audio. They are not needed to run the site and should not be in the production
 Worker.
 
 ### 6. Stripe
+
+**Full steps are in [docs/STRIPE.md](STRIPE.md).** The short version:
 
 In the Stripe dashboard:
 
@@ -184,16 +209,68 @@ changed, so re-run the generator after editing any story.
 
 ---
 
+## Getting a public hostname
+
+`APP_ORIGIN`, the Stripe webhook URL and every check below need a public HTTPS
+origin. There are two ways to get one, and the order matters.
+
+### Option A: the free `workers.dev` name (do this first)
+
+Every Worker gets one on first deploy, with no purchase and no DNS setup. Deploy
+and Cloudflare prints something like
+`https://minewords-blue-book.<your-account-subdomain>.workers.dev`. That is a
+real public HTTPS origin and it is enough for Stripe, which is what makes it
+useful: you can take a **real** payment and confirm the webhook works before you
+have spent anything on a domain.
+
+Set it as `APP_ORIGIN` and use it for the Stripe webhook endpoint.
+
+### Option B: your own domain
+
+1. Buy it. **Cloudflare Registrar sells domains at cost**, with no markup, and
+   puts the zone on Cloudflare for you. Buy it here rather than at a registrar
+   that would leave the nameservers elsewhere.
+2. Once the zone is active, add the Worker as a custom domain:
+   **Workers → your Worker → Settings → Domains & Routes → Add → Custom
+   domain**, then enter `minewords.app` (or a subdomain such as `app.` if you
+   also want the apex for marketing). Cloudflare creates the DNS record and the
+   certificate. It works because the zone is already on Cloudflare; a domain
+   bought elsewhere and merely pointed at Cloudflare will not attach this way.
+3. Keep the `workers.dev` name working while you test. Both can serve the same
+   Worker, so nothing breaks if the custom domain has a problem.
+
+### Changing hostname afterwards
+
+Two things must be updated, in this order, or a paying parent is stranded:
+
+1. `APP_ORIGIN` → the new origin.
+2. In Stripe, **edit the existing webhook endpoint's URL** rather than creating
+   a second endpoint. The signing secret is per endpoint, so editing the URL
+   keeps the secret you already set in `STRIPE_WEBHOOK_SECRET`. A second
+   endpoint means a second `whsec_`, and forgetting to copy it means payments
+   that complete and grant nothing.
+
+`APP_ORIGIN` is used in exactly two places: the `billingReady()` gate, and
+building Stripe's `success_url`/`cancel_url`. So a stale value does not break the
+site — it sends a parent who has just paid to a page that does not exist. Check
+`/account?checkout=success` works after changing it.
+
+---
+
 ## Deploying
 
 ```sh
-npm test                      # 140 tests, must be green
+npm test                      # 167 tests, must be green
 npm run typecheck
 npm run lint
 npm run build                 # produces dist/
 # patch the D1 id as above
-npx wrangler@latest deploy
+npx wrangler deploy
 ```
+
+`wrangler deploy` with no `--config` does pick up `dist/server/wrangler.json`
+automatically, so the patched database id is the one that ships. That has been
+checked by patching a sentinel id and reading it back in the bindings table.
 
 ### Every deploy, after the first
 
@@ -270,13 +347,13 @@ it.
 
 ## Cost, and when it changes
 
-| | |
-|---|---|
-| Workers paid | $5/month, flat |
-| Requests | 10M/month included. A month of 50,000 page views is under 1%. |
-| CPU | 30M ms/month included |
-| Bandwidth and asset storage | **Not charged** |
-| D1 | 25B rows read, 50M written, 5 GB storage included |
+|                             |                                                               |
+| --------------------------- | ------------------------------------------------------------- |
+| Workers paid                | $5/month, flat                                                |
+| Requests                    | 10M/month included. A month of 50,000 page views is under 1%. |
+| CPU                         | 30M ms/month included                                         |
+| Bandwidth and asset storage | **Not charged**                                               |
+| D1                          | 25B rows read, 50M written, 5 GB storage included             |
 
 The two things that could change this:
 
@@ -296,15 +373,27 @@ making rather than a guess.
 
 **One. Nothing in this document has been run against a live deployment.**
 
-The dev server cannot start on this machine: the Cloudflare Workers runtime
-requires macOS 13.5 or newer and this is macOS 12.6. Every step above is derived
-from reading the code, the generated `wrangler.json`, and the framework's own
-source — which is where the middleware and nonce behaviour came from — and not
-from watching it happen.
+The Cloudflare Workers runtime cannot run on this machine at all: it needs
+macOS 13.5 or newer and this is macOS 12.7.5. Every `wrangler … --local`
+command fails immediately with "Unsupported macOS version" — including
+`d1 execute --local`, so **the migrations in step 4 cannot be rehearsed
+locally**, only applied to the real database.
 
-So the first deploy is a genuine first deploy. Deploy to a preview environment
-or a `staging.` subdomain, walk the verification list, and only then point the
-real domain at it.
+What _does_ work here is worth knowing precisely, because it is what the
+development loop has been using:
+
+- `npm run dev:node` starts the app, because it swaps the Workers runtime for
+  `node:sqlite` and skips `workerd` entirely. This is why a dev server can be
+  running on a machine that cannot run the Workers runtime.
+- `wrangler deploy --dry-run` succeeds, so the bundle can be built and
+  inspected. `wrangler deploy` and `d1 execute --remote` are cloud operations
+  and do not need the local runtime, but they are untested here for want of
+  credentials.
+
+So the schema, the bundle and the binding wiring have been checked, and the
+first deploy is still a genuine first deploy. Deploy to the free `workers.dev`
+name first, walk the verification list, and only then point a real domain at
+it.
 
 **Two. The nonce policy is the part most likely to need adjusting.**
 

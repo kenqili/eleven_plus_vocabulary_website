@@ -212,6 +212,8 @@ The daily goal is **20 attempted questions and one story**. Children can ask for
 
 ## Deployment
 
+[docs/STRIPE.md](docs/STRIPE.md) is the payment setup, step by step.
+
 [docs/PERFORMANCE.md](docs/PERFORMANCE.md) records what has actually been
 measured about speed, and marks the parts that have not been because no server
 was ever started.
