@@ -41,7 +41,10 @@ import levels from "../data/word-levels/levels.json" with { type: "json" };
 // and nothing was checking. The help for "queer" was still teaching the sense
 // that correcting the word had specifically set out to stop teaching.
 const help = JSON.parse(
-  readFileSync(new URL("../data/learning/word-help.json", import.meta.url), "utf8"),
+  readFileSync(
+    new URL("../data/learning/word-help.json", import.meta.url),
+    "utf8",
+  ),
 );
 
 /**
@@ -70,7 +73,9 @@ const started = Date.now();
 
 /** Words whose definition contains the word, which cannot be a question. */
 const selfNaming = new Set(
-  words.filter((word) => hasWholeWord(word.definition, word.word)).map((w) => w.id),
+  words
+    .filter((word) => hasWholeWord(word.definition, word.word))
+    .map((w) => w.id),
 );
 
 /** The four types the CSVs already carry, kept as they are. */
@@ -87,7 +92,11 @@ const wordDistractors = (word) => {
   // and its cloze from sharing an identical set.
   const out = [];
   const seen = new Set([word.word.toLowerCase()]);
-  for (const band of [levelOf(word.id), levelOf(word.id) + 1, levelOf(word.id) - 1]) {
+  for (const band of [
+    levelOf(word.id),
+    levelOf(word.id) + 1,
+    levelOf(word.id) - 1,
+  ]) {
     const pool = context.byLevel.get(band) ?? [];
     for (const candidate of pool) {
       if (out.length >= WRONG_CHOICES) break;
@@ -103,13 +112,26 @@ const wordDistractors = (word) => {
 };
 
 const rows = [];
-const skipped = { def: 0, word: 0, cloze: 0, syn: 0, ant: 0 };
+const skipped = { def: 0, word: 0, cloze: 0 };
+// The two reasons a question is not generated are counted apart, because they
+// mean different things to whoever reads this output. A word with no example
+// has no cloze and that is a gap in the data. A word whose definition names the
+// word itself can never be asked "choose the definition", and that is a rule,
+// not a gap - no amount of new data will change it. Reporting both as "skipped
+// for want of distinct options" sent the next person looking for missing
+// distractors that were never missing.
+const selfNamingSkips = { def: 0, word: 0 };
 
 for (const word of words) {
   // A definition question asks which meaning belongs to the word, so a
   // definition containing the word gives the answer away.
   if (!selfNaming.has(word.id)) {
-    const pool = pickDefinitionDistractors(`def:${word.id}`, word, context, DEF_POOL);
+    const pool = pickDefinitionDistractors(
+      `def:${word.id}`,
+      word,
+      context,
+      DEF_POOL,
+    );
     if (pool.length >= WRONG_CHOICES)
       rows.push([
         word.id,
@@ -119,14 +141,20 @@ for (const word of words) {
         pool,
       ]);
     else skipped.def += 1;
-  } else skipped.def += 1;
+  } else {
+    skipped.def += 1;
+    selfNamingSkips.def += 1;
+  }
 
   if (!selfNaming.has(word.id)) {
     const options = wordDistractors(word);
     if (options.length === WRONG_CHOICES)
       rows.push([word.id, "word", word.definition, word.word, options]);
     else skipped.word += 1;
-  } else skipped.word += 1;
+  } else {
+    skipped.word += 1;
+    selfNamingSkips.word += 1;
+  }
 
   const blanked = word.example ? blankExample(word.example, word.word) : null;
   if (blanked) {
@@ -137,9 +165,12 @@ for (const word of words) {
   } else skipped.cloze += 1;
 }
 
+// The synonym and antonym questions come straight from the two CSVs, so they are
+// all usable and none of them is ever skipped. These two lines used to add to
+// the skipped counters for every problem added here, which reported 2,212
+// synonyms and 2,066 antonyms as "not generated" while the same run listed them
+// as generated. Only the derived types can be skipped.
 for (const problem of fromCsv) {
-  if (problem.type === "syn") skipped.syn += 1;
-  else skipped.ant += 1;
   rows.push([
     problem.wordId,
     problem.type,
@@ -239,5 +270,9 @@ console.log(
 );
 if (Object.values(skipped).some((n) => n > 0))
   console.log(
-    `  skipped for want of distinct options: def ${skipped.def}, word ${skipped.word}, cloze ${skipped.cloze}`,
+    `  not generated: def ${skipped.def}, word ${skipped.word}, cloze ${skipped.cloze}`,
+  );
+if (selfNamingSkips.def || selfNamingSkips.word)
+  console.log(
+    `  of which self-naming (the definition contains the word, so the answer would show): def ${selfNamingSkips.def}, word ${selfNamingSkips.word}`,
   );

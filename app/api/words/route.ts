@@ -29,7 +29,10 @@ export async function GET(request: Request) {
         wordIds: allowedWordIds,
         filter: filter as WordFilter,
         search,
-        level: level as DifficultyFilter,
+        // A level arrives as text and a word's level is a number, so passing the
+        // string straight through compared "5" to 5 and every level other than
+        // "all" came back empty. The export route already converted; both do now.
+        level: (level === "all" ? "all" : Number(level)) as DifficultyFilter,
         offset,
         limit,
       })),

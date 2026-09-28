@@ -87,10 +87,12 @@ function Reading({ story }: { story: StoryDetail }) {
     try {
       await clock.flush();
       const result = await api<{
+        // The server returns this shape on all three of its paths, so neither
+        // field is optional here and neither needs a guard below.
         complete: boolean;
         correct?: boolean;
         answer?: number;
-        progress?: ReadingProgress;
+        progress: ReadingProgress;
         credits: number;
       }>("/api/stories", { action: "complete", storyId: story.id, answer });
       if (result.complete === false) {
@@ -104,7 +106,7 @@ function Reading({ story }: { story: StoryDetail }) {
         return;
       }
       setWrongAnswer(null);
-      setProgress(result.progress!);
+      setProgress(result.progress);
       setFinishedVisit(true);
       setNotice(
         result.credits
@@ -146,7 +148,9 @@ function Reading({ story }: { story: StoryDetail }) {
         <Clock3 size={20} aria-hidden="true" />
         <div>
           <span>
-            {!readingEnough ? "Read a bit more to finish" : "Story reading time"}
+            {!readingEnough
+              ? "Read a bit more to finish"
+              : "Story reading time"}
           </span>
           <strong
             role="timer"
@@ -245,7 +249,11 @@ function Reading({ story }: { story: StoryDetail }) {
                 />
                 {option}
                 <span className="story-option-mark" aria-hidden>
-                  {outcome === "correct" ? "✓" : outcome === "wrong" ? "✗" : "✓"}
+                  {outcome === "correct"
+                    ? "✓"
+                    : outcome === "wrong"
+                      ? "✗"
+                      : "✓"}
                 </span>
               </label>
             );

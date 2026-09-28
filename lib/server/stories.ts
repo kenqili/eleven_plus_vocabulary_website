@@ -254,10 +254,18 @@ export async function completeStory(
     )
     .bind(userId, storyId, day)
     .first();
+  // Every path below returns the same shape. The reader types `complete` as
+  // required and then reads `progress` without a guard, so a path that omitted
+  // either field would be a type error the compiler could not catch and a crash
+  // the moment anything moved `setProgress` above the early return. `complete`
+  // means "the story is finished", which is true both for a first completion
+  // and for a reread; `correct` is only about this answer.
   if (finishedToday)
     return {
+      complete: true as const,
       progress,
       credits: 0,
+      correct: undefined,
       alreadyCompleted: true,
       mission: await missionFor(userId),
     };
@@ -281,6 +289,14 @@ export async function completeStory(
     // Not an error. The story stays open, the right answer is revealed and the
     // evidence is named, because a child who guessed wrong and was shown a red
     // box learned nothing and had to guess again with the same information.
+    //
+    // This is deliberately free, and deliberately costs one guess: the reading
+    // floor above is still checked first, so the answer cannot be revealed
+    // without having read the story, and the reader locks the options after one
+    // miss so a child has to go back and reread. A scripted client can still
+    // spend three requests to take a one-in-three guess, and that is accepted:
+    // the alternative is a child who guessed wrong being shown nothing, and the
+    // question is a comprehension question about text they were made to read.
     return {
       complete: false as const,
       correct: false as const,
@@ -288,6 +304,8 @@ export async function completeStory(
       // the child to work it out from a red box.
       answer: story.question.answer,
       credits: 0,
+      progress,
+      alreadyCompleted: false,
     };
   }
   const [inserted] = await database().batch([
@@ -311,6 +329,8 @@ export async function completeStory(
       .bind(userId, storyId, day, now),
   ]);
   return {
+    complete: true as const,
+    correct: true as const,
     mission: await missionFor(userId),
     progress: await readingProgress(userId, storyId),
     credits: inserted.results.length ? STORY_CREDITS : 0,
