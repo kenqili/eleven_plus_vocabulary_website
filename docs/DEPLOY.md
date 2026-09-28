@@ -64,26 +64,34 @@ Write down the `database_id` it prints. You need it in the next step.
 
 ### 3. Point the build at that database
 
-`npm run build` generates `dist/server/wrangler.json` itself, with a placeholder
-`database_id` of `00000000-0000-4000-8000-000000000000`. **The generated file is
-not committed and is overwritten on every build**, so do not edit it by hand and
-do not try to keep it in version control.
-
-Patch it in the deploy step instead:
+`npm run build` generates `dist/server/wrangler.json` itself, and the build reads
+`D1_ID` and `D1_NAME` from the environment, so exporting them before the build is
+all that is needed:
 
 ```sh
+export D1_ID=<the database_id printed by d1 create>
+export D1_NAME=minewords
 npm run build
-node -e '
-  const fs = require("node:fs");
-  const path = "dist/server/wrangler.json";
-  const config = JSON.parse(fs.readFileSync(path, "utf8"));
-  const binding = config.d1_databases.find((d) => d.binding === "DB");
-  if (!binding) throw new Error("no DB binding in the generated config");
-  binding.database_name = process.env.D1_NAME;
-  binding.database_id = process.env.D1_ID;
-  fs.writeFileSync(path, JSON.stringify(config));
-'
 ```
+
+Check it landed before deploying, because a wrong id fails at the first query
+rather than at boot:
+
+```sh
+node -e 'console.log(require("./dist/server/wrangler.json").d1_databases[0])'
+# { binding: "DB", database_name: "minewords", database_id: "…" }
+```
+
+**The generated file is not committed and is overwritten on every build**, so do
+not edit it by hand and do not try to keep it in version control. If the id above
+still reads `00000000-0000-4000-8000-000000000000`, `D1_ID` was not exported in
+the shell that ran the build.
+
+With both variables unset the build emits that placeholder, which is correct for
+the hosted control plane: it injects the real binding when it deploys, so the
+placeholder is the template it expects. The variables are read for a build only,
+never under `serve`, where the Cloudflare plugin talks to a local Miniflare store
+and must not be pointed at the production database.
 
 ### 4. Run the migrations
 
