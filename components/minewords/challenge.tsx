@@ -161,7 +161,11 @@ export default function Challenge() {
                     className={`practice-type practice-type-${type}`}
                   >
                     <span>{TYPE_BUTTONS[type]}</span>
-                    <small>{TYPE_SUMMARIES[type]}</small>
+                    {/* The summary is for the eye. It repeats the label, so
+                        leaving it in the accessibility tree made the button
+                        announce "Name the word See the meaning, name the
+                        word"; the visible label is already the name. */}
+                    <small aria-hidden="true">{TYPE_SUMMARIES[type]}</small>
                   </ToggleGroupItem>
                 ))}
               </ToggleGroup>
