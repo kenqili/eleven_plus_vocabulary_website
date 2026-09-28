@@ -248,8 +248,11 @@ export default function Challenge() {
                       so the card must not print it or play it above the options:
                       the answer would already be on screen. The server blanks the
                       word out of the cloze sentence for the same reason. */}
+                  {/* Named question-heading, not question-word: the card
+                      already uses that name as its own per-type modifier, and
+                      sharing it made the card itself flex. */}
                   {!asksForWord && (
-                    <div className="question-word">
+                    <div className="question-heading">
                       <h2>{question.word}</h2>
                       <Pronunciation
                         key={question.id}

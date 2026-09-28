@@ -3176,13 +3176,18 @@ hr {
   font-size: 11px;
   font-weight: 400;
 }
-.question-word {
+/* The word and its pronunciation sit side by side. This is the heading row
+   inside the card, and it used to be called .question-word, which is also the
+   card's own modifier for a word question (question-${type}). The two collided:
+   a word question's card picked up display: flex and squeezed the prompt and
+   the answer options into one narrow row beside each other. */
+.question-heading {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 8px 20px;
 }
-.question-word h2 {
+.question-heading h2 {
   margin-bottom: 0;
 }
 .pronunciation {
@@ -3403,7 +3408,7 @@ hr {
   .story-reading-timer {
     width: auto;
   }
-  .question-word {
+  .question-heading {
     display: block;
   }
   .practice-types {
