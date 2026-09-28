@@ -101,16 +101,46 @@ presented as a commitment. Say this in the privacy policy.
 
 ### The two cliffs that make $5 worth paying
 
-**Workers Free: 10 ms CPU per invocation.** The documentation notes that
-"heavier workloads that handle authentication, server-side rendering… typically
-use 10-20 ms." This app is squarely in that band.
+**Workers Free: 10 ms of CPU per invocation.** This app is not in the band
+Cloudflare warns about, which is worth showing rather than asserting - see the
+measurements below.
 
-**D1 Free: 5 million rows read and 100,000 written per day, 500 MB per database.**
-The documentation is blunt: *"When your account hits the daily read and/or write
-limits, you will not be able to run queries against D1"* and *"you will need to
-delete unused databases or clean up stale data before you can insert new data."*
-`learning_events` grows by rows, per child, per answer. 5,000 users could
-plausibly reach 500 MB.
+**D1 Free: 5 million rows read and 100,000 written per day, 5 GB of storage
+across the account.** The row limits are the sharp edge, not the storage. The
+documentation is blunt about them: *"When your account hits the daily read and/or
+write limits, you will not be able to run queries against D1"* and *"you will
+need to delete unused databases or clean up stale data before you can insert new
+data."* `learning_events` grows by rows, per child, per answer, so the write
+limit is the one to watch rather than the gigabytes.
+
+An earlier version of this document said 500 MB per database. That was wrong. It
+came from a research summary rather than from Cloudflare, and the 5 GB figure
+above is from the D1 pricing table.
+
+### Two limits, not one, and this app only has to clear one
+
+Reading the limits page properly changes the picture. There is a per-invocation
+CPU limit of 10 ms, and separately a **worker startup time limit of 1 second**,
+which covers *"parse and execute its global scope (top-level code outside of
+handlers)"*.
+
+The optimisation this document is about was aimed at the wrong limit. Loading the
+question bank is global-scope work, so it falls under the **1 second** limit.
+The old code took 1.39 seconds to initialise, which means it was over the
+startup limit too, and `wrangler` reports that at deploy time as
+`Script startup exceeded CPU time limit` (error 10021).
+
+So the free plan needs two different things to hold, and the optimisation helps
+with both:
+
+- **Startup: under 1 second.** Now about 145 ms in a Node VM, and Wrangler
+  reports the real figure in `startup_time_ms` on every deploy.
+- **Per request: under 10 ms.** Now 35 microseconds for the work this app does,
+  against a platform average of 2.2 ms. Cloudflare's own guidance is that
+  workloads doing "authentication, server-side rendering, or parse large
+  payloads typically use 10-20 ms". This app was in that band and is now well
+  out of it.
+
 
 $5/month is the price of removing both risks, and it includes the citable EU
 jurisdiction.
@@ -168,9 +198,10 @@ if it sits comfortably under 10 ms per invocation, the free plan becomes viable.
 That is a five-minute measurement that could make the whole thing permanently
 free.
 
-The D1 free-tier storage ceiling would still apply, so it would be "free until the
-database reaches 500 MB", not free. Design the answer for that: at roughly 200
-bytes a row, 5 GB is around 25 million answers.
+The D1 free-tier row limits would still apply, so it would be "free until the
+write limit", not free. The write limit is 100,000 rows a day, and each answered
+question writes several, so that is the ceiling to design against rather than
+the 5 GB of storage.
 
 ---
 

@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import assert from "node:assert/strict";
 import { words } from "./load-word-bank.mjs";
 import { problems } from "./load-problem-bank.mjs";
+import { hasWholeWord } from "../lib/challenge/problems.ts";
 const report = JSON.parse(
   readFileSync(
     new URL("../data/question-review/generation-report.json", import.meta.url),
@@ -13,9 +14,14 @@ for (const word of words) {
     const matching = problems.filter(
       (problem) => problem.wordId === word.id && problem.type === type,
     );
-    const excluded = report.excluded.some(
-      (row) => row.word === word.word && row.type === type,
-    );
+    const excluded =
+      report.excluded.some(
+        (row) => row.word === word.word && row.type === type,
+      ) ||
+      // A definition question is also impossible for a word whose definition
+      // contains the word, because the answer would then be the only option
+      // that mentions it. The generator skips those; this mirrors that.
+      (type === "def" && hasWholeWord(word.definition, word.word));
     assert.equal(
       matching.length,
       excluded ? 0 : 1,

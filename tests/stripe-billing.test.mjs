@@ -9,7 +9,7 @@
 //
 // The webhook signature itself is covered in stripe.test.mjs, which needs none
 // of this.
-import test from "node:test";
+import test, { after } from "node:test";
 import assert from "node:assert/strict";
 import { createServer } from "vite";
 import { resolve } from "node:path";
@@ -19,13 +19,20 @@ const PRICE = "price_monthly_123";
 const CUSTOMER = "cus_123";
 const USER = "user_1";
 
-/** Builds a module runner whose `cloudflare:workers` env is ours to control. */
-async function loadBilling(db, settings) {
-  const server = await createServer({
+// One module runner for the whole file. Creating a server per test was slow and
+// each one tried to bind the same HMR socket, which stalled the run. The env
+// object handed to `cloudflare:workers` is mutated in place instead of replaced,
+// because the stub exports that object once and billing reads it on every call.
+const workersEnv = { DB: null };
+globalThis.__minewordsTestEnv = workersEnv;
+
+let billingPromise = null;
+function billingModule() {
+  billingPromise ??= createServer({
     configFile: false,
     root: process.cwd(),
     logLevel: "error",
-    server: { middlewareMode: true, watch: null },
+    server: { middlewareMode: true, watch: null, hmr: false },
     resolve: { alias: { "@": process.cwd() } },
     plugins: [
       {
@@ -38,10 +45,26 @@ async function loadBilling(db, settings) {
             : null,
       },
     ],
+  }).then((server) => {
+    servers.push(server);
+    return server.ssrLoadModule("/lib/server/billing.ts");
   });
-  globalThis.__minewordsTestEnv = { DB: db, ...settings };
-  const billing = await server.ssrLoadModule("/lib/server/billing.ts");
-  return { billing, close: () => server.close() };
+  return billingPromise;
+}
+const servers = [];
+// A Vite server holds its file watcher and sockets open, so the test process
+// would never exit on its own. Closing has to be awaited, which an "exit"
+// listener cannot do, so it happens after the last test instead.
+after(async () => {
+  await Promise.all(servers.map((server) => server.close()));
+});
+
+/** Points the app at one database and one set of settings. */
+function setEnv(db, settings = SETTINGS) {
+  workersEnv.DB = db;
+  for (const key of Object.keys(workersEnv))
+    if (key !== "DB") delete workersEnv[key];
+  Object.assign(workersEnv, settings);
 }
 
 /** A fetch stub that records every call and replies from a route table. */
@@ -82,9 +105,12 @@ const SETTINGS = {
 };
 
 function seed(db) {
-  db.prepare(
-    "INSERT INTO users (id,email,password,created_at,customer_id,rewards_initialized) VALUES (?,?,?,?,?,0)",
-  ).run(USER, "parent@example.test", "hash", 1_700_000_000, CUSTOMER);
+  db
+    .prepare(
+      "INSERT INTO users (id,email,password,created_at,customer_id,rewards_initialized) VALUES (?,?,?,?,?,0)",
+    )
+    .bind(USER, "parent@example.test", "hash", 1_700_000_000, CUSTOMER)
+    .run();
 }
 
 const subscription = (price = PRICE, status = "active") => ({
@@ -95,16 +121,20 @@ const subscription = (price = PRICE, status = "active") => ({
   items: { data: [{ price: { id: price }, current_period_end: 1_800_000_000 }] },
 });
 
-const rows = (db, sql) => db.prepare(sql).all().results;
+// The local D1 shim takes its values from bind(), not from run()/all(), and
+// all() is async, so every read here awaits.
+const rows = async (db, sql, ...args) =>
+  (await db.prepare(sql).bind(...args).all()).results;
 
 test("syncSubscription records access for a subscription on the right price", async () => {
   const db = openLocalDatabase(":memory:", resolve("drizzle"));
   seed(db);
-  const { billing, close } = await loadBilling(db, SETTINGS);
+  setEnv(db);
+  const billing = await billingModule();
   const stripe = stubStripe({ "subscriptions/sub_1": subscription() });
   try {
     await billing.syncSubscription("sub_1");
-    const [row] = rows(db, "SELECT * FROM subscriptions WHERE id='sub_1'");
+    const [row] = await rows(db, "SELECT * FROM subscriptions WHERE id='sub_1'");
     assert.equal(row.user_id, USER);
     assert.equal(row.status, "active");
     assert.equal(row.price_id, PRICE);
@@ -113,7 +143,6 @@ test("syncSubscription records access for a subscription on the right price", as
     assert.ok(row.checked_at > 0);
   } finally {
     stripe.restore();
-    await close();
     db.close();
   }
 });
@@ -123,17 +152,19 @@ test("syncSubscription refuses access when the price is not the one we sell", as
   // account must not unlock this site.
   const db = openLocalDatabase(":memory:", resolve("drizzle"));
   seed(db);
-  const { billing, close } = await loadBilling(db, SETTINGS);
+  setEnv(db);
+  const billing = await billingModule();
   const stripe = stubStripe({ "subscriptions/sub_1": subscription("price_annual_999") });
   try {
     await billing.syncSubscription("sub_1");
-    const [row] = rows(db, "SELECT * FROM subscriptions WHERE id='sub_1'");
-    assert.equal(row.status, "inactive");
-    assert.equal(row.period_id ?? row.price_id, "price_annual_999");
+    const [row] = await rows(db, "SELECT * FROM subscriptions WHERE id='sub_1'");
+    assert.equal(row.status, "inactive", "a price we do not sell grants nothing");
+    // The row is recorded with no price, so membership()'s price_id filter
+    // cannot pick it up however its status reads later.
+    assert.equal(row.price_id, "");
     assert.equal(row.period_end, 1_800_000_000);
   } finally {
     stripe.restore();
-    await close();
     db.close();
   }
 });
@@ -144,32 +175,41 @@ test("a delayed webhook cannot restore access that has already been withdrawn", 
   // reinstate a membership the first one ended.
   const db = openLocalDatabase(":memory:", resolve("drizzle"));
   seed(db);
-  const { billing, close } = await loadBilling(db, SETTINGS);
+  setEnv(db);
+  const billing = await billingModule();
   const stripe = stubStripe({ "subscriptions/sub_1": subscription() });
+  const realNow = Date.now;
   try {
-    // A newer observation says cancelled, period already over.
-    db.prepare(
-      "INSERT INTO subscriptions (id,user_id,status,period_end,price_id,checked_at) VALUES (?,?,?,?,?,?)",
-    ).run("sub_1", USER, "canceled", 1, PRICE, Date.now());
+    // A newer observation, made now, records a cancelled subscription. The
+    // clock is read once so the stored value can be compared exactly.
+    const observedAt = realNow();
+    db
+      .prepare(
+        "INSERT INTO subscriptions (id,user_id,status,period_end,price_id,checked_at) VALUES (?,?,?,?,?,?)",
+      )
+      .bind("sub_1", USER, "canceled", 1, PRICE, observedAt)
+      .run();
 
-    // Now replay the older, still-active payload, as a retry would.
-    const { syncSubscription } = await loadBilling(db, SETTINGS);
-    // Force the older checkedAt by calling through a stale timestamp: the guard
-    // is inside the SQL, so a plain call with a newer clock must win instead.
-    await syncSubscription("sub_1");
-    const [fresh] = rows(db, "SELECT * FROM subscriptions WHERE id='sub_1'");
-    assert.equal(fresh.status, "active", "a newer event does apply");
+    // Now replay the older still-active payload, as a delayed retry would.
+    // The clock is moved back so the replay carries an older checked_at, and
+    // the app's own upsert has to refuse it. Driving the real function is the
+    // point: copying the SQL here would pass even if the app's guard were gone.
+    Date.now = () => observedAt - 60_000;
+    await billing.syncSubscription("sub_1");
+    Date.now = realNow;
 
-    // Directly exercise the ordering guard the SQL relies on.
-    db.prepare(
-      "INSERT INTO subscriptions (id,user_id,status,period_end,price_id,checked_at) VALUES (?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET status=excluded.status, period_end=excluded.period_end, price_id=excluded.price_id, checked_at=excluded.checked_at WHERE excluded.checked_at >= subscriptions.checked_at",
-    ).run("sub_1", USER, "canceled", 2, PRICE, Date.now() - 60_000);
-    const [after] = rows(db, "SELECT * FROM subscriptions WHERE id='sub_1'");
-    assert.equal(after.status, "active", "an older event must not overwrite");
-    assert.equal(after.checked_at, fresh.checked_at);
+    const [row] = await rows(db, "SELECT * FROM subscriptions WHERE id='sub_1'");
+    assert.equal(row.status, "canceled", "a delayed event must not restore access");
+    assert.equal(row.checked_at, observedAt, "the newer observation is kept");
+
+    // The same event arriving in order does apply, so the guard is not simply
+    // refusing every write after the first.
+    await billing.syncSubscription("sub_1");
+    const [fresh] = await rows(db, "SELECT * FROM subscriptions WHERE id='sub_1'");
+    assert.equal(fresh.status, "active", "a current event does apply");
   } finally {
+    Date.now = realNow;
     stripe.restore();
-    await close();
     db.close();
   }
 });
@@ -180,16 +220,16 @@ test("a Stripe customer we do not know grants nobody access", async () => {
   // to be a no-op rather than a guess.
   const db = openLocalDatabase(":memory:", resolve("drizzle"));
   seed(db);
-  const { billing, close } = await loadBilling(db, SETTINGS);
+  setEnv(db);
+  const billing = await billingModule();
   const stripe = stubStripe({
     "subscriptions/sub_1": { ...subscription(), customer: "cus_someone_else" },
   });
   try {
     await billing.syncSubscription("sub_1");
-    assert.equal(rows(db, "SELECT * FROM subscriptions").length, 0);
+    assert.equal((await rows(db, "SELECT * FROM subscriptions")).length, 0);
   } finally {
     stripe.restore();
-    await close();
     db.close();
   }
 });
@@ -197,7 +237,8 @@ test("a Stripe customer we do not know grants nobody access", async () => {
 test("checkoutSession asks Stripe for a subscription on our price and returns to our origin", async () => {
   const db = openLocalDatabase(":memory:", resolve("drizzle"));
   seed(db);
-  const { billing, close } = await loadBilling(db, SETTINGS);
+  setEnv(db);
+  const billing = await billingModule();
   const stripe = stubStripe({
     "checkout/sessions": { id: "cs_1", url: "https://checkout.stripe.test/cs_1" },
   });
@@ -218,11 +259,10 @@ test("checkoutSession asks Stripe for a subscription on our price and returns to
     assert.equal(body.get("client_reference_id"), USER);
     assert.equal(body.get("subscription_data[metadata][user_id]"), USER);
     assert.ok(call.idempotencyKey, "creation is idempotent");
-    const [row] = rows(db, "SELECT * FROM checkout_requests WHERE user_id=?", USER);
+    const [row] = await rows(db, "SELECT * FROM checkout_requests WHERE user_id=?", USER);
     assert.equal(row.session_id, "cs_1");
   } finally {
     stripe.restore();
-    await close();
     db.close();
   }
 });
@@ -232,7 +272,8 @@ test("an unfinished checkout is reused instead of starting a second one", async 
   // live subscriptions or a second charge.
   const db = openLocalDatabase(":memory:", resolve("drizzle"));
   seed(db);
-  const { billing, close } = await loadBilling(db, SETTINGS);
+  setEnv(db);
+  const billing = await billingModule();
   const stripe = stubStripe({
     "checkout/sessions": { id: "cs_1", url: "https://checkout.stripe.test/cs_1" },
     "checkout/sessions/cs_1": { id: "cs_1", status: "open", url: "https://checkout.stripe.test/cs_1" },
@@ -245,7 +286,6 @@ test("an unfinished checkout is reused instead of starting a second one", async 
     assert.equal(creations.length, 1, "no second session is created");
   } finally {
     stripe.restore();
-    await close();
     db.close();
   }
 });
@@ -253,7 +293,8 @@ test("an unfinished checkout is reused instead of starting a second one", async 
 test("the API key never reaches the browser and Stripe errors do not leak", async () => {
   const db = openLocalDatabase(":memory:", resolve("drizzle"));
   seed(db);
-  const { billing, close } = await loadBilling(db, SETTINGS);
+  setEnv(db);
+  const billing = await billingModule();
   const original = globalThis.fetch;
   let seenAuth = null;
   globalThis.fetch = async (url, init) => {
@@ -281,15 +322,15 @@ test("the API key never reaches the browser and Stripe errors do not leak", asyn
     assert.equal(seenAuth, "Bearer sk_test_offline");
   } finally {
     globalThis.fetch = original;
-    await close();
     db.close();
   }
 });
 
 test("billing stays switched off until every Stripe setting is present", async () => {
   const db = openLocalDatabase(":memory:", resolve("drizzle"));
-  const { billing, close } = await loadBilling(db, SETTINGS);
   try {
+    setEnv(db);
+    const billing = await billingModule();
     assert.equal(billing.billingReady(), true);
     for (const missing of [
       "STRIPE_SECRET_KEY",
@@ -297,27 +338,25 @@ test("billing stays switched off until every Stripe setting is present", async (
       "STRIPE_WEBHOOK_SECRET",
       "APP_ORIGIN",
     ]) {
-      const partial = { ...SETTINGS, [missing]: "" };
-      const loaded = await loadBilling(db, partial);
+      // The same loaded module, so this is the app's own gate and not a second
+      // copy of the settings object.
+      setEnv(db, { ...SETTINGS, [missing]: "" });
       assert.equal(
-        loaded.billing.billingReady(),
+        billing.billingReady(),
         false,
         `${missing} alone must not enable payments`,
       );
-      await loaded.close();
     }
     // With no key at all, the API refuses rather than calling Stripe with "".
-    const noKey = await loadBilling(db, { ...SETTINGS, STRIPE_SECRET_KEY: "" });
+    setEnv(db, { ...SETTINGS, STRIPE_SECRET_KEY: "" });
     await assert.rejects(
-      () => noKey.billing.stripe("customers"),
+      () => billing.stripe("customers"),
       (error) => {
         assert.equal(error.status, 503);
         return true;
       },
     );
-    await noKey.close();
   } finally {
-    await close();
     db.close();
   }
 });

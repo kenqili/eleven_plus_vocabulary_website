@@ -35,9 +35,10 @@ explicit that server-rendered, authenticated pages typically run 10–20 ms. Thi
 app is squarely in that band. Do not launch on Free.
 
 D1 on Free is the harder stop: 5 million rows read and 100,000 written **per
-day**, and 500 MB per database. The documentation says that when you hit the
-daily limit *"you will not be able to run queries against D1"*. `learning_events`
-and `progress` both grow by rows, per child, per answer. Launch on paid.
+day**, and 5 GB of storage across the account. The documentation says that when
+you hit the daily row limit *"you will not be able to run queries against D1"*.
+`learning_events` and `progress` both grow by rows, per child, per answer, so
+the write limit is the one that bites. Launch on paid.
 
 ### 2. The database, in the EU
 
