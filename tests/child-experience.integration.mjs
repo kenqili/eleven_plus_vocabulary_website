@@ -183,14 +183,39 @@ try {
     );
     await post({ action: "time", owner, sequence, seconds: 30 });
   }
+  // A wrong answer is a teaching moment, not a failure: the request succeeds,
+  // says it was wrong, names the right option and pays nothing. A child who
+  // guessed is told what the answer was rather than being shown a red box.
+  const wrong = await post({
+    action: "complete",
+    answer: (story.question.answer + 1) % 3,
+  });
+  assert.equal(wrong.status, 200, JSON.stringify(wrong.data));
+  assert.equal(wrong.data.complete, false);
+  assert.equal(wrong.data.correct, false);
+  assert.equal(wrong.data.credits, 0);
+  assert.equal(wrong.data.answer, story.question.answer);
   assert.equal(
     (
-      await post({
-        action: "complete",
-        answer: (story.question.answer + 1) % 3,
-      })
-    ).status,
-    422,
+      await db
+        .prepare(
+          "SELECT COUNT(*) AS n FROM story_completions WHERE user_id=? AND story_id=?",
+        )
+        .get(user, story.id)
+    ).n,
+    1,
+    "a wrong answer must not record a completion",
+  );
+  assert.equal(
+    (
+      await db
+        .prepare(
+          "SELECT COUNT(*) AS n FROM daily_story_finishes WHERE user_id=? AND story_id=?",
+        )
+        .get(user, story.id)
+    ).n,
+    0,
+    "and it must not count as finished today either",
   );
   const reread = await post({
     action: "complete",

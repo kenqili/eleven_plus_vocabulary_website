@@ -62,8 +62,9 @@ const evidenceFor = (word) =>
     )
     .all(userId, word);
 
-/** Make one word the only candidate so the served question is predictable. */
-async function isolate(target) {
+/** Leave only the named words in rotation, so the served question is predictable. */
+async function isolate(...targets) {
+  const keep = new Set(targets);
   db.exec("BEGIN");
   db.prepare("DELETE FROM progress WHERE user_id=?").run(userId);
   const insert = db.prepare(
@@ -73,8 +74,8 @@ async function isolate(target) {
     insert.run(
       userId,
       word.id,
-      word.id === target ? 0 : CUMULATIVE_FLOOR,
-      word.id === target ? 0 : 1,
+      keep.has(word.id) ? 0 : CUMULATIVE_FLOOR,
+      keep.has(word.id) ? 0 : 1,
     );
   db.exec("COMMIT");
 }
@@ -223,9 +224,10 @@ try {
   );
   assert.equal(
     progressFor(clued).correct,
-    3,
-    "clued answers still count towards the total",
+    0,
+    "a clued answer earns nothing towards mastery at all, so the clue is not a shortcut",
   );
+  assert.equal(progressFor(clued).run, 0, "and it clears the run");
 
   // A restored question cannot claim a fresh reading budget by posting a small time.
   const stale = words.find(
@@ -355,8 +357,261 @@ try {
   );
   assert.ok(ledger > 0, "the account earned credits");
 
+  // Study time is batched in the browser, so a five-minute claim is legal. The
+  // server must still clamp it to the wall time that actually passed, or a
+  // larger batch would become a way to claim study time that never happened.
+  const timed = words.find(
+    (word) =>
+      ![easy, clued, stale, simulated, stubborn, orphan].includes(word.id),
+  ).id;
+  await isolate(timed);
+  const timer = await next("all");
+  assert.equal(timer.data.question.wordId, timed);
+  const overBatch = await call("/api/rewards", {
+    action: "time",
+    owner: randomUUID(),
+    sequence: 1,
+    seconds: 300,
+    attemptId: timer.data.question.id,
+  });
+  assert.equal(overBatch.status, 200, "a five-minute batch is accepted");
+  const recorded = db
+    .prepare(
+      "SELECT COALESCE(SUM(seconds),0) AS seconds FROM study_ticks WHERE user_id=?",
+    )
+    .get(userId).seconds;
+  assert.ok(
+    recorded < 30,
+    `a 300s claim sent milliseconds after the last tick records only the real seconds, got ${recorded}`,
+  );
+  assert.equal(
+    (
+      await call("/api/rewards", {
+        action: "time",
+        owner: randomUUID(),
+        sequence: 1,
+        seconds: 301,
+        attemptId: timer.data.question.id,
+      })
+    ).status,
+    400,
+    "a batch beyond the five-minute window is rejected",
+  );
+
+  // The clamp above can be satisfied by a server that records nothing at all,
+  // which is what it did: the first tick of a session computed MIN(claim, 0)
+  // because the clock was created at "now" and then measured from it. That cost
+  // 15 seconds a session while batches were 15 seconds and cost a whole batch
+  // once they were 300, so a ten minute session recorded half its reading time.
+  // A child who really has had the question open for the length of a batch must
+  // have that batch recorded.
+  db.prepare("DELETE FROM study_clock WHERE user_id=?").run(userId);
+  db.prepare("UPDATE attempts SET created_at=? WHERE id=?").run(
+    Date.now() - 300000,
+    timer.data.question.id,
+  );
+  const firstBatch = await call("/api/rewards", {
+    action: "time",
+    owner: randomUUID(),
+    sequence: 1,
+    seconds: 300,
+    attemptId: timer.data.question.id,
+  });
+  assert.equal(firstBatch.status, 200);
+  const firstTick = db
+    .prepare(
+      "SELECT seconds FROM study_ticks WHERE user_id=? ORDER BY created_at DESC,rowid DESC LIMIT 1",
+    )
+    .get(userId).seconds;
+  assert.equal(
+    firstTick,
+    300,
+    "the first batch of a session records the time the child actually spent",
+  );
+  // And the clamp still holds for that first batch: claiming the full five
+  // minutes after only half of it has passed records half, not all.
+  db.prepare("DELETE FROM study_clock WHERE user_id=?").run(userId);
+  db.prepare("UPDATE attempts SET created_at=? WHERE id=?").run(
+    Date.now() - 150000,
+    timer.data.question.id,
+  );
+  await call("/api/rewards", {
+    action: "time",
+    owner: randomUUID(),
+    sequence: 1,
+    seconds: 300,
+    attemptId: timer.data.question.id,
+  });
+  assert.equal(
+    db
+      .prepare(
+        "SELECT seconds FROM study_ticks WHERE user_id=? ORDER BY created_at DESC,rowid DESC LIMIT 1",
+      )
+      .get(userId).seconds,
+    150,
+    "but a first batch still cannot claim more than the wall time that passed",
+  );
+
+  // The dashboard totals come from the running counters the triggers maintain,
+  // so they must agree with the events that maintain them. The progress table is
+  // deliberately not the reference here: this fixture writes `mastered` straight
+  // into it to build a known pool, which no trigger ever sees.
+  const dashboard = await call("/api/rewards");
+  assert.equal(dashboard.status, 200);
+  const masteryEvents = db
+    .prepare(
+      "SELECT COUNT(*) AS n FROM learning_events WHERE user_id=? AND mastered=1",
+    )
+    .get(userId).n;
+  assert.equal(
+    dashboard.data.periods.all.mastered,
+    masteryEvents,
+    "the trigger-maintained total must match the mastery events that maintain it",
+  );
+  assert.equal(dashboard.data.totals.mastered, masteryEvents);
+  assert.ok(
+    dashboard.data.totals.newWords > 0,
+    "lifetime words met is tracked",
+  );
+  assert.equal(
+    dashboard.data.totals.newWords,
+    db
+      .prepare(
+        "SELECT COUNT(DISTINCT word_id) AS n FROM learning_events WHERE user_id=?",
+      )
+      .get(userId).n,
+    "words met must match the distinct words that were actually practised",
+  );
+
+  // A retired word must never come back. This guards a real regression: reading
+  // only unretired rows hid the rows that decide retirement, so every mastered
+  // word looked like one that had never been seen and was served again.
+  // Two words are left unretired so the pool cannot simply be empty, which would
+  // make the check pass without proving anything.
+  const companion = words.find(
+    (word) =>
+      ![easy, clued, stale, simulated, stubborn, orphan, timed].includes(
+        word.id,
+      ),
+  ).id;
+  await isolate(easy, companion);
+  // Either word may be served first, so drive the pool until `easy` is retired.
+  for (let i = 0; i < 8 && !progressFor(easy).mastered; i++) {
+    const question = await next("all");
+    if (question.data.complete) break;
+    age(6);
+    await answer(
+      question.data.question.id,
+      correctChoice(question.data.question),
+      6,
+    );
+  }
+  assert.equal(
+    progressFor(easy).mastered,
+    1,
+    "two sure recalls retire a level 0 word",
+  );
+  const seen = new Set();
+  for (let i = 0; i < 4; i++) {
+    const question = await next("all");
+    if (question.data.complete) break;
+    seen.add(question.data.question.wordId);
+  }
+  assert.equal(
+    seen.has(easy),
+    false,
+    "a mastered word must not reappear in the rotation",
+  );
+  assert.equal(
+    seen.has(companion),
+    true,
+    "the word that is still in rotation is still served",
+  );
+
+  // The show count has to survive into the question. This guards a real
+  // regression: `seen` was dropped from the progress query while that query was
+  // being narrowed, and because the result is cast rather than checked, nothing
+  // threw. Every read became `undefined || 0`, so the "New word" badge showed
+  // for words the child had met many times, and the least-seen-first balancing
+  // in chooseWord was handed a pool where every word looked equally new and so
+  // stopped balancing. The seeded count is what makes this fail if the column
+  // is ever dropped again - no other test here seeds a word seen more than once.
+  const often = words.find(
+    (word) =>
+      ![
+        easy,
+        clued,
+        stale,
+        simulated,
+        stubborn,
+        orphan,
+        timed,
+        companion,
+      ].includes(word.id),
+  ).id;
+  // Seeded after the isolate, which rebuilds every progress row with seen=1.
+  const oftenSeen = 7;
+  await isolate(often, companion);
+  db.prepare("UPDATE progress SET seen=? WHERE user_id=? AND word_id=?").run(
+    oftenSeen,
+    userId,
+    often,
+  );
+  assert.equal(
+    db
+      .prepare("SELECT seen FROM progress WHERE user_id=? AND word_id=?")
+      .get(userId, often).seen,
+    oftenSeen,
+    "the seeded show count is in the database",
+  );
+  // The previous block left attempts behind, and both of them change which word
+  // gets served without `seen` having anything to do with it: a pending
+  // question is served again rather than a new one chosen, and the most
+  // recently served word is excluded outright. With only two words in the pool
+  // that exclusion takes one of them, so the attempt history has to go before
+  // either of these can observe a choice made on the show count.
+  const clearAttempts = () =>
+    db.prepare("DELETE FROM attempts WHERE user_id=?").run(userId);
+  // First consequence: the rotation balances on it. chooseWord serves the words
+  // it has seen least, so the word shown once must win over the one shown seven
+  // times. With the column missing, every row read as zero, the whole pool tied
+  // on the same number, and this was settled by the random tiebreak instead.
+  clearAttempts();
+  const balanced = await next("all");
+  assert.equal(
+    balanced.data.question.wordId,
+    companion,
+    "the less-seen word is the one served",
+  );
+  // Second consequence: the count reaches the child. Left with only the seen
+  // word in rotation, handing it out reports the incremented figure, so seven
+  // shown before becomes eight here and the badge reads "Seen 8 times" rather
+  // than "New word".
+  await isolate(often);
+  // The isolate rebuilds every row with seen=1, so the count is seeded again.
+  db.prepare("UPDATE progress SET seen=? WHERE user_id=? AND word_id=?").run(
+    oftenSeen,
+    userId,
+    often,
+  );
+  clearAttempts();
+  const shown = await next("all");
+  assert.equal(shown.data.question.wordId, often);
+  assert.equal(
+    shown.data.question.seen,
+    oftenSeen + 1,
+    "a word that has been shown before must report how many times",
+  );
+  assert.equal(
+    db
+      .prepare("SELECT seen FROM progress WHERE user_id=? AND word_id=?")
+      .get(userId, often).seen,
+    oftenSeen + 1,
+    "and the stored count is incremented the same way",
+  );
+
   console.log(
-    "Mastery API passed: evidence classification, per-level targets, clean runs, the cumulative floor, clue handling, wall-clock checks, replay safety, stored-counter parity with the pure function and missing-row recovery.",
+    "Mastery API passed: evidence classification, per-level targets, clean runs, the cumulative floor, clue handling, wall-clock checks, replay safety, stored-counter parity with the pure function, missing-row recovery, show counts, batched study time and trigger-maintained dashboard totals.",
   );
 } finally {
   if (userId) db.prepare("DELETE FROM users WHERE id=?").run(userId);

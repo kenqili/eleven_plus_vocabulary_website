@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { DatabaseSync } from "node:sqlite";
 import { readFileSync } from "node:fs";
+import { storyMinimumSeconds } from "../lib/challenge/stories.ts";
 const origin = process.env.TEST_ORIGIN || "http://127.0.0.1:5173";
 if (!["localhost", "127.0.0.1"].includes(new URL(origin).hostname))
   throw Error("Local previews only.");
@@ -49,7 +50,23 @@ try {
   const detail = await call(`/api/stories?id=${storyId}`);
   assert.equal(detail.status, 200);
   assert.equal("answer" in detail.data.question, false);
-  assert.equal(detail.data.vocabulary.length, 15);
+  // The number of marked targets varies per story (15-30 is the rule the
+  // validator enforces), so assert against this story rather than a constant.
+  assert.equal(detail.data.vocabulary.length, story.wordIds.length);
+  assert.ok(
+    story.wordIds.length >= 15 && story.wordIds.length <= 30,
+    `story target count out of range: ${story.wordIds.length}`,
+  );
+  assert.equal(
+    detail.data.vocabulary.every((word) => word && word.id),
+    true,
+    "every target word must resolve to a real bank entry",
+  );
+  assert.deepEqual(
+    detail.data.vocabulary.map((word) => word.id).sort(),
+    [...story.wordIds].sort(),
+    "the vocabulary list is exactly the story's target words",
+  );
   assert.equal((await call("/api/stories?id=missing")).status, 404);
   assert.equal((await post({ action: "start", owner })).status, 401);
   const registration = await call("/api/auth/register", {
@@ -81,6 +98,20 @@ try {
   assert.equal(
     (await post({ action: "complete", answer: story.question.answer })).status,
     409,
+  );
+  // The reading floor is checked before the answer is even looked at, and that
+  // ordering is the only thing stopping a child being told the answer without
+  // having read the story. A wrong answer below the floor must be refused for
+  // the same reason a right one is, rather than quietly revealing it.
+  assert.equal(
+    (
+      await post({
+        action: "complete",
+        answer: (story.question.answer + 1) % 3,
+      })
+    ).status,
+    409,
+    "a wrong answer below the reading floor is still refused",
   );
   assert.equal(
     (await post({ action: "time", owner, sequence: 2, seconds: 31 })).status,
@@ -119,14 +150,37 @@ try {
   const otherOwner = randomUUID();
   await post({ action: "time", owner: otherOwner, sequence: 1, seconds: 30 });
   assert.equal(progress(), 90, "another tab cannot double-count");
+  // Read for however long this story actually needs. The floor moves with the
+  // story's length, so a fixed number of ticks would quietly start failing
+  // every time an adventure is edited.
+  let sequence = 5;
+  while (progress() < storyMinimumSeconds(story)) {
+    rewind();
+    assert.equal(
+      (await post({ action: "time", owner, sequence, seconds: 30 })).status,
+      200,
+    );
+    sequence += 1;
+  }
+  // A wrong answer is a teaching moment: it succeeds, says it was wrong and
+  // names the right option, and the story stays open and unfinished.
+  const wrong = await post({
+    action: "complete",
+    answer: (story.question.answer + 1) % 3,
+  });
+  assert.equal(wrong.status, 200, JSON.stringify(wrong.data));
+  assert.equal(wrong.data.complete, false);
+  assert.equal(wrong.data.correct, false);
+  assert.equal(wrong.data.credits, 0);
+  assert.equal(wrong.data.answer, story.question.answer);
   assert.equal(
-    (
-      await post({
-        action: "complete",
-        answer: (story.question.answer + 1) % 3,
-      })
-    ).status,
-    422,
+    db
+      .prepare(
+        "SELECT COUNT(*) AS n FROM story_completions WHERE user_id=? AND story_id=?",
+      )
+      .get(userId, storyId).n,
+    0,
+    "a wrong answer must not record a completion",
   );
   assert.equal((await post({ action: "complete", answer: 9 })).status, 400);
   const finishes = await Promise.all([
@@ -151,7 +205,15 @@ try {
   );
   const calendar = await call("/api/calendar");
   assert.equal(calendar.data.totals.stories, 1);
-  assert.equal(calendar.data.totals.seconds, 90);
+  // The calendar total is a whole-month sum and progress() is this one story,
+  // so these are only equal because this is the only story read so far and the
+  // run has not crossed midnight. If another story is read before this point,
+  // compare against the sum of both instead of expecting a failure.
+  assert.equal(
+    calendar.data.totals.seconds,
+    progress(),
+    "every second read for this story is on the calendar",
+  );
   assert.equal(calendar.data.totals.mastered, 0);
   assert.equal(
     (await call("/api/stories")).data.stories.find((s) => s.id === storyId)

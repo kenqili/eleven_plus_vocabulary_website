@@ -73,10 +73,31 @@ try {
   assert.equal((await call("/api/words/export")).status, 401);
   const demo = await call("/api/challenge?types=def");
   assert.equal(demo.status, 200);
-  const freeIds = new Set(demo.data.words.map((word) => word.wordId));
-  assert.equal(demo.data.words.length, demo.data.freeWordCount);
-  assert.equal(freeIds.size, demo.data.freeWordCount);
-  assert.equal(demo.data.stats.total, demo.data.freeWordCount);
+  // The free word set, as the API reports it. Kept separate from the ids in the
+  // sample below, which is this set minus the words that cannot be asked.
+  const freeWordCount = demo.data.freeWordCount;
+  const defSampleIds = new Set(demo.data.words.map((word) => word.wordId));
+  assert.equal(defSampleIds.size, demo.data.words.length);
+  // The sample is every free word that can be *asked* as a meaning question.
+  // A few words in the collection are defined using the word itself, so
+  // offering their definition as the answer to "choose the definition" would
+  // show the answer in the question; the generator leaves those out, and they
+  // are still practised through the other question types. So the sample is the
+  // free set minus the words with no meaning question, never the whole free set.
+  const askable = new Set(
+    problems.filter((p) => p.type === "def").map((p) => p.wordId),
+  );
+  // Bounded, not just "less than". A check on the sign of the gap would still
+  // pass if the sampler regressed and quietly dropped fifty words, and this is
+  // the one assertion that would have caught it.
+  const unaskable = freeWordCount - demo.data.words.length;
+  assert.ok(
+    unaskable > 0 && unaskable <= 2,
+    `free set minus meaning-askable words: ${unaskable}`,
+  );
+  assert.equal(demo.data.stats.total, demo.data.words.length);
+  for (const id of defSampleIds)
+    assert.ok(askable.has(id), `${id} was sampled with no meaning question`);
   for (const type of ["syn", "ant"]) {
     const sample = await call(`/api/challenge?types=${type}`);
     assert.equal(sample.status, 200);
@@ -120,7 +141,12 @@ try {
   sql(`UPDATE users SET created_at=1 WHERE id='${userId}';`);
   const expiredAccess = await call("/api/challenge");
   assert.equal(expiredAccess.data.trialExpired, true);
-  assert.equal(expiredAccess.data.freeWordCount, freeIds.size);
+  // The signed-out demo and the lapsed trial must agree on how big the free set
+  // is. Comparing this response's own freeWordCount against its own stats.total
+  // would be the same expression on both sides, because both come from
+  // allowedWordIds.size, and would pass even if the free set were wrong.
+  assert.equal(expiredAccess.data.stats.total, freeWordCount);
+  assert.equal(expiredAccess.data.freeWordCount, freeWordCount);
   assert.equal((await call("/api/billing/checkout", {})).status, 503);
   const freeWords = await call("/api/words");
   assert.equal(freeWords.status, 200);
@@ -236,18 +262,36 @@ try {
       `level ${JSON.stringify(level)}`,
     );
   // A chosen level narrows the questions to that level, including level 0.
-  for (const level of [0, 4]) {
+  // The two levels are used against each other, because "a question from
+  // another level cannot earn credit" only means anything when the pending
+  // question is known to be of a different level. Asking for level 0 when the
+  // pending question happens to be a level 0 one would return that same
+  // question, and answering it would be a legitimate 200.
+  for (const [level, other] of [
+    [0, 4],
+    [4, 0],
+  ]) {
+    const before = await call("/api/challenge", {
+      action: "next",
+      level: other,
+    });
+    assert.equal(before.data.question.difficulty, other);
     const scoped = await call("/api/challenge", {
       action: "next",
       level,
     });
     assert.equal(scoped.data.question.difficulty, level);
+    assert.notEqual(
+      scoped.data.question.id,
+      before.data.question.id,
+      "changing level retires the pending question",
+    );
     // A pending question from another level cannot earn credit.
     assert.equal(
       (
         await call("/api/challenge", {
           action: "answer",
-          id: next.data.question.id,
+          id: before.data.question.id,
           selected: 0,
           elapsed: 1,
         })
@@ -314,29 +358,49 @@ try {
   assert.equal(wrong.data.stats.correct, 2);
   const summary = await call("/api/words");
   assert.equal(summary.data.premium, true);
-  assert.equal(summary.data.words.length, words.length);
+  // The word list is paged, so the total is what says the whole collection is
+  // there and the page is one page of it.
+  assert.equal(summary.data.total, words.length);
+  assert.equal(summary.data.words.length, Math.min(40, words.length));
   assert.ok(
     summary.data.words.every(
       (word) =>
         [0, 1, 2, 3, 4, 5].includes(word.difficulty) && word.letterCount > 0,
     ),
   );
-  const mistaken = summary.data.words.find(
+  // The list is paged, so a specific word is found by searching for it rather
+  // than by hoping it is on the first page.
+  const mistakenPage = await call(
+    `/api/words?search=${encodeURIComponent(syn2.data.question.word)}`,
+  );
+  const mistaken = mistakenPage.data.words.find(
     (word) => word.id === syn2.data.question.wordId,
   );
+  assert.ok(mistaken, "the mistaken word must be in its own search result");
   assert.equal(mistaken.mistakes, 1);
   assert.equal(mistaken.status, "practice");
   assert.equal(
-    summary.data.words.reduce((sum, word) => sum + word.mistakes, 0),
-    1,
-  );
-  assert.equal(
-    summary.data.words.reduce((sum, word) => sum + word.reveals, 0),
+    summary.data.words.filter((word) => word.mistakes > 0).length,
     0,
+    "and it is not on the first page of an unfiltered list",
   );
+  const practicePage = await call("/api/words?filter=practice");
+  assert.equal(practicePage.data.total, 1);
+  assert.equal(practicePage.data.words[0].id, syn2.data.question.wordId);
+  assert.equal(practicePage.data.words[0].status, "practice");
   assert.equal(
-    summary.data.words.find((word) => word.id === q.wordId).correct,
+    practicePage.data.words[0].reveals,
+    0,
+    "the reveal count in the summary is a count of reveals, not of attempts",
+  );
+  const answeredPage = await call(
+    `/api/words?search=${encodeURIComponent(q.word)}`,
+  );
+  assert.equal(answeredPage.data.words[0].id, q.wordId);
+  assert.equal(
+    answeredPage.data.words[0].correct,
     1,
+    "the first answered word records one correct answer",
   );
   const exported = await fetch(origin + "/api/words/export?filter=mistakes", {
     headers: { Cookie: cookie },
@@ -368,9 +432,13 @@ try {
     headers: { Cookie: cookie },
   });
   const levelRows = parseCsv((await levelExport.text()).replace(/^\uFEFF/, ""));
+  const levelFive = await call("/api/words?level=5&limit=200");
+  assert.equal(levelFive.data.total, levelRows.length - 1);
+  assert.ok(levelFive.data.total > 0, "there are level 5 words to export");
   assert.equal(
-    levelRows.length - 1,
-    summary.data.words.filter((word) => word.difficulty === 5).length,
+    levelFive.data.words.length,
+    Math.min(200, levelFive.data.total),
+    "the level filter is applied to the exported rows, not just the page",
   );
   assert.ok(
     levelRows
@@ -519,17 +587,28 @@ try {
   assert.equal(restored.data.receipts[0].id, repeat.data.receipt.id);
   // Re-create an old three-correct word. Other words are mastered to make selection deterministic.
   const target = "abandon";
+  const mastered = words.length - 1;
   const tuples = words
     .map(
       (word) =>
-        `('${userId}','${word.id.replaceAll("'", "''")}',${word.id === target ? 3 : 5},0,NULL)`,
+        `('${userId}','${word.id.replaceAll("'", "''")}',${word.id === target ? 3 : 5},0,NULL,${word.id === target ? 0 : 1})`,
     )
     .join(",");
   sql(
-    `INSERT INTO progress (user_id,word_id,correct,seen,retry_at) VALUES ${tuples} ON CONFLICT(user_id,word_id) DO UPDATE SET correct=excluded.correct,retry_at=NULL;`,
+    `INSERT INTO progress (user_id,word_id,correct,seen,retry_at,mastered) VALUES ${tuples} ON CONFLICT(user_id,word_id) DO UPDATE SET correct=excluded.correct,mastered=excluded.mastered,retry_at=NULL;`,
+  );
+  // The lifetime mastered total is a running counter, incremented by a trigger as
+  // each word is first mastered, which keeps it to one cheap read per day
+  // instead of a scan of the whole progress table. A history written straight
+  // into that table therefore has to count itself the way the trigger would
+  // have, or the assertions below would be measuring the seed instead of the
+  // answer. The word list still derives each word's status from its own row, so
+  // the two are checked against each other further down.
+  sql(
+    `INSERT INTO daily_stats(user_id,day,mastered) VALUES ('${userId}',date('now','localtime'),${mastered}) ON CONFLICT(user_id,day) DO UPDATE SET mastered=mastered+${mastered};`,
   );
   for (const [type, expectedMastered] of [
-    ["def", words.length - 1],
+    ["def", mastered],
     ["syn", words.length],
   ]) {
     const practice = await call("/api/challenge", {
@@ -553,6 +632,13 @@ try {
       (await call("/api/challenge", data)).data.stats.mastered,
       expectedMastered,
     );
+    // What this pins is the plumbing, not the data: that the full-access path
+    // reads the running counter, and that the word list classifies rows by its
+    // own rule. It cannot catch the two disagreeing, because the seed above
+    // deliberately made them agree - see migration 0011, which repairs accounts
+    // whose mastery history predates the counter.
+    const masteredPage = await call("/api/words?filter=mastered&limit=1");
+    assert.equal(masteredPage.data.total, expectedMastered);
   }
   assert.equal(
     (
@@ -567,12 +653,24 @@ try {
   assert.equal((await call("/api/words/export")).status, 402);
   assert.equal((await call("/api/words/export?format=print")).status, 402);
   const afterCancellation = await call("/api/challenge", { action: "next" });
-  assert.equal(afterCancellation.status, freeIds.size ? 200 : 402);
-  if (freeIds.size) {
+  assert.equal(afterCancellation.status, freeWordCount ? 200 : 402);
+  if (freeWordCount) {
     assert.equal(afterCancellation.data.freeTier, true);
-    assert.equal(afterCancellation.data.stats.total, freeIds.size);
+    // The free tier counts the whole free set, which is the demo sample plus the
+    // words that have no meaning question of their own. Compared against the
+    // *demo's* count of the free set rather than this response's own field,
+    // which is the same number the stats total is derived from and would make
+    // the assertion a tautology.
+    assert.equal(afterCancellation.data.stats.total, freeWordCount);
     if (afterCancellation.data.question)
-      assert.ok(freeIds.has(afterCancellation.data.question.wordId));
+      // Any question type at all, so this is checked against the free set and
+      // not against the meaning-question sample, which is one word short.
+      assert.ok(
+        words.some(
+          (word) => word.id === afterCancellation.data.question.wordId,
+        ),
+        "a free-tier question must come from the collection",
+      );
   }
   // Calendar history remains available after membership lapses. Repeated words
   // count once per day/month, and midnight study ticks split between dates.
