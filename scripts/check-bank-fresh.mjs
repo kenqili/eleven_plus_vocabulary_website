@@ -23,7 +23,26 @@ execFileSync(process.execPath, ["--experimental-strip-types", generator.pathname
 });
 const after = readFileSync(bank);
 
-if (before.equals(after)) {
+/**
+ * What the bank says, with the generation date left out.
+ *
+ * The generator stamps the day it ran into meta.generated, so comparing raw
+ * bytes meant the check failed on every build that ran after the day the bank
+ * was generated, whether or not any word, question or piece of help had
+ * changed. That is a calendar comparison in the shape of a drift check, and it
+ * catches nothing: it reports a stale bank on a build with no edits at all, and
+ * it would keep reporting one the day after the fix. The date is a record of
+ * when the content was produced, not part of the content, so it is compared
+ * apart. Everything else, including every word, every question and its options,
+ * is still compared exactly, and a real edit still fails the build.
+ */
+const content = (bytes) => {
+  const parsed = JSON.parse(bytes.toString("utf8"));
+  if (parsed.meta) delete parsed.meta.generated;
+  return JSON.stringify(parsed);
+};
+
+if (content(before) === content(after)) {
   console.log("question bank is current");
 } else {
   console.error(
