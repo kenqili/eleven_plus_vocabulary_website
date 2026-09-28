@@ -212,9 +212,18 @@ export async function nextQuestion(
     words,
   );
   const allProblems = [...poolProblems, ...customProblems];
+  // Only the columns this function reads, and only the words it can still ask
+  // about. This used to be "SELECT *", which pulled the user's entire progress
+  // table across the network on every question handed out - including every word
+  // they have already mastered, which for an established child is most of them.
+  //
+  // Database time is free against a Worker's CPU budget and still costs the
+  // child a round trip's worth of waiting, which is the part they feel.
   const rows = (
     await db
-      .prepare("SELECT * FROM progress WHERE user_id = ?")
+      .prepare(
+        "SELECT word_id,correct,run,recalls,mastered,seen,last_seen,retry_at FROM progress WHERE user_id = ? AND mastered = 0",
+      )
       .bind(userId)
       .all<WordProgress>()
   ).results;
@@ -258,6 +267,9 @@ export async function nextQuestion(
       eligibleWordIds.has(w.id) &&
       (level === null || levelFor(w.id) === level) &&
       isAllowedWord(w.id, allowedWordIds) &&
+      // Still needed, and not a repeat of the query above: a word can be
+      // retired by reaching the cumulative floor without the column being set,
+      // so hasMastered looks at both and the SQL only rules out one of them.
       !hasMastered(byId.get(w.id) ?? initialMastery),
   );
   if (!available.length) return null;

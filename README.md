@@ -212,6 +212,10 @@ The daily goal is **20 attempted questions and one story**. Children can ask for
 
 ## Deployment
 
+[docs/PERFORMANCE.md](docs/PERFORMANCE.md) records what has actually been
+measured about speed, and marks the parts that have not been because no server
+was ever started.
+
 **Start at [docs/DEPLOY.md](docs/DEPLOY.md)** for the full production runbook, and
 [docs/HOSTING.md](docs/HOSTING.md) for why the hosting is Cloudflare Workers with
 an EU-jurisdiction D1 database, and what the alternatives cost. The two things to
