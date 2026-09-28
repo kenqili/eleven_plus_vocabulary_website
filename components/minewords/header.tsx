@@ -52,7 +52,7 @@ export default function Header() {
         <span>MineWords</span>
       </Link>
       <button
-        className="menu-toggle"
+        className="header-menu-toggle"
         ref={toggle}
         aria-expanded={menuOpen}
         aria-controls="learning-navigation"

@@ -1,38 +1,53 @@
-import { readFileSync } from "node:fs";
-import { words } from "./load-word-bank.mjs";
-import { problems } from "./load-problem-bank.mjs";
+// Every word needs the plain-language help a child reads, and every question
+// that can offer a clue must actually have one that does not give the answer
+// away. Both the help and the clue are now carried on the word in the bank, so
+// this reads them from there rather than from a second file that could drift.
+import { words, problems } from "../lib/challenge/bank.ts";
 import { wordClue } from "../lib/challenge/story-meanings.ts";
-const help = JSON.parse(readFileSync("data/learning/word-help.json"));
+
+// Only the types that choose between options get a clue. A word or cloze
+// question asks for the word itself, and every example sentence names it, so a
+// clue would hand over the answer; wordClue returns an empty string for those
+// and the app shows no clue button. A definition question shows the word and
+// asks for its meaning, and the usage sentence always names the word, so it too
+// carries no clue. Asking wordClue keeps this file in step with the app rather
+// than restating the list.
+const CLUE_TYPES = new Set(["syn", "ant"]);
 const errors = [];
-for (const word of words)
-  if (!help[word.id]?.meaning?.trim() || !help[word.id]?.clue?.trim())
-    errors.push(`Missing help: ${word.id}`);
-// A clue is a hint toward the answer, so it is only meaningful for the types
-// that choose between options: syn and ant. The other three never carry one, and
-// the app already encodes why by returning an empty clue:
-//   - word and cloze ask for the word itself, and every example names it;
-//   - def shows the word and asks for its meaning, so a clue that used the word
-//     would give the answer away, and the usage sentence always does.
-// The rule is the app's own, so this asks wordClue directly rather than
-// restating which types qualify, and a new type is covered automatically.
-const clueTypes = new Set(["syn", "ant"]);
+const byId = new Map(words.map((word) => [word.id, word]));
+
+for (const word of words) {
+  if (!word.help?.trim()) errors.push(`Missing help: ${word.id}`);
+  if (!word.clue?.trim()) errors.push(`Missing clue: ${word.id}`);
+}
+
+let withClue = 0;
 for (const problem of problems) {
-  if (!clueTypes.has(problem.type)) continue;
-  // wordClue is the app's own rule, so a type added later is covered by asking
-  // it rather than by restating the list here.
-  if (!wordClue(problem.wordId, problem.answer, problem.type))
+  if (!CLUE_TYPES.has(problem.type)) continue;
+  const word = byId.get(problem.wordId);
+  if (!word) {
+    errors.push(`Question for an unknown word: ${problem.id}`);
+    continue;
+  }
+  const clue = wordClue(word, problem.answer, problem.type);
+  if (!clue) {
+    // Either no clue was written, or the written one repeats the correct
+    // option, which would hand the answer over as help.
     errors.push(
-      help[problem.wordId]?.clue?.trim()
+      word.clue?.trim()
         ? `Answer-leaking clue: ${problem.id}`
         : `Missing clue: ${problem.id}`,
     );
+    continue;
+  }
+  withClue += 1;
 }
-for (const id of Object.keys(help))
-  if (!words.some((w) => w.id === id)) errors.push(`Unknown help word: ${id}`);
+
 if (errors.length) {
   console.error(errors.join("\n"));
   process.exitCode = 1;
-} else
+} else {
   console.log(
-    `Validated ${words.length} meanings and ${problems.length} question clues.`,
+    `Validated ${words.length} meanings and clues, and ${withClue} clued questions.`,
   );
+}
