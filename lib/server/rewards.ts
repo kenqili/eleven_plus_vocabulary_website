@@ -105,14 +105,6 @@ export async function progressSummary(userId: string) {
       .bind(userId)
       .all<PeriodStats & { day: string }>()
   ).results;
-  const distinct = (
-    await db
-      .prepare(
-        `SELECT word_id,MIN(day) AS firstDay,MAX(day) AS lastDay FROM learning_events WHERE user_id=? GROUP BY word_id`,
-      )
-      .bind(userId)
-      .all<{ word_id: string; firstDay: string; lastDay: string }>()
-  ).results;
   const aggregate = (start: string): PeriodStats => {
     const result: PeriodStats = {
       stories: 0,
@@ -123,7 +115,6 @@ export async function progressSummary(userId: string) {
       mastered: 0,
       seconds: 0,
       credits: 0,
-      words: 0,
     };
     for (const row of rows)
       if (row.day >= start && row.day <= today) {
@@ -139,9 +130,6 @@ export async function progressSummary(userId: string) {
         ] as const)
           result[key] += row[key];
       }
-    result.words = distinct.filter(
-      (row) => row.lastDay >= start && row.lastDay <= today,
-    ).length;
     return result;
   };
   const wallet = await db
@@ -158,6 +146,13 @@ export async function progressSummary(userId: string) {
     .first<{ total: number }>();
   return {
     totalEarned: earned?.total ?? 0,
+    // Lifetime running totals, straight from the rows already read above. The
+    // triggers maintain both counters as words are first met and first mastered,
+    // so a full-access child never needs their progress table scanned.
+    totals: {
+      mastered: rows.reduce((sum, row) => sum + row.mastered, 0),
+      newWords: rows.reduce((sum, row) => sum + row.newWords, 0),
+    },
     periods: {
       today: aggregate(today),
       week: aggregate(monday),
@@ -287,7 +282,7 @@ export async function checkpoint(
     input.sequence < 1 ||
     !Number.isFinite(input.seconds) ||
     input.seconds < 0 ||
-    input.seconds > 30
+    input.seconds > 300
   )
     throw new HttpError(400, "Invalid study checkpoint.");
   const db = database(),
@@ -296,27 +291,46 @@ export async function checkpoint(
     id = `${input.owner}:${input.sequence}`;
   const attempt = await db
     .prepare(
-      "SELECT id FROM attempts WHERE id=? AND user_id=? AND (answered_at IS NULL OR answered_at>=?)",
+      "SELECT id,created_at AS createdAt FROM attempts WHERE id=? AND user_id=? AND (answered_at IS NULL OR answered_at>=?)",
     )
     .bind(input.attemptId, userId, now - 86400000)
-    .first();
+    .first<{ id: string; createdAt: number }>();
   if (!attempt)
     throw new HttpError(
       409,
       "Open a current practice question to record study time.",
     );
+  // A brand new clock starts at the moment the question was handed out, not at
+  // the moment of this request. The tick below clamps the claim to the wall time
+  // that has actually gone by since `last_at`, so starting the clock at "now"
+  // meant the very first tick of every session computed MIN(claim, 0) and
+  // recorded nothing at all. That was harmless while a claim was capped at 15
+  // seconds and cost a whole batch once it was capped at 300: a ten minute
+  // session recorded 300 seconds instead of 585. The question's own creation is
+  // the earliest a child could have begun reading it, which is exactly the
+  // reference the clamp wants. Every later tick advances `last_at` to now, so
+  // this only ever affects the first request of a session.
   await db.batch([
     db
       .prepare(
         "INSERT OR IGNORE INTO study_clock(user_id,owner,sequence,last_at) VALUES(?,?,0,?)",
       )
-      .bind(userId, input.owner, now),
+      .bind(userId, input.owner, attempt.createdAt),
     db
       .prepare(
         `INSERT OR IGNORE INTO study_ticks(id,user_id,created_at,seconds,day,previous_day,since_midnight)
       SELECT ?,user_id,?,CASE WHEN owner=? THEN MIN(?,MAX(0,CAST((?-last_at)/1000 AS INTEGER))) ELSE 0 END,?,?,?
       FROM study_clock WHERE user_id=? AND ((owner=? AND sequence<?) OR (owner<>? AND last_at<?))`,
       )
+      // A tick taken by a *different* owner records nothing, and that is
+      // deliberate rather than an oversight. The other tab may still be open and
+      // may yet claim the time that has gone by, so crediting its elapsed time
+      // here would count the same seconds twice. The cost is that a tab taking
+      // over discards up to one batch of the previous tab's time, which was at
+      // most 15 seconds while batches were that size and is at most a batch
+      // interval now. The alternative - crediting it and hoping the old tab does
+      // not come back - inflates the number a parent is shown, which is worse
+      // than losing some.
       .bind(
         id,
         now,

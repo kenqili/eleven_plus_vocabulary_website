@@ -13,7 +13,12 @@ import { storyMeaning, wordClue } from "@/lib/challenge/story-meanings";
 import { missionFor } from "./mission";
 import { localDay } from "@/lib/challenge/rewards";
 import { chooseWord, reviewDueAt } from "@/lib/challenge/ordering";
-import { choicesForProblem, levelOf, words, problems } from "@/lib/challenge/bank";
+import {
+  choicesForProblem,
+  levelOf,
+  words,
+  problems,
+} from "@/lib/challenge/bank";
 import { isAllowedWord } from "./free-words";
 import { problemsForAddedWords } from "@/lib/challenge/problems";
 import {
@@ -85,7 +90,9 @@ function daysSince(lastSeen: string | null | undefined): number | undefined {
 
 /** Resolves a lower-cased word to its bank entry, for the wrong-answer gloss. */
 const glossLookup = (word: string) => {
-  const entry = words.find((candidate) => candidate.word.toLowerCase() === word);
+  const entry = words.find(
+    (candidate) => candidate.word.toLowerCase() === word,
+  );
   return entry
     ? {
         word: entry.word,
@@ -112,31 +119,54 @@ type WordProgress = {
   last_seen: string | null;
   retry_at: number | null;
 };
+/**
+ * The two single-word reads, which only ever want the counters and not the
+ * rotation columns. Giving them their own type rather than casting to the whole
+ * row is what stops a column going missing from one query and being read as
+ * `undefined` from another: a narrower type cannot pretend to carry a column
+ * nobody selected.
+ */
+type WordCounters = Pick<
+  WordProgress,
+  "correct" | "run" | "recalls" | "mastered" | "last_seen"
+>;
 export async function statsFor(
   userId: string,
   wordIds?: ReadonlySet<string>,
 ): Promise<Stats> {
-  const rows = await database()
-    .prepare("SELECT word_id,correct,mastered FROM progress WHERE user_id = ?")
-    .bind(userId)
-    .all<{ word_id: string; correct: number; mastered: number }>();
-  const ids = wordIds || new Set(words.map((w) => w.id));
-  const mastered = rows.results.filter(
-    (p) => ids.has(p.word_id) && hasMastered(p),
-  ).length;
   const summary = await progressSummary(userId);
+  const ids = wordIds || new Set(words.map((w) => w.id));
+  // A free-tier child may only have met words inside their free set, so their
+  // counts have to be filtered by it and the progress table has to be read. A
+  // full-access child can use the running totals the triggers already maintain,
+  // which is one cheap daily_stats read instead of a scan that grows with their
+  // whole history.
+  const totals = summary.totals;
+  const counts = wordIds
+    ? await (async () => {
+        const rows = await database()
+          .prepare(
+            "SELECT word_id,correct,mastered FROM progress WHERE user_id = ?",
+          )
+          .bind(userId)
+          .all<{ word_id: string; correct: number; mastered: number }>();
+        return {
+          mastered: rows.results.filter(
+            (p) => ids.has(p.word_id) && hasMastered(p),
+          ).length,
+          meetCount: rows.results.filter((p) => ids.has(p.word_id)).length,
+        };
+      })()
+    : { mastered: totals.mastered, meetCount: totals.newWords };
   return {
     total: ids.size,
     collection: words.length,
     mission: await missionFor(userId),
-    mastered,
+    mastered: counts.mastered,
     correct: summary.periods.all.correct,
     todaySeconds: summary.periods.today.seconds,
     totalSeconds: summary.periods.all.seconds,
-    inProgress: rows.results.filter(
-      (p) => ids.has(p.word_id) && p.correct > 0 && !hasMastered(p),
-    ).length,
-    meetCount: rows.results.filter((p) => ids.has(p.word_id)).length,
+    meetCount: counts.meetCount,
     ...summary,
   };
 }
@@ -149,10 +179,7 @@ export async function statsFor(
  * already been written, the resume path threw the same way on every subsequent
  * request, so one added word could stop practice working altogether.
  */
-function wordFor(
-  wordId: string,
-  pool: readonly Word[],
-): Word | undefined {
+function wordFor(wordId: string, pool: readonly Word[]): Word | undefined {
   return pool.find((word) => word.id === wordId);
 }
 
@@ -179,7 +206,11 @@ function toQuestion(
     word: word.word,
     // The word carries its own clue, so this reads a field rather than opening a
     // second data file to find one.
-    clue: wordClue(word, attempt.answer ?? word.definition, attempt.question_type),
+    clue: wordClue(
+      word,
+      attempt.answer ?? word.definition,
+      attempt.question_type,
+    ),
     wordId: word.id,
     type: attempt.question_type,
     prompt: attempt.prompt || `Choose the definition for '${word.word}'.`,
@@ -212,17 +243,31 @@ export async function nextQuestion(
     words,
   );
   const allProblems = [...poolProblems, ...customProblems];
-  // Only the columns this function reads, and only the words it can still ask
-  // about. This used to be "SELECT *", which pulled the user's entire progress
-  // table across the network on every question handed out - including every word
-  // they have already mastered, which for an established child is most of them.
+  // Only the columns this function reads. This used to be "SELECT *", which
+  // pulled the user's entire progress row set across the network on every
+  // question handed out, including every word they had already retired.
   //
   // Database time is free against a Worker's CPU budget and still costs the
   // child a round trip's worth of waiting, which is the part they feel.
+  //
+  // "The columns this function reads" has to be taken literally. `seen` was
+  // dropped from this list while narrowing it, and because the result is cast
+  // rather than checked, the type said `seen: number` while the row had no such
+  // field. Nothing threw: every read became `undefined || 0`, so the "New
+  // word" badge showed for words the child had met twenty times and the
+  // least-seen-first balancing in chooseWord silently stopped balancing. No
+  // test covered it, because the tests never seeded a word that had been seen
+  // more than once. tests/mastery.integration.mjs now seeds one.
+  //
+  // The rows are deliberately *not* narrowed to unretired words. Any
+  // "WHERE user_id = ?" predicate seeks the primary key and visits every one of
+  // that child's rows, so filtering here saves no database work at all, and it
+  // hides the rows that decide retirement: a mastered word would then be absent
+  // from the map, read as never seen, and handed back out as a question.
   const rows = (
     await db
       .prepare(
-        "SELECT word_id,correct,run,recalls,mastered,seen,last_seen,retry_at FROM progress WHERE user_id = ? AND mastered = 0",
+        "SELECT word_id,correct,run,recalls,mastered,seen,last_seen,retry_at FROM progress WHERE user_id = ?",
       )
       .bind(userId)
       .all<WordProgress>()
@@ -237,8 +282,7 @@ export async function nextQuestion(
   if (pending) {
     const currentWord = pool.find((w) => w.id === pending.word_id);
     const currentProblem = allProblems.find(
-      (problem) =>
-        problem.id === `${pending.question_type}:${pending.word_id}`,
+      (problem) => problem.id === `${pending.question_type}:${pending.word_id}`,
     );
     if (
       currentWord &&
@@ -267,9 +311,9 @@ export async function nextQuestion(
       eligibleWordIds.has(w.id) &&
       (level === null || levelFor(w.id) === level) &&
       isAllowedWord(w.id, allowedWordIds) &&
-      // Still needed, and not a repeat of the query above: a word can be
-      // retired by reaching the cumulative floor without the column being set,
-      // so hasMastered looks at both and the SQL only rules out one of them.
+      // Absent means never practised, which is available. Present means the row
+      // itself decides: a word is retired either by the flag or by reaching the
+      // cumulative floor without it being set.
       !hasMastered(byId.get(w.id) ?? initialMastery),
   );
   if (!available.length) return null;
@@ -330,9 +374,7 @@ export async function nextQuestion(
   const attempt: Attempt = {
     id: attemptId,
     word_id: word.id,
-    choices: JSON.stringify(
-      shuffle(choicesForProblem(problem)),
-    ),
+    choices: JSON.stringify(shuffle(choicesForProblem(problem))),
     question_type: problem.type,
     answer: problem.answer,
     prompt: problem.prompt,
@@ -404,7 +446,10 @@ export async function answerQuestion(
     .bind(id, userId)
     .first<Attempt>();
   if (!attempt) throw new HttpError(404, "Question not found.");
-  const pool = practiceWordsFor(await customWordsFor(userId), await excludedWordIds(userId));
+  const pool = practiceWordsFor(
+    await customWordsFor(userId),
+    await excludedWordIds(userId),
+  );
   const word = wordFor(attempt.word_id, pool);
   if (!word) throw new HttpError(409, "The word list changed. Please reload.");
   if (!isAllowedWord(word.id, allowedWordIds))
@@ -462,7 +507,7 @@ export async function answerQuestion(
         "SELECT correct,run,recalls,mastered,last_seen FROM progress WHERE user_id=? AND word_id=?",
       )
       .bind(userId, word.id)
-      .first<WordProgress>()) ?? initialMastery;
+      .first<WordCounters>()) ?? initialMastery;
   const mastery = advanceMastery(
     {
       correct: prior.correct ?? 0,
@@ -546,7 +591,7 @@ export async function answerQuestion(
         "SELECT correct,run,recalls,mastered,last_seen FROM progress WHERE user_id=? AND word_id=?",
       )
       .bind(userId, word.id)
-      .first<WordProgress>()) ?? prior;
+      .first<WordCounters>()) ?? prior;
   return {
     mastery: masteryProgress(
       {
@@ -572,7 +617,12 @@ export async function answerQuestion(
     // data never has to be downloaded by the browser.
     help: storyMeaning(word),
     attemptId: id,
-    chosen: chosenWordExplanation(options, saved?.selected ?? -1, answer, glossLookup),
+    chosen: chosenWordExplanation(
+      options,
+      saved?.selected ?? -1,
+      answer,
+      glossLookup,
+    ),
     type: attempt.question_type,
     answer,
     correct: Boolean(saved?.is_correct),
@@ -583,7 +633,11 @@ export async function answerQuestion(
     ant: word.ant,
     selected: saved?.selected ?? -1,
     word: word.word,
-    clue: wordClue(word, attempt.answer ?? word.definition, attempt.question_type),
+    clue: wordClue(
+      word,
+      attempt.answer ?? word.definition,
+      attempt.question_type,
+    ),
     award: await awardFor(userId, id),
   };
 }

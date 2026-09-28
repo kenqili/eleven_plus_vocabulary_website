@@ -29,7 +29,6 @@ export type Stats = {
   correct: number;
   todaySeconds: number;
   totalSeconds: number;
-  inProgress?: number;
   /** Words this account has been shown at least once, which is a denominator
    *  a child can do something about, unlike the size of the whole collection. */
   meetCount?: number;
@@ -38,6 +37,8 @@ export type Stats = {
     week: import("./rewards").PeriodStats;
     all: import("./rewards").PeriodStats;
   };
+  /** Lifetime running totals the server maintains on write. */
+  totals?: { mastered: number; newWords: number };
   rewards?: import("./rewards").RewardSummary;
   dates?: { today: string; week: string };
   timezone?: string;

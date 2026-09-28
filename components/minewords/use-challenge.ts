@@ -24,10 +24,7 @@ import {
 import { api } from "@/lib/client/api";
 import { useStudyClock } from "./use-study-clock";
 import { emptyPeriod } from "@/lib/challenge/rewards";
-import {
-  QUESTION_TYPES,
-  type QuestionType,
-} from "@/lib/challenge/config";
+import { QUESTION_TYPES, type QuestionType } from "@/lib/challenge/config";
 import type { Difficulty } from "@/lib/challenge/difficulty";
 import type {
   ChallengeState,
@@ -79,7 +76,8 @@ function demoChosen(
 ): Feedback["chosen"] {
   if (selected < 0 || selected >= word.choices.length) return undefined;
   const chosen = word.choices[selected];
-  if (!chosen || chosen.toLowerCase() === answer.toLowerCase()) return undefined;
+  if (!chosen || chosen.toLowerCase() === answer.toLowerCase())
+    return undefined;
   const entry = word.optionHelp?.[chosen];
   if (!entry) return undefined;
   return { word: chosen, meaning: entry.meaning, example: entry.example };
@@ -162,7 +160,6 @@ export function useChallenge() {
     });
   }, []);
   const studyClock = useStudyClock(state.question?.id, !state.demo, updateTime);
-  const flushTime = studyClock.flush;
   const demoQuestion = useCallback((index: number): Question | null => {
     const word = demoWords.current[index];
     // Sent by the server with the question, and by the demo route, rather
@@ -293,11 +290,20 @@ export function useChallenge() {
     setBusy(true);
     setError("");
     try {
-      await flushTime();
+      // Study time is not flushed here. The clock batches on its own five-minute
+      // cadence and on the way out of the page, and a flush per answer was both
+      // the largest source of database writes in the app and latency the child
+      // waited through before the next word appeared.
       const current = stateRef.current;
       if (current.feedback) setPrevious(current.feedback);
       if (current.demo) {
-        do { demoIndex.current++; } while (demoWords.current[demoIndex.current] && demoMastery.current.get(demoWords.current[demoIndex.current].wordId)?.mastered);
+        do {
+          demoIndex.current++;
+        } while (
+          demoWords.current[demoIndex.current] &&
+          demoMastery.current.get(demoWords.current[demoIndex.current].wordId)
+            ?.mastered
+        );
         const question = demoQuestion(demoIndex.current);
         setState({
           ...current,
@@ -346,14 +352,7 @@ export function useChallenge() {
       lock.current = false;
       setBusy(false);
     }
-  }, [
-    changeHistoryView,
-    demoQuestion,
-    history.length,
-    selectedTypes,
-    level,
-    flushTime,
-  ]);
+  }, [changeHistoryView, demoQuestion, history.length, selectedTypes, level]);
   const goPrevious = useCallback(() => {
     const viewing = historyViewRef.current;
     const target = viewing === null ? history.length - 1 : viewing - 1;
@@ -375,7 +374,6 @@ export function useChallenge() {
       setBusy(true);
       setError("");
       try {
-        await flushTime();
         if (current.demo) {
           const word = demoWords.current[demoIndex.current];
           const correct = word.choices[selected] === word.answer;
@@ -390,8 +388,13 @@ export function useChallenge() {
             wallSeconds: elapsed.current,
             window: answerWindow(word.choices),
           });
-          const previousMastery = demoMastery.current.get(word.wordId) ?? initialMastery;
-          const mastery = advanceMastery(previousMastery, evidence, difficulty ?? 1);
+          const previousMastery =
+            demoMastery.current.get(word.wordId) ?? initialMastery;
+          const mastery = advanceMastery(
+            previousMastery,
+            evidence,
+            difficulty ?? 1,
+          );
           const justMastered = mastery.newlyMastered;
           demoMastery.current.set(word.wordId, mastery);
           demoProgress.current.set(word.wordId, mastery.correct);
@@ -402,7 +405,6 @@ export function useChallenge() {
             correct: prior.correct + (correct ? 1 : 0),
             reveals: prior.reveals + (selected === -1 ? 1 : 0),
             newWords: prior.newWords + (seenBefore ? 0 : 1),
-            words: prior.words + (seenBefore ? 0 : 1),
             mastered: prior.mastered + (justMastered ? 1 : 0),
             seconds: prior.seconds + elapsed.current,
           };
@@ -411,13 +413,11 @@ export function useChallenge() {
             mastered: [...demoMastery.current.values()].filter(
               (m) => m.mastered,
             ).length,
+            meetCount: demoMastery.current.size,
             correct: current.stats.correct + (correct ? 1 : 0),
             todaySeconds: current.stats.todaySeconds + elapsed.current,
             totalSeconds: current.stats.totalSeconds + elapsed.current,
             periods: { today: period, week: period, all: period },
-            inProgress: [...demoMastery.current.values()].filter(
-              (m) => m.correct > 0 && !m.mastered,
-            ).length,
           };
           setState({
             ...current,
@@ -481,7 +481,7 @@ export function useChallenge() {
         setBusy(false);
       }
     },
-    [flushTime, load],
+    [load],
   );
   useEffect(() => {
     const context = (
@@ -582,7 +582,9 @@ export function useChallenge() {
       }
     },
     answer,
-    markAssisted: () => { assisted.current = true; },
+    markAssisted: () => {
+      assisted.current = true;
+    },
     next,
     goPrevious,
     historical: historyView !== null,

@@ -4,6 +4,7 @@ export const BADGES = [
   { id: "champion", name: "Vocabulary Champion", cost: 100, symbol: "🏆" },
 ] as const;
 export const REPORTING_ZONE = "Europe/London";
+/** Words in the whole collection, which the calendar counts distinctly itself. */
 export type PeriodStats = {
   stories: number;
   questions: number;
@@ -13,7 +14,6 @@ export type PeriodStats = {
   mastered: number;
   seconds: number;
   credits: number;
-  words: number;
 };
 export type RewardSummary = {
   balance: number;
@@ -53,7 +53,6 @@ export const emptyPeriod = (): PeriodStats => ({
   mastered: 0,
   seconds: 0,
   credits: 0,
-  words: 0,
 });
 const dayFormatter = new Intl.DateTimeFormat("en-CA", {
   timeZone: REPORTING_ZONE,

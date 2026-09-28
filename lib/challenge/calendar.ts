@@ -1,11 +1,14 @@
 import { emptyPeriod, type PeriodStats } from "./rewards.ts";
-export type CalendarDay = PeriodStats & { day: string };
+export type CalendarDay = PeriodStats & { day: string; words: number };
+/** The calendar counts distinct words across the whole month, which is a
+ *  calendar-specific figure rather than a period statistic. */
+export type CalendarTotals = PeriodStats & { studyDays: number; words: number };
 export type CalendarData = {
   month: string;
   today: string;
   timezone: string;
   days: CalendarDay[];
-  totals: PeriodStats & { studyDays: number };
+  totals: CalendarTotals;
 };
 export function validMonth(month: string): boolean {
   return (
@@ -41,6 +44,7 @@ export function fillCalendarDays(
   const byDay = new Map(saved.map((day) => [day.day, day]));
   return monthDays(month).map((day) => ({
     ...emptyPeriod(),
+    words: 0,
     ...byDay.get(day),
     day,
   }));
@@ -49,7 +53,7 @@ export function calendarTotals(
   days: CalendarDay[],
   uniqueWords: number,
 ): CalendarData["totals"] {
-  const result = { ...emptyPeriod(), studyDays: 0 };
+  const result: CalendarTotals = { ...emptyPeriod(), studyDays: 0, words: 0 };
   for (const day of days) {
     for (const key of [
       "questions",

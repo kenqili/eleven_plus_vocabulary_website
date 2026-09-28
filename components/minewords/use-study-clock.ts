@@ -3,6 +3,16 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "@/lib/client/api";
 import type { Stats } from "@/lib/challenge/types";
 
+/**
+ * Study time is accumulated in the browser and written in one batch rather than
+ * every few seconds. A session is at most an hour or so, so this turns hundreds
+ * of rows a day per child into about a dozen, and the server still clamps every
+ * claim to the wall time that actually elapsed. Leaving the page, hiding the tab
+ * and unmounting all flush immediately, so what is left to lose is bounded by
+ * one batch: a hard crash, or a tab that is closed without firing pagehide.
+ */
+const FLUSH_SECONDS = 300;
+
 export function useStudyClock(
   attemptId: string | undefined,
   enabled: boolean,
@@ -28,7 +38,14 @@ export function useStudyClock(
     attemptId: string;
   } | null>(null);
   const flush = useCallback(async () => {
-    if (running.current) return running.current;
+    // A flush asked for while one is already in flight waits for it and then
+    // carries on, rather than returning the pending promise. Returning dropped
+    // whatever accrued in the meantime on the floor: at most 15 seconds while
+    // ticks were that frequent, and a whole 300 second batch now. The flushes
+    // that most need to land are the ones a closing browser is about to cancel.
+    // Written as a wait and then a fall-through rather than a recursive call,
+    // because re-entering the callback is what a hooks rule rightly objects to.
+    if (running.current) await running.current;
     if (!current.current.enabled || !current.current.attemptId) return;
     // Nothing accrued and nothing to retry, so there is no request to make.
     // Sending one anyway doubled the round trips per question and held the
@@ -41,7 +58,7 @@ export function useStudyClock(
         action: "time",
         owner: owner.current,
         sequence: ++sequence.current,
-        seconds: Math.min(30, unflushed.current),
+        seconds: Math.min(FLUSH_SECONDS, unflushed.current),
         attemptId: current.current.attemptId!,
       };
       if (!retry.current) {
@@ -103,12 +120,19 @@ export function useStudyClock(
         document.hasFocus() &&
         Date.now() - activity.current < 60000
       ) {
-        unflushed.current = Math.min(30, unflushed.current + 1);
+        unflushed.current = Math.min(FLUSH_SECONDS, unflushed.current + 1);
         setSeconds(unflushed.current + (retry.current?.seconds || 0));
       }
-      if (
-        (unflushed.current >= 15 || retry.current) &&
-        Date.now() - lastSend.current >= 15000
+      // The batch trigger and the retry trigger are on separate clocks. A full
+      // batch is the normal case and is worth waiting for. A retry is not: it
+      // means the last attempt failed and the child is looking at "We'll retry
+      // automatically", so it goes back out on the old short cadence rather than
+      // leaving the message up for the length of a whole batch interval.
+      const since = Date.now() - lastSend.current;
+      if (retry.current && since >= 15000) void flush();
+      else if (
+        unflushed.current >= FLUSH_SECONDS &&
+        since >= FLUSH_SECONDS * 1000
       )
         void flush();
     }, 1000);
