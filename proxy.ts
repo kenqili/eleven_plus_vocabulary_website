@@ -50,7 +50,7 @@ function policyFor(nonce: string, themeScriptHash: string) {
   ].join("; ");
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   // base64 without padding is what a nonce directive wants, and the characters
   // are all safe in a header value.
   const nonce = randomBytes(NONCE_BYTES).toString("base64");

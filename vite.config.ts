@@ -123,13 +123,29 @@ export default defineConfig(async ({ command }) => {
      * the client build, so this file cannot fix a client chunking problem at
      * all).
      *
-     * `minify: false` is kept only because it was never re-tested once the real
-     * cause was known. Turning it back on is worth a try, and the check is
-     * whether the names above are still exported after a production build.
-     * The cost of leaving it off is bytes: a few hundred kilobytes of client
-     * JavaScript, most of it the framework, which Workers serves from its edge
-     * cache, so it costs upload and cold-start parse time rather than
-     * per-request time.
+     * `minify: false` is kept, and it is now only a performance cost rather
+     * than a fix. Measured on this build: 1,872 KB of client JavaScript
+     * unminified against 964 KB minified, so turning it on saves about 908 KB,
+     * 48% of the client bundle. Workers serves these from its edge cache, so
+     * that is upload and cold-start parse time rather than per-request time.
+     *
+     * It is left off for the deploy that fixes the dead links, because that fix
+     * cannot be verified on this machine - a production build needs workerd,
+     * which needs macOS 13.5 - and shipping the fix together with an
+     * unverifiable performance change means a second failure would be ambiguous.
+     *
+     * To turn it on afterwards, and check it rather than hope:
+     *   1. set minify: true
+     *   2. npm run build
+     *   3. npm run verify:chunks   - must report no problems
+     *   4. deploy, then click through the top menu on the deployed site
+     *
+     * Worth knowing about step 3: minification renames locals, so
+     * `verify:chunks` can no longer see the dynamic-namespace destructures and
+     * reports "0 dynamic namespace reads" where the shipped build reports 18.
+     * The guard is strongest in exactly the configuration being shipped and
+     * weaker in the one being considered, which is an argument for treating
+     * step 4 as the real check.
      */
     build: { minify: false },
     server: {

@@ -4,7 +4,7 @@ import type { NextConfig } from "next";
  * The headers that apply to every response and cannot break a page.
  *
  * The Content-Security-Policy is not here. It needs a fresh nonce on every
- * response, which is what middleware.ts is for, and a nonce written into a build
+ * response, which is what proxy.ts is for, and a nonce written into a build
  * config is published in the response, so it would be no stronger than allowing
  * inline script. Splitting it this way also leaves one file deciding what the
  * browser is allowed to do, rather than two.

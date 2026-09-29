@@ -293,13 +293,32 @@ ships the previous build. That is not a theoretical risk: a deploy of a stale
 
 1. `npm test && npm run typecheck && npm run lint`
 2. `D1_ID=… D1_NAME=… npm run build`
-3. `npx wrangler deploy`
-4. If a migration was added, apply it **before** the new code serves traffic
+3. `npm run verify:chunks`
+4. `npx wrangler deploy`
+5. If a migration was added, apply it **before** the new code serves traffic
    (step 4 above).
-5. Click a link in the deployed app. Minification is currently off because it
-   broke every one of them, and that is the kind of failure no test in this
-   repository covers - it only appears in a production build, which cannot be
-   served on a Mac older than 13.5.
+6. Click a link in the deployed app.
+
+**Step 3 is not optional, and step 6 is not ceremonial.** This repository once
+shipped a build where *every* link in the app did nothing when clicked, while
+all 175 tests passed. The cause was a circular dynamic import between the
+framework's client entry chunk and its Link chunk: the bundler left
+`navigateClientSide` out of the entry chunk's export list, the Link chunk
+destructured it off a namespace that did not have it, and the click handler
+threw - after calling `preventDefault`, so the browser never navigated either.
+It only ever appears in a production build, which is why no test caught it.
+
+`npm run verify:chunks` reads the built chunks and fails on a missing
+cross-chunk binding or on a chunk cycle, which is the shape that caused it. It
+is a guard rather than a proof, so **step 6 is still the real check**: click
+through the top menu on the deployed site. A production build cannot be served
+on a Mac older than 13.5, so that click cannot be done locally.
+
+Minification is off, but **not** because it caused any of this - that guess was
+wrong, and it is recorded in `vite.config.ts` so nobody repeats it. Turning
+minification on saves about 908 KB of client JavaScript, 48% of the bundle, and
+is a reasonable follow-up once the site is confirmed working. The procedure and
+the caveat are in that same comment.
 
 ---
 
@@ -310,9 +329,9 @@ The order matters. The first three are the ones that fail silently.
 ```sh
 ORIGIN=https://your-origin
 
-# 1. The policy is present and carries a nonce. A missing CSP means middleware
-#    did not run, and you will not find out from this command alone - you find
-#    out from a blank page.
+# 1. The policy is present and carries a nonce. A missing CSP means the proxy
+#    file did not run, and you will not find out from this command alone - you
+#    find out from a blank page.
 curl -sI "$ORIGIN/" | grep -i "content-security-policy"
 
 # 2. The other security headers.
@@ -419,14 +438,14 @@ it.
 
 The framework writes its hydration data into inline `<script>` tags, so a policy
 that forbids inline script outright breaks the site. The policy in
-`middleware.ts` handles this the way it is meant to be handled: a fresh random
+`proxy.ts` handles this the way it is meant to be handled: a fresh random
 nonce per response, which the framework reads back out of the header and stamps
 on the scripts it generates. That mechanism is the framework's own, not a
 workaround.
 
 It is still untested here. If the page renders but does not respond, that is a
 policy that is too strict, and the fix is in one place: add the missing directive
-to `policyFor()` in `middleware.ts`. Two things are known to need permissiveness
+to `policyFor()` in `proxy.ts`. Two things are known to need permissiveness
 already and are allowed: inline styles, because React writes them, and the theme
 script, by hash. A third may be needed and is not known; `tests/security.test.mjs`
 asserts the policy cannot be loosened silently, so if you have to add something,

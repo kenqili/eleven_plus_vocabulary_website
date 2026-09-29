@@ -4,7 +4,7 @@
 // would notice.
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { createHash } from "node:crypto";
 import {
   APPLY_SAVED_THEME,
@@ -483,9 +483,9 @@ test("the Content-Security-Policy hash matches the script it has to allow", () =
     THEME_SCRIPT_HASH,
     "the exported hash is not the hash of the exported script",
   );
-  // The policy lives in middleware, because it needs a per-response nonce.
+  // The policy lives in the proxy file, because it needs a per-response nonce.
   const policy = readFileSync(
-    new URL("../middleware.ts", import.meta.url),
+    new URL("../proxy.ts", import.meta.url),
     "utf8",
   );
   assert.ok(
@@ -509,12 +509,41 @@ test("the Content-Security-Policy hash matches the script it has to allow", () =
   );
 });
 
+test("the CSP lives in proxy.ts, and not in a middleware.ts as well", () => {
+  // The framework renamed the file convention and hard-fails if it finds both:
+  // "Both middleware file and proxy file are detected. Please use proxy only."
+  // That is a build-stopping error, so the invariant is worth asserting here
+  // rather than discovering it on a deploy. The old convention still works and
+  // only warns, so nothing else in the repository would catch a stray copy.
+  const root = new URL("../", import.meta.url);
+  const legacy = new URL("middleware.ts", root);
+  assert.equal(
+    existsSync(legacy),
+    false,
+    "middleware.ts and proxy.ts cannot both exist; the build throws. Delete middleware.ts.",
+  );
+  // And the export has to be the one the new convention looks for. A proxy file
+  // exporting `middleware` loads, and then quietly never runs, which is how a
+  // Content-Security-Policy disappears from a site that looks fine.
+  const policy = readFileSync(new URL("proxy.ts", root), "utf8");
+  assert.match(
+    policy,
+    /export\s+(?:async\s+)?function\s+proxy\b/,
+    "proxy.ts must export `proxy`; a `middleware` export is not found by the new convention",
+  );
+  assert.doesNotMatch(
+    policy,
+    /export\s+(?:async\s+)?function\s+middleware\b/,
+    "proxy.ts still exports the old name, so the policy may never be applied",
+  );
+});
+
 test("the policy allows inline styles and nothing looser, for scripts", () => {
   // style-src needs unsafe-inline because React writes inline styles for the
   // progress bar transform and the burst rotation. script-src must not, because
   // that is the one thing that would let an injected script run: the framework's
   // own inline scripts are nonced instead.
-  const policy = read("middleware.ts");
+  const policy = read("proxy.ts");
   const scriptSrc = policy.slice(
     policy.indexOf("script-src"),
     policy.indexOf("style-src"),
@@ -555,7 +584,7 @@ test("the nonce reaches the request the page is rendered from", () => {
   // scripts it generates, so it has to be on the request as well as the
   // response. Setting only the response would render a page whose scripts the
   // policy then blocks, which is worse than having no policy.
-  const policy = read("middleware.ts");
+  const policy = read("proxy.ts");
   assert.match(
     policy,
     /requestHeaders\.set\("content-security-policy"/,
@@ -571,7 +600,7 @@ test("the nonce reaches the request the page is rendered from", () => {
   assert.match(
     policy,
     /matcher:/,
-    "middleware has no matcher, so it may not run on every request",
+    "the proxy has no matcher, so it may not run on every request",
   );
 });
 

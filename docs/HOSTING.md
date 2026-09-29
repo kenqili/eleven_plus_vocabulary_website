@@ -28,7 +28,7 @@ Read from the repository, not assumed:
   biggest fact in the comparison, and it is the reason the answer is not a VPS.
 - Stripe for the subscription.
 - Nothing third-party at runtime: no analytics, no font CDN, no error reporter.
-  The `Content-Security-Policy` in `middleware.ts` allows no absolute origin, and
+  The `Content-Security-Policy` in `proxy.ts` allows no absolute origin, and
   that is a statement about the architecture as much as about security.
 
 ---

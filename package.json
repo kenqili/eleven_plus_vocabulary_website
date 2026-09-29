@@ -32,7 +32,8 @@
     "test:child:browser": "node tests/child-experience.browser.mjs",
     "info:build": "node scripts/build-info.mjs",
     "bank:generate": "node --experimental-strip-types scripts/generate-problem-bank.mjs",
-    "prebuild": "node --experimental-strip-types scripts/check-bank-fresh.mjs"
+    "prebuild": "node --experimental-strip-types scripts/check-bank-fresh.mjs",
+    "verify:chunks": "node scripts/check-client-chunks.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
