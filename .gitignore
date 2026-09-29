@@ -48,9 +48,12 @@ next-env.d.ts
 /outputs/
 /work/
 
-# generated pronunciation and story audio; rebuild with `npm run audio:generate`
-# and `npm run audio:stories:generate`
-/public/audio/
+# Pronunciation and story audio are committed, not ignored: they are generated
+# once and then ride along with every build, so a build from a clean clone has
+# the same clips the developer has. Refresh them with `npm run audio:generate`
+# and `npm run audio:stories:generate`, and check with the matching
+# `audio:validate` scripts, which exit non-zero when a clip is missing or no
+# longer matches the words it was made from.
 
 # local tool state used to regenerate data snapshots; never publish them.
 # Node >=22.13 to load the TypeScript sources, and wordfreq==3.1.1 for

@@ -173,39 +173,54 @@ freshness window, and it is the one route that deliberately does **not** check
 the `Origin` header, because Stripe is not a browser. Nothing else in the API is
 exempt.
 
-### 7. The audio, and the clone problem
+### 7. The audio
 
-`public/audio/` is gitignored and **nothing in it is committed**: 2,371 files,
-169 MB. That is the right decision for a repository, and it means **a fresh
-clone builds a site with no audio at all.** The Listen controls then show "This
-story is still being recorded" rather than failing loudly, so this is easy to
-miss and easy to ship.
+`public/audio/` is **committed**: 2,371 files, 169 MB. It is generated once and
+then rides along with every build, so a build from a clean clone has the same
+clips a developer has, and a Git-triggered deploy needs nothing set up.
 
-Three ways to handle it, in order of preference:
+This is deliberately not the tidier-looking choice. Ignoring generated media is
+normally the right call for a repository, and it was what this file used to
+advise - but it means a fresh clone builds a site with no audio at all, and the
+Listen controls then say "This story is still being recorded" rather than
+failing loudly. That is easy to ship without noticing, which is exactly what
+happened: a deploy from a clean checkout shipped a site whose 2,371 clips were
+all 404.
 
-**a) Keep the clips in object storage and point the manifest at it.** The app
-fetches a `manifest.json` at runtime, so if the manifest's URLs can be absolute
-this needs no rebuild when the clips move. Best long-term answer, and it also
-takes 169 MB off every deploy.
+The costs of committing, so they are a decision rather than a surprise: the
+repository grows by 169 MB permanently, every fresh clone downloads it, and
+each deploy still uploads all 2,371 files to Cloudflare. The largest single clip
+is 1.4 MB, well under the 100 MB per-file limit, and Workers Static Assets
+allows 20,000 files against the 2,371 here.
 
-**b) Store the clips in CI as a build artefact.** Generate once, upload, restore
-per build. Needs `AZURE_SPEECH_KEY` in the CI secret store, or the artefact
-store alone if you only ever restore.
+**Refreshing the clips.** They are generated from the word list and the story
+prose, so they go stale when those change. Re-run the generators, which skip any
+clip that is already current, so this is cheap unless a lot has changed:
 
-**c) Generate them in CI before the build.** Needs the Azure keys. The
-generators skip work that is already current, so it is not slow on every build,
-but it is 169 MB of generation on the first one.
+```sh
+npm run audio:generate          # 2,247 word pronunciations
+npm run audio:stories:generate  # 120 story narrations
+```
 
-Whichever you pick, run the validators in CI or you will not find out:
+Both need `AZURE_SPEECH_KEY` and `AZURE_SPEECH_REGION` in `.env`. A story clip
+counts as stale when the prose in `data/stories/level-*.txt` has changed, so
+re-run the story generator after editing any story - editing one story
+regenerates one file.
+
+**Checking them.** Run these before deploying, or you will not find out:
 
 ```sh
 npm run audio:validate
 npm run audio:stories:validate
 ```
 
-Both exit non-zero when a clip is missing or no longer matches its source. A
-story clip counts as stale when the prose in `data/stories/level-*.txt` has
-changed, so re-run the generator after editing any story.
+Both exit non-zero when a clip is missing or no longer matches its source.
+
+**If the deploy size ever matters.** Moving the clips to an R2 bucket takes the
+2,371 files off every deploy, and R2's free tier is 10 GB-month against 169 MB.
+It needs the binding in `.openai/hosting.json` set from `null` to a bucket name,
+absolute URLs in the manifests, and a wider `media-src` in the Content Security
+Policy, which is currently `'self'` and would block clips from another origin.
 
 ---
 
@@ -260,26 +275,31 @@ site — it sends a parent who has just paid to a page that does not exist. Chec
 ## Deploying
 
 ```sh
-npm test                      # 167 tests, must be green
-npm run typecheck
-npm run lint
-npm run build                 # produces dist/
-# patch the D1 id as above
+npm test                                                  # 175 tests, must be green
+npm run typecheck && npm run lint
+D1_ID=<database_id> D1_NAME=<database_name> npm run build  # produces dist/
 npx wrangler deploy
 ```
 
 `wrangler deploy` with no `--config` does pick up `dist/server/wrangler.json`
-automatically, so the patched database id is the one that ships. That has been
-checked by patching a sentinel id and reading it back in the bindings table.
+automatically, so the database id the build wrote is the one that ships.
+
+**Always build immediately before deploying.** `dist/` is gitignored and
+`wrangler deploy` uploads whatever is in it, so deploying without a fresh build
+ships the previous build. That is not a theoretical risk: a deploy of a stale
+`dist/` is how a build that predated the last few commits went out.
 
 ### Every deploy, after the first
 
-1. `npm test && npm run typecheck && npm run lint && npm run build`
-2. Patch the D1 id (step 3 above). **The generated config reverts to the
-   placeholder on every build**, so skipping this is the single most likely way
-   to break a deploy.
-3. `npx wrangler@latest deploy`
-4. If a migration was added, apply it **before** the new code serves traffic.
+1. `npm test && npm run typecheck && npm run lint`
+2. `D1_ID=… D1_NAME=… npm run build`
+3. `npx wrangler deploy`
+4. If a migration was added, apply it **before** the new code serves traffic
+   (step 4 above).
+5. Click a link in the deployed app. Minification is currently off because it
+   broke every one of them, and that is the kind of failure no test in this
+   repository covers - it only appears in a production build, which cannot be
+   served on a Mac older than 13.5.
 
 ---
 
