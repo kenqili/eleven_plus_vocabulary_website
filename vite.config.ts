@@ -91,27 +91,45 @@ export default defineConfig(async ({ command }) => {
         }
       : undefined,
     /**
-     * Unminified, because minification is what breaks every link in the
-     * deployed app.
+     * Unminified. This is no longer the fix for anything - it was a guess that
+     * was wrong, and the record of why matters more than the setting.
      *
-     * With minification on, the production build splits vinext's own Link
-     * component into a separate chunk whose cross-chunk imports come back
-     * undefined, and its click handler dies on the first navigation with
-     * "e is not a function". The links are then inert: `next/link` calls
-     * preventDefault and hands over to the client router, so when the router
-     * throws, the browser never navigates at all. Every link in the app is
-     * affected, on the deployed Worker only, because `npm run dev` never
-     * minifies and so never produces the broken split.
+     * The symptom was that every link in the deployed app did nothing when
+     * clicked, while `npm run dev` was fine. The old note here blamed
+     * minification. It was not minification. The real cause was a circular
+     * dynamic import between vinext's client entry and its Link shim: the entry
+     * chunk imported the Link chunk, and the Link chunk imported the entry chunk
+     * back to reach `navigateClientSide` and `getPrefetchInterceptionContext`.
+     * A cycle like that makes the bundler leave those names out of the entry
+     * chunk's export list, so the Link chunk destructured them off a namespace
+     * that did not have them, got `undefined`, and threw "navigateClientSide is
+     * not a function" on the first click - after calling `preventDefault`, so
+     * the browser never navigated either. That is why it looked like the links
+     * were simply dead, and why it only ever appeared in a production build:
+     * dev never chunks this way.
      *
-     * Readable output is the fix that does not depend on the framework
-     * changing. The cost is bytes: this app ships a few hundred kilobytes of
-     * client JavaScript, most of it the framework, and Workers serves static
-     * assets from its edge cache, so the size costs upload time and cold-start
-     * parse time rather than per-request time.
+     * It is fixed by the framework, not here. vinext 1.0.0 resolves those
+     * lookups through an explicit `navigation_exports` namespace object instead
+     * of the module namespace, which survives chunking, and the cycle is gone
+     * from the emitted graph. Confirmed by inspecting the built chunks: the
+     * names `link` needs are present in the object it destructures, and no two
+     * chunks import each other.
      *
-     * Worth revisiting when vinext moves off 1.0.0-beta.5 - the alternative is
-     * replacing 47 <Link> usages with plain anchors and giving up client-side
-     * navigation altogether.
+     * Tried and rejected as fixes: `output.inlineDynamicImports` (deprecated by
+     * rolldown and silently ignored while `codeSplitting` is set, which the
+     * Cloudflare plugin does set), and `codeSplitting: false` in `rollupOptions`
+     * (the Cloudflare Vite plugin owns the client environment's output config
+     * outright - a deliberately conspicuous `entryFileNames` probe never reached
+     * the client build, so this file cannot fix a client chunking problem at
+     * all).
+     *
+     * `minify: false` is kept only because it was never re-tested once the real
+     * cause was known. Turning it back on is worth a try, and the check is
+     * whether the names above are still exported after a production build.
+     * The cost of leaving it off is bytes: a few hundred kilobytes of client
+     * JavaScript, most of it the framework, which Workers serves from its edge
+     * cache, so it costs upload and cold-start parse time rather than
+     * per-request time.
      */
     build: { minify: false },
     server: {
