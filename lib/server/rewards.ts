@@ -122,12 +122,17 @@ export type SummaryReads = {
  * numbers that, mid-session, were almost always identical to the ones already on
  * screen.
  *
- * A batch is one round trip and one transaction, so this is the same data
- * observed more consistently than the serial version, not less: the serial
- * version could read the wallet before the balance update it was meant to
- * reflect.
+ * A batch is one round trip. The failure domain is unchanged: these were five
+ * separate awaited reads, and a failure in any one already failed the request, so
+ * nothing is newly all-or-nothing. It is also not a snapshot read - D1 promises
+ * sequential, non-concurrent execution and a transactional abort, which is not
+ * the same thing, and the local SQLite shim happens to be stricter than that.
  *
- * The optional reads are last, so their positions are known without counting.
+ * The optional reads record their position as they are pushed, rather than being
+ * counted afterwards or hardcoded. A fixed index here is the quiet kind of bug:
+ * reading the progress statement where the mission was expected leaves
+ * `questions` and `stories` undefined, `?? 0` turns that into a mission widget
+ * reading 0/0 for good, and nothing anywhere reports an error.
  */
 export async function summaryReads(
   userId: string,
@@ -140,29 +145,39 @@ export async function summaryReads(
     db.prepare(WALLET_SQL).bind(userId),
     db.prepare(EARNED_SQL).bind(userId),
   ];
-  if (options.mission)
-    statements.push(db.prepare(MISSION_SQL).bind(userId, day, userId, day));
-  if (options.progress)
-    statements.push(db.prepare(PROGRESS_SQL).bind(userId));
+  const missionAt = options.mission
+    ? statements.push(db.prepare(MISSION_SQL).bind(userId, day, userId, day)) -
+      1
+    : -1;
+  const progressAt = options.progress
+    ? statements.push(db.prepare(PROGRESS_SQL).bind(userId)) - 1
+    : -1;
   const out = await db.batch(statements);
-  // `db.batch` returns one result per statement, in order, each with the rows it
-  // selected. D1 types the rows as unknown, so each is narrowed where it is read
-  // rather than by casting the whole result.
-  const rowsOf = <T,>(index: number): T[] =>
-    (out[index] as { results?: T[] } | undefined)?.results ?? [];
-  const mission = options.mission
-    ? (rowsOf<{ questions: number; stories: number }>(3)[0] ?? null)
-    : null;
+  // `db.batch` returns one result per statement, in the order they were given -
+  // D1 guarantees that positionally, and the shim preserves it with a map. D1
+  // types the rows as unknown, so each is narrowed where it is read rather than
+  // by casting the whole result.
+  const rowsOf = <T>(index: number): T[] =>
+    index < 0
+      ? []
+      : ((out[index] as { results?: T[] } | undefined)?.results ?? []);
   return {
     rows: rowsOf<PeriodStats & { day: string }>(0),
-    wallet: rowsOf<{ balance: number; streak: number; bestStreak: number }>(1)[0] ?? null,
+    wallet:
+      rowsOf<{ balance: number; streak: number; bestStreak: number }>(1)[0] ??
+      null,
     earned: rowsOf<{ total: number }>(2)[0]?.total ?? 0,
-    mission,
-    progress: options.progress
-      ? rowsOf<{ word_id: string; correct: number; mastered: number }>(
-          out.length - 1,
-        )
-      : null,
+    mission:
+      missionAt < 0
+        ? null
+        : (rowsOf<{ questions: number; stories: number }>(missionAt)[0] ??
+          null),
+    progress:
+      progressAt < 0
+        ? null
+        : rowsOf<{ word_id: string; correct: number; mastered: number }>(
+            progressAt,
+          ),
     day,
   };
 }
