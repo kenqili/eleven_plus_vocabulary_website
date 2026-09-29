@@ -1,5 +1,6 @@
 import { database } from "./db";
 import { HttpError } from "./http";
+import { MISSION_SQL } from "./mission";
 import {
   BADGES,
   localDay,
@@ -92,19 +93,94 @@ export async function initializeRewards(userId: string) {
     .run();
 }
 
-export async function progressSummary(userId: string) {
-  await initializeRewards(userId);
-  const db = database(),
-    today = localDay(Date.now()),
-    monday = weekStart(today);
-  const rows = (
-    await db
-      .prepare(
-        `SELECT day,questions,correct,reveals,new_words AS newWords,mastered,seconds,credits,stories FROM daily_stats WHERE user_id=?`,
-      )
-      .bind(userId)
-      .all<PeriodStats & { day: string }>()
-  ).results;
+const DAILY_STATS_SQL = `SELECT day,questions,correct,reveals,new_words AS newWords,mastered,seconds,credits,stories FROM daily_stats WHERE user_id=?`;
+const WALLET_SQL =
+  "SELECT balance,streak,best_streak AS bestStreak FROM credit_wallets WHERE user_id=?";
+const EARNED_SQL =
+  "SELECT COALESCE(SUM(amount),0) AS total FROM credit_transactions WHERE user_id=? AND amount>0";
+const PROGRESS_SQL =
+  "SELECT word_id,correct,mastered FROM progress WHERE user_id=?";
+
+export type SummaryReads = {
+  rows: (PeriodStats & { day: string })[];
+  wallet: { balance: number; streak: number; bestStreak: number } | null;
+  earned: number;
+  mission: { questions: number; stories: number } | null;
+  progress: { word_id: string; correct: number; mastered: number }[] | null;
+  day: string;
+};
+
+/**
+ * Every read a stats summary needs, in one round trip.
+ *
+ * These five statements are mutually independent and depend on nothing but the
+ * user id, and they used to be issued one after another: daily_stats, then the
+ * wallet, then a SUM over the whole credit ledger, then the mission, then - for
+ * a free-tier child - their progress rows. That is five sequential Worker→D1
+ * round trips to build one object, and `statsFor` ran it after *both* the answer
+ * and the next question, so a child paid ten round trips per question for
+ * numbers that, mid-session, were almost always identical to the ones already on
+ * screen.
+ *
+ * A batch is one round trip and one transaction, so this is the same data
+ * observed more consistently than the serial version, not less: the serial
+ * version could read the wallet before the balance update it was meant to
+ * reflect.
+ *
+ * The optional reads are last, so their positions are known without counting.
+ */
+export async function summaryReads(
+  userId: string,
+  options: { mission?: boolean; progress?: boolean } = {},
+): Promise<SummaryReads> {
+  const db = database();
+  const day = localDay(Date.now());
+  const statements = [
+    db.prepare(DAILY_STATS_SQL).bind(userId),
+    db.prepare(WALLET_SQL).bind(userId),
+    db.prepare(EARNED_SQL).bind(userId),
+  ];
+  if (options.mission)
+    statements.push(db.prepare(MISSION_SQL).bind(userId, day, userId, day));
+  if (options.progress)
+    statements.push(db.prepare(PROGRESS_SQL).bind(userId));
+  const out = await db.batch(statements);
+  // `db.batch` returns one result per statement, in order, each with the rows it
+  // selected. D1 types the rows as unknown, so each is narrowed where it is read
+  // rather than by casting the whole result.
+  const rowsOf = <T,>(index: number): T[] =>
+    (out[index] as { results?: T[] } | undefined)?.results ?? [];
+  const mission = options.mission
+    ? (rowsOf<{ questions: number; stories: number }>(3)[0] ?? null)
+    : null;
+  return {
+    rows: rowsOf<PeriodStats & { day: string }>(0),
+    wallet: rowsOf<{ balance: number; streak: number; bestStreak: number }>(1)[0] ?? null,
+    earned: rowsOf<{ total: number }>(2)[0]?.total ?? 0,
+    mission,
+    progress: options.progress
+      ? rowsOf<{ word_id: string; correct: number; mastered: number }>(
+          out.length - 1,
+        )
+      : null,
+    day,
+  };
+}
+
+/** The shared shape, so the batched and unbatched paths cannot drift apart. */
+export type ProgressSummary = {
+  totalEarned: number;
+  totals: { mastered: number; newWords: number };
+  periods: { today: PeriodStats; week: PeriodStats; all: PeriodStats };
+  rewards: { balance: number; streak: number; bestStreak: number };
+  dates: { today: string; week: string };
+  timezone: string;
+};
+
+export function buildSummary(reads: SummaryReads): ProgressSummary {
+  const { rows, day } = reads;
+  const today = day;
+  const monday = weekStart(today);
   const aggregate = (start: string): PeriodStats => {
     const result: PeriodStats = {
       stories: 0,
@@ -132,20 +208,8 @@ export async function progressSummary(userId: string) {
       }
     return result;
   };
-  const wallet = await db
-    .prepare(
-      "SELECT balance,streak,best_streak AS bestStreak FROM credit_wallets WHERE user_id=?",
-    )
-    .bind(userId)
-    .first<{ balance: number; streak: number; bestStreak: number }>();
-  const earned = await db
-    .prepare(
-      "SELECT COALESCE(SUM(amount),0) AS total FROM credit_transactions WHERE user_id=? AND amount>0",
-    )
-    .bind(userId)
-    .first<{ total: number }>();
   return {
-    totalEarned: earned?.total ?? 0,
+    totalEarned: reads.earned,
     // Lifetime running totals, straight from the rows already read above. The
     // triggers maintain both counters as words are first met and first mastered,
     // so a full-access child never needs their progress table scanned.
@@ -158,10 +222,15 @@ export async function progressSummary(userId: string) {
       week: aggregate(monday),
       all: aggregate(""),
     },
-    rewards: wallet || { balance: 0, streak: 0, bestStreak: 0 },
+    rewards: reads.wallet || { balance: 0, streak: 0, bestStreak: 0 },
     dates: { today, week: monday },
     timezone: "Europe/London",
   };
+}
+
+export async function progressSummary(userId: string) {
+  await initializeRewards(userId);
+  return buildSummary(await summaryReads(userId));
 }
 
 export async function awardFor(

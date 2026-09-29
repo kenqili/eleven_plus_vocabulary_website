@@ -8,9 +8,13 @@ import {
   masteryProgress,
   type Evidence,
 } from "@/lib/challenge/mastery";
-import { initializeRewards, progressSummary, awardFor } from "./rewards";
+import {
+  awardFor,
+  buildSummary,
+  initializeRewards,
+  summaryReads,
+} from "./rewards";
 import { storyMeaning, wordClue } from "@/lib/challenge/story-meanings";
-import { missionFor } from "./mission";
 import { localDay } from "@/lib/challenge/rewards";
 import { chooseWord, reviewDueAt } from "@/lib/challenge/ordering";
 import {
@@ -134,7 +138,19 @@ export async function statsFor(
   userId: string,
   wordIds?: ReadonlySet<string>,
 ): Promise<Stats> {
-  const summary = await progressSummary(userId);
+  // The legacy backfill has to land first: it writes learning_events and
+  // study_ticks, and the triggers on those maintain the very counters read
+  // below. Reading before it ran would report a stale balance for an account
+  // that had not been initialised yet. Everything after it is independent.
+  await initializeRewards(userId);
+  // Read in one batch. These were five sequential round trips, and this function
+  // runs after both the answer and the next question, so it was ten of the
+  // round trips a child waited through per question.
+  const reads = await summaryReads(userId, {
+    mission: true,
+    progress: Boolean(wordIds),
+  });
+  const summary = buildSummary(reads);
   const ids = wordIds || new Set(words.map((w) => w.id));
   // A free-tier child may only have met words inside their free set, so their
   // counts have to be filtered by it and the progress table has to be read. A
@@ -143,25 +159,22 @@ export async function statsFor(
   // whole history.
   const totals = summary.totals;
   const counts = wordIds
-    ? await (async () => {
-        const rows = await database()
-          .prepare(
-            "SELECT word_id,correct,mastered FROM progress WHERE user_id = ?",
-          )
-          .bind(userId)
-          .all<{ word_id: string; correct: number; mastered: number }>();
-        return {
-          mastered: rows.results.filter(
-            (p) => ids.has(p.word_id) && hasMastered(p),
-          ).length,
-          meetCount: rows.results.filter((p) => ids.has(p.word_id)).length,
-        };
-      })()
+    ? {
+        mastered: (reads.progress ?? []).filter(
+          (p) => ids.has(p.word_id) && hasMastered(p),
+        ).length,
+        meetCount: (reads.progress ?? []).filter((p) => ids.has(p.word_id))
+          .length,
+      }
     : { mastered: totals.mastered, meetCount: totals.newWords };
   return {
     total: ids.size,
     collection: words.length,
-    mission: await missionFor(userId),
+    mission: {
+      day: reads.day,
+      questions: reads.mission?.questions ?? 0,
+      stories: reads.mission?.stories ?? 0,
+    },
     mastered: counts.mastered,
     correct: summary.periods.all.correct,
     todaySeconds: summary.periods.today.seconds,
