@@ -70,25 +70,59 @@ export default defineConfig(async ({ command }) => {
   process.env.MINIFLARE_REGISTRY_PATH ??= ".wrangler/registry";
 
   // Wrangler snapshots its log path while the Cloudflare plugin is imported.
-  const workerPlugins = nodeDev ? [] : [(await import("@cloudflare/vite-plugin")).cloudflare({
-    viteEnvironment: { name: "rsc", childEnvironments: ["ssr"] },
-    inspectorPort: false,
-    config: localBindingConfig,
-  })];
+  const workerPlugins = nodeDev
+    ? []
+    : [
+        (await import("@cloudflare/vite-plugin")).cloudflare({
+          viteEnvironment: { name: "rsc", childEnvironments: ["ssr"] },
+          inspectorPort: false,
+          config: localBindingConfig,
+        }),
+      ];
 
   return {
-    resolve: nodeDev ? {
-      alias: { "cloudflare:workers": fileURLToPath(new URL("./scripts/node-dev-env.mjs", import.meta.url)) },
-    } : undefined,
+    resolve: nodeDev
+      ? {
+          alias: {
+            "cloudflare:workers": fileURLToPath(
+              new URL("./scripts/node-dev-env.mjs", import.meta.url),
+            ),
+          },
+        }
+      : undefined,
+    /**
+     * Unminified, because minification is what breaks every link in the
+     * deployed app.
+     *
+     * With minification on, the production build splits vinext's own Link
+     * component into a separate chunk whose cross-chunk imports come back
+     * undefined, and its click handler dies on the first navigation with
+     * "e is not a function". The links are then inert: `next/link` calls
+     * preventDefault and hands over to the client router, so when the router
+     * throws, the browser never navigates at all. Every link in the app is
+     * affected, on the deployed Worker only, because `npm run dev` never
+     * minifies and so never produces the broken split.
+     *
+     * Readable output is the fix that does not depend on the framework
+     * changing. The cost is bytes: this app ships a few hundred kilobytes of
+     * client JavaScript, most of it the framework, and Workers serves static
+     * assets from its edge cache, so the size costs upload time and cold-start
+     * parse time rather than per-request time.
+     *
+     * Worth revisiting when vinext moves off 1.0.0-beta.5 - the alternative is
+     * replacing 47 <Link> usages with plain anchors and giving up client-side
+     * navigation altogether.
+     */
+    build: { minify: false },
     server: {
       ...(nodeDev ? { host: "0.0.0.0" } : {}),
-      ...(managedLinux ? { host: "0.0.0.0", allowedHosts: ["terminal.local"] } : {}),
-      ...(isCodexSeatbeltSandbox ? { watch: { useFsEvents: false, usePolling: true } } : {}),
+      ...(managedLinux
+        ? { host: "0.0.0.0", allowedHosts: ["terminal.local"] }
+        : {}),
+      ...(isCodexSeatbeltSandbox
+        ? { watch: { useFsEvents: false, usePolling: true } }
+        : {}),
     },
-    plugins: [
-      vinext(),
-      sites({ mockAuth: !managedLinux }),
-      ...workerPlugins,
-    ],
+    plugins: [vinext(), sites({ mockAuth: !managedLinux }), ...workerPlugins],
   };
 });
