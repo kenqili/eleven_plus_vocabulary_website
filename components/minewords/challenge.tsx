@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, BookOpen, Lightbulb } from "lucide-react";
 import Pronunciation from "./pronunciation";
@@ -39,9 +39,29 @@ const levelLabel = (difficulty: number) =>
   difficulty in DIFFICULTY_LEVELS
     ? DIFFICULTY_LEVELS[difficulty as Difficulty]
     : "";
+/**
+ * Scroll so that everything from `start` to the end of `end` is on screen, but
+ * only when some of it is not.
+ *
+ * The controls above the question card are taller than a laptop screen, so the
+ * child would otherwise scroll up to read a question, down to find the
+ * explanation, and back up again for the next one, on every question. The page
+ * moves itself instead. A block that is already on screen is left exactly where
+ * the child put it, and a reduced-motion preference turns the animation into a
+ * jump.
+ */
+function revealRange(start: Element | null, end?: Element | null) {
+  if (!start) return;
+  const top = start.getBoundingClientRect().top + scrollY;
+  const bottom = (end ?? start).getBoundingClientRect().bottom + scrollY;
+  if (top >= 0 && bottom <= innerHeight) return;
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  scrollTo({ top: Math.max(0, top - 12), behavior: still ? "auto" : "smooth" });
+}
 export default function Challenge() {
   const study = useChallenge();
   const [clueQuestion, setClueQuestion] = useState<string | null>(null);
+  const cardRef = useRef<HTMLElement>(null);
   const { question, feedback, stats, demo, busy, error } = study;
   const mastery = feedback?.mastery ?? question?.mastery;
   // The run the child just extended, which is the one the coach names. Before
@@ -126,6 +146,19 @@ export default function Challenge() {
   // A word or cloze question asks the child to produce the word, so the card
   // must not print it or play it above the options.
   const asksForWord = question ? typeAsksForTheWord(question.type) : false;
+  // A new question arrives after the child has scrolled down to read the last
+  // explanation, which would leave it above the fold and off screen.
+  useEffect(() => {
+    revealRange(cardRef.current);
+  }, [question?.id]);
+  // Having answered, the feedback, the explanation and the button that moves on
+  // are what they need next, and on a laptop they start below the fold. Reveal
+  // that whole run rather than the feedback line alone, which would only bring
+  // the top of it on screen.
+  useEffect(() => {
+    if (!feedback) return;
+    revealRange(cardRef.current?.querySelector(".feedback") ?? null, cardRef.current);
+  }, [feedback]);
   return (
     <div className="site">
       <Header />
@@ -227,6 +260,7 @@ export default function Challenge() {
               // Keyed on the question, so the entrance plays once per question
               // rather than on every re-render of the same one.
               key={question?.id || "empty"}
+              ref={cardRef}
               aria-busy={busy}
             >
               {question ? (

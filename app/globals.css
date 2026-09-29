@@ -5632,3 +5632,120 @@ hr {
   gap: 16px;
   margin-top: 12px;
 }
+
+/* ---------------------------------------------------------------------------
+   Fitting one question on a screen without scrolling.
+
+   Measured on the practice page: the controls above the card came to 584px,
+   which on a 900px-tall laptop put the first answer 241px below the fold and
+   the explanation 494px below it, so a child scrolled up and down on every
+   question. The rules below are keyed on height rather than width, because the
+   waste is vertical: the same page is fine on a tall window and unusable on a
+   short one, including a 13in MacBook and an iPad in landscape.
+
+   Interactive targets keep their 44px minimum. Only spacing, type size and the
+   explanatory lines go, never the size of anything a child taps.
+   --------------------------------------------------------------------------- */
+
+/* The one-line explanation under each practice type is a nicety; on a short
+   screen the picker it belongs to is what pushes the question off the page.
+   1000px rather than 940 because a 13in MacBook reports 1512x982, and that was
+   measured completely unchanged at the lower threshold. */
+@media (max-height: 1000px) {
+  .practice-type small {
+    display: none;
+  }
+  /* Hiding the summaries leaves the label alone, which drops the button to the
+     42px floor the base rule sets. 44px is the minimum target size a child can
+     hit reliably, and it costs 2px of the height this rule is saving. */
+  .practice-types .practice-type {
+    padding: 9px 14px;
+    min-height: 44px;
+  }
+  .practice-types {
+    margin-bottom: 12px;
+  }
+  /* The heading is the site's title, so it stays; the standfirst and the
+     duplicate "Vocabulary practice" badge do not, and they are not what a
+     child is here for. */
+  .page-heading p,
+  .page-heading .edition {
+    display: none;
+  }
+  .page-heading h1 {
+    font-size: 30px;
+    margin: 0;
+  }
+  .page-heading {
+    margin-bottom: 16px;
+  }
+  .workspace {
+    padding-top: 24px;
+  }
+  /* The mission is a progress prompt, not the task. */
+  .daily-mission {
+    padding: 10px 14px;
+  }
+  .daily-mission p {
+    display: none;
+  }
+  /* The explanation after answering is the thing being read, so it becomes two
+     columns on a wide-but-short window instead of five stacked rows. */
+  .word-explanation {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px 18px;
+  }
+  .question-card h2 {
+    font-size: 40px;
+  }
+  .answer {
+    min-height: 56px;
+  }
+}
+
+/* A landscape iPad is shorter than a laptop is wide, and loses the mission and
+   the level hint as well before anything is cut from the question itself. */
+@media (max-height: 860px) {
+  .daily-mission,
+  .practice-level .muted {
+    display: none;
+  }
+  .practice-level {
+    margin-bottom: 10px;
+  }
+  .question-card {
+    padding: 20px 24px;
+  }
+  .session-bar {
+    margin-bottom: 8px;
+  }
+}
+
+/* A tablet held upright is too tall for a height query to fire, so the question
+   still sat a little below the fold on an 834x1194 iPad. This is the lighter
+   half of the compaction: the explanatory copy goes, the type picker keeps its
+   summaries because there is width to spare. */
+@media (min-width: 820px) and (max-width: 1180px) and (min-height: 1001px) {
+  .page-heading p,
+  .page-heading .edition,
+  .daily-mission p {
+    display: none;
+  }
+  .page-heading {
+    margin-bottom: 18px;
+  }
+  .page-heading h1 {
+    font-size: 32px;
+    margin: 0;
+  }
+  .daily-mission {
+    padding: 12px 16px;
+  }
+  .word-explanation {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 20px;
+  }
+  .answer {
+    min-height: 56px;
+  }
+}
