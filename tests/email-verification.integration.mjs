@@ -380,20 +380,10 @@ test("the migration stamps every pre-existing account", { skip }, async () => {
   // empty database with a pre-feature account in it. A hand-inserted row above
   // cannot show whether the UPDATE runs, only what it would leave behind.
   const { DatabaseSync } = await import("node:sqlite");
-  const { readFileSync, readdirSync } = await import("node:fs");
+  const migrations = await import("./helpers/migrations.mjs");
   const db = new DatabaseSync(":memory:");
   try {
-    const files = readdirSync("drizzle")
-      .filter((f) => f.endsWith(".sql"))
-      .sort();
-    for (const file of files) {
-      if (file.startsWith("0014")) continue;
-      db.exec(
-        readFileSync(`drizzle/${file}`, "utf8")
-          .split("--> statement-breakpoint")
-          .join(""),
-      );
-    }
+    db.exec(migrations.before("0014_email_verification"));
     const createdAt = Date.now() - 90 * 86_400_000;
     db.prepare(
       "INSERT INTO users (id,email,password,created_at) VALUES(?,?,?,?)",
@@ -405,13 +395,9 @@ test("the migration stamps every pre-existing account", { skip }, async () => {
         )
         .get(),
       undefined,
-      "before 0014 there is no such column at all, which is the state being migrated from",
+      "before the verification change there is no such column at all, which is the state being migrated from",
     );
-    db.exec(
-      readFileSync("drizzle/0014_email_verification.sql", "utf8")
-        .split("--> statement-breakpoint")
-        .join(""),
-    );
+    db.exec(migrations.only("0014_email_verification"));
     const after = db
       .prepare("SELECT email_verified_at FROM users WHERE id='old'")
       .get().email_verified_at;

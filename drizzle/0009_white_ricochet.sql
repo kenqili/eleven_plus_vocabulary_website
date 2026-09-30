@@ -1,1 +1,0 @@
-CREATE INDEX `learning_user_word_day` ON `learning_events` (`user_id`,`word_id`,`day`);

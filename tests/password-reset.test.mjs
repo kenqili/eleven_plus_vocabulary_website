@@ -15,6 +15,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { only } from "./helpers/migrations.mjs";
 
 const read = (path) =>
   readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
@@ -25,7 +26,7 @@ const reset = read("lib/server/password-reset.ts");
 const email = read("lib/server/email.ts");
 const page = read("components/minewords/reset-password.tsx");
 const account = read("components/minewords/account.tsx");
-const migration = read("drizzle/0013_password_reset.sql");
+const migration = read("drizzle/0000_baseline.sql");
 
 /** The source of one function, from its declaration to whatever follows it. */
 function between(source, start, end) {
@@ -531,7 +532,11 @@ test("the migration can be run on a live database without asking twice", () => {
   // So IF NOT EXISTS on both the table and every index, and nothing that
   // destroys what is already there. A migration that drops a column to rename
   // it is fine in a branch and not fine at eight in the morning.
-  const sql = migration.replace(/--[^\n]*/g, "");
+  // The password-reset section only. This is a rule about a migration added to a
+  // live database, and the baseline is not one: it creates the schema from
+  // nothing, so a bare CREATE INDEX and an ALTER TABLE are what it is for. The
+  // rule still applies to everything generated after it.
+  const sql = only("0013_password_reset").replace(/--[^\n]*/g, "");
   assert.match(
     sql,
     /CREATE TABLE IF NOT EXISTS password_resets/,

@@ -22,6 +22,7 @@ import { DatabaseSync } from "node:sqlite";
 import { mkdtempSync, readdirSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
+import { before, only } from "./helpers/migrations.mjs";
 
 /** A real database, migrated from scratch, exactly as production would be. */
 function migrated() {
@@ -100,12 +101,7 @@ test("an account that already paid keeps its access through the migration", () =
   const dir = mkdtempSync(join(tmpdir(), "minewords-backfill-"));
   const db = new DatabaseSync(join(dir, "pre.sqlite"));
   db.exec("PRAGMA foreign_keys=ON;");
-  for (const name of readdirSync("drizzle")
-    .filter((f) => f.endsWith(".sql"))
-    .sort()) {
-    if (name >= "0012_entitlement_and_purchases.sql") continue;
-    db.exec(readFileSync(resolve("drizzle", name), "utf8"));
-  }
+  db.exec(before("0012_entitlement_and_purchases"));
   const now = Date.now();
   const paid = randomUUID();
   const lapsed = randomUUID();
@@ -172,12 +168,7 @@ test("an account that already paid keeps its access through the migration", () =
       .some((c) => c.name === "expiry_date"),
     "precondition: the column does not exist before the migration",
   );
-  db.exec(
-    readFileSync(
-      resolve("drizzle", "0012_entitlement_and_purchases.sql"),
-      "utf8",
-    ),
-  );
+  db.exec(only("0012_entitlement_and_purchases"));
 
   const paidAfter = db
     .prepare("SELECT expiry_date FROM users WHERE id=?")

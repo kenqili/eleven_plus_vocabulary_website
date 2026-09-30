@@ -13,6 +13,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { DatabaseSync } from "node:sqlite";
 import { readFileSync, readdirSync } from "node:fs";
+import { only } from "./helpers/migrations.mjs";
 import {
   awardFor,
   BASE_CREDITS,
@@ -151,15 +152,32 @@ test("the pure rules agree with the trigger, answer for answer", () => {
 test("the constants are the ones the trigger uses", () => {
   // Read rather than restate, so a change to the SQL is a failing test rather
   // than a divergence nobody notices.
-  const sql = readFileSync("drizzle/0003_ordinary_edwin_jarvis.sql", "utf8");
+  // Comments stripped first, because the baseline explains at length why there is
+// no `CASE` here - and an explanation mentioning CASE must not fail the rule it
+// is explaining.
+const sql = only("0003_ordinary_edwin_jarvis").replace(/--[^\n]*/g, "");
+  // Arithmetic rather than CASE: a SQLite boolean is 1 or 0, so `correct*eligible`
+  // is "correct and eligible" and multiplying by the payout is the same as the
+  // CASE it replaced. Checked against the old expressions over every combination
+  // of the three flags across ten streak values.
   assert.match(
     sql,
-    /THEN 2 ELSE 0 END/,
+    /base_credits= 2\*/,
     "the trigger must still pay 2 for a counted correct answer",
   );
-  assert.match(sql, /THEN 5 ELSE 0 END/, "and 5 for the streak bonus");
-  assert.match(sql, /THEN 10 ELSE 0 END/, "and 10 for finishing a word");
+  assert.match(sql, /streak_credits= 5\*/, "and 5 for the streak bonus");
+  assert.match(sql, /mastery_credits= 10\*/, "and 10 for finishing a word");
   assert.match(sql, /%3=0/, "and the bonus must still be every third");
+  // The one rule about this SQL that is not about rewards. `d1 migrations apply`
+  // lets the D1 server split the file into statements, and that server does not
+  // understand `CASE ... END`, so a CASE in a trigger body gets split mid-body
+  // and the deploy fails with "incomplete input" - having applied the same SQL
+  // successfully by hand first. It cost this file a failed deploy at 0003.
+  assert.doesNotMatch(
+    sql,
+    /CASE/i,
+    "a CASE in a trigger body is what stopped the deploy; keep the arithmetic",
+  );
   assert.equal(BASE_CREDITS, 2);
   assert.equal(STREAK_BONUS, 5);
   assert.equal(MASTERY_CREDITS, 10);
