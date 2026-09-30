@@ -101,22 +101,78 @@ test("daily counters distinguish exposure, repeat practice, reveals and mastery"
 test("badge debit and receipt are atomic; duplicate request and insufficient funds cannot double-spend", () => {
   const db = database();
   for (let i = 0; i < 6; i++) answer(db, String(i));
-  const redeem = db.prepare(
-    "INSERT OR IGNORE INTO badge_redemptions(id,user_id,request_key,badge_id,badge_name,cost,created_at) VALUES(?,'u',?,'spark','Vocabulary Spark',20,1)",
+
+  // The three statements redeem() runs, in the same order, in one transaction.
+  // They used to be a BEFORE INSERT and an AFTER INSERT trigger; the rule now
+  // lives in the application, so it is asserted here rather than assumed.
+  //
+  // The id is derived from the request key. That is the part that matters: the
+  // first version of this guarded the balance but not the key, so a retry
+  // debited twice while the receipt insert was quietly ignored.
+  const redeem = (requestKey, cost = 20) => {
+    const id = `r:${requestKey}`;
+    db.exec("BEGIN");
+    try {
+      db.prepare(
+        `INSERT OR IGNORE INTO credit_transactions(id,user_id,amount,reason,reference,balance_after,created_at)
+         SELECT ?,?,-?,'badge',?,balance-?,1 FROM credit_wallets WHERE user_id='u' AND balance>=?`,
+      ).run(id, "u", cost, id, cost, cost);
+      db.prepare(
+        `INSERT OR IGNORE INTO badge_redemptions(id,user_id,request_key,badge_id,badge_name,cost,created_at)
+         SELECT ?,'u',?,'spark','Vocabulary Spark',?,1 WHERE EXISTS(SELECT 1 FROM credit_transactions WHERE id=?)`,
+      ).run(id, requestKey, cost, id);
+      // The guard is a comparison, not an EXISTS: the ledger row records the
+      // balance the purse should hold after the debit, so the debit fires only
+      // while the purse still matches. An EXISTS would also be true on every
+      // replay, and a retry would debit twice.
+      db.prepare(
+        `UPDATE credit_wallets SET balance=balance-?
+         WHERE user_id='u' AND EXISTS(
+           SELECT 1 FROM credit_transactions WHERE id=? AND balance_after=credit_wallets.balance-?
+         )`,
+      ).run(cost, id, cost);
+      db.exec("COMMIT");
+    } catch (error) {
+      db.exec("ROLLBACK");
+      throw error;
+    }
+    return db
+      .prepare(
+        "SELECT id FROM badge_redemptions WHERE user_id='u' AND request_key=?",
+      )
+      .get(requestKey);
+  };
+
+  assert.ok(redeem("key"), "an affordable redemption writes a receipt");
+  assert.equal(wallet(db).balance, 2);
+  // The same request key again: must not move the balance a second time.
+  redeem("key");
+  assert.equal(
+    wallet(db).balance,
+    2,
+    "a retried request must not double-spend",
   );
-  redeem.run("r1", "key");
-  assert.equal(wallet(db).balance, 2);
-  redeem.run("r2", "key");
-  assert.equal(wallet(db).balance, 2);
-  assert.throws(() => redeem.run("r3", "different"), /INSUFFICIENT_CREDITS/);
+  // Insufficient funds: the balance is 2 and the badge costs 20.
+  assert.equal(
+    redeem("different"),
+    undefined,
+    "an unaffordable redemption writes no receipt",
+  );
+  assert.equal(
+    wallet(db).balance,
+    2,
+    "an unaffordable redemption must not debit",
+  );
   assert.equal(
     db.prepare("SELECT COUNT(*) AS count FROM badge_redemptions").get().count,
     1,
+    "only the affordable request leaves a receipt",
   );
   assert.equal(
     db.prepare("SELECT SUM(amount) AS balance FROM credit_transactions").get()
       .balance,
     2,
+    "the ledger must agree with the purse",
   );
   db.prepare("DELETE FROM users WHERE id='u'").run();
   for (const table of [

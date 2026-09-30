@@ -11,11 +11,60 @@ import { sql } from "drizzle-orm";
 export const users = sqliteTable("users", {
   id: text("id").primaryKey(),
   email: text("email").notNull().unique(),
+  /** scrypt, never a plaintext password. See lib/server/password.ts. */
   password: text("password").notNull(),
   createdAt: integer("created_at").notNull(),
   customerId: text("customer_id").unique(),
   rewardsInitialized: integer("rewards_initialized").notNull().default(0),
+  /**
+   * When access ends, as epoch milliseconds. Null means nothing has been
+   * purchased; a trial is then derived from `createdAt` rather than stored, so
+   * changing the trial length does not need a migration.
+   *
+   * This replaced a query against `subscriptions` on every authenticated
+   * request. The Stripe webhook is the only writer, which is what makes a single
+   * column safe: nothing else may change an entitlement.
+   */
+  expiryDate: integer("expiry_date"),
+  /**
+   * The reporting day boundary, IANA. The app used to hardcode Europe/London
+   * and compute a child's "today" from it, which put the mission and calendar
+   * day boundary in the wrong place for anyone outside the UK.
+   */
+  timezone: text("timezone").notNull().default("Europe/London"),
+  /** Consecutive eligible correct answers, and the best run ever. */
+  streak: integer("streak").notNull().default(0),
+  bestStreak: integer("best_streak").notNull().default(0),
 });
+
+/**
+ * Entitlement history, one row per change, written by the Stripe webhook.
+ *
+ * `confirmation` is unique because it is the idempotency key for a replayed
+ * webhook: Stripe retries deliveries, and without it a retry grants the same
+ * purchase twice. `status` is what a refund needs, since an expiry date alone
+ * cannot say "refunded" or "cancelled but paid until Friday".
+ */
+export const purchases = sqliteTable(
+  "purchases",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    /** The Stripe price id this purchase was for. */
+    productId: text("product_id").notNull(),
+    confirmation: text("confirmation").notNull(),
+    originalExpiry: integer("original_expiry"),
+    newExpiry: integer("new_expiry").notNull(),
+    status: text("status").notNull(),
+    createdAt: integer("created_at").notNull(),
+  },
+  (t) => [
+    uniqueIndex("purchase_confirmation").on(t.confirmation),
+    index("purchases_user").on(t.userId, t.createdAt),
+  ],
+);
 
 export const wallets = sqliteTable(
   "credit_wallets",

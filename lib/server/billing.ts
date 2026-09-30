@@ -51,7 +51,8 @@ export function configuredFreeTrialDays() {
  * the pages then say so rather than inventing a number.
  */
 export function configuredMonthlyPricePence(): number | null {
-  const configured = setting("MONTHLY_PRICE_PENCE") ?? setting("SUBSCRIPTION_PRICE_PENCE");
+  const configured =
+    setting("MONTHLY_PRICE_PENCE") ?? setting("SUBSCRIPTION_PRICE_PENCE");
   if (!configured) return null;
   if (!/^[1-9]\d{0,6}$/.test(configured))
     throw new Error("MONTHLY_PRICE_PENCE must be a whole number of pence.");
@@ -89,30 +90,28 @@ export async function membership(user: User) {
   const db = database(),
     now = Date.now(),
     trialDays = configuredFreeTrialDays();
-  const [active, account] = await Promise.all([
-    db
-      .prepare(
-        "SELECT id,status,period_end FROM subscriptions WHERE user_id = ? AND status IN ('active','trialing') AND period_end > ? AND price_id = ? ORDER BY period_end DESC LIMIT 1",
-      )
-      .bind(user.id, Math.floor(now / 1000), setting("STRIPE_PRICE_ID"))
-      .first<{ id: string; status: string; period_end: number }>(),
-    db
-      .prepare("SELECT created_at FROM users WHERE id=?")
-      .bind(user.id)
-      .first<{ created_at: number }>(),
-  ]);
+  // One row, and a round trip that was already being paid for: the auth query
+  // reads this same users row. Entitlement used to be a second query against
+  // `subscriptions`, matching a price id and a validity window, on every
+  // authenticated request in the app - to answer a question with a boolean.
+  const account = await db
+    .prepare("SELECT created_at, expiry_date FROM users WHERE id=?")
+    .bind(user.id)
+    .first<{ created_at: number; expiry_date: number | null }>();
+  const expiresAt = account?.expiry_date ?? null;
+  const active = expiresAt !== null && expiresAt > now;
   const trialEndsAt = (account?.created_at || 0) + trialDays * 86_400_000;
   const trial = !active && trialDays > 0 && now < trialEndsAt;
   return {
-    active: Boolean(active),
-    access: Boolean(active) || trial,
+    active,
+    access: active || trial,
     trial,
     trialDays,
     trialDaysRemaining: trial ? Math.ceil((trialEndsAt - now) / 86_400_000) : 0,
     trialEndsAt: account && trialDays > 0 ? trialEndsAt : null,
     trialExpired: !active && !trial,
-    status: active?.status || "inactive",
-    periodEnd: active?.period_end || null,
+    status: active ? "active" : "inactive",
+    periodEnd: expiresAt,
   };
 }
 export type StripeSubscription = {
@@ -129,26 +128,68 @@ export async function syncSubscription(id: string) {
     `subscriptions/${encodeURIComponent(id)}`,
   );
   const user = await database()
-    .prepare("SELECT id FROM users WHERE customer_id = ?")
+    .prepare("SELECT id, expiry_date FROM users WHERE customer_id = ?")
     .bind(subscription.customer)
-    .first<{ id: string }>();
+    .first<{ id: string; expiry_date: number | null }>();
   if (!user) return;
   const item = subscription.items.data.find(
     (x) => x.price.id === setting("STRIPE_PRICE_ID"),
   );
-  await database()
-    .prepare(
-      "INSERT INTO subscriptions (id,user_id,status,period_end,price_id,checked_at) VALUES (?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET status=excluded.status,period_end=excluded.period_end,price_id=excluded.price_id,checked_at=excluded.checked_at WHERE excluded.checked_at >= subscriptions.checked_at",
-    )
-    .bind(
-      subscription.id,
-      user.id,
-      item ? subscription.status : "inactive",
-      item?.current_period_end || subscription.current_period_end || 0,
-      item?.price.id || "",
-      checkedAt,
-    )
-    .run();
+  // Entitlement is one column, and this function is its only writer. A
+  // subscription for a price the app does not sell clears access rather than
+  // leaving a stale grant behind, and a cancelled one expires now rather than at
+  // the end of a period nobody is going to pay for.
+  const status = item ? subscription.status : "inactive";
+  const expiresAt = item
+    ? subscription.status === "canceled"
+      ? checkedAt
+      : (item.current_period_end || subscription.current_period_end || 0) * 1000
+    : null;
+  const db = database();
+  await db.batch([
+    // The audit row. `confirmation` is the subscription id and is unique, so a
+    // retried webhook collapses onto the same purchase instead of granting
+    // twice. A parent disputing a charge needs to see when access was granted
+    // and changed, not only that it was.
+    db
+      .prepare(
+        `INSERT INTO purchases(id,user_id,product_id,confirmation,original_expiry,new_expiry,status,created_at)
+         VALUES(?,?,?,?,?,?,?,?)
+         ON CONFLICT(confirmation) DO UPDATE SET
+           new_expiry=excluded.new_expiry,
+           status=excluded.status,
+           created_at=excluded.created_at
+         WHERE excluded.created_at >= purchases.created_at`,
+      )
+      .bind(
+        crypto.randomUUID(),
+        user.id,
+        item?.price.id || "",
+        subscription.id,
+        user.expiry_date,
+        expiresAt ?? 0,
+        status,
+        checkedAt,
+      ),
+    db
+      .prepare("UPDATE users SET expiry_date=? WHERE id=?")
+      .bind(expiresAt, user.id),
+    // Kept in step during the transition. `membership()` no longer reads it; it
+    // is the pre-migration record, and dropping it should follow a deploy rather
+    // than lead one.
+    db
+      .prepare(
+        "INSERT INTO subscriptions (id,user_id,status,period_end,price_id,checked_at) VALUES(?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET status=excluded.status,period_end=excluded.period_end,price_id=excluded.price_id,checked_at=excluded.checked_at WHERE excluded.checked_at >= subscriptions.checked_at",
+      )
+      .bind(
+        subscription.id,
+        user.id,
+        status,
+        item?.current_period_end || subscription.current_period_end || 0,
+        item?.price.id || "",
+        checkedAt,
+      ),
+  ]);
 }
 
 export async function checkoutSession(

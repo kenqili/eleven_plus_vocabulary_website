@@ -316,33 +316,91 @@ export async function redeem(
     throw new HttpError(400, "Choose a valid badge.");
   await initializeRewards(userId);
   const db = database();
-  try {
-    await db
+  const now = Date.now();
+  // One id for the whole request, derived from the key the client sent, so a
+  // retried request collapses onto the same rows instead of charging twice.
+  const receiptId = `r:${requestKey}`;
+  // One batch, in an order where each step is only reachable if the previous one
+  // actually happened.
+  //
+  // This used to be a BEFORE INSERT trigger raising INSUFFICIENT_CREDITS and an
+  // AFTER INSERT trigger debiting the purse. The guarantee was real - check and
+  // debit inside one statement - but the rule lived in SQL where nothing in this
+  // repository could read it, and the amount was applied by a trigger nobody
+  // called.
+  //
+  // The subtlety is the debit has to be idempotent, and the first version of
+  // this was not: it guarded the balance but not the request key, so a client
+  // retry debited a second time while the receipt insert was ignored. Deriving
+  // the id from the request key is what fixes it, and it is the same job the
+  // trigger's `WHEN NOT EXISTS(request_key)` clause was doing.
+  await db.batch([
+    // Only reachable if the money is there, and only ever once per request.
+    db
       .prepare(
-        "INSERT OR IGNORE INTO badge_redemptions(id,user_id,request_key,badge_id,badge_name,cost,created_at) VALUES(?,?,?,?,?,?,?)",
+        `INSERT OR IGNORE INTO credit_transactions(id,user_id,amount,reason,reference,balance_after,created_at)
+         SELECT ?,?,?,'badge',?,balance-?,? FROM credit_wallets
+         WHERE user_id=? AND balance>=?`,
       )
       .bind(
-        crypto.randomUUID(),
+        receiptId,
+        userId,
+        -badge.cost,
+        receiptId,
+        badge.cost,
+        now,
+        userId,
+        badge.cost,
+      ),
+    // The receipt is written only if the money actually moved, so an
+    // unaffordable request leaves nothing behind to look like a success.
+    db
+      .prepare(
+        `INSERT OR IGNORE INTO badge_redemptions(id,user_id,request_key,badge_id,badge_name,cost,created_at)
+         SELECT ?,?,?,?,?,?,? WHERE EXISTS(SELECT 1 FROM credit_transactions WHERE id=?)`,
+      )
+      .bind(
+        receiptId,
         userId,
         requestKey,
         badge.id,
         badge.name,
         badge.cost,
-        Date.now(),
+        now,
+        receiptId,
+      ),
+    // The debit, last.
+    //
+    // The guard is deliberately not `EXISTS(ledger row)`. That is true on every
+    // replay as well as on the call that created the row, so a retry debited
+    // twice - the same double-spend the trigger's `WHEN NOT EXISTS(request_key)`
+    // clause used to prevent, and the reason the first version of this was wrong
+    // twice before this one.
+    //
+    // The ledger row records the balance the purse is expected to hold *after*
+    // the debit, so "has this already been applied" becomes a comparison rather
+    // than a question about provenance: the debit fires only while the purse
+    // still holds the amount the row was written against. Once it has moved, the
+    // comparison fails forever, for this request and every replay of it.
+    db
+      .prepare(
+        `UPDATE credit_wallets SET balance=balance-?
+         WHERE user_id=? AND EXISTS(
+           SELECT 1 FROM credit_transactions
+           WHERE id=? AND balance_after=credit_wallets.balance-?
+         )`,
       )
-      .run();
-  } catch (error) {
-    if (String(error).includes("INSUFFICIENT_CREDITS"))
-      throw new HttpError(409, "You need more credits for this badge.");
-    throw error;
-  }
+      .bind(badge.cost, userId, receiptId, badge.cost),
+  ]);
   const receipt = await db
     .prepare(
       "SELECT id,badge_id,badge_name,cost,created_at FROM badge_redemptions WHERE user_id=? AND request_key=?",
     )
     .bind(userId, requestKey)
-    .first<{ badge_id: string }>();
-  if (receipt?.badge_id !== badge.id)
+    .first<{ id: string; badge_id: string }>();
+  if (!receipt)
+    throw new HttpError(409, "You need more credits for this badge.");
+  if (receipt.badge_id !== badge.id)
     throw new HttpError(
       409,
       "This request was already used for another badge.",
