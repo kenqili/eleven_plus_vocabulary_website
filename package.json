@@ -37,7 +37,8 @@
     "test:stats-batching": "node --experimental-strip-types tests/stats-batching.integration.mjs",
     "bank:client": "node scripts/generate-client-bank.mjs",
     "test:snapshot": "node --test tests/progress-snapshot.integration.mjs",
-    "verify:client": "npm run typecheck && npm run lint && npm test && npm run verify:chunks"
+    "verify:client": "npm run typecheck && npm run lint && npm test && npm run verify:chunks",
+    "test:flush": "node --test tests/flush.integration.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
