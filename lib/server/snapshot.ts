@@ -3,6 +3,7 @@ import { RECENT_WORD_WINDOW } from "@/lib/challenge/ordering";
 import { statsFor } from "./challenge";
 import { initializeRewards } from "./rewards";
 import { database } from "./db";
+import { freeWordIds } from "./free-words";
 import type { Stats } from "@/lib/challenge/types";
 import type { AddedWord } from "@/lib/challenge/added-words";
 
@@ -81,6 +82,22 @@ export type Snapshot = {
     /** True when this account may only use the free collection. */
     freeTier: boolean;
     trialDaysRemaining: number;
+    /**
+     * Everything the practice page needs to explain itself, so the browser can
+     * render a trial banner or an expired gate without asking again.
+     *
+     * These used to come from `GET /api/challenge`, which also paid for a full
+     * stats summary. With the browser building its own questions, the challenge
+     * endpoint is not on the path any more, and this is the one request that
+     * stands between a child and their first question.
+     */
+    /** No free words at all, so there is nothing this account may practise. */
+    gated: boolean;
+    /** Paid access has lapsed and the trial is over. */
+    trialExpired: boolean;
+    trialEndsAt: number | null;
+    trialDays: number;
+    freeWordCount: number;
   };
   /**
    * The logical clock, and the words most recently attempted, newest first.
@@ -132,7 +149,13 @@ const RECENT_SENT = RECENT_WORD_WINDOW * 2;
 
 export async function progressSnapshot(
   userId: string,
-  access: { freeTier: boolean; trialDaysRemaining: number },
+  access: {
+    freeTier: boolean;
+    trialDaysRemaining: number;
+    trialExpired: boolean;
+    trialEndsAt: number | null;
+    trialDays: number;
+  },
 ): Promise<Snapshot> {
   // Ahead of the reads, for the same reason it is ahead of them in statsFor: the
   // backfill writes learning_events, and the triggers on those maintain the very
@@ -194,6 +217,9 @@ export async function progressSnapshot(
     { results: { timezone: string }[] },
   ];
 
+  // The free collection is a fixed slice of the shipped bank, so its size is
+  // known without a query.
+  const freeCount = freeWordIds().size;
   const tier: Snapshot["bank"]["tier"] = access.freeTier ? "free" : "full";
   const entry = (manifest as Record<string, Omit<Snapshot["bank"], "tier">>)[
     tier
@@ -203,6 +229,11 @@ export async function progressSnapshot(
     account: {
       timezone: account.results[0]?.timezone ?? "Europe/London",
       freeTier: access.freeTier,
+      gated: access.freeTier && !freeCount,
+      trialExpired: access.trialExpired,
+      trialEndsAt: access.trialEndsAt,
+      trialDays: access.trialDays,
+      freeWordCount: access.freeTier ? freeCount : 0,
       trialDaysRemaining: access.trialDaysRemaining,
     },
     clock: {

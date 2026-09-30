@@ -216,7 +216,7 @@ test("the engine's award matches what the database would pay", () => {
     );
     assert.equal(
       wallet().streak,
-      graded.award.streakAfter,
+      graded.award.currentStreak,
       `answer ${i}: the running streak differs`,
     );
     // The two decisions themselves, checked directly. Without these the credit
@@ -282,7 +282,7 @@ test("the award uses the account's starting streak, not a fresh one", () => {
     "the third consecutive counted answer pays the bonus",
   );
   assert.equal(graded.award.base, BASE_CREDITS);
-  assert.equal(graded.award.streakAfter, 3);
+  assert.equal(graded.award.currentStreak, 3);
 
   const fromZero = engineFor({ streak: 0 });
   const other = fromZero.next();
@@ -352,7 +352,7 @@ test("a reveal is worth nothing, and it breaks the streak", () => {
   const graded = engine.grade(-1);
   assert.equal(graded.award.total, 0, "a reveal pays nothing");
   assert.equal(
-    graded.award.streakAfter,
+    graded.award.currentStreak,
     0,
     "and clears the streak, as the trigger does",
   );
@@ -365,7 +365,7 @@ test("a reveal is worth nothing, and it breaks the streak", () => {
   assert.ok(helped, "an assisted answer is still an answer");
   assert.equal(helped.award.total, 0, "and pays nothing");
   assert.equal(
-    helped.award.streakAfter,
+    helped.award.currentStreak,
     2,
     "but leaves the streak alone, because it was right",
   );

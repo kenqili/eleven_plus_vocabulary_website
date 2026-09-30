@@ -28,6 +28,9 @@ export async function GET(request: Request) {
         // the whole collection, so access - active or trial - is the test.
         freeTier: !access.access,
         trialDaysRemaining: access.trialDaysRemaining,
+        trialExpired: access.trialExpired,
+        trialEndsAt: access.trialEndsAt,
+        trialDays: access.trialDays,
       }),
     );
   });

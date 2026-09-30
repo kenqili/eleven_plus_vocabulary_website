@@ -1,6 +1,12 @@
-import { CUMULATIVE_FLOOR } from "@/lib/challenge/mastery";
+import {
+  advanceMastery,
+  CUMULATIVE_FLOOR,
+  hasMastered,
+  type Evidence,
+  type MasteryState,
+} from "@/lib/challenge/mastery";
 import { localDay } from "@/lib/challenge/rewards";
-import { problemById } from "@/lib/challenge/bank";
+import { levelOf, problemById } from "@/lib/challenge/bank";
 import { database } from "./db";
 import type { QuestionType } from "@/lib/challenge/config";
 
@@ -15,12 +21,12 @@ import type { QuestionType } from "@/lib/challenge/config";
  * would have nineteen of them rejected. Answered rows are outside the index, so
  * twenty of them go in cleanly.
  *
- * `revealed` is bound rather than read off the attempt row, because an attempt
- * does not record it: whether a child asked for the answer or worked it out is
- * recorded on the award event, not on the question.
+ * `revealed` and `mastered` are bound rather than read off the attempt row. An
+ * attempt records neither: whether a child asked for the answer, and whether an
+ * answer finished the word, live on the award event.
  *
- * The eligibility and mastery rules stay in SQL, in the same place they have
- * always been, and the trigger still does the awarding. The browser decides what
+ * Eligibility stays in SQL, in the same place it has always been, and the trigger
+ * still does the awarding. The browser decides what
  * happened; the database decides what it is worth. That is the line worth holding,
  * because eligibility is the cap that stops a word being paid for six times, and
  * a client-side version of it would be a client-side way to farm credits.
@@ -74,7 +80,7 @@ const LEARNING_EVENT = `
     CASE WHEN a.is_correct=1 AND p.mastered=0 AND p.correct<?
            AND (SELECT COUNT(*) FROM learning_events e
                  WHERE e.user_id=a.user_id AND e.word_id=a.word_id AND e.eligible=1)<? THEN 1 ELSE 0 END,
-    CASE WHEN a.is_correct=1 AND NOT EXISTS(SELECT 1 FROM learning_events e
+    CASE WHEN ?=1 AND NOT EXISTS(SELECT 1 FROM learning_events e
                  WHERE e.user_id=a.user_id AND e.word_id=a.word_id AND e.mastered=1) THEN 1 ELSE 0 END,
     ?
   FROM attempts a JOIN progress p ON p.user_id=a.user_id AND p.word_id=a.word_id
@@ -165,6 +171,73 @@ export async function applyFlushed(
     ),
   );
 
+  // Which answers finished their word.
+  //
+  // Decided here, from the database's own progress and the same `advanceMastery`
+  // the browser ran, rather than taken from the browser. The reason is specific:
+  // the per-question path this replaced bound the app's verdict, which was safe
+  // then because the app *was* the server. It is not safe now. A flush that
+  // believed a client saying "this answer finished the word" would pay ten
+  // credits a time for every word in the collection, and the only limit on it
+  // would be the child choosing to stop.
+  //
+  // The evidence is the browser's, and has to be: it is a record of how long a
+  // child spent on a question, which only the browser witnessed. It is recorded
+  // rather than trusted for money, and it is the same string the server would
+  // have derived from a stored attempt.
+  const touched = [...new Set(wanted.map((answer) => answer.wordId))];
+  const prior = new Map<string, MasteryState>();
+  {
+    // One read, for the words this flush touches. It is the only query the flush
+    // does beyond its writes, and it happens on a save rather than on the path a
+    // child is waiting on.
+    const placeholders = touched.map(() => "?").join(",");
+    const read = await db
+      .prepare(
+        `SELECT word_id,correct,run,recalls,mastered FROM progress
+         WHERE user_id=? AND word_id IN (${placeholders})`,
+      )
+      .bind(userId, ...touched)
+      .all<{
+        word_id: string;
+        correct: number;
+        run: number;
+        recalls: number;
+        mastered: number;
+      }>();
+    for (const row of read.results)
+      prior.set(row.word_id, {
+        correct: row.correct,
+        run: row.run,
+        recalls: row.recalls,
+        mastered: row.mastered === 1,
+      });
+  }
+  // Answers in the order they were given, which is the order the child met them,
+  // so a word answered twice in one sitting carries its evidence forward.
+  const finished = new Map<string, boolean>();
+  const states = new Map<string, MasteryState>(prior);
+  for (const answer of wanted) {
+    const before = states.get(answer.wordId) ?? {
+      correct: 0,
+      run: 0,
+      recalls: 0,
+      mastered: false,
+    };
+    const correct =
+      answer.selected >= 0 && answer.choices[answer.selected] === answer.answer;
+    const next = advanceMastery(
+      before,
+      (answer.evidence as Evidence) ?? "uncertain",
+      levelOf.get(answer.wordId) ?? 1,
+    );
+    states.set(answer.wordId, next);
+    finished.set(
+      answer.id,
+      correct && next.newlyMastered && !hasMastered(before),
+    );
+  }
+
   // The award chain: eligibility, mastery and the credits themselves, all decided
   // in SQL and applied by the trigger that has always done it.
   await db.batch(
@@ -177,6 +250,7 @@ export async function applyFlushed(
           answer.revealed ? 1 : 0,
           CUMULATIVE_FLOOR,
           ELIGIBLE_ANSWERS,
+          finished.get(answer.id) ? 1 : 0,
           answer.evidence,
           answer.id,
           userId,

@@ -20,13 +20,15 @@ export type RewardSummary = {
   streak: number;
   bestStreak: number;
 };
-export type Award = {
-  base: number;
-  streak: number;
-  mastery: number;
-  total: number;
-  currentStreak: number;
-};
+/**
+ * What an answer paid.
+ *
+ * Re-exported from `credits.ts` rather than declared again. There were two of
+ * these with the same five numbers and one field called `streakAfter` in the
+ * other, which is the kind of difference that survives until a feedback object
+ * reaches a component and a number is `undefined`.
+ */
+export type { Award } from "./credits";
 export type Receipt = {
   id: string;
   badge_id: string;

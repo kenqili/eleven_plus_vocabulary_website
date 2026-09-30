@@ -486,6 +486,41 @@ h1 {
   font-weight: 600;
   padding: 5px 0;
 }
+/* The save button sits among link-styled text buttons, so it takes an outline to
+   read as the button it is. The greyed state matters more than usual here: it is
+   how a child sees there is nothing to save, without having to press it. */
+.save-progress {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.save-progress .text-button {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 5px 14px;
+  background: var(--surface-2);
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease,
+    opacity 0.15s ease;
+}
+.save-progress .text-button:hover:not(:disabled) {
+  border-color: var(--line-strong);
+}
+.save-progress .text-button:disabled {
+  color: var(--ink-slate);
+  opacity: 0.5;
+  cursor: default;
+}
+.control-row-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+  flex-wrap: wrap;
+}
 .study-aside {
   padding-top: 30px;
 }

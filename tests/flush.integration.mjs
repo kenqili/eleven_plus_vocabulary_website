@@ -16,6 +16,13 @@ import test from "node:test";
 import { randomUUID } from "node:crypto";
 import { DatabaseSync } from "node:sqlite";
 import { readFileSync } from "node:fs";
+import {
+  BASE_CREDITS,
+  MASTERY_CREDITS,
+  STREAK_BONUS,
+} from "../lib/challenge/credits.ts";
+import { recallTarget } from "../lib/challenge/mastery.ts";
+import { levelOf } from "../lib/challenge/bank.ts";
 
 const origin = process.env.TEST_ORIGIN || "http://127.0.0.1:5173";
 const local = ["localhost", "127.0.0.1"].includes(new URL(origin).hostname);
@@ -74,6 +81,9 @@ function answered(wordId, { correct = true, type = "def", ago = 3000 } = {}) {
     revealed: false,
     assisted: false,
     evidence: correct ? "recalled" : "guessed",
+    // A first answer never finishes a word. The browser is the one that knows
+    // that, and the event insert checks it rather than taking it on trust.
+    mastered: false,
   };
 }
 
@@ -349,6 +359,99 @@ test(
       401,
       "and an unsigned-in one must be refused",
     );
+    sql.close();
+  },
+);
+
+test(
+  "a claim that a first answer finished a word pays nothing extra",
+  { skip: !local },
+  async () => {
+    if (!local || !process.env.TEST_NODE_DB) return;
+    const sql = db();
+    sql.prepare("DELETE FROM rate_limits").run();
+    const userId = await register();
+    // The shape of the bug this file was missing: a flush whose mastered flag came
+    // from SQL alone, so "this word has never paid a mastery award" was true of
+    // every word the child had just met, and ten credits were paid for each of
+    // them on the first right answer.
+    const answers = [
+      "abandon",
+      "abundance",
+      "affable",
+      "antiquity",
+      "arduous",
+    ].map((wordId, index) => {
+      const honest = answered(wordId);
+      return {
+        ...honest,
+        mastered: true,
+        shownAt: Date.now() - 3000 * (index + 1),
+      };
+    });
+    const response = await post({ answers });
+    const body = await response.json();
+    assert.equal(response.status, 200, JSON.stringify(body));
+    assert.equal(
+      body.stats.rewards.balance,
+      BASE_CREDITS * 5 + STREAK_BONUS,
+      "a client claiming every word was finished pays no mastery award at all",
+    );
+    sql.prepare("DELETE FROM users WHERE id=?").run(userId);
+    sql.close();
+  },
+);
+
+test(
+  "a word that is genuinely finished does pay its mastery award",
+  { skip: !local },
+  async () => {
+    if (!local || !process.env.TEST_NODE_DB) return;
+    const sql = db();
+    sql.prepare("DELETE FROM rate_limits").run();
+    const userId = await register();
+    // The other direction, and it matters as much as the first: the server works
+    // mastery out for itself, and "the server ignores the client" and "the server
+    // never pays a mastery award" are the same mistake. A word worth
+    // `recallTarget` genuine recalls has been finished, by the same
+    // `advanceMastery` the browser ran, and the award is owed.
+    //
+    // The same word answered repeatedly, with the progress a real sitting would
+    // have left behind, so the run and the recalls have somewhere to build from.
+    const target = recallTarget(levelOf.get("abandon") ?? 1);
+    const answers = [];
+    for (let i = 0; i < target + 1; i++) {
+      const honest = answered("abandon", { ago: 4000 * (i + 1) });
+      // Answered fast enough to read as a genuine recall rather than a guess, which
+      // is the only evidence that builds a recall.
+      answers.push({ ...honest, elapsed: 4, evidence: "recalled" });
+    }
+    const response = await post({
+      answers,
+    });
+    const body = await response.json();
+    assert.equal(response.status, 200, JSON.stringify(body));
+    const mastered = sql
+      .prepare(
+        "SELECT COUNT(*) AS c FROM learning_events WHERE user_id=? AND mastered=1",
+      )
+      .get(userId).c;
+    assert.equal(
+      mastered,
+      1,
+      `a word answered ${target + 1} times with genuine recalls has been finished; got ${mastered} mastery awards`,
+    );
+    const wallet = sql
+      .prepare("SELECT balance FROM credit_wallets WHERE user_id=?")
+      .get(userId);
+    assert.equal(
+      wallet.balance,
+      BASE_CREDITS * (target + 1) +
+        STREAK_BONUS * Math.floor((target + 1) / 3) +
+        MASTERY_CREDITS,
+      "so the mastery award is paid once, on top of the base awards and bonuses",
+    );
+    sql.prepare("DELETE FROM users WHERE id=?").run(userId);
     sql.close();
   },
 );

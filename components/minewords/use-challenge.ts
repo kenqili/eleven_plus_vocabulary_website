@@ -22,6 +22,13 @@ import {
   type MasteryState,
 } from "@/lib/challenge/mastery";
 import { api } from "@/lib/client/api";
+import { ClientSession, loadSession } from "@/lib/client/session";
+import { chosenWordExplanation } from "@/lib/challenge/option-gloss";
+import type {
+  ClientBank,
+  GradedAnswer,
+  ShownQuestion,
+} from "@/lib/challenge/engine";
 import { useStudyClock } from "./use-study-clock";
 import { emptyPeriod } from "@/lib/challenge/rewards";
 import { QUESTION_TYPES, type QuestionType } from "@/lib/challenge/config";
@@ -83,6 +90,89 @@ function demoChosen(
   return { word: chosen, meaning: entry.meaning, example: entry.example };
 }
 
+/**
+ * What the child is shown, with the answer taken off it.
+ *
+ * The engine needs the answer to grade without a round trip, and the question
+ * that goes into a panel, a tool call or a parent's view must not carry it. So it
+ * is dropped here rather than left on an object that is passed around.
+ */
+function shownToQuestion(shown: ShownQuestion): Question {
+  return {
+    id: shown.id,
+    wordId: shown.wordId,
+    type: shown.type,
+    prompt: shown.prompt,
+    choices: shown.choices,
+    correctCount: shown.correctCount,
+    seen: shown.seen,
+    mastery: shown.mastery,
+    difficulty: shown.difficulty,
+    clue: shown.clue,
+    word: shown.word,
+    source: "flash_card_1",
+    number: 0,
+  };
+}
+
+/**
+ * A word lookup built from the shipped bank, so a wrong pick can still be taught.
+ *
+ * The server used to send a gloss with every question. It does not need to: the
+ * bank already carries each word's definition and example, which is all a gloss
+ * is, and the distractors are drawn from the same collection. Losing this would
+ * have been the one real regression in moving grading to the browser - a child
+ * who picks "debris" instead of "timid" learns nothing about debris.
+ */
+function glossLookup(bank: ClientBank) {
+  const byWord = new Map<
+    string,
+    { word: string; definition: string; example: string }
+  >();
+  for (const [word, definition, example] of bank.words) {
+    const entry = {
+      word: String(word),
+      definition: String(definition),
+      example: String(example),
+    };
+    byWord.set(entry.word.toLowerCase(), entry);
+  }
+  return (word: string) => byWord.get(word);
+}
+
+function gradedToFeedback(
+  graded: GradedAnswer,
+  shown: ShownQuestion,
+  selected: number,
+  attemptId: string,
+  bank: ClientBank,
+): Feedback {
+  return {
+    mastery: graded.mastery,
+    newlyMastered: graded.newlyMastered,
+    attemptId,
+    evidence: graded.evidence,
+    help: graded.help,
+    chosen: chosenWordExplanation(
+      shown.choices,
+      selected,
+      shown.answer,
+      glossLookup(bank),
+    ),
+    type: shown.type,
+    answer: shown.answer,
+    correct: graded.correct,
+    skipped: graded.skipped,
+    selected,
+    word: shown.word,
+    definition: shown.definition,
+    example: shown.example,
+    syn: shown.syn,
+    ant: shown.ant,
+    award: graded.award,
+  };
+}
+
 export function useChallenge() {
   const [state, setState] = useState<ChallengeState>({
     question: null,
@@ -122,6 +212,18 @@ export function useChallenge() {
     elapsed = useRef(0),
     lock = useRef(false);
   const stateRef = useRef(state);
+  /**
+   * The client session, when the child is signed in.
+   *
+   * Null means the demo path, which is already entirely local and stays exactly
+   * as it was. A ref rather than state because it is a mutable engine, not
+   * something to render, and because `answer` and `next` must reach the same
+   * instance without a re-render between showing a question and grading it.
+   */
+  const session = useRef<ClientSession | null>(null);
+  const bank = useRef<ClientBank | null>(null);
+  /** How many answers are not yet saved. Zero is what greys the Save button. */
+  const [unsaved, setUnsaved] = useState(0);
   useEffect(() => {
     stateRef.current = state;
   }, [state]);
@@ -192,9 +294,47 @@ export function useChallenge() {
   }, []);
   const load = useCallback(async () => {
     try {
+      // One request for the whole of a child's state, and one for the bank it
+      // names. After this a question costs no round trip at all.
+      //
+      // A 401 is not a failure: it means there is no signed-in child, so the
+      // demo path below takes over. Anything else - a timeout, a dropped
+      // connection - is an error worth showing, because falling back would hand a
+      // signed-in child the demo and quietly lose their work.
+      try {
+        const loaded = await loadSession();
+        const client = new ClientSession(loaded.engine, loaded.stats);
+        client.watch(setUnsaved);
+        session.current = client;
+        bank.current = loaded.bank;
+        const { account } = loaded.snapshot;
+        const first = client.next();
+        setState({
+          question: first ? shownToQuestion(first) : null,
+          stats: client.stats,
+          demo: false,
+          complete: !first,
+          gated: account.gated,
+          trial: !account.freeTier,
+          trialExpired: account.trialExpired,
+          freeTier: account.freeTier,
+          freeWordCount: account.freeWordCount,
+          trialDaysRemaining: account.trialDaysRemaining,
+          trialDaysConfigured: account.trialDays,
+          trialEndsAt: account.trialEndsAt,
+        });
+        elapsed.current = 0;
+        assisted.current = false;
+        return;
+      } catch (cause) {
+        if ((cause as { status?: number }).status !== 401) throw cause;
+      }
       const result = await api<ChallengeState & { words?: DemoWord[] }>(
         `/api/challenge?types=${selectedTypes.join(",")}&level=${level ?? "all"}`,
       );
+      session.current = null;
+      bank.current = null;
+      setUnsaved(0);
       if (result.gated) {
         setState({
           question: null,
@@ -252,6 +392,14 @@ export function useChallenge() {
   useEffect(() => {
     const refreshStats = async () => {
       if (stateRef.current.demo || lock.current) return;
+      // With the browser holding the state there is nothing to catch up on when a
+      // child comes back to the tab - the numbers on screen are the ones the
+      // engine has been keeping. What is worth doing is saving anything still
+      // unsaved, because they are coming back to the same page.
+      if (session.current) {
+        void session.current.flush();
+        return;
+      }
       try {
         const result = await api<ChallengeState>("/api/challenge");
         if (!result.demo && !lock.current)
@@ -266,6 +414,29 @@ export function useChallenge() {
     };
     window.addEventListener("focus", refreshStats);
     return () => window.removeEventListener("focus", refreshStats);
+  }, []);
+  /**
+   * Saving on the way out.
+   *
+   * The timer and the Save button are the two ways a session is meant to end, and
+   * this is the third, because a child's session far more often ends with
+   * navigation than with the button. `keepalive` lets the request outlive the
+   * document; if even that is dropped, the answers carry ids the server has
+   * already seen and a later flush cannot pay for them twice. The worst case is
+   * losing one sitting, which is the trade this design was built on.
+   */
+  useEffect(() => {
+    const leave = () => void session.current?.flushOnExit();
+    const hidden = () => {
+      if (document.visibilityState === "hidden") leave();
+    };
+    window.addEventListener("pagehide", leave);
+    document.addEventListener("visibilitychange", hidden);
+    return () => {
+      window.removeEventListener("pagehide", leave);
+      document.removeEventListener("visibilitychange", hidden);
+      session.current?.stop();
+    };
   }, []);
   useEffect(() => {
     const interval = setInterval(() => {
@@ -311,6 +482,26 @@ export function useChallenge() {
           feedback: undefined,
           complete: !question,
         });
+        if (current.question && current.feedback)
+          setHistory((items) =>
+            [
+              ...items,
+              { question: current.question!, feedback: current.feedback! },
+            ].slice(-50),
+          );
+      } else if (session.current && bank.current) {
+        // Built here, now, from state the browser already holds. This is the
+        // round trip that used to stand between a child pressing Next and seeing
+        // the next word.
+        const shown = session.current.next();
+        const stats = session.current.stats;
+        setState((latest) => ({
+          ...latest,
+          question: shown ? shownToQuestion(shown) : null,
+          feedback: undefined,
+          complete: !shown,
+          stats,
+        }));
         if (current.question && current.feedback)
           setHistory((items) =>
             [
@@ -457,6 +648,26 @@ export function useChallenge() {
             syn: word.syn,
             ant: word.ant,
           };
+        } else if (session.current && bank.current) {
+          // Graded here. The child sees the feedback on this frame, and the
+          // answer joins a queue that is written on a timer, on demand, or when
+          // the page goes away. Nothing here waits for the database.
+          const client = session.current;
+          const result = client.answer(selected, {
+            assisted: assisted.current,
+          });
+          if (!result) throw Error("That question could not be marked.");
+          const { feedback: graded, question: shown, attemptId } = result;
+          const feedback = gradedToFeedback(
+            graded,
+            shown,
+            selected,
+            attemptId,
+            bank.current,
+          );
+          // The session has already moved the panels, on this frame.
+          setState((latest) => ({ ...latest, feedback, stats: client.stats }));
+          return feedback;
         } else {
           const result = await api<ChallengeState>("/api/challenge", {
             action: "answer",
@@ -483,6 +694,29 @@ export function useChallenge() {
     },
     [load],
   );
+  /**
+   * Save now.
+   *
+   * Deliberately separate from the timer: a child who presses it wants to know
+   * it is done, and that has to be true whether or not there was anything to send.
+   * With nothing queued it reports so rather than appearing broken.
+   */
+  const saveProgress = useCallback(async () => {
+    const client = session.current;
+    if (!client) return { saved: 0, alreadyClean: true, error: "" };
+    if (!client.dirty) return { saved: 0, alreadyClean: true, error: "" };
+    setBusy(true);
+    try {
+      await client.flush();
+      return {
+        saved: 0,
+        alreadyClean: !client.dirty,
+        error: client.lastError || "",
+      };
+    } finally {
+      setBusy(false);
+    }
+  }, []);
   useEffect(() => {
     const context = (
       document as Document & {
@@ -582,6 +816,9 @@ export function useChallenge() {
       }
     },
     answer,
+    /** How many answers are waiting to be written. Zero greys the Save button. */
+    unsaved,
+    saveProgress,
     markAssisted: () => {
       assisted.current = true;
     },

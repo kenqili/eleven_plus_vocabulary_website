@@ -27,8 +27,8 @@ export type Award = {
   streak: number;
   /** Paid for the answer that finished a word. */
   mastery: number;
-  /** The running streak after this answer. */
-  streakAfter: number;
+  /** The running streak after this answer, which is what the server stores. */
+  currentStreak: number;
   total: number;
 };
 
@@ -61,7 +61,7 @@ export function awardFor(answer: AnswerForAward, streakBefore: number): Award {
   // The trigger clears the streak on a wrong answer and leaves it alone on an
   // uncounted one, which is why an assisted answer neither breaks nor advances
   // it.
-  const streakAfter = !answer.correct
+  const currentStreak = !answer.correct
     ? 0
     : answer.eligible
       ? streakBefore + 1
@@ -70,9 +70,16 @@ export function awardFor(answer: AnswerForAward, streakBefore: number): Award {
   const base = counts ? BASE_CREDITS : 0;
   // The bonus reads the streak *after* the increment, so the answer that makes
   // three is the one that pays.
-  const streak = counts && streakAfter % STREAK_EVERY === 0 ? STREAK_BONUS : 0;
+  const streak =
+    counts && currentStreak % STREAK_EVERY === 0 ? STREAK_BONUS : 0;
   const mastery = answer.mastered ? MASTERY_CREDITS : 0;
-  return { base, streak, mastery, streakAfter, total: base + streak + mastery };
+  return {
+    base,
+    streak,
+    mastery,
+    currentStreak,
+    total: base + streak + mastery,
+  };
 }
 
 /**

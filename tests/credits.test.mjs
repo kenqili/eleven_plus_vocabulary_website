@@ -59,7 +59,7 @@ function answer(db, { correct = 1, revealed = 0, mastered = 0, before = 0 }) {
   ).run(id, correct, revealed, eligible, mastered, id);
   return db
     .prepare(
-      "SELECT base_credits AS base, streak_credits AS streakBonus, mastery_credits AS mastery, streak AS streakAfter FROM learning_events WHERE attempt_id=?",
+      "SELECT base_credits AS base, streak_credits AS streakBonus, mastery_credits AS mastery, streak AS currentStreak FROM learning_events WHERE attempt_id=?",
     )
     .get(id);
 }
@@ -111,8 +111,8 @@ test("the pure rules agree with the trigger, answer for answer", () => {
       `answer ${i}: mastery credits differ`,
     );
     assert.equal(
-      mine.streakAfter,
-      fromTrigger.streakAfter,
+      mine.currentStreak,
+      fromTrigger.currentStreak,
       `answer ${i}: the running streak differs`,
     );
     assert.equal(
@@ -126,7 +126,7 @@ test("the pure rules agree with the trigger, answer for answer", () => {
       revealed,
       before,
       total: mine.total,
-      streak: mine.streakAfter,
+      streak: mine.currentStreak,
     });
   }
   // The run has to have been worth running: the bonus must actually have fired,
@@ -177,7 +177,7 @@ test("an assisted answer is right but pays nothing and does not break the streak
     streak,
   );
   assert.equal(assisted.base, BASE_CREDITS, "an eligible correct answer pays");
-  assert.equal(assisted.streakAfter, streak + 1, "and advances the streak");
+  assert.equal(assisted.currentStreak, streak + 1, "and advances the streak");
 
   // A right answer that is not eligible - a word past its cap, or an assisted one
   // the caller has marked uncounted - pays nothing and leaves the streak alone.
@@ -187,7 +187,7 @@ test("an assisted answer is right but pays nothing and does not break the streak
   );
   assert.equal(capped.total, 0, "a word past its cap must not pay again");
   assert.equal(
-    capped.streakAfter,
+    capped.currentStreak,
     streak,
     "and must not advance or clear the streak",
   );
@@ -199,7 +199,7 @@ test("a wrong answer clears the streak without touching the balance", () => {
     7,
   );
   assert.equal(wrong.total, 0);
-  assert.equal(wrong.streakAfter, 0, "a wrong answer clears the streak");
+  assert.equal(wrong.currentStreak, 0, "a wrong answer clears the streak");
 });
 
 test("finishing a word pays the mastery bonus on top", () => {

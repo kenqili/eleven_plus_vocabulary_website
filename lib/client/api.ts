@@ -20,7 +20,19 @@ export class ApiTimeoutError extends Error {
 export async function api<T>(
   path: string,
   data?: unknown,
-  options?: { keepalive?: boolean; timeoutMs?: number },
+  options?: {
+    keepalive?: boolean;
+    timeoutMs?: number;
+    /**
+     * Extra headers, which is how a test drives this code against a real server.
+     *
+     * The browser does not need it: `credentials: "same-origin"` already carries
+     * the session. Node's `fetch` has no cookie jar, so without this the only way
+     * to exercise the real client path outside a browser would be to reimplement
+     * it, and a reimplementation tests nothing.
+     */
+    headers?: Record<string, string>;
+  },
 ): Promise<T> {
   const controller = new AbortController();
   const limit = options?.timeoutMs ?? REQUEST_TIMEOUT_MS;
@@ -30,21 +42,38 @@ export async function api<T>(
       method: data ? "POST" : "GET",
       credentials: "same-origin",
       cache: "no-store",
-      headers: data ? { "Content-Type": "application/json" } : {},
+      headers: {
+        ...(data ? { "Content-Type": "application/json" } : {}),
+        ...options?.headers,
+      },
       body: data ? JSON.stringify(data) : undefined,
       keepalive: options?.keepalive,
       signal: controller.signal,
     });
     const result = (await response.json()) as { error?: string };
-    if (!response.ok)
-      throw new Error(result.error || "Unable to complete the request.");
+    if (!response.ok) {
+      const error = new Error(
+        result.error || "Unable to complete the request.",
+      ) as Error & {
+        status?: number;
+      };
+      // Carried, because "not signed in" and "could not reach the server" need
+      // opposite responses and the message alone cannot tell them apart: a 401
+      // means fall back to the demo, a timeout means say so and keep what is on
+      // screen.
+      error.status = response.status;
+      throw error;
+    }
     return result as T;
   } catch (cause) {
     // An abort is a timeout, not a cancelled navigation, and the two need very
     // different things said to a child.
     if ((cause as Error)?.name === "AbortError")
       throw new ApiTimeoutError(limit);
-    if (cause instanceof Error && /network|fetch|load failed/i.test(cause.message))
+    if (
+      cause instanceof Error &&
+      /network|fetch|load failed/i.test(cause.message)
+    )
       throw new Error("No connection. Check your internet and try again.");
     throw cause;
   } finally {

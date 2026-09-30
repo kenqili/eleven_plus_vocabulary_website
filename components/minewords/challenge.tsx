@@ -58,6 +58,62 @@ function revealRange(start: Element | null, end?: Element | null) {
   const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
   scrollTo({ top: Math.max(0, top - 12), behavior: still ? "auto" : "smooth" });
 }
+/**
+ * The button that saves now, rather than in five minutes.
+ *
+ * Greyed out when there is nothing to save, which is the point: a button that is
+ * always lit is a button nobody reads, and this one tells a child their work is
+ * safe. Pressing it with nothing queued is not an error - it says so rather than
+ * appearing broken - so a child who is unsure can press it and find out.
+ */
+function SaveProgress({
+  study,
+  demo,
+}: {
+  study: ReturnType<typeof useChallenge>;
+  demo: boolean;
+}) {
+  const [note, setNote] = useState("");
+  useEffect(() => {
+    // The confirmation is about the press, not the page. Clearing it when the
+    // count changes stops "Saved" sitting on screen while answers pile up behind
+    // it, which would be the one thing a child must never be shown.
+    if (study.unsaved) setNote("");
+  }, [study.unsaved]);
+  if (demo) return null;
+  const save = async () => {
+    const result = await study.saveProgress();
+    setNote(
+      result.error
+        ? "Could not save. We will try again."
+        : result.alreadyClean
+          ? "Everything is already saved"
+          : "Saved",
+    );
+  };
+  return (
+    <span className="save-progress">
+      <button
+        className="text-button"
+        onClick={() => void save()}
+        disabled={!study.unsaved || study.busy}
+        aria-label={
+          study.unsaved
+            ? `Save ${study.unsaved} answers to your account now`
+            : "Everything is saved"
+        }
+      >
+        Save progress
+      </button>
+      {note && (
+        <span className="muted" role="status">
+          {note}
+        </span>
+      )}
+    </span>
+  );
+}
+
 export default function Challenge() {
   const study = useChallenge();
   const [clueQuestion, setClueQuestion] = useState<string | null>(null);
@@ -157,7 +213,10 @@ export default function Challenge() {
   // the top of it on screen.
   useEffect(() => {
     if (!feedback) return;
-    revealRange(cardRef.current?.querySelector(".feedback") ?? null, cardRef.current);
+    revealRange(
+      cardRef.current?.querySelector(".feedback") ?? null,
+      cardRef.current,
+    );
   }, [feedback]);
   return (
     <div className="site">
@@ -330,7 +389,9 @@ export default function Challenge() {
                       )}
                     </div>
                   )}
-                  <div className={`answers${!feedback ? " answers-entering" : ""}`}>
+                  <div
+                    className={`answers${!feedback ? " answers-entering" : ""}`}
+                  >
                     {question.choices.map((choice, i) => (
                       <button
                         key={`${question.id}-${i}`}
@@ -357,8 +418,7 @@ export default function Challenge() {
                   </div>
                   <p className="sr-only" role="status">
                     {asksForWord ? "" : `${question.word}. `}
-                    {TYPE_INSTRUCTIONS[question.type]}{" "}
-                    {question.prompt}
+                    {TYPE_INSTRUCTIONS[question.type]} {question.prompt}
                   </p>
                   {feedback && (
                     <div className="feedback" role="status">
@@ -401,7 +461,8 @@ export default function Challenge() {
                       {feedback.chosen ? (
                         <div className="chosen-explanation">
                           <strong>
-                            {feedback.chosen.word} means {feedback.chosen.meaning}
+                            {feedback.chosen.word} means{" "}
+                            {feedback.chosen.meaning}
                           </strong>
                           {feedback.chosen.example ? (
                             <em>{feedback.chosen.example}</em>
@@ -442,19 +503,22 @@ export default function Challenge() {
                             : `${mastery?.correct ?? question.correctCount} of ${CUMULATIVE_FLOOR} right answers; getting it right ${mastery?.target ?? 2} times on your own also finishes a word`
                         }
                       >
-                        {Array.from({ length: CUMULATIVE_FLOOR }, (_, index) => (
-                          <i
-                            key={index}
-                            className={
-                              index <
-                              (mastery?.mastered
-                                ? CUMULATIVE_FLOOR
-                                : mastery?.correct ?? question.correctCount)
-                                ? "filled"
-                                : ""
-                            }
-                          />
-                        ))}
+                        {Array.from(
+                          { length: CUMULATIVE_FLOOR },
+                          (_, index) => (
+                            <i
+                              key={index}
+                              className={
+                                index <
+                                (mastery?.mastered
+                                  ? CUMULATIVE_FLOOR
+                                  : (mastery?.correct ?? question.correctCount))
+                                  ? "filled"
+                                  : ""
+                              }
+                            />
+                          ),
+                        )}
                       </span>
                     </div>
                     {feedback ? (
@@ -487,7 +551,10 @@ export default function Challenge() {
                       // so a setting the child had chosen stopped working the
                       // moment the day's count was reached, with nothing said.
                       eligible={Boolean(
-                        feedback.correct && !busy && !error && !study.historical,
+                        feedback.correct &&
+                          !busy &&
+                          !error &&
+                          !study.historical,
                       )}
                       next={study.next}
                     />
@@ -567,12 +634,17 @@ export default function Challenge() {
                   ))}
                 </select>
               </label>
-              <span className="muted">
-                {demo
-                  ? "Sample progress is not saved"
-                  : study.trial
-                    ? "Your free trial saves your progress"
-                    : "Progress saved to your account"}
+              <span className="control-row-status">
+                <SaveProgress study={study} demo={demo} />
+                <span className="muted">
+                  {demo
+                    ? "Sample progress is not saved"
+                    : study.unsaved
+                      ? `${study.unsaved} waiting to save`
+                      : study.trial
+                        ? "Your free trial saves your progress"
+                        : "Progress saved to your account"}
+                </span>
               </span>
             </div>
             {study.timeError && (

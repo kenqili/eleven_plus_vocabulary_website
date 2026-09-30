@@ -480,7 +480,7 @@ export class PracticeEngine {
       { correct, eligible, mastered: mastery.newlyMastered },
       this.streak,
     );
-    this.streak = award.streakAfter;
+    this.streak = award.currentStreak;
 
     const byType =
       this.typeCounts.get(question.wordId) ?? new Map<QuestionType, number>();
