@@ -254,7 +254,31 @@ const output = {
 };
 
 const path = new URL("../data/problem-bank.json", import.meta.url);
-writeFileSync(path, JSON.stringify(output));
+const json = JSON.stringify(output);
+// Only write when the questions actually changed.
+//
+// This file is a committed build product and `build` regenerates it every time,
+// so writing unconditionally left the working tree dirty after every build with
+// nothing but a new date in it. That is a small thing that trains you to ignore
+// `git status`, which is the opposite of what it is for - and it makes a real
+// change to the bank easy to miss in a diff of a megabyte. The day stamp is the
+// only part that is allowed to differ and still count as unchanged, which is the
+// same rule `check-bank-fresh` applies when it decides whether to regenerate.
+const previous = readFileSync(path, "utf8");
+let wrote = false;
+if (previous !== json) {
+  const strip = (text) => {
+    const parsed = JSON.parse(text);
+    delete parsed.meta.generated;
+    return JSON.stringify(parsed);
+  };
+  if (strip(previous) === strip(json)) {
+    console.log("  questions unchanged; keeping the committed bank file");
+  } else {
+    writeFileSync(path, json);
+    wrote = true;
+  }
+}
 const bytes = readFileSync(path).length;
 
 const byType = {};
@@ -266,7 +290,7 @@ console.log(
 for (const [type, count] of Object.entries(byType).sort())
   console.log(`  ${type.padEnd(6)} ${String(count).padStart(5)}`);
 console.log(
-  `  ${(bytes / 1048576).toFixed(2)} MB written to data/problem-bank.json`,
+  `  ${(bytes / 1048576).toFixed(2)} MB ${wrote ? "written to" : "in"} data/problem-bank.json`,
 );
 if (Object.values(skipped).some((n) => n > 0))
   console.log(
