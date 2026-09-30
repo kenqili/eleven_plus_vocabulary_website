@@ -115,8 +115,8 @@ optional and it is not a convenience.
 **Do not apply these files with `wrangler d1 execute --file` by hand.** That
 route is not idempotent - a migration that has already run fails when it runs
 again - and it records nothing, so the next `d1 migrations apply` tries every
-file from the start and stops on the first column that already exists.
-`scripts/deploy.sh` checks for that state before applying; see
+file from the start and stops on the first column that already exists. Empty the
+database instead; see
 [Never migrate this database by hand](#cloudflare-workers-builds-automatic-deploys)
 below.
 
@@ -433,22 +433,20 @@ Notes on each, because the two commands are not interchangeable:
   `npm run verify:client` there rather than listing the three steps.
 
 **Never migrate this database by hand.** `d1 migrations apply` decides what to
-run from `d1_migrations` alone - it cannot ask the schema, because
-`ALTER TABLE ADD COLUMN` has no `IF NOT EXISTS`, so no migration can be written
-safe to run twice. `d1 execute --file` records nothing, so a database migrated
-that way has a complete schema and an empty ledger, and the next `apply` runs
-`0000` again and stops on `table "attempts" already exists`. Nothing is damaged,
-nothing is applied, and every deploy fails.
+run from `d1_migrations` alone, and that is the whole mechanism: with no ledger
+it creates one and applies every migration from the start, and with a ledger it
+applies whatever is missing from it. `d1 execute --file` records nothing, so a
+database migrated that way has a complete schema and no ledger - and the next
+`apply` runs `0000` again and stops on `table "attempts" already exists`. Nothing
+is damaged and nothing is applied.
 
 That is what this repository's production database looked like: months of
-`d1 execute --file` while the deploy script did not exist. It was emptied and
-rebuilt by `apply`, and the ledger it wrote is why the deploys after that worked.
-`scripts/deploy.sh` now checks for the state before applying anything - tables but
-no ledger - and stops with the two ways out rather than letting `apply` produce
-four hundred lines of migration log. **The check only reads. If it fires, the
-repair is to empty the database and let the deploy build it.**
+`d1 execute --file` while the deploy script did not exist. It was emptied, and
+the next deploy rebuilt it from `0000` and wrote the ledger that every deploy
+after that reads. Nothing is needed to repair an empty ledger except an empty
+database.
 
-For a database you cannot reach with the deploy script,
+For a database that must be repaired in place rather than rebuilt,
 `scripts/seed-migrations-ledger.sql` records the migrations by hand. It is
 already behind - it names fourteen migrations and takes `0000`-`0009` on trust -
 so prefer emptying the database.
