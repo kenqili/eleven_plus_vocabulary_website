@@ -7,6 +7,7 @@ import {
   tokenDigest,
   verifyPassword,
 } from "@/lib/server/password";
+import { markVerified } from "@/lib/server/email-verification";
 import {
   findLiveReset,
   issueResetToken,
@@ -119,7 +120,15 @@ async function requestReset(request: Request) {
     // who can see their own configuration, and the parent is told the same
     // sentence either way. The cost is a link that never arrives; the benefit
     // is that the endpoint cannot be used to enumerate accounts.
-    const link = `${new URL(setting("APP_ORIGIN")).origin}${RESET_LINK_PATH}?token=${token}`;
+    // Checked, because `new URL("")` throws "Invalid URL string", which says
+    // nothing about which setting is missing. A deployment without APP_ORIGIN
+    // otherwise logs that and a parent waits forever for a message that cannot
+    // be addressed - and APP_ORIGIN is also what builds the Stripe return URLs,
+    // so its absence breaks more than this one link.
+    const origin = setting("APP_ORIGIN");
+    if (!origin)
+      throw new Error("APP_ORIGIN is not set, so the link cannot be built.");
+    const link = `${new URL(origin).origin}${RESET_LINK_PATH}?token=${token}`;
     await sendPasswordResetEmail(found.email, link);
   } catch (error) {
     console.error(
@@ -188,6 +197,16 @@ async function confirmReset(request: Request) {
   // required rather than tidy. createSession writes a row of its own, so if it
   // ran first the DELETE FROM sessions above would take the new session with it
   // and the parent would be locked out of the account they just recovered.
+  // Confirms the address as a side effect, and this is the escape hatch that keeps
+  // "sign-in needs a confirmed address" from becoming a trap.
+  //
+  // Without it there is a dead end: a parent whose confirmation mail was lost
+  // cannot sign in, and a password reset that required a confirmed address would
+  // refuse them too, so the account is unreachable by every route and only support
+  // can open it. Receiving this message at all is the proof the other link was
+  // asking for - it arrived at the same address - so a successful reset is allowed
+  // to confirm it.
+  await markVerified(reset.userId);
   return json({ ok: true }, 200, {
     "Set-Cookie": await createSession(reset.userId, request),
   });

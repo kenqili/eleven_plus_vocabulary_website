@@ -35,6 +35,11 @@ function between(source, start, end) {
   return source.slice(from, to < 0 ? source.length : to);
 }
 
+/** The same source with its `//` prose removed. Newlines are kept. */
+function withoutComments(source) {
+  return source.replace(/\/\/[^\n]*/g, "");
+}
+
 test("the emailed token is never written down", () => {
   // For an hour the token is the password, and it arrives in a mailbox. If the
   // raw value sat in D1 then a copy of the database - a backup, a support
@@ -246,6 +251,76 @@ test("a broken mail provider cannot turn into the same oracle", () => {
     caught,
     /console\.error\(/,
     "a failed send is not logged, so the person running the app never finds out",
+  );
+});
+
+test("a missing APP_ORIGIN must not become the same oracle", () => {
+  // The same failure as a provider that is down, and reached the same way: the
+  // link cannot be built, and that happens only for an address that has an
+  // account. So it has to be answered the same way too. A deployment that has
+  // forgotten APP_ORIGIN would otherwise 503 for exactly the addresses that
+  // exist, which is the question this endpoint exists not to answer - handed
+  // to whoever asks, for the length of a misconfiguration.
+  //
+  // Comments are stripped first. The prose in this try names APP_ORIGIN,
+  // `new URL("")` and the catch, and a test that a well-worded comment can
+  // pass is not a test of anything.
+  const code = withoutComments(
+    between(
+      route,
+      "async function requestReset",
+      "async function confirmReset",
+    ),
+  );
+  const start = code.indexOf("try {");
+  assert.ok(start > 0, "the link is built outside a try altogether");
+  const caught = code.indexOf("} catch", start);
+  assert.ok(
+    caught > start,
+    "the try has no catch, so a failure escapes to boundary() and becomes a 503",
+  );
+  const block = code.slice(start, caught);
+
+  // Inside that try, and before anything tries to parse it. setting() answers ""
+  // for a setting the deployment has not set, so the check is the only thing
+  // between a configuration mistake and "Invalid URL string" - which names no
+  // setting, and leaves the person running the app reading a TypeError for a
+  // variable they have never heard of. \s* because prettier wraps a long throw
+  // onto its own line, and this is about where the guard is, not how it is set.
+  assert.match(
+    block,
+    /if \(!origin\)\s*throw new Error\("APP_ORIGIN/,
+    "APP_ORIGIN is not checked inside the try, so a missing one fails as an unparseable URL that names no setting",
+  );
+  const read = block.indexOf('setting("APP_ORIGIN")');
+  assert.ok(
+    read > 0 && read < block.indexOf("new URL("),
+    "the setting is read after the URL is parsed, or outside the try, so nothing has checked it by then",
+  );
+
+  // What the catch does with it: log it and carry on. Rethrowing hands the
+  // error to boundary(), which turns anything that is not an HttpError into a
+  // 503 - and this one only ever happens for an address somebody registered.
+  const after = code.slice(caught);
+  assert.ok(
+    !/\bthrow\b/.test(after),
+    "the catch rethrows, so a deployment without APP_ORIGIN answers 503 to every address that has an account",
+  );
+  // The reply it falls through to is the generic one, with no status of its own:
+  // json() takes the status second, and one passed here would be the enumeration
+  // on its own.
+  const answers = after.match(/return json\([^;]*\)/g) ?? [];
+  assert.deepEqual(
+    answers,
+    ["return json({ ok: true, message: GENERIC_REPLY })"],
+    `the failure path answers with something of its own: ${answers.join(" | ")}`,
+  );
+  // And it is the very expression the unknown-address branch returned above the
+  // try, so the two responses are the same bytes rather than two wordings that
+  // happen to agree today.
+  assert.ok(
+    code.includes(`if (!found) ${answers[0]};`),
+    "the unknown-address branch and the failure path no longer share one reply",
   );
 });
 
