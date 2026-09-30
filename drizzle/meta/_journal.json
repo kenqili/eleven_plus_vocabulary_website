@@ -71,6 +71,34 @@
       "when": 1790487150277,
       "tag": "0009_white_ricochet",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1790490750277,
+      "tag": "0010_coach_last_seen",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "6",
+      "when": 1790494350277,
+      "tag": "0011_reconcile_mastered_totals",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "6",
+      "when": 1790497950277,
+      "tag": "0012_entitlement_and_purchases",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "6",
+      "when": 1790501550277,
+      "tag": "0013_password_reset",
+      "breakpoints": true
     }
   ]
 }

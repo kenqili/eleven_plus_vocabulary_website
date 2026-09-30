@@ -76,6 +76,28 @@ node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1
 npm run dev
 ```
 
+### Applying migrations to production
+
+Run the read-only probe first, so you know which of the four recent migrations
+production is actually missing. It only reads `sqlite_master` and
+`pragma_table_info`, so it is safe to paste and cannot change anything:
+
+```
+npx wrangler d1 execute DB --remote --config dist/server/wrangler.json --file scripts/check-production-state.sql
+```
+
+Then apply anything it reports as `MISSING`, in filename order, one command per
+file. **`ALTER TABLE ... ADD COLUMN` is not idempotent**: a migration that has
+already been applied fails when it runs again, which is why the probe comes
+first and why the order matters.
+
+A migration that is on disk but missing from `drizzle/meta/_journal.json` is one
+that no tool-driven deploy will ever run, and nothing warns you at the time. That
+is not hypothetical: the journal stopped at `0009` and left `0010` to `0013`
+unapplied, including `users.expiry_date`, which `membership()` reads on every
+authenticated request. `npm run check:deploy` now fails if the journal and the
+directory disagree, and `npm test` runs that check.
+
 For a Node-only local preview (without the Cloudflare runtime), run:
 
 ```sh
