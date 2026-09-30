@@ -43,8 +43,7 @@ if (!existsSync(resolved))
     `migrations_dir "${migrationsDir}" does not resolve from ${dirname(path)} to anything that exists`,
   );
 const found = readdirSync(resolved).filter((f) => f.endsWith(".sql"));
-if (!found.length)
-  throw new Error(`no migrations found in ${migrationsDir}`);
+if (!found.length) throw new Error(`no migrations found in ${migrationsDir}`);
 
 // Wrangler accepts either the flat `d1` shape vinext emits or the documented
 // `d1_databases`. Both are handled, because guessing wrong here would mean the
@@ -64,7 +63,7 @@ writeFileSync(path, JSON.stringify(config, null, 2) + "\n");
 
 // Read it back rather than trusting the object in memory.
 const written = JSON.parse(readFileSync(path, "utf8"));
-const check = (written.d1_databases ?? written.d1) ?? [];
+const check = written.d1_databases ?? written.d1 ?? [];
 for (const binding of check) {
   if (binding.migrations_dir !== migrationsDir)
     throw new Error(
