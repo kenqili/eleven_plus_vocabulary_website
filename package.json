@@ -39,6 +39,7 @@
     "test:snapshot": "node --test tests/progress-snapshot.integration.mjs",
     "verify:client": "npm run typecheck && npm run lint && npm test && npm run verify:chunks",
     "test:flush": "node --test tests/flush.integration.mjs",
+    "test:password-reset": "node --test tests/password-reset.integration.mjs",
     "test:client-session": "node --test tests/client-session.integration.mjs",
     "check:deploy": "node tests/schema-deploy-drift.mjs",
     "deploy": "bash scripts/deploy.sh"
