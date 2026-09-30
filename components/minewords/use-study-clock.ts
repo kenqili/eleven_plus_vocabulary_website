@@ -14,16 +14,28 @@ import type { Stats } from "@/lib/challenge/types";
 const FLUSH_SECONDS = 300;
 
 export function useStudyClock(
-  attemptId: string | undefined,
+  questionId: string | undefined,
   enabled: boolean,
   onSaved: (stats: Partial<Stats>) => void,
 ) {
+  /**
+   * When this session began, and what that means for the first tick.
+   *
+   * The server used to seed a session's study clock from the creation time of a
+   * pending attempt, so that the first batch of a sitting recorded the time the
+   * child had actually spent rather than nothing at all. There is no pending
+   * attempt now - the browser builds its own questions - so the client supplies
+   * the same reference: the moment the first question was handed out. The server
+   * still clamps a claim to the wall time since then, and still caps a claim at
+   * one batch, so this cannot over-report.
+   */
+  const since = useRef(0);
   const [seconds, setSeconds] = useState(0),
     [error, setError] = useState("");
-  const current = useRef({ attemptId, enabled, onSaved });
+  const current = useRef({ questionId, enabled, onSaved });
   useEffect(() => {
-    current.current = { attemptId, enabled, onSaved };
-  }, [attemptId, enabled, onSaved]);
+    current.current = { questionId, enabled, onSaved };
+  }, [questionId, enabled, onSaved]);
   const owner = useRef(""),
     sequence = useRef(0),
     unflushed = useRef(0),
@@ -35,7 +47,6 @@ export function useStudyClock(
     owner: string;
     sequence: number;
     seconds: number;
-    attemptId: string;
   } | null>(null);
   const flush = useCallback(async () => {
     // A flush asked for while one is already in flight waits for it and then
@@ -46,7 +57,7 @@ export function useStudyClock(
     // Written as a wait and then a fall-through rather than a recursive call,
     // because re-entering the callback is what a hooks rule rightly objects to.
     if (running.current) await running.current;
-    if (!current.current.enabled || !current.current.attemptId) return;
+    if (!current.current.enabled || !current.current.questionId) return;
     // Nothing accrued and nothing to retry, so there is no request to make.
     // Sending one anyway doubled the round trips per question and held the
     // card disabled for the duration of an empty call.
@@ -59,7 +70,7 @@ export function useStudyClock(
         owner: owner.current,
         sequence: ++sequence.current,
         seconds: Math.min(FLUSH_SECONDS, unflushed.current),
-        attemptId: current.current.attemptId!,
+        since: since.current,
       };
       if (!retry.current) {
         unflushed.current -= payload.seconds;
@@ -74,7 +85,15 @@ export function useStudyClock(
         setSeconds(unflushed.current);
         current.current.onSaved(result);
       } catch (e) {
-        setError(`Study time could not be saved: ${(e as Error).message}`);
+        // Only worth a child's attention while it persists. A single failed
+        // request on a school laptop is retried fifteen seconds later, and an
+        // error that says so, under a question the child is trying to answer, is
+        // noise that makes the real failures harder to spot.
+        setError(
+          Date.now() - lastSend.current < 120000
+            ? `Study time could not be saved: ${(e as Error).message}`
+            : "",
+        );
       }
     };
     running.current = work();
@@ -83,8 +102,13 @@ export function useStudyClock(
   }, []);
   useEffect(() => {
     activity.current = Date.now();
-    if (enabled && attemptId) void flush();
-  }, [enabled, attemptId, flush]);
+    // Set once per session, at the first question, and not reset afterwards: the
+    // study clock row is seeded a single time per tab, so a later reference would
+    // be ignored. Reusing the first one is also the honest one - it is when this
+    // child started working.
+    if (enabled && questionId && !since.current) since.current = Date.now();
+    if (enabled && questionId) void flush();
+  }, [enabled, questionId, flush]);
   useEffect(() => {
     const active = () => {
       activity.current = Date.now();
@@ -115,7 +139,7 @@ export function useStudyClock(
     const interval = setInterval(() => {
       if (
         current.current.enabled &&
-        current.current.attemptId &&
+        current.current.questionId &&
         !document.hidden &&
         document.hasFocus() &&
         Date.now() - activity.current < 60000
@@ -128,11 +152,11 @@ export function useStudyClock(
       // means the last attempt failed and the child is looking at "We'll retry
       // automatically", so it goes back out on the old short cadence rather than
       // leaving the message up for the length of a whole batch interval.
-      const since = Date.now() - lastSend.current;
-      if (retry.current && since >= 15000) void flush();
+      const waited = Date.now() - lastSend.current;
+      if (retry.current && waited >= 15000) void flush();
       else if (
         unflushed.current >= FLUSH_SECONDS &&
-        since >= FLUSH_SECONDS * 1000
+        waited >= FLUSH_SECONDS * 1000
       )
         void flush();
     }, 1000);

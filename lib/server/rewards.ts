@@ -415,7 +415,24 @@ export async function checkpoint(
     owner: string;
     sequence: number;
     seconds: number;
-    attemptId: string;
+    /**
+     * When the session began showing questions, in epoch milliseconds.
+     *
+     * This used to be the id of a pending attempt, looked up so the clock could
+     * be seeded from the moment the question was handed out. The browser now
+     * builds its own questions, so there is no pending attempt to point at - and
+     * minting one per question would put back the round trip this whole change
+     * removed, once per word.
+     *
+     * What the attempt was actually for is the clamp below, and the clamp does
+     * not need it: the first tick of a session records `MIN(claim, now - since)`,
+     * and the claim is already capped at one batch. So a client naming its own
+     * start time cannot inflate anything - it can only decline to record time it
+     * would rather not be credited with. What is lost is the guarantee that a
+     * question was genuinely open, which the server can no longer know, and which
+     * was never more than the client asserting that it was.
+     */
+    since: number;
   },
 ) {
   if (
@@ -424,40 +441,34 @@ export async function checkpoint(
     input.sequence < 1 ||
     !Number.isFinite(input.seconds) ||
     input.seconds < 0 ||
-    input.seconds > 300
+    input.seconds > 300 ||
+    !Number.isFinite(input.since) ||
+    input.since <= 0
   )
     throw new HttpError(400, "Invalid study checkpoint.");
   const db = database(),
     now = Date.now(),
     start = dayStart(now),
     id = `${input.owner}:${input.sequence}`;
-  const attempt = await db
-    .prepare(
-      "SELECT id,created_at AS createdAt FROM attempts WHERE id=? AND user_id=? AND (answered_at IS NULL OR answered_at>=?)",
-    )
-    .bind(input.attemptId, userId, now - 86400000)
-    .first<{ id: string; createdAt: number }>();
-  if (!attempt)
-    throw new HttpError(
-      409,
-      "Open a current practice question to record study time.",
-    );
-  // A brand new clock starts at the moment the question was handed out, not at
-  // the moment of this request. The tick below clamps the claim to the wall time
-  // that has actually gone by since `last_at`, so starting the clock at "now"
-  // meant the very first tick of every session computed MIN(claim, 0) and
-  // recorded nothing at all. That was harmless while a claim was capped at 15
-  // seconds and cost a whole batch once it was capped at 300: a ten minute
-  // session recorded 300 seconds instead of 585. The question's own creation is
-  // the earliest a child could have begun reading it, which is exactly the
-  // reference the clamp wants. Every later tick advances `last_at` to now, so
-  // this only ever affects the first request of a session.
+  // Never further back than one batch, which is the same bound the claim itself
+  // is under, so a start time from last week cannot backdate an hour of study.
+  // Never in the future, or the first tick would compute a negative elapsed time
+  // and record nothing at all - the bug this seeding exists to avoid.
+  const since = Math.min(Math.max(input.since, now - 300000), now);
+  // A brand new clock starts when the session began, not at the moment of this
+  // request. The tick below clamps the claim to the wall time that has actually
+  // gone by since `last_at`, so starting the clock at "now" meant the very first
+  // tick of every session computed MIN(claim, 0) and recorded nothing at all.
+  // That was harmless while a claim was capped at 15 seconds and cost a whole
+  // batch once it was capped at 300: a ten minute session recorded 300 seconds
+  // instead of 585. Every later tick advances `last_at` to now, so this only ever
+  // affects the first request of a session.
   await db.batch([
     db
       .prepare(
         "INSERT OR IGNORE INTO study_clock(user_id,owner,sequence,last_at) VALUES(?,?,0,?)",
       )
-      .bind(userId, input.owner, attempt.createdAt),
+      .bind(userId, input.owner, since),
     db
       .prepare(
         `INSERT OR IGNORE INTO study_ticks(id,user_id,created_at,seconds,day,previous_day,since_midnight)

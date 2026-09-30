@@ -61,17 +61,20 @@ function revealRange(start: Element | null, end?: Element | null) {
 /**
  * The button that saves now, rather than in five minutes.
  *
- * Greyed out when there is nothing to save, which is the point: a button that is
- * always lit is a button nobody reads, and this one tells a child their work is
- * safe. Pressing it with nothing queued is not an error - it says so rather than
- * appearing broken - so a child who is unsure can press it and find out.
+ * One item, not two. The row beside it used to carry a separate sentence saying
+ * how many answers were waiting, which said the same thing as the button in
+ * different words and left the reader deciding which one to believe. The count
+ * now lives on the button, where the thing being counted is.
+ *
+ * Greyed out at zero, which is how a child sees there is nothing to save without
+ * having to press it. Pressing it with nothing queued is not an error - it says
+ * so rather than appearing broken - so a child who is unsure can press and find
+ * out.
  */
 function SaveProgress({
   study,
-  demo,
 }: {
   study: ReturnType<typeof useChallenge>;
-  demo: boolean;
 }) {
   const [note, setNote] = useState("");
   useEffect(() => {
@@ -80,37 +83,37 @@ function SaveProgress({
     // it, which would be the one thing a child must never be shown.
     if (study.unsaved) setNote("");
   }, [study.unsaved]);
-  if (demo) return null;
+  const waiting = study.unsaved;
   const save = async () => {
     const result = await study.saveProgress();
     setNote(
       result.error
         ? "Could not save. We will try again."
         : result.alreadyClean
-          ? "Everything is already saved"
+          ? "Already saved"
           : "Saved",
     );
   };
   return (
-    <span className="save-progress">
-      <button
-        className="text-button"
-        onClick={() => void save()}
-        disabled={!study.unsaved || study.busy}
-        aria-label={
-          study.unsaved
-            ? `Save ${study.unsaved} answers to your account now`
-            : "Everything is saved"
-        }
-      >
-        Save progress
-      </button>
+    <button
+      className="text-button save-progress"
+      onClick={() => void save()}
+      disabled={!waiting || study.busy}
+      aria-label={
+        waiting
+          ? `Save ${waiting} ${waiting === 1 ? "answer" : "answers"} to your account now`
+          : "Everything is saved"
+      }
+    >
+      {waiting
+        ? `Save ${waiting} ${waiting === 1 ? "answer" : "answers"}`
+        : "Save progress"}
       {note && (
         <span className="muted" role="status">
           {note}
         </span>
       )}
-    </span>
+    </button>
   );
 }
 
@@ -619,7 +622,7 @@ export default function Challenge() {
             </article>
             <div className="control-row">
               <label className="next-word-setting">
-                Next word
+                Next word appears
                 <select
                   aria-label="How quickly the next word appears"
                   value={study.autoNext}
@@ -635,16 +638,18 @@ export default function Challenge() {
                 </select>
               </label>
               <span className="control-row-status">
-                <SaveProgress study={study} demo={demo} />
-                <span className="muted">
-                  {demo
-                    ? "Sample progress is not saved"
-                    : study.unsaved
-                      ? `${study.unsaved} waiting to save`
-                      : study.trial
-                        ? "Your free trial saves your progress"
-                        : "Progress saved to your account"}
-                </span>
+                {demo ? (
+                  <span className="muted">Sample progress is not saved</span>
+                ) : (
+                  <>
+                    <SaveProgress study={study} />
+                    {/* A standing fact, so it cannot disagree with the button
+                        beside it. Whether anything is waiting right now is the
+                        button's business; whether the work is safe is this
+                        sentence's, and it is true in both states. */}
+                    <span className="muted">Saves every 5 minutes</span>
+                  </>
+                )}
               </span>
             </div>
             {study.timeError && (

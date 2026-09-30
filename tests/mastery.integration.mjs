@@ -372,7 +372,7 @@ try {
     owner: randomUUID(),
     sequence: 1,
     seconds: 300,
-    attemptId: timer.data.question.id,
+    since: Date.now(),
   });
   assert.equal(overBatch.status, 200, "a five-minute batch is accepted");
   const recorded = db
@@ -406,16 +406,14 @@ try {
   // A child who really has had the question open for the length of a batch must
   // have that batch recorded.
   db.prepare("DELETE FROM study_clock WHERE user_id=?").run(userId);
-  db.prepare("UPDATE attempts SET created_at=? WHERE id=?").run(
-    Date.now() - 300000,
-    timer.data.question.id,
-  );
   const firstBatch = await call("/api/rewards", {
     action: "time",
     owner: randomUUID(),
     sequence: 1,
     seconds: 300,
-    attemptId: timer.data.question.id,
+    // The session began five minutes ago, which is what the server used to read
+    // off a pending attempt's creation time.
+    since: Date.now() - 300000,
   });
   assert.equal(firstBatch.status, 200);
   const firstTick = db
@@ -431,16 +429,12 @@ try {
   // And the clamp still holds for that first batch: claiming the full five
   // minutes after only half of it has passed records half, not all.
   db.prepare("DELETE FROM study_clock WHERE user_id=?").run(userId);
-  db.prepare("UPDATE attempts SET created_at=? WHERE id=?").run(
-    Date.now() - 150000,
-    timer.data.question.id,
-  );
   await call("/api/rewards", {
     action: "time",
     owner: randomUUID(),
     sequence: 1,
     seconds: 300,
-    attemptId: timer.data.question.id,
+    since: Date.now() - 150000,
   });
   assert.equal(
     db
@@ -451,6 +445,50 @@ try {
     150,
     "but a first batch still cannot claim more than the wall time that passed",
   );
+
+  // The guard that replaced the pending-attempt lookup. A client names its own
+  // start time now, so naming last Tuesday must not backdate an afternoon of
+  // study into today. The bound is one batch back, and a claim is capped at one
+  // batch, so the worst a client can do is the same single batch a legitimate
+  // first tick of a session records.
+  db.prepare("DELETE FROM study_clock WHERE user_id=?").run(userId);
+  await call("/api/rewards", {
+    action: "time",
+    owner: randomUUID(),
+    sequence: 1,
+    seconds: 300,
+    since: Date.now() - 86400000 * 7,
+  });
+  assert.equal(
+    db
+      .prepare(
+        "SELECT seconds FROM study_ticks WHERE user_id=? ORDER BY created_at DESC,rowid DESC LIMIT 1",
+      )
+      .get(userId).seconds,
+    300,
+    "a start time from last week records one batch and no more, never an afternoon",
+  );
+
+  // And a start time in the future must not be able to record time that has not
+  // happened, or to make the first tick of every session record nothing.
+  db.prepare("DELETE FROM study_clock WHERE user_id=?").run(userId);
+  await call("/api/rewards", {
+    action: "time",
+    owner: randomUUID(),
+    sequence: 1,
+    seconds: 300,
+    since: Date.now() + 86400000,
+  });
+  assert.equal(
+    db
+      .prepare(
+        "SELECT seconds FROM study_ticks WHERE user_id=? ORDER BY created_at DESC,rowid DESC LIMIT 1",
+      )
+      .get(userId).seconds,
+    0,
+    "a start time in the future records nothing rather than a negative interval",
+  );
+  db.prepare("DELETE FROM study_ticks WHERE user_id=?").run(userId);
 
   // The dashboard totals come from the running counters the triggers maintain,
   // so they must agree with the events that maintain them. The progress table is

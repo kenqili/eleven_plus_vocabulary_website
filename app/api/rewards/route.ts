@@ -28,7 +28,7 @@ export async function POST(request: Request) {
       typeof input.owner === "string" &&
       typeof input.sequence === "number" &&
       typeof input.seconds === "number" &&
-      typeof input.attemptId === "string"
+      typeof input.since === "number"
     ) {
       await rateLimit(`study-time:${user.id}`, 600);
       return json(
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
           owner: input.owner,
           sequence: input.sequence,
           seconds: input.seconds,
-          attemptId: input.attemptId,
+          since: input.since,
         }),
       );
     }

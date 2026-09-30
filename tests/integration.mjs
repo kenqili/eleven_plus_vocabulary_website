@@ -535,7 +535,7 @@ try {
   const owner = randomUUID();
   const tick = {
     action: "time",
-    attemptId: lastPractice.id,
+    since: Date.now(),
     owner,
     sequence: 1,
     seconds: 0,
@@ -571,10 +571,10 @@ try {
       await call("/api/rewards", {
         ...checkpoint,
         sequence: 3,
-        attemptId: randomUUID(),
+        since: "yesterday",
       })
     ).status,
-    409,
+    400,
   );
   // A rerun of the historic importer must not duplicate any credit or time event.
   sql(`UPDATE users SET rewards_initialized=0 WHERE id='${userId}';`);
