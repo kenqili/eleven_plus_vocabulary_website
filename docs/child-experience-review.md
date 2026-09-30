@@ -17,7 +17,7 @@ Implements the eight improvements from the simulated age-nine/ten usability revi
 
 ## Data and deployment
 
-Apply `drizzle/0005_perpetual_hercules.sql` before serving the updated APIs. This additive migration preserves prior reading/credit history, adds revisioned bookmarks and reading preferences, and backfills daily story finishes from existing completions. Node development applies migrations through its existing startup runner; hosted D1 must receive the new migration through the normal deployment process.
+The schema is one file, `drizzle/0000_baseline.sql`, and it includes the revisioned bookmarks, the reading tables and the credit triggers this review depends on. Deploy with `scripts/deploy.sh`, which applies it before uploading the Worker. and reading preferences, and backfills daily story finishes from existing completions. Node development applies migrations through its existing startup runner; hosted D1 must receive the new migration through the normal deployment process.
 
 The runtime never needs Azure credentials. They are used only by the explicit audio generation scripts. Recordings and their manifests live under `public/audio/vocabulary` for single words and `public/audio/stories` for the full narrations; deploy these static assets with the app.
 

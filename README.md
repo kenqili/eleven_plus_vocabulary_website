@@ -58,38 +58,33 @@ npm run install:ci
 # Copy .env.example to .env; never commit .env
 npm run db:generate
 npm run build
-node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0000_gray_mandrill.sql
-node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0001_orange_jocasta.sql
-node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0002_brainy_famine.sql
-node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0003_ordinary_edwin_jarvis.sql
-node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0004_superb_the_fallen.sql
-node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0005_perpetual_hercules.sql
-node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0006_dazzling_doctor_faustus.sql
-node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0007_long_human_torch.sql
-node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0008_square_metal_master.sql
-node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0009_white_ricochet.sql
-node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0010_coach_last_seen.sql
-node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0011_reconcile_mastered_totals.sql
-node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0012_entitlement_and_purchases.sql
-node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0013_password_reset.sql
-# Apply future migrations once, in filename order.
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 migrations apply DB --local --config dist/server/wrangler.json --persist-to .wrangler/state
 npm run dev
 ```
 
 ### Applying migrations to production
 
-Run the read-only probe first, so you know which of the four recent migrations
-production is actually missing. It only reads `sqlite_master` and
-`pragma_table_info`, so it is safe to paste and cannot change anything:
+**Do not apply migration files to production by hand.** `d1 migrations apply`
+records every migration it runs in `d1_migrations` and skips those next time;
+`d1 execute --file` records nothing. So a database touched by hand has a
+complete schema and an empty ledger, and the next `migrations apply` re-runs
+`0000` and stops on `table "attempts" already exists` - nothing damaged, nothing
+applied, every deploy failed. This repository's production database was in
+exactly that state for weeks.
+
+Migrations go out through the deploy script, which applies pending ones before
+uploading the Worker and stops before uploading anything if one fails:
+
+```sh
+WORKER_NAME=<the deployed Worker's own name> bash scripts/deploy.sh --skip-verify
+```
+
+To see what the schema looks like without changing anything - it only reads
+`sqlite_master` and `pragma_table_info`:
 
 ```
 npx wrangler d1 execute DB --remote --config dist/server/wrangler.json --file scripts/check-production-state.sql
 ```
-
-Then apply anything it reports as `MISSING`, in filename order, one command per
-file. **`ALTER TABLE ... ADD COLUMN` is not idempotent**: a migration that has
-already been applied fails when it runs again, which is why the probe comes
-first and why the order matters.
 
 A migration that is on disk but missing from `drizzle/meta/_journal.json` is one
 that no tool-driven deploy will ever run, and nothing warns you at the time. That

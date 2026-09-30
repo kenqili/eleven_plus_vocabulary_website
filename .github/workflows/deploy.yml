@@ -23,9 +23,11 @@
 #   4. Add the D1 database id as D1_ID and its name as D1_NAME. A wrong value here
 #      is the one mistake that is not obvious: migrations would apply to a
 #      database nobody reads, and the deploy would still succeed.
-#   5. Seed d1_migrations if the database was ever migrated by hand - see
-#      scripts/seed-migrations-ledger.sql. Skip it if it has only ever been
-#      migrated by this workflow.
+#   5. Nothing to do by hand. Do not seed d1_migrations, and do not apply a
+#      migration file with `d1 execute --file`: neither records what it ran, so
+#      both leave a database that `migrations apply` cannot reason about. If a
+#      database has tables but no ledger, empty it - that is a repair, and it is
+#      the only one.
 name: Deploy
 
 on:

@@ -95,12 +95,16 @@ and must not be pointed at the production database.
 
 ### 4. Run the migrations
 
-The schema lives in `drizzle/`, applied in filename order. The newest is
-`0014_email_verification.sql`, which adds the `email_verifications` table and
-`users.email_verified_at`; sign-in refuses an unverified address, so a deploy
-without it locks every new account out of the app rather than degrading one
-feature. A deploy without `0010_coach_last_seen.sql` fails on the first answer,
-not at boot.
+The schema lives in `drizzle/`, applied in filename order. It is one file,
+`0000_baseline.sql`, which is the whole schema including the triggers - the
+fifteen files it replaced were a history rather than a schema, and the database
+was emptied, so nothing was lost. From here on, `npm run db:generate` adds a
+file per change and appends it to `drizzle/meta/_journal.json`, which is how
+`d1 migrations apply` finds it.
+
+Read the baseline's header before editing it: it is hand-written on purpose,
+because drizzle-kit models tables and columns only and would silently drop the
+four triggers that award credits and record study time.
 
 **`scripts/deploy.sh` applies these for you**, and in the only order that is
 safe: migrations first, the Worker second, and a failed migration exits non-zero
@@ -135,13 +139,30 @@ npx wrangler d1 migrations apply DB --remote --config dist/server/wrangler.json
 half-way leaves a partial schema, and the next file will fail on the missing
 table, so fix the cause and re-run only the file that failed.
 
-Keep the full trigger statements intact, including the whitespace around
-`CASE`/`END`: wrangler splits the file on statement boundaries, and the
-`learning_awards`, `story_read_award`, `story_tick_totals` and
-`study_tick_totals` triggers are what award credits. `redeem_badge` and
-`badge_receipt` are named in older notes but no longer exist -
-`0012_entitlement_and_purchases.sql` drops both, because entitlements are
-checked in the application now.
+**No `CASE` in a trigger body, and that is not a style preference.**
+`d1 migrations apply` sends each migration file to D1 as one string and lets the
+**server** split it into statements; `d1 execute --file` splits it locally
+first. The local splitter understands `CASE ... END`. The server's does not, so it
+splits at a `;` that is really inside a trigger body, and the migration fails
+with `incomplete input` - having applied the identical SQL by hand minutes
+earlier. That is not a hypothesis: it is what stopped every deploy at
+`0003_ordinary_edwin_jarvis.sql`, which is the first migration with a trigger in
+it.
+
+So `learning_awards` computes its rewards arithmetically instead, which is
+possible because a SQLite boolean is 1 or 0: `2*(correct*eligible)` is the same
+as `CASE WHEN correct=1 AND eligible=1 THEN 2 ELSE 0 END`. The old and new
+expressions were compared over every combination of `correct`, `eligible` and
+`mastered` across ten streak values and agree everywhere.
+`tests/credits.test.mjs` fails if a `CASE` reappears in that trigger, and it
+compares the trigger against the TypeScript reward rules answer for answer.
+
+`BEGIN ... END` cannot be avoided - that is what a trigger is - and the other
+three (`story_read_award`, `story_tick_totals`, `study_tick_totals`) have no
+`CASE` and never did. `redeem_badge` and `badge_receipt` appear in older notes but
+do not exist: they were created and then dropped while entitlement moved into the
+application, and a baseline describes the schema rather than the steps that
+changed it.
 
 To check the schema rather than trust it, apply every file to an empty database
 and read `sqlite_master` directly. A count written into a document goes stale
@@ -205,8 +226,8 @@ the key. The token itself is still written to `password_resets` when the send
 fails, so a row there with no email arriving confirms the flow ran and the
 delivery is the part that broke.
 
-**Unlike a password reset, this failure is not invisible.** Since
-`0014_email_verification.sql`, sign-in refuses an address with no
+**Unlike a password reset, this failure is not invisible.** Since email
+verification landed, sign-in refuses an address with no
 `email_verified_at` and answers 403 with "check your inbox for the link that
 confirms this address" - so a deployment whose mail does not actually send is
 not a degraded feature, it is every new account unable to sign in at all. The
@@ -442,14 +463,12 @@ is damaged and nothing is applied.
 
 That is what this repository's production database looked like: months of
 `d1 execute --file` while the deploy script did not exist. It was emptied, and
-the next deploy rebuilt it from `0000` and wrote the ledger that every deploy
-after that reads. Nothing is needed to repair an empty ledger except an empty
-database.
-
-For a database that must be repaired in place rather than rebuilt,
-`scripts/seed-migrations-ledger.sql` records the migrations by hand. It is
-already behind - it names fourteen migrations and takes `0000`-`0009` on trust -
-so prefer emptying the database.
+the next deploy rebuilt it from `0000_baseline.sql` and wrote the ledger that
+every deploy after that reads. Nothing is needed to repair an empty ledger except
+an empty database, and there is no script here to seed one by hand - that was
+`scripts/seed-migrations-ledger.sql`, and it is gone for the same reason: it named
+fourteen migration files that no longer exist, so it could not have worked, and it
+was the route this rule exists to close.
 
 Verify what the ledger thinks before trusting a deploy: `npm run
 check:deploy` locally, and the `Migrations to be applied` lines in the build log
