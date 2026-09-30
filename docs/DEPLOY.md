@@ -275,7 +275,7 @@ site — it sends a parent who has just paid to a page that does not exist. Chec
 ## Deploying
 
 ```sh
-npm test                                                  # 175 tests, must be green
+npm test                                                  # 235 tests, must be green
 npm run typecheck && npm run lint
 D1_ID=<database_id> D1_NAME=<database_name> npm run build  # produces dist/
 npx wrangler deploy
@@ -288,6 +288,67 @@ automatically, so the database id the build wrote is the one that ships.
 `wrangler deploy` uploads whatever is in it, so deploying without a fresh build
 ships the previous build. That is not a theoretical risk: a deploy of a stale
 `dist/` is how a build that predated the last few commits went out.
+
+### Migrations have to run before the code
+
+The line above is missing one step, and its absence is not a small thing.
+
+`wrangler deploy` alone does not migrate anything. If a release reads a column
+the database does not have, the Worker starts serving requests that fail, and
+rolling the deploy back does not help because the previous code was happy with
+the previous schema. `users.expiry_date` is read by `membership()` on *every*
+authenticated request, so that is not a degraded feature - it is every signed-in
+request failing.
+
+So the order is migrations, then the Worker, as two commands. `scripts/deploy.sh`
+does it, and it takes the database id from the config the build just produced,
+so it cannot be pointed at the wrong database by a stale environment variable.
+
+## Cloudflare Workers Builds (automatic deploys)
+
+In the dashboard: **Workers & Pages → your Worker → Settings → Builds**, or
+**Create → Workers Builds** to connect the repository.
+
+| Setting | Value |
+| --- | --- |
+| **Build command** | `npm run build` |
+| **Deploy command** | `bash scripts/deploy.sh --skip-verify --no-build` |
+| **Root directory** | leave at the repository root |
+| **Build variable** | `D1_ID` = the D1 database id |
+| **Build variable** | `D1_NAME` = `minewords` |
+
+Notes on each, because the two commands are not interchangeable:
+
+- **`--no-build` matters.** Workers Builds runs the build command and *then* the
+  deploy command. Without this flag the deploy command would build a second time,
+  wasting several minutes on every deploy.
+- **`--skip-verify` matters.** The tests, typecheck and lint belong in the build
+  command, not the deploy command. Put them there so a failing test stops the
+  build before anything is uploaded.
+- **The migrations run from the deploy command**, which is why it is not simply
+  `npx wrangler deploy`. That is the whole change: the deploy command applies
+  pending migrations first, and a failed migration exits non-zero so the Worker is
+  never updated.
+- **`D1_ID` and `D1_NAME` are build variables**, because the build writes the
+  database id into `dist/server/wrangler.json` and the deploy command reads it
+  from there. Getting `D1_ID` wrong is the one mistake that will not announce
+  itself: the build would target the wrong database and every later step would
+  still report success.
+- If the repository is set up to run tests in the build command, use
+  `npm run verify:client` there rather than listing the three steps.
+
+**One-time bootstrap.** If the database has only ever been migrated by hand with
+`wrangler d1 execute --file`, its `d1_migrations` ledger is empty, and the first
+`d1 migrations apply` will try to run every migration from the start and stop on
+the first column that already exists. Nothing is damaged and nothing is applied,
+but every deploy fails until the ledger is seeded. See
+`scripts/seed-migrations-ledger.sql`, which records only the migrations whose
+effects it can find in the schema. Skip it if this workflow has always been the
+only thing migrating.
+
+Verify what the ledger thinks before trusting a deploy: `npm run
+check:deploy` locally, and the `Migrations to be applied` lines in the build log
+on Cloudflare.
 
 ### Every deploy, after the first
 
