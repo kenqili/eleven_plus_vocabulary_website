@@ -21,10 +21,12 @@
  */
 import { CHOICES_PER_PROBLEM, type Problem } from "./bank.ts";
 import { chooseWord, reviewDueAt, RECENT_WORD_WINDOW } from "./ordering.ts";
+import { awardFor, ELIGIBLE_ANSWERS, type Award } from "./credits.ts";
 import {
   advanceMastery,
   answerWindow,
   classify,
+  CUMULATIVE_FLOOR,
   hasMastered,
   initialMastery,
   masteryProgress,
@@ -70,6 +72,15 @@ export type EngineOptions = {
   typeCounts: [string, string, number][];
   attemptCount: number;
   recent: string[];
+  /** The account's credit streak, so the bonus is counted from where it stands. */
+  streak?: number;
+  /**
+   * How many times each word has already paid, so the cap holds across a reload.
+   *
+   * The server counts these; the browser has no other way to know them, since a
+   * correct-answer total is not the same number.
+   */
+  eligibleCounts?: [string, number][];
   addedWords: {
     id: string;
     word: string;
@@ -187,6 +198,16 @@ export type GradedAnswer = {
   evidence: Evidence;
   mastery: ReturnType<typeof masteryProgress>;
   newlyMastered: boolean;
+  /**
+   * What this answer is worth, worked out with the same rules the database uses.
+   *
+   * Computed here rather than left to the flush so the child sees their balance
+   * move when they answer. It is the server's number that becomes true, and a
+   * flush returns the authoritative balance to reconcile against; but because
+   * both sides run the same functions from the same starting streak, this is an
+   * exact figure rather than a guess.
+   */
+  award: Award;
   help: string;
   daysSince?: number;
 };
@@ -206,6 +227,15 @@ export class PracticeEngine {
   private readonly counters = new Map<string, ClientProgress>();
   private readonly typeCounts = new Map<string, Map<QuestionType, number>>();
   private attemptCount: number;
+  /**
+   * Counted answers per word, which is what the five-answer cap counts.
+   *
+   * Separate from `correct` on purpose: the SQL keys eligibility off both the
+   * running total *and* the number of times the word has actually paid, and an
+   * answer that is right but not counted moves one and not the other.
+   */
+  private eligibleCounts = new Map<string, number>();
+  private streak = 0;
   private recent: string[];
   private lastQuestion: ShownQuestion | null = null;
   private readonly options: Required<Pick<EngineOptions, "level" | "types">> & {
@@ -248,6 +278,11 @@ export class PracticeEngine {
       this.typeCounts.set(wordId, byType);
     }
     this.attemptCount = options.attemptCount;
+    // The streak the credit rules read is the account's, not a guess: a flush
+    // reconciles it, and until then this is where the every-third bonus starts.
+    this.streak = options.streak ?? 0;
+    for (const [wordId, count] of options.eligibleCounts ?? [])
+      this.eligibleCounts.set(wordId, count);
     this.recent = [...options.recent];
     this.options = {
       level: options.level,
@@ -384,9 +419,13 @@ export class PracticeEngine {
    * and measuring from the wrong origin makes every question read as a guess,
    * which stops counting towards mastery.
    */
-  grade(selected: number): GradedAnswer | null {
+  grade(
+    selected: number,
+    options: { assisted?: boolean } = {},
+  ): GradedAnswer | null {
     const question = this.lastQuestion;
     if (!question) return null;
+    const answer = { assisted: options.assisted === true };
     const correct =
       selected >= 0 && question.choices[selected] === question.answer;
     const skipped = selected === -1;
@@ -394,7 +433,7 @@ export class PracticeEngine {
     const evidence = classify({
       correct,
       revealed: skipped,
-      assisted: false,
+      assisted: answer.assisted,
       seconds,
       wallSeconds: seconds,
       window: answerWindow(question.choices),
@@ -407,9 +446,15 @@ export class PracticeEngine {
     );
     const day = new Date(this.options.now()).toISOString().slice(0, 10);
     this.counters.set(question.wordId, {
-      correct: previous.correct,
-      run: previous.run,
-      recalls: previous.recalls,
+      // The advanced counters, not the ones this answer started from. Keeping
+      // `previous` here looks harmless and is not: `run` and `recalls` would stay
+      // at zero forever, no word could ever reach its target, and a flush would
+      // write those zeros over the child's real progress. The server stores
+      // exactly these three fields from `advanceMastery`, and the two have to
+      // agree or the same question is worth a different thing on each side.
+      correct: mastery.correct,
+      run: mastery.run,
+      recalls: mastery.recalls,
       mastered: hasMastered(mastery) ? 1 : previous.mastered,
       seen: previous.seen + 1,
       lastSeen: day,
@@ -418,6 +463,25 @@ export class PracticeEngine {
       // advancing, and a flush reconciles it with the server's.
       retryAt: correct ? previous.retryAt : reviewDueAt(this.attemptCount + 1),
     });
+    // Eligibility, from the two counters the SQL uses: the running total of
+    // correct answers for the word, and how many times it has actually paid. The
+    // two are not the same - an answer that is right but not counted moves one
+    // and not the other - which is the same distinction the SQL draws.
+    const eligibleBefore = this.eligibleCounts.get(question.wordId) ?? DEFAULTS;
+    const eligible =
+      correct && !skipped && !answer.assisted
+        ? previous.correct < CUMULATIVE_FLOOR &&
+          eligibleBefore < ELIGIBLE_ANSWERS
+        : false;
+    if (eligible) this.eligibleCounts.set(question.wordId, eligibleBefore + 1);
+    // The same functions the trigger's arithmetic was copied from, run from the
+    // account's own streak. A flush returns the server's balance to confirm.
+    const award = awardFor(
+      { correct, eligible, mastered: mastery.newlyMastered },
+      this.streak,
+    );
+    this.streak = award.streakAfter;
+
     const byType =
       this.typeCounts.get(question.wordId) ?? new Map<QuestionType, number>();
     if (!skipped)
@@ -436,12 +500,18 @@ export class PracticeEngine {
       evidence,
       mastery: masteryProgress(mastery, question.difficulty),
       newlyMastered: mastery.newlyMastered,
+      award,
       help: question.help,
       daysSince: daysSince(previous.lastSeen, this.options.now()),
     };
   }
 
   /** The state to hand a flush, so the server can apply exactly this difference. */
+  /** The account's credit streak, so a new session starts where the last ended. */
+  get creditStreak(): number {
+    return this.streak;
+  }
+
   pending(): {
     attemptCount: number;
     recent: string[];
