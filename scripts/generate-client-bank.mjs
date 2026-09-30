@@ -156,7 +156,18 @@ const manifest = Object.fromEntries(
     },
   ]),
 );
+// The manifest is written twice, deliberately. The JSON beside the assets is
+// what a browser can fetch without an account; the copy in data/ is the one the
+// server imports, so /api/progress can name the right file in the same response
+// that tells the child what they know. It is committed for the same reason
+// data/problem-bank.json is: it is a build product whose freshness is checkable,
+// and a generated TypeScript module would leave `tsc` broken on a clean clone
+// that had not run the generator yet.
 writeFileSync(resolve(OUT, "manifest.json"), JSON.stringify(manifest, null, 2));
+writeFileSync(
+  resolve("data/client-bank.json"),
+  JSON.stringify(manifest, null, 2) + "\n",
+);
 
 for (const entry of written)
   console.log(
