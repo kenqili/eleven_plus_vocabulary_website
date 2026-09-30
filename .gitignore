@@ -60,3 +60,8 @@ next-env.d.ts
 # scripts/generate-word-levels.py. See data/word-levels/README.md.
 /.tools/
 /.venv-wordfreq/
+
+# The browser's copy of the question bank, content-hashed and rebuilt by
+# scripts/generate-client-bank.mjs on every build. Generated, never edited.
+# The committed audio beside it is the opposite case and is deliberately tracked.
+public/bank/

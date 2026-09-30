@@ -37,3 +37,12 @@
 
 /audio/stories/manifest.json
   Cache-Control: public, max-age=300, must-revalidate
+
+# The question bank the browser builds its own questions from.
+#
+# These files are content-hashed by scripts/generate-client-bank.mjs, so the URL
+# changes exactly when the bytes do. A year is therefore safe here, and worth it:
+# this is a 349 KB download standing between a child and their first question,
+# and without this header the browser revalidates it on every visit.
+/bank/*.json
+  Cache-Control: public, max-age=31536000, immutable

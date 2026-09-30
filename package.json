@@ -9,11 +9,11 @@
     "install:ci": "node scripts/install-ci.mjs",
     "dev": "node scripts/run-framework.mjs dev",
     "dev:node": "node scripts/run-framework.mjs dev --node",
-    "build": "npm run bank:generate && node scripts/run-framework.mjs build",
+    "build": "npm run bank:generate && npm run bank:client && node scripts/run-framework.mjs build",
     "start": "node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js dev --config dist/server/wrangler.json --local --persist-to .wrangler/state --ip 0.0.0.0 --inspector-port 0",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate",
-    "test": "node --test tests/core.test.mjs tests/parent-words.test.mjs tests/print-layout.test.mjs tests/theme.test.mjs tests/sounds.test.mjs tests/info.test.mjs tests/security.test.mjs tests/stripe.test.mjs tests/stripe-billing.test.mjs tests/header.test.mjs tests/coach.test.mjs tests/cloze.test.mjs tests/questions.test.mjs tests/ordering.test.mjs tests/rewards.test.mjs tests/mastery.test.mjs tests/macos-version.test.mjs tests/entitlement.test.mjs tests/word-summary.test.mjs tests/calendar.test.mjs tests/stories.test.mjs tests/child-experience.test.mjs",
+    "test": "node --test tests/core.test.mjs tests/parent-words.test.mjs tests/print-layout.test.mjs tests/theme.test.mjs tests/sounds.test.mjs tests/info.test.mjs tests/security.test.mjs tests/stripe.test.mjs tests/stripe-billing.test.mjs tests/header.test.mjs tests/coach.test.mjs tests/cloze.test.mjs tests/questions.test.mjs tests/ordering.test.mjs tests/rewards.test.mjs tests/mastery.test.mjs tests/macos-version.test.mjs tests/entitlement.test.mjs tests/client-bank.test.mjs tests/word-summary.test.mjs tests/calendar.test.mjs tests/stories.test.mjs tests/child-experience.test.mjs",
     "test:integration": "node tests/integration.mjs",
     "typecheck": "tsc --noEmit",
     "words:validate": "node scripts/validate-words.mjs",
@@ -34,7 +34,8 @@
     "bank:generate": "node --experimental-strip-types scripts/generate-problem-bank.mjs",
     "prebuild": "node --experimental-strip-types scripts/check-bank-fresh.mjs",
     "verify:chunks": "node scripts/check-client-chunks.mjs",
-    "test:stats-batching": "node --experimental-strip-types tests/stats-batching.integration.mjs"
+    "test:stats-batching": "node --experimental-strip-types tests/stats-batching.integration.mjs",
+    "bank:client": "node scripts/generate-client-bank.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
