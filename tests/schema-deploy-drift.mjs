@@ -18,6 +18,14 @@
  * the app now and what breaks one feature later, by looking for each missing
  * name in the application source rather than trusting a list written by hand.
  *
+ * It looks both ways, and the second direction is the one that had been missing.
+ * The obvious gap - declared but not built - breaks the deploy, so it was caught.
+ * The reverse - built but not declared - breaks nothing on the deploy, because
+ * the migrations do build it, and so it went unnoticed for a whole feature: a
+ * table the app writes to and a column it reads that no tool reading
+ * `db/schema.ts` could see. A table only the app uses is the quieter of the two
+ * failures, and it is the one a one-directional check cannot see.
+ *
  * Nothing here touches production. It is a statement of what is missing, so the
  * list can be checked against a real database by hand.
  */
@@ -45,7 +53,8 @@ function buildFrom(files) {
       for (const { name: column } of db
         .prepare("SELECT name FROM pragma_table_info(?)")
         .all(name))
-        if (!madeBy.has(`${name}.${column}`)) madeBy.set(`${name}.${column}`, tag);
+        if (!madeBy.has(`${name}.${column}`))
+          madeBy.set(`${name}.${column}`, tag);
     }
   }
   return { db, madeBy };
@@ -114,7 +123,9 @@ const journal = JSON.parse(readFileSync("drizzle/meta/_journal.json", "utf8"));
 const journalled = new Set(journal.entries.map((e) => e.tag));
 
 const complete = buildFrom(all);
-const fromJournal = buildFrom(all.filter((f) => journalled.has(f.replace(/\.sql$/, ""))));
+const fromJournal = buildFrom(
+  all.filter((f) => journalled.has(f.replace(/\.sql$/, ""))),
+);
 
 const schemaOf = (db) => {
   const out = new Map();
@@ -150,17 +161,79 @@ for (const [table, columns] of want) {
     if (!have.get(table).has(column)) missing.push({ table, column, all: [] });
 }
 
-console.log("Schema declared in db/schema.ts vs schema a journal-driven deploy builds");
+/**
+ * The other direction: built by a migration, absent from `db/schema.ts`.
+ *
+ * The walk above cannot see this at all, and the blindness is not subtle once
+ * stated - it only ever asks "is everything declared present?", so a table or a
+ * column a migration created and the schema file never learned about has no
+ * representation to be compared with. It is invisible whether it arrived with
+ * the commit that added the migration or was dropped from the file by a later
+ * one, which is how `email_verifications` and `users.email_verified_at` were
+ * missing for a whole feature: the deploy was correct and the gate agreed,
+ * because the gate was not looking.
+ *
+ * Production does not need anything applied for this - the migrations are the
+ * migrations, and the database is right. What is wrong is `db/schema.ts`, which
+ * is what the application is written against: a table the app writes to and a
+ * column it reads are both invisible to every tool that reads the file, so
+ * neither can be type-checked, and the next migration generated from the file
+ * has no idea they exist. So it is reported as drift, and it fails the gate like
+ * the other direction does, because a deploy check that only catches half the
+ * disagreement is the kind that gets trusted for both halves.
+ */
+const undeclared = [];
+for (const table of [...have.keys()].sort())
+  if (!want.has(table)) undeclared.push(table);
+// Then column by column, but only inside a table both sides have: a table
+// missing from the schema file is already reported whole, and listing its
+// columns as well would be the same fact three times over.
+for (const table of [...have.keys()].sort())
+  if (want.has(table))
+    for (const column of [...have.get(table)].sort())
+      if (!want.get(table).has(column)) undeclared.push(`${table}.${column}`);
+
+console.log(
+  "Schema declared in db/schema.ts vs schema a journal-driven deploy builds",
+);
 console.log("=".repeat(72));
 console.log();
-console.log(`  journal covers   ${journalled.size} of ${all.length} migrations (last: ${[...journalled].pop()})`);
+console.log(
+  `  journal covers   ${journalled.size} of ${all.length} migrations (last: ${[...journalled].pop()})`,
+);
 for (const file of all)
   if (!journalled.has(file.replace(/\.sql$/, "")))
     console.log(`  NOT JOURNALLED   drizzle/${file}`);
 console.log();
 
+if (undeclared.length) {
+  console.log(
+    `  UNDECLARED (${undeclared.length}) - a migration creates these and db/schema.ts does not:`,
+  );
+  for (const label of undeclared) {
+    console.log(`    ${label}`);
+    const hits = referenced(label);
+    for (const hit of hits.slice(0, 2))
+      console.log(`      used at  ${hit.at}  ${hit.line}`);
+    if (hits.length > 2) console.log(`      ...and ${hits.length - 2} more`);
+  }
+  console.log();
+  console.log(
+    "  Nothing to apply to production - the migrations already build these, and",
+  );
+  console.log(
+    "  the database is right. db/schema.ts is what is behind: declare the table",
+  );
+  console.log(
+    "  or column, so the app can be written against it and the next generated",
+  );
+  console.log("  migration starts from what a deploy actually produces.");
+  console.log();
+}
 if (!missing.length) {
-  console.log("  Nothing missing. The declared schema is what a deploy produces.");
+  console.log(
+    "  Nothing missing. The declared schema is what a deploy produces.",
+  );
 } else {
   const cold = [];
   const hot = [];
@@ -177,24 +250,36 @@ if (!missing.length) {
   for (const { label, hits, by } of hot) {
     console.log(`    ${label}`);
     console.log(`      added by ${by}`);
-    for (const hit of hits.slice(0, 2)) console.log(`      ${hit.at}  ${hit.line}`);
+    for (const hit of hits.slice(0, 2))
+      console.log(`      ${hit.at}  ${hit.line}`);
     if (hits.length > 2) console.log(`      ...and ${hits.length - 2} more`);
     console.log();
   }
-  console.log("  Read those lines before acting. A match can be a same-named column on");
-  console.log("  another table, or a TypeScript property, and only the line shows which.");
+  console.log(
+    "  Read those lines before acting. A match can be a same-named column on",
+  );
+  console.log(
+    "  another table, or a TypeScript property, and only the line shows which.",
+  );
   console.log();
   console.log();
   console.log(`  MISSING and not referenced yet (${cold.length}) - dormant:`);
-  for (const { label, by } of cold) console.log(`    ${label.padEnd(26)} added by ${by}`);
+  for (const { label, by } of cold)
+    console.log(`    ${label.padEnd(26)} added by ${by}`);
 }
 console.log();
 // A non-zero exit makes this usable as a gate, which is the only way it gets run
 // before a deploy rather than after one. The printed lines are still the point -
 // a reader has to judge the matches - so the detail is on stdout, not stderr.
+// Either direction is drift: a deploy that is missing something and a schema
+// file that is behind are different problems with the same answer, and the gate
+// is only worth running before a deploy if it fails on both.
+const drifted = missing.length || undeclared.length;
 console.log(
   missing.length
     ? "Production needs these applied before the current code is served."
-    : "Nothing to apply. db/schema.ts and the migrations agree.",
+    : undeclared.length
+      ? "Production is right. db/schema.ts is behind, and needs the rows above declared."
+      : "Nothing to apply. db/schema.ts and the migrations agree.",
 );
-process.exitCode = missing.length ? 1 : 0;
+process.exitCode = drifted ? 1 : 0;

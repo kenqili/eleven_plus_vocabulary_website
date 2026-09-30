@@ -5,6 +5,7 @@ import { spawnSync } from "node:child_process";
 import { words } from "../scripts/load-word-bank.mjs";
 import { parseCsv } from "../lib/challenge/words.ts";
 import { problems } from "../scripts/load-problem-bank.mjs";
+import { credentials, confirmAddress } from "./helpers/account.mjs";
 const origin = process.env.TEST_ORIGIN || "http://localhost:5173";
 if (!["localhost", "127.0.0.1"].includes(new URL(origin).hostname))
   throw Error("Integration tests only run against local development.");
@@ -13,7 +14,11 @@ const nodeDatabase = process.env.TEST_NODE_DB
   : null;
 nodeDatabase?.exec("PRAGMA foreign_keys = ON; PRAGMA busy_timeout = 5000;");
 const stamp = randomUUID();
-const password = `Test-only-${stamp}`;
+// One address and one password for the whole run, from the helper the other
+// suites use. The cross-origin registration below and the real one are then the
+// same email, so the 403 also proves that a rejected registration created no
+// account - the second register could only be a 409 otherwise.
+const { email, password } = credentials("integration");
 let cookie = "";
 async function call(path, data, options = {}) {
   const response = await fetch(origin + path, {
@@ -118,19 +123,31 @@ try {
   assert.equal((await call("/api/challenge?types=invalid")).status, 400);
   const missingOrigin = await call(
     "/api/auth/register",
-    { email: `${stamp}@example.test`, password },
+    { email, password },
     { headers: { Origin: "https://other.example" } },
   );
   assert.equal(missingOrigin.status, 403);
-  const account = await call("/api/auth/register", {
-    email: `${stamp}@example.test`,
-    password,
-  });
+  const account = await call("/api/auth/register", { email, password });
   assert.equal(account.status, 200, JSON.stringify(account.data));
   userId = account.data.user.id;
-  cookie = account.cookie.split(";")[0];
-  assert.match(account.cookie, /HttpOnly/);
-  assert.match(account.cookie, /SameSite=Lax/);
+  // Registering no longer issues a session: the address has to be confirmed
+  // first, so there is nothing to read a cookie off this reply. The account is
+  // therefore confirmed, and the session obtained by signing in - which is where
+  // the two requests below now have to come from, and where the cookie's own
+  // attributes are asserted.
+  //
+  // The confirmation is stamped directly by the helper the other suites use
+  // rather than opened from the emailed link, because this suite is about
+  // accounts, membership and questions, and the link itself has its own suite
+  // (`email-verification.integration.mjs`). The gate is still crossed the way a
+  // parent crosses it: sign-in is refused until the column is set, so the login
+  // below only succeeds because of that update.
+  confirmAddress(email);
+  const signedIn = await call("/api/auth/login", { email, password });
+  assert.equal(signedIn.status, 200, JSON.stringify(signedIn.data));
+  assert.match(signedIn.cookie, /HttpOnly/);
+  assert.match(signedIn.cookie, /SameSite=Lax/);
+  cookie = signedIn.cookie.split(";")[0];
   assert.equal((await call("/api/auth/me")).data.user.id, userId);
   const initialAccess = await call("/api/challenge");
   if (demo.data.trialDaysConfigured > 0) {
@@ -169,14 +186,22 @@ try {
   assert.equal(
     (
       await call("/api/auth/login", {
-        email: `${stamp}@example.test`,
+        email,
         password: "incorrect password",
       })
     ).status,
     401,
   );
+  // A purchase, written the way the Stripe webhook writes one. The trial is
+  // already expired above, so this is the only thing that can grant access -
+  // and it grants it by setting `users.expiry_date`, which is what `membership()`
+  // has read ever since migration 0012. The `subscriptions` row is written too
+  // because `syncSubscription` still keeps the two in step; nothing reads it for
+  // entitlement, so on its own it grants nothing, and seeding only that is what
+  // made every assertion below it fail.
   sql(
-    `INSERT INTO subscriptions (id,user_id,status,period_end,price_id,checked_at) VALUES ('test-${stamp}','${userId}','active',${Math.floor(Date.now() / 1000) + 3600},'',${Date.now()});`,
+    `UPDATE users SET expiry_date=${Date.now() + 3_600_000} WHERE id='${userId}';
+     INSERT INTO subscriptions (id,user_id,status,period_end,price_id,checked_at) VALUES ('test-${stamp}','${userId}','active',${Math.floor(Date.now() / 1000) + 3600},'',${Date.now()});`,
   );
   const [first, same] = await Promise.all([
     call("/api/challenge", { action: "next", types: ["def"] }),
@@ -240,10 +265,7 @@ try {
   assert.equal((await call("/api/auth/me")).data.user, null);
   cookie = "";
   assert.equal((await call("/api/challenge", { action: "next" })).status, 401);
-  const login = await call("/api/auth/login", {
-    email: `${stamp}@example.test`,
-    password,
-  });
+  const login = await call("/api/auth/login", { email, password });
   assert.equal(login.status, 200);
   cookie = login.cookie.split(";")[0];
   assert.notEqual(cookie, oldCookie);
@@ -393,12 +415,26 @@ try {
     0,
     "the reveal count in the summary is a count of reveals, not of attempts",
   );
+  // Searched for, then found, rather than assumed to be the first hit. Search
+  // matches the word *and its definition* as one substring, so it finds other
+  // words too: "extraneous" is defined partly with the word "irrelevant", so a
+  // search for "irrelevant" can answer with "extraneous" first. Reading
+  // `words[0]` therefore passed only when the answer happened to sort first,
+  // and failed on whichever run drew a word whose definition quotes another
+  // word. The lookup is what was meant - the word just answered has to be in
+  // its own search result - and it is the same one the mistaken word uses above.
   const answeredPage = await call(
     `/api/words?search=${encodeURIComponent(q.word)}`,
   );
-  assert.equal(answeredPage.data.words[0].id, q.wordId);
+  const answeredWordRow = answeredPage.data.words.find(
+    (word) => word.id === q.wordId,
+  );
+  assert.ok(
+    answeredWordRow,
+    "the answered word must be in its own search result",
+  );
   assert.equal(
-    answeredPage.data.words[0].correct,
+    answeredWordRow.correct,
     1,
     "the first answered word records one correct answer",
   );
@@ -649,7 +685,14 @@ try {
     ).data.complete,
     true,
   );
-  sql(`UPDATE subscriptions SET status='canceled' WHERE user_id='${userId}';`);
+  // Cancelling, the way `syncSubscription` records it: the entitlement ends now
+  // rather than at the end of a period nobody is going to pay for, and the
+  // pre-0012 row is marked so the two still agree. Only the column revokes
+  // access, so this is the half that has to move for the assertions below.
+  sql(
+    `UPDATE users SET expiry_date=${Date.now()} WHERE id='${userId}';
+     UPDATE subscriptions SET status='canceled' WHERE user_id='${userId}';`,
+  );
   assert.equal((await call("/api/words/export")).status, 402);
   assert.equal((await call("/api/words/export?format=print")).status, 402);
   const afterCancellation = await call("/api/challenge", { action: "next" });

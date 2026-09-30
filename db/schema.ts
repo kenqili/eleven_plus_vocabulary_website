@@ -35,6 +35,20 @@ export const users = sqliteTable("users", {
   /** Consecutive eligible correct answers, and the best run ever. */
   streak: integer("streak").notNull().default(0),
   bestStreak: integer("best_streak").notNull().default(0),
+  /**
+   * When the address was confirmed, as epoch milliseconds. Null means nobody has
+   * proved they can read mail there, and sign-in is refused until someone has.
+   *
+   * The reason is not politeness. A parent who mistypes their address cannot be
+   * told, because the only proof is a message arriving; they practise for the
+   * trial and discover at the worst moment that the account can never be
+   * recovered, since the password reset would have gone to the same place.
+   *
+   * Accounts that predate the column were stamped with their own `createdAt` by
+   * migration 0014, which records the weaker truth honestly rather than locking
+   * out every existing customer on the deploy.
+   */
+  emailVerifiedAt: integer("email_verified_at"),
 });
 
 /**
@@ -408,6 +422,43 @@ export const passwordResets = sqliteTable(
     index("password_resets_user").on(t.userId),
     /** Serves clearing rows that can no longer be used. */
     index("password_resets_expiry").on(t.expiresAt),
+  ],
+);
+
+/**
+ * Address confirmation, one live link per account.
+ *
+ * The same shape as `password_resets` and for the same reasons: `tokenHash` is
+ * the sha256 of the token the parent was emailed, never the token itself, so a
+ * copy of the database is not a list of links that still work; the expiry is read
+ * in the lookup rather than by a sweeper, so an un-swept table cannot be read as
+ * permission; and the unique index is what stops one token backing two rows and
+ * outliving the single use it was issued for.
+ */
+export const emailVerifications = sqliteTable(
+  "email_verifications",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    tokenHash: text("token_hash").notNull(),
+    /**
+     * When the link stops working, as epoch milliseconds. A day, rather than the
+     * hour a password reset gets, because this may be the first message this
+     * address has ever received: it has to survive an evening in a parent's
+     * inbox and a weekend, and it is the only way into the account.
+     */
+    expiresAt: integer("expires_at").notNull(),
+    createdAt: integer("created_at").notNull(),
+  },
+  (t) => [
+    /** Unique, so one token cannot back two rows and be spent twice. */
+    uniqueIndex("email_verification_token").on(t.tokenHash),
+    /** Serves retiring an account's previous link when a new one is asked for. */
+    index("email_verifications_user").on(t.userId),
+    /** Serves clearing rows that can no longer be used. */
+    index("email_verifications_expiry").on(t.expiresAt),
   ],
 );
 
