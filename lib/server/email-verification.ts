@@ -34,15 +34,6 @@ export const VERIFY_LINK_PATH = "/confirm-email";
 const TOKEN_SHAPE = /^[0-9a-f]{64}$/;
 export const isVerifyToken = (token: string) => TOKEN_SHAPE.test(token);
 
-/** An account can be signed into, or not. One column, read everywhere. */
-export async function isVerified(userId: string): Promise<boolean> {
-  const row = await database()
-    .prepare("SELECT email_verified_at FROM users WHERE id=?")
-    .bind(userId)
-    .first<{ email_verified_at: number | null }>();
-  return Boolean(row?.email_verified_at);
-}
-
 /**
  * Issue a link, retiring any previous one.
  *
@@ -59,6 +50,14 @@ export async function issueVerification(userId: string): Promise<string> {
     db
       .prepare("DELETE FROM email_verifications WHERE user_id = ?")
       .bind(userId),
+    // Already-expired rows are not evidence of anything, and clearing them here
+    // means the table does not accumulate them in a deployment that never runs a
+    // sweep. This is the same line issueResetToken carries, for the same reason.
+    // The expiry is still read in confirmEmail's lookup, so this is housekeeping
+    // and never a permission.
+    db
+      .prepare("DELETE FROM email_verifications WHERE expires_at < ?")
+      .bind(Date.now()),
     db
       .prepare(
         "INSERT INTO email_verifications (id,user_id,token_hash,expires_at,created_at) VALUES (?,?,?,?,?)",
@@ -128,14 +127,6 @@ export async function markVerified(userId: string): Promise<void> {
       "UPDATE users SET email_verified_at=? WHERE id=? AND email_verified_at IS NULL",
     )
     .bind(Date.now(), userId)
-    .run();
-}
-
-/** Housekeeping for whoever runs this. Cheap, and safe to call on a schedule. */
-export async function purgeExpired() {
-  await database()
-    .prepare("DELETE FROM email_verifications WHERE expires_at < ?")
-    .bind(Date.now())
     .run();
 }
 

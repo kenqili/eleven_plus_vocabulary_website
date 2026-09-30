@@ -1,6 +1,6 @@
-import { boundary, HttpError, json } from "@/lib/server/http";
+import { createSession, rateLimit } from "@/lib/server/auth";
 import { confirmEmail } from "@/lib/server/email-verification";
-import { createSession } from "@/lib/server/auth";
+import { boundary, HttpError, json } from "@/lib/server/http";
 
 /**
  * Opening the link a parent was sent.
@@ -29,8 +29,24 @@ export async function GET(request: Request) {
     // convince someone their account works.
     const token = new URL(request.url).searchParams.get("token") ?? "";
     if (!token) throw new HttpError(400, "This link is not valid.");
+    // Counted per IP rather than per token, and sixty is generous for a page
+    // that opens a link once. It is here for the same reason the reset check
+    // counts: this endpoint is reachable by URL, so without a limit one script
+    // can walk a token space - and a spent link is the only thing standing
+    // between a parent and a working account. cf-connecting-ip is supplied by
+    // Cloudflare; never trust X-Forwarded-For.
+    await rateLimit(
+      `confirm-email-ip:${request.headers.get("cf-connecting-ip") || "local"}`,
+      60,
+    );
     const userId = await confirmEmail(token);
+    // no-referrer because this URL carries the token, and a link out of the
+    // confirmation page must not carry it in a Referer header. next.config.ts
+    // only sets strict-origin-when-cross-origin, which still sends the full URL
+    // - query string included - on a same-origin navigation. Cache-Control is
+    // no-store from json(), so it does not sit in a shared cache either.
     return json({ ok: true }, 200, {
+      "Referrer-Policy": "no-referrer",
       "Set-Cookie": await createSession(userId, request),
     });
   });
