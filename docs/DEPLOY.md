@@ -95,26 +95,40 @@ and must not be pointed at the production database.
 
 ### 4. Run the migrations
 
-The schema lives in `drizzle/`, applied in filename order, and the last one
-(`0011_reconcile_mastered_totals.sql`) repairs the running mastered total for
-accounts that predate the `mastered` column. The one before it
-(`0010_coach_last_seen.sql`) adds a column this app's feedback now depends on.
-A deploy without either fails on the first answer, not at boot.
+The schema lives in `drizzle/`, applied in filename order. The newest is
+`0014_email_verification.sql`, which adds the `email_verifications` table and
+`users.email_verified_at`; sign-in refuses an unverified address, so a deploy
+without it locks every new account out of the app rather than degrading one
+feature. A deploy without `0010_coach_last_seen.sql` fails on the first answer,
+not at boot.
 
-**Do not use `wrangler d1 migrations apply`.** It cannot work here: wrangler
-looks for a `migrations` folder next to the config, which is
-`dist/server/migrations`, and that directory does not exist. It fails with
-"No migrations present at …/dist/server/migrations". Apply the files directly,
-in filename order, against the real database id:
+**`scripts/deploy.sh` applies these for you**, and in the only order that is
+safe: migrations first, the Worker second, and a failed migration exits non-zero
+before anything is uploaded. It is not a bare `wrangler deploy` because
+vinext writes `dist/server/wrangler.json` with no `migrations_dir` in it, so
+`d1 migrations apply` would find nothing to read. The script therefore runs
+`scripts/patch-wrangler-migrations.mjs` after the build to point that key at
+`drizzle/` and name the ledger `d1_migrations`, and *then* runs
+`d1 migrations apply`. The patch is what makes `apply` work here; it is not
+optional and it is not a convenience.
+
+**Do not apply these files with `wrangler d1 execute --file` by hand.** That
+route is not idempotent - a migration that has already run fails when it runs
+again - and it records nothing, so the next `d1 migrations apply` tries every
+file from the start and stops on the first column that already exists. The deploy
+script reconciles the ledger before `apply` runs, so that self-repairs now; see
+[the ledger repairs itself](#cloudflare-workers-builds-automatic-deploys) below.
+
+For a database that has never been touched, the manual equivalent of what the
+script does is:
 
 ```sh
 export D1_ID=<the database_id printed by d1 create>
-for file in drizzle/*.sql; do
-  echo "applying $file"
-  npx wrangler d1 execute "$D1_ID" --remote \
-    --config dist/server/wrangler.json --file "$file"
-done
+node scripts/patch-wrangler-migrations.mjs   # needs a build to have run
+npx wrangler d1 migrations apply DB --remote --config dist/server/wrangler.json
 ```
+
+`DB` is the binding name, read out of the generated config rather than guessed.
 
 **Read the output.** Each file must report its statements executed. A failure
 half-way leaves a partial schema, and the next file will fail on the missing
@@ -122,11 +136,26 @@ table, so fix the cause and re-run only the file that failed.
 
 Keep the full trigger statements intact, including the whitespace around
 `CASE`/`END`: wrangler splits the file on statement boundaries, and the
-`learning_awards`, `badge_receipt`, `redeem_badge`, `story_read_award`,
-`story_tick_totals` and `study_tick_totals` triggers are what award credits.
+`learning_awards`, `story_read_award`, `story_tick_totals` and
+`study_tick_totals` triggers are what award credits. `redeem_badge` and
+`badge_receipt` are named in older notes but no longer exist -
+`0012_entitlement_and_purchases.sql` drops both, because entitlements are
+checked in the application now.
 
-Applying all eleven files to an empty database produces 23 tables, 6 triggers
-and 16 custom indexes. That has been checked; it is what you should see.
+To check the schema rather than trust it, apply every file to an empty database
+and read `sqlite_master` directly. A count written into a document goes stale
+the next time a migration lands, so this is deliberately a command rather than
+a number:
+
+```sh
+dir=$(mktemp -d)
+sqlite3 "$dir/schema.sqlite" < <(cat drizzle/*.sql)
+sqlite3 "$dir/schema.sqlite" \
+  "select type, count(*) from sqlite_master where name not like 'sqlite_%' group by type;"
+```
+
+When last checked against the migrations on disk, that reported 25 tables,
+4 triggers and 24 indexes.
 
 ### 5. Secrets
 
@@ -147,12 +176,13 @@ npx wrangler@latest secret put STRIPE_WEBHOOK_SECRET
 `https://minewords.app`, and nothing else. It is used to build the Stripe return
 URLs, so a wrong value sends parents to a page that does not exist.
 
-**`RESEND_API_KEY` and `EMAIL_FROM` are what make password reset work**, and a
-deployment without them looks fine from the outside: the endpoint answers "if
-that address has an account, a reset link is on its way" whether or not a mail
-was sent, because any other answer would reveal which addresses are registered.
-So the only symptom is a parent who never receives anything, and the reason is in
-the logs. To see it:
+**`RESEND_API_KEY` and `EMAIL_FROM` are what make password reset and email
+confirmation work**, and a password reset against a deployment without them
+looks fine from the outside: the endpoint answers "if that address has an
+account, a reset link is on its way" whether or not a mail was sent, because
+any other answer would reveal which addresses are registered. So the only
+symptom is a parent who never receives anything, and the reason is in the logs.
+To see it:
 
 ```sh
 npx wrangler tail --format pretty
@@ -173,6 +203,24 @@ dashboard under Sending → Domains, or every send fails with 403 regardless of
 the key. The token itself is still written to `password_resets` when the send
 fails, so a row there with no email arriving confirms the flow ran and the
 delivery is the part that broke.
+
+**Unlike a password reset, this failure is not invisible.** Since
+`0014_email_verification.sql`, sign-in refuses an address with no
+`email_verified_at` and answers 403 with "check your inbox for the link that
+confirms this address" - so a deployment whose mail does not actually send is
+not a degraded feature, it is every new account unable to sign in at all. The
+password is checked first, so a wrong password still answers 401 as usual.
+Confirm a real message arrives before calling a deploy finished.
+
+If mail cannot be configured yet and existing accounts need to get in, stamp the
+column directly - but only where you already know the address belongs to the
+person who made the account, because this is the one check standing between a
+typed password and the account:
+
+```sh
+npx wrangler d1 execute DB --remote --command \
+  "UPDATE users SET email_verified_at = $(date +%s000) WHERE email_verified_at IS NULL"
+```
 
 **On `FREE_WORD_LIMIT` and `FREE_TRIAL_DAYS`:** these are optional. The defaults
 are 224 words and 7 days, and the free limit is derived from the word count, so
@@ -304,11 +352,15 @@ site — it sends a parent who has just paid to a page that does not exist. Chec
 ## Deploying
 
 ```sh
-npm test                                                  # 235 tests, must be green
+npm test                                                  # must be green
 npm run typecheck && npm run lint
 D1_ID=<database_id> D1_NAME=<database_name> npm run build  # produces dist/
 WORKER_NAME=<the deployed Worker's name> bash scripts/deploy.sh --skip-verify
 ```
+
+The number of tests is deliberately not written here. It changes every time one
+is added, and a count in a document is a count that will be wrong and still look
+authoritative. `npm test` prints the real one.
 
 Or, if you are deploying by hand and want no migrations in the way,
 `npx wrangler deploy --name <the deployed Worker's name>`.
@@ -379,14 +431,43 @@ Notes on each, because the two commands are not interchangeable:
 - If the repository is set up to run tests in the build command, use
   `npm run verify:client` there rather than listing the three steps.
 
-**One-time bootstrap.** If the database has only ever been migrated by hand with
-`wrangler d1 execute --file`, its `d1_migrations` ledger is empty, and the first
-`d1 migrations apply` will try to run every migration from the start and stop on
-the first column that already exists. Nothing is damaged and nothing is applied,
-but every deploy fails until the ledger is seeded. See
-`scripts/seed-migrations-ledger.sql`, which records only the migrations whose
-effects it can find in the schema. Skip it if this workflow has always been the
-only thing migrating.
+**The ledger repairs itself, so there is no bootstrap to do.** `d1 migrations
+apply` decides what to run from `d1_migrations` alone - it cannot ask the schema,
+because `ALTER TABLE ADD COLUMN` has no `IF NOT EXISTS`, so no migration can be
+written safe to run twice. A database migrated by hand with
+`wrangler d1 execute --file` therefore has a complete schema and an empty ledger,
+and the first `apply` runs `0000` again and stops on
+`table "attempts" already exists`. Nothing is damaged, nothing is applied, and
+every deploy fails.
+
+That is not a setup step, so it is not in this guide. `scripts/deploy.sh` runs
+`scripts/reconcile-migration-ledger.mjs` before `apply`: it reads the database's
+`sqlite_master` and column list, decides per migration whether that migration has
+run, records the ones that have, and leaves the rest pending. Each migration's
+evidence is named in that script next to the migration it comes from, so the two
+cannot drift apart. **The build log prints one line per migration**, saying what
+the ledger was made to agree with and why - read that table when a migration
+fails, because it is the only place the answer exists.
+
+Every row written is gated on positive evidence, so the failure mode is
+"recorded too little" - a loud deploy failure on a table that already exists -
+rather than "recorded too much", which is a schema change that is never made and
+an app that fails at runtime while every deploy reports success. Two cases are
+deliberate stops rather than decisions:
+
+- An empty ledger on a database that has objects but is not recognisably this
+  application's (no `users` with `attempts`/`progress`) exits non-zero and writes
+  nothing. That is a typo'd `D1_ID` or a dump of the wrong database, and filling
+  in its ledger from a guess is not recoverable.
+- `0000`-`0003` predate the evidence, so they are recorded on the database being
+  this application's at all rather than on each one individually. `0000` creates
+  `users`, `attempts` and `progress` together, so no state this repository can
+  produce has one without the others.
+
+`scripts/seed-migrations-ledger.sql` is the older, hand-run version of the same
+repair and is kept for a database you cannot reach with the deploy script. It is
+already behind: it names fourteen migrations and takes `0000`-`0009` on trust.
+Prefer the reconciler.
 
 Verify what the ledger thinks before trusting a deploy: `npm run
 check:deploy` locally, and the `Migrations to be applied` lines in the build log
@@ -397,14 +478,18 @@ on Cloudflare.
 1. `npm test && npm run typecheck && npm run lint`
 2. `D1_ID=… D1_NAME=… npm run build`
 3. `npm run verify:chunks`
-4. `npx wrangler deploy`
-5. If a migration was added, apply it **before** the new code serves traffic
-   (step 4 above).
-6. Click a link in the deployed app.
+4. `WORKER_NAME=… bash scripts/deploy.sh --skip-verify`
+5. Click a link in the deployed app.
 
-**Step 3 is not optional, and step 6 is not ceremonial.** This repository once
+**Step 4 is the deploy script, not `wrangler deploy`.** The script applies
+pending migrations and *then* uploads the Worker, in that order, and stops
+before uploading anything if a migration fails. A bare `wrangler deploy` uploads
+the code first and migrates never, which is the outage described under
+[Migrations have to run before the code](#migrations-have-to-run-before-the-code).
+
+**Step 3 is not optional, and step 5 is not ceremonial.** This repository once
 shipped a build where *every* link in the app did nothing when clicked, while
-all 175 tests passed. The cause was a circular dynamic import between the
+the whole suite passed. The cause was a circular dynamic import between the
 framework's client entry chunk and its Link chunk: the bundler left
 `navigateClientSide` out of the entry chunk's export list, the Link chunk
 destructured it off a namespace that did not have it, and the click handler
@@ -413,7 +498,7 @@ It only ever appears in a production build, which is why no test caught it.
 
 `npm run verify:chunks` reads the built chunks and fails on a missing
 cross-chunk binding or on a chunk cycle, which is the shape that caused it. It
-is a guard rather than a proof, so **step 6 is still the real check**: click
+is a guard rather than a proof, so **step 5 is still the real check**: click
 through the top menu on the deployed site. A production build cannot be served
 on a Mac older than 13.5, so that click cannot be done locally.
 

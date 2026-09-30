@@ -23,9 +23,19 @@
 #   4. Add the D1 database id as D1_ID and its name as D1_NAME. A wrong value here
 #      is the one mistake that is not obvious: migrations would apply to a
 #      database nobody reads, and the deploy would still succeed.
-#   5. Seed d1_migrations if the database was ever migrated by hand - see
-#      scripts/seed-migrations-ledger.sql. Skip it if it has only ever been
-#      migrated by this workflow.
+#   5. Nothing to seed by hand. `scripts/deploy.sh` reconciles d1_migrations
+#      against the database before `migrations apply` reads it, so a database
+#      that was migrated by hand - which has a complete schema and an empty
+#      ledger - repairs itself instead of failing every deploy on
+#      `table "attempts" already exists`.
+#   6. Add the *deployed Worker's own name* as the repository secret
+#      WORKER_NAME. This is the one that fails silently. The build names the
+#      Worker after package.json ("minewords-blue-book"), but a Worker created
+#      through Cloudflare's Git integration is named after the repository
+#      ("eleven-plus-vocabulary-website"). Without this the deploy uploads a
+#      second Worker, the live one stays on the last commit, and every step
+#      reports success. The target is printed as "target Worker:" before
+#      anything is applied, so read it in the log if you are unsure.
 name: Deploy
 
 on:
@@ -73,4 +83,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           D1_ID: ${{ secrets.D1_ID }}
           D1_NAME: ${{ secrets.D1_NAME }}
+          # Which Worker to upload to. Required: the generated config names it
+          # after package.json, which is not the Worker this repository serves.
+          WORKER_NAME: ${{ secrets.WORKER_NAME }}
         run: scripts/deploy.sh --skip-verify

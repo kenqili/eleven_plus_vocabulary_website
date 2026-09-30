@@ -304,8 +304,6 @@ test(
     if (!local || !process.env.TEST_NODE_DB) return;
     const sql = db();
     sql.prepare("DELETE FROM rate_limits").run();
-    const email = `snapshot-${randomUUID()}@example.test`;
-    const password = `Test-only-${randomUUID()}`;
     const lapsedEmail = `lapsed-${randomUUID()}@example.test`;
     const lapsedPassword = `Test-only-${randomUUID()}`;
     const registered = await fetch(origin + "/api/auth/register", {

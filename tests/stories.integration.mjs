@@ -1,10 +1,6 @@
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
-import {
-  confirmAddress,
-  credentials,
-  post as postJson,
-} from "./helpers/account.mjs";
+import { confirmAddress } from "./helpers/account.mjs";
 import { DatabaseSync } from "node:sqlite";
 import { readFileSync } from "node:fs";
 import { storyMinimumSeconds } from "../lib/challenge/stories.ts";

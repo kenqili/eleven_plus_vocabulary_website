@@ -71,18 +71,19 @@ function revealRange(start: Element | null, end?: Element | null) {
  * so rather than appearing broken - so a child who is unsure can press and find
  * out.
  */
-function SaveProgress({
-  study,
-}: {
-  study: ReturnType<typeof useChallenge>;
-}) {
+function SaveProgress({ study }: { study: ReturnType<typeof useChallenge> }) {
   const [note, setNote] = useState("");
-  useEffect(() => {
-    // The confirmation is about the press, not the page. Clearing it when the
+  // The count the note was last reconciled against, so a change can be noticed
+  // while rendering rather than in an effect afterwards.
+  const [counted, setCounted] = useState(study.unsaved);
+  if (counted !== study.unsaved) {
+    setCounted(study.unsaved);
+    // The confirmation is about the press, not the page. Dropping it when the
     // count changes stops "Saved" sitting on screen while answers pile up behind
-    // it, which would be the one thing a child must never be shown.
+    // it, which would be the one thing a child must never be shown. A count
+    // falling to zero is the press having worked, so the note stays.
     if (study.unsaved) setNote("");
-  }, [study.unsaved]);
+  }
   const waiting = study.unsaved;
   const save = async () => {
     const result = await study.saveProgress();

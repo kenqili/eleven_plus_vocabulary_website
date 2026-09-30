@@ -2,11 +2,7 @@
 // the server stores, credits and rotates on.
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
-import {
-  confirmAddress,
-  credentials,
-  post as postJson,
-} from "./helpers/account.mjs";
+import { confirmAddress } from "./helpers/account.mjs";
 import { DatabaseSync } from "node:sqlite";
 import { words } from "../scripts/load-word-bank.mjs";
 import { problems } from "../scripts/load-problem-bank.mjs";
