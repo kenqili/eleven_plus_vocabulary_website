@@ -25,6 +25,15 @@
 #      `d1 execute --file` route this replaces was not idempotent - a migration
 #      that had already run failed when run again - which is why applying anything
 #      by hand needed a probe first.
+#   4. Refuses a database that was not built by `migrations apply`. Apply decides
+#      what to run from d1_migrations alone and cannot ask the schema, so a
+#      database migrated by hand has a complete schema and an empty ledger - and
+#      apply starts again at 0000 and fails on `table "attempts" already
+#      exists`. That is this repository's production database, and it is why
+#      every deploy failed until the tables were dropped and rebuilt by apply.
+#      The check writes nothing; it turns a 400-line migration log into one line.
+#      Never migrate this database with `d1 execute --file` - apply is the only
+#      route, and that is the whole reason the ledger can be trusted.
 #
 # Usage:
 #   scripts/deploy.sh                        verify, build, migrate, deploy
@@ -123,6 +132,42 @@ BINDING=$(node -e "const c=require('./dist/server/wrangler.json');const b=(c.d1_
 # Printed before anything is applied, so a wrong target is visible in the build log
 # rather than inferred afterwards from a Worker that did not change.
 printf '  target Worker: %s\n' "$(node -e "process.stdout.write(require('./dist/server/wrangler.json').name)")"
+
+# `d1 migrations apply` decides what to run from d1_migrations alone. It has to -
+# `ALTER TABLE ADD COLUMN` has no `IF NOT EXISTS`, so no migration can be written
+# safe to run twice and there is nothing to ask the schema instead. So a database
+# with tables but no ledger was migrated some other way, and apply would start
+# again at 0000 and stop on the first table that already exists.
+#
+# Read only, and it writes nothing. The grep is for a marker this query must
+# produce, so an unreadable result stops the deploy rather than waving it
+# through - a check that passes when it cannot tell is not a check.
+printf '  checking the migration ledger\n'
+if [ "$DRY_RUN" = "1" ]; then
+  # The wrapper above prints the command and runs nothing, so there is no result
+  # to grep. Skipped rather than allowed to fail, because a dry run that stops
+  # for a check it could not make is just a confusing dry run.
+  printf '  (dry run) skipping the ledger check, which needs to read the database\n'
+elif ! wrangler d1 execute "$BINDING" --remote --config dist/server/wrangler.json --json --command \
+  "SELECT 'ledger-ok' AS state
+    WHERE NOT EXISTS (SELECT 1 FROM sqlite_master WHERE type = 'table' AND name <> 'd1_migrations')
+       OR EXISTS (SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'd1_migrations')" \
+  | grep -q 'ledger-ok'; then
+  printf '\n%s\n' \
+    "This database has tables but no d1_migrations ledger, so it was not built by" \
+    "migrations apply - and apply would re-run every migration from 0000 and fail" \
+    "on the first table that already exists." \
+    "" \
+    "Either point D1_ID at a database that has only ever been migrated by apply, or" \
+    "empty this one (D1 > minewords > Console) and re-run this deploy, which will" \
+    "build the schema from scratch. To see what is in there:" \
+    "  wrangler d1 execute $BINDING --remote --config dist/server/wrangler.json \\" \
+    "    --command \"SELECT name FROM sqlite_master WHERE type = 'table'\"" \
+    "" \
+    "Do not apply migration files with d1 execute --file. It records nothing, which" \
+    "is what leaves the database in this state." >&2
+  exit 1
+fi
 
 wrangler d1 migrations list "$BINDING" --remote --config dist/server/wrangler.json || true
 wrangler d1 migrations apply "$BINDING" --remote --config dist/server/wrangler.json

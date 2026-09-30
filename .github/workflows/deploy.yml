@@ -23,11 +23,10 @@
 #   4. Add the D1 database id as D1_ID and its name as D1_NAME. A wrong value here
 #      is the one mistake that is not obvious: migrations would apply to a
 #      database nobody reads, and the deploy would still succeed.
-#   5. Nothing to seed by hand. `scripts/deploy.sh` reconciles d1_migrations
-#      against the database before `migrations apply` reads it, so a database
-#      that was migrated by hand - which has a complete schema and an empty
-#      ledger - repairs itself instead of failing every deploy on
-#      `table "attempts" already exists`.
+#   5. Nothing to do. `scripts/deploy.sh` checks for a database that has tables
+#      but no d1_migrations ledger - one migrated by hand - and stops before
+#      applying. Do not seed the ledger by hand either: `d1 migrations apply` is
+#      the only route that records what it ran.
 #   6. Add the *deployed Worker's own name* as the repository secret
 #      WORKER_NAME. This is the one that fails silently. The build names the
 #      Worker after package.json ("minewords-blue-book"), but a Worker created

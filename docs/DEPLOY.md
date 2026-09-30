@@ -115,9 +115,10 @@ optional and it is not a convenience.
 **Do not apply these files with `wrangler d1 execute --file` by hand.** That
 route is not idempotent - a migration that has already run fails when it runs
 again - and it records nothing, so the next `d1 migrations apply` tries every
-file from the start and stops on the first column that already exists. The deploy
-script reconciles the ledger before `apply` runs, so that self-repairs now; see
-[the ledger repairs itself](#cloudflare-workers-builds-automatic-deploys) below.
+file from the start and stops on the first column that already exists.
+`scripts/deploy.sh` checks for that state before applying; see
+[Never migrate this database by hand](#cloudflare-workers-builds-automatic-deploys)
+below.
 
 For a database that has never been touched, the manual equivalent of what the
 script does is:
@@ -431,43 +432,26 @@ Notes on each, because the two commands are not interchangeable:
 - If the repository is set up to run tests in the build command, use
   `npm run verify:client` there rather than listing the three steps.
 
-**The ledger repairs itself, so there is no bootstrap to do.** `d1 migrations
-apply` decides what to run from `d1_migrations` alone - it cannot ask the schema,
-because `ALTER TABLE ADD COLUMN` has no `IF NOT EXISTS`, so no migration can be
-written safe to run twice. A database migrated by hand with
-`wrangler d1 execute --file` therefore has a complete schema and an empty ledger,
-and the first `apply` runs `0000` again and stops on
-`table "attempts" already exists`. Nothing is damaged, nothing is applied, and
-every deploy fails.
+**Never migrate this database by hand.** `d1 migrations apply` decides what to
+run from `d1_migrations` alone - it cannot ask the schema, because
+`ALTER TABLE ADD COLUMN` has no `IF NOT EXISTS`, so no migration can be written
+safe to run twice. `d1 execute --file` records nothing, so a database migrated
+that way has a complete schema and an empty ledger, and the next `apply` runs
+`0000` again and stops on `table "attempts" already exists`. Nothing is damaged,
+nothing is applied, and every deploy fails.
 
-That is not a setup step, so it is not in this guide. `scripts/deploy.sh` runs
-`scripts/reconcile-migration-ledger.mjs` before `apply`: it reads the database's
-`sqlite_master` and column list, decides per migration whether that migration has
-run, records the ones that have, and leaves the rest pending. Each migration's
-evidence is named in that script next to the migration it comes from, so the two
-cannot drift apart. **The build log prints one line per migration**, saying what
-the ledger was made to agree with and why - read that table when a migration
-fails, because it is the only place the answer exists.
+That is what this repository's production database looked like: months of
+`d1 execute --file` while the deploy script did not exist. It was emptied and
+rebuilt by `apply`, and the ledger it wrote is why the deploys after that worked.
+`scripts/deploy.sh` now checks for the state before applying anything - tables but
+no ledger - and stops with the two ways out rather than letting `apply` produce
+four hundred lines of migration log. **The check only reads. If it fires, the
+repair is to empty the database and let the deploy build it.**
 
-Every row written is gated on positive evidence, so the failure mode is
-"recorded too little" - a loud deploy failure on a table that already exists -
-rather than "recorded too much", which is a schema change that is never made and
-an app that fails at runtime while every deploy reports success. Two cases are
-deliberate stops rather than decisions:
-
-- An empty ledger on a database that has objects but is not recognisably this
-  application's (no `users` with `attempts`/`progress`) exits non-zero and writes
-  nothing. That is a typo'd `D1_ID` or a dump of the wrong database, and filling
-  in its ledger from a guess is not recoverable.
-- `0000`-`0003` predate the evidence, so they are recorded on the database being
-  this application's at all rather than on each one individually. `0000` creates
-  `users`, `attempts` and `progress` together, so no state this repository can
-  produce has one without the others.
-
-`scripts/seed-migrations-ledger.sql` is the older, hand-run version of the same
-repair and is kept for a database you cannot reach with the deploy script. It is
-already behind: it names fourteen migrations and takes `0000`-`0009` on trust.
-Prefer the reconciler.
+For a database you cannot reach with the deploy script,
+`scripts/seed-migrations-ledger.sql` records the migrations by hand. It is
+already behind - it names fourteen migrations and takes `0000`-`0009` on trust -
+so prefer emptying the database.
 
 Verify what the ledger thinks before trusting a deploy: `npm run
 check:deploy` locally, and the `Migrations to be applied` lines in the build log
