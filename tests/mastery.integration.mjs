@@ -2,6 +2,11 @@
 // the server stores, credits and rotates on.
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
+import {
+  confirmAddress,
+  credentials,
+  post as postJson,
+} from "./helpers/account.mjs";
 import { DatabaseSync } from "node:sqlite";
 import { words } from "../scripts/load-word-bank.mjs";
 import { problems } from "../scripts/load-problem-bank.mjs";
@@ -91,12 +96,15 @@ const correctChoice = (question) =>
   );
 
 try {
-  const registration = await call("/api/auth/register", {
-    email: `mastery-${randomUUID()}@example.test`,
-    password: `Test-only-${randomUUID()}`,
-  });
+  const password = `Test-only-${randomUUID()}`;
+  const email = `mastery-${randomUUID()}@example.test`;
+  const registration = await call("/api/auth/register", { email, password });
   assert.equal(registration.status, 200, JSON.stringify(registration.data));
-  cookie = registration.cookie.split(";")[0];
+  // Registration hands out no session now, so the cookie comes from a sign-in.
+  confirmAddress(email);
+  cookie = (await call("/api/auth/login", { email, password })).cookie.split(
+    ";",
+  )[0];
   userId = registration.data.user.id;
   const wallet = () =>
     db.prepare("SELECT balance FROM credit_wallets WHERE user_id=?").get(userId)

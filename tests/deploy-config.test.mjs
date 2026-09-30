@@ -42,10 +42,11 @@ function fixture({
   return root;
 }
 
-const patch = (root) =>
+const patch = (root, env = {}) =>
   spawnSync(process.execPath, [join(process.cwd(), script)], {
     cwd: root,
     encoding: "utf8",
+    env: { ...process.env, ...env },
   });
 
 const patched = (root) =>
@@ -154,3 +155,54 @@ function existsAt(path) {
 function rmDir(path) {
   spawnSync("rm", ["-rf", path]);
 }
+
+test("WORKER_NAME overrides the Worker the build named after package.json", () => {
+  // A Worker connected to a repository through Cloudflare's Git integration is
+  // named after the repository; the build names it after package.json. They are
+  // different Workers, so deploying the generated config without this uploads a
+  // second Worker, leaves the live one on the last commit, and reports success.
+  const root = fixture();
+  const original = patched(root);
+  writeFileSync(
+    join(root, "dist/server/wrangler.json"),
+    JSON.stringify({ ...original, name: "minewords-blue-book" }, null, 2),
+  );
+  const result = patch(root, { WORKER_NAME: "eleven-plus-vocabulary-website" });
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(patched(root).name, "eleven-plus-vocabulary-website");
+  assert.match(result.stdout, /from WORKER_NAME/);
+  // The migration keys have to survive the rename, or the deploy that follows
+  // applies nothing and says nothing.
+  assert.equal(patched(root).d1[0].migrations_dir, "../../drizzle");
+});
+
+test("with no WORKER_NAME the name is left alone rather than guessed", () => {
+  // Guessing is what causes the mismatch. Leaving it alone means the deploy
+  // script prints the name it is about to act on, which is where a human can see
+  // it is wrong.
+  const root = fixture();
+  const name = "minewords-blue-book";
+  writeFileSync(
+    join(root, "dist/server/wrangler.json"),
+    JSON.stringify({ ...fixture(), name }, null, 2).replace(/"d1":/, '"d1":'),
+  );
+  writeFileSync(
+    join(root, "dist/server/wrangler.json"),
+    JSON.stringify(
+      {
+        name,
+        d1: [{ binding: "DB", database_name: "minewords", database_id: "x" }],
+      },
+      null,
+      2,
+    ),
+  );
+  const result = patch(root, { WORKER_NAME: "" });
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(
+    patched(root).name,
+    name,
+    "an unset WORKER_NAME must not change the name",
+  );
+  assert.match(result.stdout, /from package\.json/);
+});

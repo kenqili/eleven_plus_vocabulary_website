@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
+import { confirmAddress } from "./helpers/account.mjs";
 import { DatabaseSync } from "node:sqlite";
 import { readFileSync } from "node:fs";
 import { localDay } from "../lib/challenge/rewards.ts";
@@ -30,13 +31,17 @@ async function call(path, data) {
   };
 }
 async function register() {
-  const r = await call("/api/auth/register", {
-    email: `child-test-${randomUUID()}@example.test`,
-    password: `Test-only-${randomUUID()}`,
-  });
+  // A password, kept because signing in again needs it: registration hands out no
+  // session now, so the cookie comes from a sign-in after confirming the address.
+  const password = `Test-only-${randomUUID()}`;
+  const email = `child-test-${randomUUID()}@example.test`;
+  const r = await call("/api/auth/register", { email, password });
   assert.equal(r.status, 200, JSON.stringify(r.data));
   users.push(r.data.user.id);
-  cookie = r.cookie.split(";")[0];
+  confirmAddress(email);
+  cookie = (await call("/api/auth/login", { email, password })).cookie.split(
+    ";",
+  )[0];
   return r.data.user.id;
 }
 const story = JSON.parse(readFileSync("data/stories/level-1.txt"))[0];

@@ -71,3 +71,33 @@ export async function sendPasswordResetEmail(
     ].join("\n"),
   });
 }
+
+/**
+ * The message a parent reads when an address is about to be used for the first
+ * time.
+ *
+ * It says the account is not open yet, because that is the part that would
+ * otherwise be a surprise: a parent who registers and is then refused at sign-in
+ * with nothing on screen to explain it will reasonably assume the site is broken.
+ */
+export function verificationEmail({ link }: { link: string }) {
+  return {
+    subject: "Confirm your email address for MineWords",
+    text: [
+      "Somebody created a MineWords account with this address.",
+      "",
+      "Open this link to confirm it, and the account opens straight away:",
+      "",
+      link,
+      "",
+      "The link lasts a day, and it works once.",
+      "",
+      "If this was not you, ignore this message. Nothing has been opened and no",
+      "one has been signed in - but somebody may have typed this address by",
+      "mistake, in which case the account will sit unopened rather than being",
+      "taken over.",
+      "",
+      "MineWords",
+    ].join("\n"),
+  };
+}

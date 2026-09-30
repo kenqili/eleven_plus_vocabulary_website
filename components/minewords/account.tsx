@@ -39,14 +39,21 @@ export default function Account() {
     [notice, setNotice] = useState("");
   const [resetting, setResetting] = useState(false),
     [resetEmail, setResetEmail] = useState("");
+  /**
+   * The parent is waiting for a confirmation, rather than for the form to work.
+   *
+   * This is a state of its own and not an error, because nothing has gone wrong:
+   * the account exists, the message is on its way, and the only thing left is to
+   * open it. Showing it as a failure would be both wrong and alarming on the one
+   * screen a new parent is most anxious about.
+   */
+  const [awaitingLink, setAwaitingLink] = useState<string | null>(null);
   function refresh() {
     return api<{
       user: User | null;
       freeTrialDays: number;
       freeWordLimit: number;
-    }>(
-      "/api/auth/me",
-    ).then(async (result) => {
+    }>("/api/auth/me").then(async (result) => {
       setUser(result.user);
       setTrialDays(result.freeTrialDays);
       setFreeWordLimit(result.freeWordLimit);
@@ -76,12 +83,46 @@ export default function Account() {
     setBusy(true);
     setError("");
     try {
-      await api(`/api/auth/${register ? "register" : "login"}`, {
-        email,
-        password,
-      });
+      const result = await api<{
+        needsVerification?: boolean;
+        message?: string;
+      }>(`/api/auth/${register ? "register" : "login"}`, { email, password });
       setPassword("");
+      // Registering no longer signs you in, so there is nothing to refresh. The
+      // parent waits for the link instead.
+      if (result?.needsVerification) {
+        setAwaitingLink(email);
+        return;
+      }
       await refresh();
+    } catch (e) {
+      const failure = e as Error & { code?: string };
+      // The one error that is a state rather than a failure, so it is shown as
+      // the waiting screen with a way forward, not as a red message.
+      if (failure.code === "email_unverified") {
+        setAwaitingLink(email);
+        return;
+      }
+      setError(failure.message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  /**
+   * Ask for the link again.
+   *
+   * Present whenever a parent is waiting, and rate limited on the server, so this
+   * is the answer for the parent who deleted it, or who mistyped the address and
+   * needs to find out which it was. It cannot be used to discover whether an
+   * address is registered: the reply is the same either way.
+   */
+  async function resend() {
+    if (!awaitingLink) return;
+    setBusy(true);
+    setError("");
+    try {
+      await api("/api/auth/resend-verification", { email: awaitingLink });
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -258,7 +299,37 @@ export default function Account() {
                     ? `Create a free account for ${trialDays} days of full access, then subscribe to keep practising.`
                     : "Sign in to continue your vocabulary practice."}
               </p>
-              {resetting ? (
+              {awaitingLink ? (
+                <>
+                  <h1>Check your inbox.</h1>
+                  <p>
+                    We sent a link to confirm <strong>{awaitingLink}</strong>.
+                    Your account opens as soon as you use it.
+                  </p>
+                  <p className="muted">
+                    The link lasts a day and works once. If it has not arrived
+                    in a few minutes, look in the junk folder, or send another -
+                    and if the address above is not one you can read, use the
+                    button to go back and change it.
+                  </p>
+                  <button
+                    className="primary-button"
+                    onClick={() => void resend()}
+                    disabled={busy}
+                  >
+                    {busy ? "Please wait…" : "Send the link again"}
+                  </button>{" "}
+                  <button
+                    className="text-button"
+                    onClick={() => {
+                      setAwaitingLink(null);
+                      setRegister(false);
+                    }}
+                  >
+                    Use a different address
+                  </button>
+                </>
+              ) : resetting ? (
                 <form onSubmit={requestReset}>
                   <label htmlFor="reset-email">Email address</label>
                   <input

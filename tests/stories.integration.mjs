@@ -1,5 +1,10 @@
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
+import {
+  confirmAddress,
+  credentials,
+  post as postJson,
+} from "./helpers/account.mjs";
 import { DatabaseSync } from "node:sqlite";
 import { readFileSync } from "node:fs";
 import { storyMinimumSeconds } from "../lib/challenge/stories.ts";
@@ -69,12 +74,15 @@ try {
   );
   assert.equal((await call("/api/stories?id=missing")).status, 404);
   assert.equal((await post({ action: "start", owner })).status, 401);
-  const registration = await call("/api/auth/register", {
-    email: `story-${randomUUID()}@example.test`,
-    password: `Test-only-${randomUUID()}`,
-  });
+  const password = `Test-only-${randomUUID()}`;
+  const email = `story-${randomUUID()}@example.test`;
+  const registration = await call("/api/auth/register", { email, password });
   assert.equal(registration.status, 200);
-  cookie = registration.cookie.split(";")[0];
+  // Registration hands out no session now, so the cookie comes from a sign-in.
+  confirmAddress(email);
+  cookie = (await call("/api/auth/login", { email, password })).cookie.split(
+    ";",
+  )[0];
   userId = registration.data.user.id;
   assert.equal(
     (

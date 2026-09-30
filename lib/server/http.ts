@@ -1,7 +1,16 @@
 export class HttpError extends Error {
+  /**
+   * A stable identifier for the failure, for the interface to act on.
+   *
+   * Not every error needs one. This exists because some refusals are not failures
+   * but states the parent can do something about - an address that has not been
+   * confirmed, most of all - and an interface cannot reliably tell those apart by
+   * matching on the message text. The message is for people; this is for code.
+   */
   constructor(
     public status: number,
     message: string,
+    public code?: string,
   ) {
     super(message);
   }
@@ -21,7 +30,12 @@ export async function boundary(action: () => Promise<Response>) {
     return await action();
   } catch (error) {
     if (error instanceof HttpError)
-      return json({ error: error.message }, error.status);
+      return json(
+        // The code is omitted when there is none, so the shape of a response does
+        // not change for the errors that do not have one.
+        { error: error.message, ...(error.code ? { code: error.code } : {}) },
+        error.status,
+      );
     console.error(
       "MineWords request failed",
       error instanceof Error ? error.message : "Unknown error",

@@ -14,6 +14,7 @@
  * parent added.
  */
 import assert from "node:assert/strict";
+import { confirmAddress } from "./helpers/account.mjs";
 import test from "node:test";
 import { randomUUID } from "node:crypto";
 import { DatabaseSync } from "node:sqlite";
@@ -45,19 +46,31 @@ test(
     if (!local || !process.env.TEST_NODE_DB) return;
     const sql = db();
     cookie = "";
+    const email = `snapshot-${randomUUID()}@example.test`;
+    const password = `Test-only-${randomUUID()}`;
     const registered = await fetch(origin + "/api/auth/register", {
       method: "POST",
       headers: { "Content-Type": "application/json", Origin: origin },
       body: JSON.stringify({
-        email: `snapshot-${randomUUID()}@example.test`,
-        password: `Test-only-${randomUUID()}`,
+        email,
+        password,
       }),
     });
     const registeredBody = await registered.json();
     assert.equal(registered.status, 200, JSON.stringify(registeredBody));
-    cookie = (registered.headers.get("set-cookie") || "").split(";")[0];
     const userId = registeredBody.user.id;
     assert.ok(userId, "register must return the user id");
+    // Registration hands out no session now, so the address is confirmed and the
+    // cookie comes from a sign-in.
+    confirmAddress(email);
+    const login = await fetch(origin + "/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Origin: origin },
+      body: JSON.stringify({ email, password }),
+    });
+    assert.equal(login.status, 200, "sign in after confirming");
+    cookie = (login.headers.get("set-cookie") || "").split(";")[0];
+    assert.ok(cookie, "and a session");
 
     // Seed a history directly, so the snapshot is tested against rows a real
     // child would have rather than an empty account.
@@ -291,12 +304,16 @@ test(
     if (!local || !process.env.TEST_NODE_DB) return;
     const sql = db();
     sql.prepare("DELETE FROM rate_limits").run();
+    const email = `snapshot-${randomUUID()}@example.test`;
+    const password = `Test-only-${randomUUID()}`;
+    const lapsedEmail = `lapsed-${randomUUID()}@example.test`;
+    const lapsedPassword = `Test-only-${randomUUID()}`;
     const registered = await fetch(origin + "/api/auth/register", {
       method: "POST",
       headers: { "Content-Type": "application/json", Origin: origin },
       body: JSON.stringify({
-        email: `lapsed-${randomUUID()}@example.test`,
-        password: `Test-only-${randomUUID()}`,
+        email: lapsedEmail,
+        password: lapsedPassword,
       }),
     });
     const body = await registered.json();
@@ -308,9 +325,16 @@ test(
       .prepare("UPDATE users SET created_at=?, expiry_date=NULL WHERE id=?")
       .run(Date.now() - 90 * 86_400_000, userId);
 
+    confirmAddress(lapsedEmail);
+    const login = await fetch(origin + "/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Origin: origin },
+      body: JSON.stringify({ email: lapsedEmail, password: lapsedPassword }),
+    });
+    assert.equal(login.status, 200, "sign in after confirming");
     const response = await fetch(origin + "/api/progress", {
       headers: {
-        Cookie: (registered.headers.get("set-cookie") || "").split(";")[0],
+        Cookie: (login.headers.get("set-cookie") || "").split(";")[0],
       },
     });
     const snapshot = await response.json();

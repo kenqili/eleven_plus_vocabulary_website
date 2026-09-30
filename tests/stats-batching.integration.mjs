@@ -19,6 +19,11 @@
  */
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
+import {
+  confirmAddress,
+  credentials,
+  post as postJson,
+} from "./helpers/account.mjs";
 import { DatabaseSync } from "node:sqlite";
 import { localDay } from "../lib/challenge/rewards.ts";
 
@@ -49,11 +54,15 @@ async function call(path, data) {
 }
 
 async function register() {
-  const r = await call("/api/auth/register", {
-    email: `stats-batching-${randomUUID()}@example.test`,
-    password: `Test-only-${randomUUID()}`,
-  });
+  const password = `Test-only-${randomUUID()}`;
+  const email = `stats-batching-${randomUUID()}@example.test`;
+  const r = await call("/api/auth/register", { email, password });
   assert.equal(r.status, 200, JSON.stringify(r.data));
+  // Registration hands out no session now, so the cookie comes from a sign-in.
+  // `call` sets the module-level cookie from the response, so the sign-in below is
+  // all this needs to do.
+  confirmAddress(email);
+  await call("/api/auth/login", { email, password });
   return r.data.user.id;
 }
 

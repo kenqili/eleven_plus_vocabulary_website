@@ -14,6 +14,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { randomUUID } from "node:crypto";
+import {
+  confirmAddress,
+  credentials,
+  post as postJson,
+} from "./helpers/account.mjs";
 import { DatabaseSync } from "node:sqlite";
 import { readFileSync } from "node:fs";
 import {
@@ -35,17 +40,16 @@ const db = () => {
 };
 
 async function register() {
-  const response = await fetch(origin + "/api/auth/register", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Origin: origin },
-    body: JSON.stringify({
-      email: `flush-${randomUUID()}@example.test`,
-      password: `Test-only-${randomUUID()}`,
-    }),
-  });
+  const { email, password } = credentials("flush");
+  const response = await postJson("/api/auth/register", { email, password });
   const body = await response.json();
   assert.equal(response.status, 200, JSON.stringify(body));
-  cookie = (response.headers.get("set-cookie") || "").split(";")[0];
+  confirmAddress(email);
+  cookie =
+    (await postJson("/api/auth/login", { email, password })).headers.get(
+      "set-cookie",
+    ) || "";
+  cookie = cookie.split(";")[0];
   return body.user.id;
 }
 

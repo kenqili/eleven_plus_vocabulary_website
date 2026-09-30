@@ -59,6 +59,20 @@ for (const binding of bindings) {
   binding.migrations_table = "d1_migrations";
 }
 
+// The Worker name, when the environment says which one.
+//
+// The build takes the name from package.json, so it is `minewords-blue-book`. A
+// Worker connected to a repository through Cloudflare's Git integration is named
+// after the *repository* - `eleven-plus-vocabulary-website` here - and the two are
+// different Workers. Deploying the generated config without this would upload a
+// second Worker, leave the live one on the last commit, and report success.
+//
+// It is not defaulted either way: guessing is what causes the problem, so an
+// unset WORKER_NAME leaves the config alone and the deploy script prints the name
+// it is about to act on, which is the point at which a mismatch is visible.
+const workerName = process.env.WORKER_NAME;
+if (workerName) config.name = workerName;
+
 writeFileSync(path, JSON.stringify(config, null, 2) + "\n");
 
 // Read it back rather than trusting the object in memory.
@@ -75,6 +89,10 @@ for (const binding of check) {
     );
 }
 
+const name = JSON.parse(readFileSync(path, "utf8")).name;
 console.log(
   `  ${check.length} D1 binding(s) read ${found.length} migrations from ${migrationsDir}, tracked in d1_migrations`,
+);
+console.log(
+  `  target Worker: ${name}${workerName ? " (from WORKER_NAME)" : " (from package.json)"}`,
 );

@@ -43,8 +43,21 @@
 # variable. Without it, D1_ID and D1_NAME are required, because there is no config
 # to read yet.
 #
-# Environment: CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID. D1_ID and D1_NAME
-# select the database, exactly as the build does.
+# Environment:
+#   CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID   to authenticate
+#   D1_ID, D1_NAME                                 only when this script builds
+#   WORKER_NAME                                    which Worker to deploy to, when
+#                                                  it is not the one package.json
+#                                                  names. A Worker connected to a
+#                                                  repository through Cloudflare's Git
+#                                                  integration is named after the
+#                                                  repository, and the build names it
+#                                                  after package.json. They are
+#                                                  different Workers, and deploying
+#                                                  the generated config to the wrong
+#                                                  one leaves the live Worker on the
+#                                                  last commit while reporting
+#                                                  success.
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
@@ -106,6 +119,10 @@ say "4/4  Migrations, then the Worker"
 # "DB" is the binding, taken from the config rather than hardcoded, so a renamed
 # binding is a loud failure here instead of a silent migration of nothing.
 BINDING=$(node -e "const c=require('./dist/server/wrangler.json');const b=(c.d1_databases??c.d1)[0];if(!b)process.exit(1);process.stdout.write(b.binding)")
+
+# Printed before anything is applied, so a wrong target is visible in the build log
+# rather than inferred afterwards from a Worker that did not change.
+printf '  target Worker: %s\n' "$(node -e "process.stdout.write(require('./dist/server/wrangler.json').name)")"
 
 wrangler d1 migrations list "$BINDING" --remote --config dist/server/wrangler.json || true
 wrangler d1 migrations apply "$BINDING" --remote --config dist/server/wrangler.json

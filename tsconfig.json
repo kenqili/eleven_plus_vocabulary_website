@@ -43,6 +43,11 @@
   ],
   "exclude": [
     "node_modules",
-    "examples"
+    "examples",
+    "work",
+    "dist",
+    ".next",
+    ".wrangler",
+    ".sites-runtime"
   ]
 }

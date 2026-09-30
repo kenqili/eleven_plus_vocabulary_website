@@ -136,6 +136,8 @@ and only `.env.example` is tracked.
 
 ```sh
 npx wrangler@latest secret put APP_ORIGIN
+npx wrangler@latest secret put RESEND_API_KEY
+npx wrangler@latest secret put EMAIL_FROM
 npx wrangler@latest secret put STRIPE_SECRET_KEY
 npx wrangler@latest secret put STRIPE_PRICE_ID
 npx wrangler@latest secret put STRIPE_WEBHOOK_SECRET
@@ -144,6 +146,33 @@ npx wrangler@latest secret put STRIPE_WEBHOOK_SECRET
 `APP_ORIGIN` is the public origin including scheme, for example
 `https://minewords.app`, and nothing else. It is used to build the Stripe return
 URLs, so a wrong value sends parents to a page that does not exist.
+
+**`RESEND_API_KEY` and `EMAIL_FROM` are what make password reset work**, and a
+deployment without them looks fine from the outside: the endpoint answers "if
+that address has an account, a reset link is on its way" whether or not a mail
+was sent, because any other answer would reveal which addresses are registered.
+So the only symptom is a parent who never receives anything, and the reason is in
+the logs. To see it:
+
+```sh
+npx wrangler tail --format pretty
+```
+
+Then submit a reset. The line that matters is the error, which fires on every
+attempt:
+
+- `Email delivery is not configured.` — one of the two secrets above is missing.
+- `Invalid URL` — `APP_ORIGIN` is missing or malformed. The link is never even
+  built, because the origin is the first thing it needs.
+- `The email service is unavailable.`, preceded by `Email delivery failed <status>`
+  — Resend rejected it. **401** is a bad key, **403** is a sender domain that has
+  not been verified in Resend, **422** is a malformed `from` or `to`.
+
+`EMAIL_FROM` must be a sender on a domain you have verified in the Resend
+dashboard under Sending → Domains, or every send fails with 403 regardless of
+the key. The token itself is still written to `password_resets` when the send
+fails, so a row there with no email arriving confirms the flow ran and the
+delivery is the part that broke.
 
 **On `FREE_WORD_LIMIT` and `FREE_TRIAL_DAYS`:** these are optional. The defaults
 are 224 words and 7 days, and the free limit is derived from the word count, so
@@ -278,8 +307,11 @@ site — it sends a parent who has just paid to a page that does not exist. Chec
 npm test                                                  # 235 tests, must be green
 npm run typecheck && npm run lint
 D1_ID=<database_id> D1_NAME=<database_name> npm run build  # produces dist/
-npx wrangler deploy
+WORKER_NAME=<the deployed Worker's name> bash scripts/deploy.sh --skip-verify
 ```
+
+Or, if you are deploying by hand and want no migrations in the way,
+`npx wrangler deploy --name <the deployed Worker's name>`.
 
 `wrangler deploy` with no `--config` does pick up `dist/server/wrangler.json`
 automatically, so the database id the build wrote is the one that ships.
@@ -316,6 +348,7 @@ In the dashboard: **Workers & Pages → your Worker → Settings → Builds**, o
 | **Root directory** | leave at the repository root |
 | **Build variable** | `D1_ID` = the D1 database id |
 | **Build variable** | `D1_NAME` = `minewords` |
+| **Build variable** | `WORKER_NAME` = the Worker's own name |
 
 Notes on each, because the two commands are not interchangeable:
 
@@ -329,6 +362,15 @@ Notes on each, because the two commands are not interchangeable:
   `npx wrangler deploy`. That is the whole change: the deploy command applies
   pending migrations first, and a failed migration exits non-zero so the Worker is
   never updated.
+- **`WORKER_NAME` is not optional, and this is a trap worth knowing about.** The
+  build takes the Worker name from `package.json`, so it generates
+  `minewords-blue-book`. A Worker created by connecting a repository through
+  Cloudflare's Git integration is named after the **repository**, which here is
+  `eleven-plus-vocabulary-website`. Those are two different Workers: deploy the
+  generated config without setting this and you upload a second Worker, the live
+  one stays on the last commit, and every step reports success. `scripts/deploy.sh`
+  prints `target Worker:` before it applies anything, so the name is visible in the
+  build log either way.
 - **`D1_ID` and `D1_NAME` are build variables**, because the build writes the
   database id into `dist/server/wrangler.json` and the deploy command reads it
   from there. Getting `D1_ID` wrong is the one mistake that will not announce
