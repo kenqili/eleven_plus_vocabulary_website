@@ -93,6 +93,19 @@ export type Snapshot = {
    * than a parent realistically sets aside.
    */
   clock: { attemptCount: number; recent: string[] };
+  /**
+   * How many times each question type has been asked of each word, as
+   * `[wordId, type, count]`.
+   *
+   * Not optional. `nextQuestion` cycles a word through the types it is eligible
+   * for before repeating one, and it picks the type by asking which has been
+   * asked least. Without this the client would choose at random and a child could
+   * be shown "name the word" four times running for the same word, which is the
+   * one thing the cycling exists to prevent. Reveals are excluded, as they are
+   * on the server: a question the answer was read out for is not evidence about
+   * the type.
+   */
+  typeCounts: [wordId: string, type: string, count: number][];
   progress: ProgressRow[];
   /** A parent's own words, which are not in the bank and cannot be generated. */
   addedWords: AddedWord[];
@@ -114,39 +127,46 @@ export async function progressSnapshot(
   // counters being read.
   await initializeRewards(userId);
   const db = database();
-  const [progress, count, recent, excluded, added, account] = (await db.batch([
-    db
-      .prepare(
-        "SELECT word_id,correct,run,recalls,mastered,seen,last_seen,retry_at FROM progress WHERE user_id = ?",
-      )
-      .bind(userId),
-    db
-      .prepare("SELECT COUNT(*) AS count FROM attempts WHERE user_id = ?")
-      .bind(userId),
-    db
-      .prepare(
-        "SELECT word_id FROM attempts WHERE user_id = ? GROUP BY word_id ORDER BY MAX(rowid) DESC LIMIT ?",
-      )
-      .bind(userId, RECENT_SENT),
-    db
-      .prepare("SELECT word_id FROM word_exclusions WHERE user_id = ?")
-      .bind(userId),
-    db
-      .prepare(
-        "SELECT id,word,definition,example,created_at FROM custom_words WHERE user_id=? ORDER BY created_at ASC, word ASC",
-      )
-      .bind(userId),
-    db.prepare("SELECT timezone FROM users WHERE id=?").bind(userId),
-    // D1 types a batch result as one wide union, so each element is narrowed
-    // where it is read rather than by casting the array.
-  ])) as unknown as [
-    { results: ProgressColumns[] },
-    { results: { count: number }[] },
-    { results: { word_id: string }[] },
-    { results: { word_id: string }[] },
-    { results: (AddedWord & { created_at: number })[] },
-    { results: { timezone: string }[] },
-  ];
+  const [progress, count, recent, excluded, added, typeCounts, account] =
+    (await db.batch([
+      db
+        .prepare(
+          "SELECT word_id,correct,run,recalls,mastered,seen,last_seen,retry_at FROM progress WHERE user_id = ?",
+        )
+        .bind(userId),
+      db
+        .prepare("SELECT COUNT(*) AS count FROM attempts WHERE user_id = ?")
+        .bind(userId),
+      db
+        .prepare(
+          "SELECT word_id FROM attempts WHERE user_id = ? GROUP BY word_id ORDER BY MAX(rowid) DESC LIMIT ?",
+        )
+        .bind(userId, RECENT_SENT),
+      db
+        .prepare("SELECT word_id FROM word_exclusions WHERE user_id = ?")
+        .bind(userId),
+      db
+        .prepare(
+          "SELECT id,word,definition,example,created_at FROM custom_words WHERE user_id=? ORDER BY created_at ASC, word ASC",
+        )
+        .bind(userId),
+      db
+        .prepare(
+          "SELECT word_id,question_type,COUNT(*) AS count FROM attempts WHERE user_id=? AND answered_at IS NOT NULL AND selected>=-1 GROUP BY word_id,question_type",
+        )
+        .bind(userId),
+      db.prepare("SELECT timezone FROM users WHERE id=?").bind(userId),
+      // D1 types a batch result as one wide union, so each element is narrowed
+      // where it is read rather than by casting the array.
+    ])) as unknown as [
+      { results: ProgressColumns[] },
+      { results: { count: number }[] },
+      { results: { word_id: string }[] },
+      { results: { word_id: string }[] },
+      { results: (AddedWord & { created_at: number })[] },
+      { results: { word_id: string; question_type: string; count: number }[] },
+      { results: { timezone: string }[] },
+    ];
 
   const tier: Snapshot["bank"]["tier"] = access.freeTier ? "free" : "full";
   const entry = (manifest as Record<string, Omit<Snapshot["bank"], "tier">>)[
@@ -169,6 +189,11 @@ export async function progressSnapshot(
     // per row keyed by column name, and repeating those names for every word a
     // practised child has met is most of the payload. The order is fixed by
     // `ProgressRow` above, so the client cannot drift from it.
+    typeCounts: typeCounts.results.map((row) => [
+      row.word_id,
+      row.question_type,
+      row.count,
+    ]),
     progress: progress.results.map(
       (row): ProgressRow => [
         row.word_id,

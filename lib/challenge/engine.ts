@@ -1,0 +1,485 @@
+/**
+ * Question generation, in the browser.
+ *
+ * This is the piece that removes the round trip a child waits through on every
+ * question. It is deliberately a pure module with no database, no network and no
+ * React: given the bank, the state `/api/progress` returned, and the settings
+ * the child picked, it produces the same question the server would have produced
+ * and grades the answer the same way.
+ *
+ * "The same" is the whole requirement, and it is a strong one. The ordering
+ * rules are not decoration: the twenty-word exclusion window is what stops a
+ * child being shown the same word repeatedly, and `retry_at` is a logical clock
+ * over the attempt count that decides when a mistake comes back. A client engine
+ * that was merely *reasonable* would quietly teach differently from the server,
+ * and nothing would report it - the child would simply stop being given the words
+ * they needed.
+ *
+ * So every function here is the one already in use, imported rather than
+ * reimplemented, and `tests/client-engine.test.mjs` drives both this and the
+ * server over identical fixtures and compares the questions they produce.
+ */
+import { CHOICES_PER_PROBLEM, type Problem } from "./bank.ts";
+import { chooseWord, reviewDueAt, RECENT_WORD_WINDOW } from "./ordering.ts";
+import {
+  advanceMastery,
+  answerWindow,
+  classify,
+  hasMastered,
+  initialMastery,
+  masteryProgress,
+  type Evidence,
+} from "./mastery.ts";
+import { shuffle, type Word } from "./words.ts";
+import { wordClue } from "./story-meanings.ts";
+import type { QuestionType } from "./config.ts";
+import type { Difficulty } from "./difficulty.ts";
+import type { ProgressRow } from "@/lib/server/snapshot.ts";
+
+/**
+ * The bank as it arrives from `/bank/*.json`.
+ *
+ * Positional, because the download is on the critical path of a child's first
+ * question and repeating a column name for 2,247 words is most of it. The order
+ * is fixed by the generator in scripts/generate-client-bank.mjs and by
+ * `tests/client-bank.test.mjs`.
+ */
+export type ClientBank = {
+  v: number;
+  choices: number;
+  types: QuestionType[];
+  /** `[word, definition, example, syn, ant, difficulty, source, help, clue]` */
+  words: (string | number)[][];
+  /** `[wordIndex, typeIndex, prompt, answer, distractors]` */
+  problems: [number, number, string, string, string[]][];
+};
+
+export type ClientProgress = {
+  correct: number;
+  run: number;
+  recalls: number;
+  mastered: number;
+  seen: number;
+  lastSeen: string | null;
+  retryAt: number | null;
+};
+
+export type EngineOptions = {
+  bank: ClientBank;
+  progress: ProgressRow[];
+  typeCounts: [string, string, number][];
+  attemptCount: number;
+  recent: string[];
+  addedWords: {
+    id: string;
+    word: string;
+    definition: string;
+    example: string;
+  }[];
+  excluded: string[];
+  /** The words this account may use. Omitted means the whole collection. */
+  allowedWordIds?: Set<string>;
+  level: Difficulty | null;
+  types: QuestionType[];
+  random?: () => number;
+  now?: () => number;
+};
+
+const DEFAULTS = 0;
+
+/**
+ * A word as the engine needs it.
+ *
+ * `Word` leaves `difficulty`, `help` and `clue` optional and gets difficulty from
+ * a lookup map the client does not have. The bank carries all three per row, so
+ * they are resolved once here and every later read is total.
+ */
+type EngineWord = Word & {
+  difficulty: number;
+  help: string;
+  clue: string;
+};
+
+/** The word rows, in the shape the rest of the app already uses. */
+function wordsOf(bank: ClientBank): EngineWord[] {
+  return bank.words.map((row) => ({
+    id: String(row[0]),
+    word: String(row[0]),
+    definition: String(row[1] ?? ""),
+    example: String(row[2] ?? ""),
+    syn: String(row[3] ?? ""),
+    ant: String(row[4] ?? ""),
+    difficulty: Number(row[5] ?? 1),
+    source: String(row[6] ?? "vocabquest") as Word["source"],
+    // The help falls back to the definition, which is what the server's own
+    // loader does for a word with no recorded help.
+    help: String(row[7] ?? row[1] ?? ""),
+    clue: String(row[8] ?? ""),
+  }));
+}
+
+/** The shape `advanceMastery` reads, which counts mastery as a flag not a number. */
+const masteryState = (c: ClientProgress) => ({
+  correct: c.correct,
+  run: c.run,
+  recalls: c.recalls,
+  mastered: hasMastered(c),
+});
+
+const problemOf = (
+  bank: ClientBank,
+  record: ClientBank["problems"][number],
+): Problem => {
+  const [wordAt, typeAt, prompt, answer, distractors] = record;
+  const type = bank.types[typeAt];
+  return {
+    id: `${type}:${String(bank.words[wordAt][0])}`,
+    wordId: String(bank.words[wordAt][0]),
+    type,
+    prompt,
+    answer,
+    // A definition question draws its wrong options from a pool of six, so a
+    // repeat of the same word can be shown differently. The other types have
+    // their three fixed. Same split as the server's own loader.
+    choices: type === "def" ? null : distractors,
+    defPool: type === "def" ? distractors : undefined,
+  };
+};
+
+/** The four options, assembled the way the server assembles them. */
+const optionsFor = (problem: Problem, random: () => number): string[] => {
+  const wrong =
+    problem.choices ??
+    (problem.defPool ?? []).slice(0, CHOICES_PER_PROBLEM - 1);
+  if (wrong.length < CHOICES_PER_PROBLEM - 1)
+    throw Error(`a ${problem.id} question was generated with too few options.`);
+  // The answer is stored apart from the wrong options, so a question is never
+  // shown with the right answer missing from its own list.
+  return shuffle([...wrong, problem.answer], random);
+};
+
+export type ShownQuestion = {
+  id: string;
+  wordId: string;
+  type: QuestionType;
+  prompt: string;
+  choices: string[];
+  answer: string;
+  word: string;
+  definition: string;
+  example: string;
+  syn: string;
+  ant: string;
+  help: string;
+  clue: string;
+  difficulty: number;
+  mastery: ReturnType<typeof masteryProgress>;
+  correctCount: number;
+  seen: number;
+  /** Epoch ms, for the "you last saw this N days ago" line. */
+  shownAt: number;
+};
+
+export type GradedAnswer = {
+  correct: boolean;
+  skipped: boolean;
+  selected: number;
+  evidence: Evidence;
+  mastery: ReturnType<typeof masteryProgress>;
+  newlyMastered: boolean;
+  help: string;
+  daysSince?: number;
+};
+
+/**
+ * A practice session.
+ *
+ * Holds the mutable state - progress, the attempt clock, the per-type counts -
+ * and advances it as questions are answered. The server is the durable copy; this
+ * is the one a child sees between flushes, and a flush hands the server the whole
+ * difference.
+ */
+export class PracticeEngine {
+  private readonly words: EngineWord[];
+  private readonly byId: Map<string, EngineWord>;
+  private readonly problemsByWord: Map<string, Problem[]>;
+  private readonly counters = new Map<string, ClientProgress>();
+  private readonly typeCounts = new Map<string, Map<QuestionType, number>>();
+  private attemptCount: number;
+  private recent: string[];
+  private lastQuestion: ShownQuestion | null = null;
+  private readonly options: Required<Pick<EngineOptions, "level" | "types">> & {
+    allowed?: Set<string>;
+    added: EngineWord[];
+    excluded: Set<string>;
+    random: () => number;
+    now: () => number;
+  };
+
+  constructor(options: EngineOptions) {
+    const random = options.random ?? Math.random;
+    const now = options.now ?? Date.now;
+    this.words = wordsOf(options.bank);
+    this.byId = new Map(this.words.map((word) => [word.id, word]));
+    this.problemsByWord = new Map();
+    for (const record of options.bank.problems) {
+      const problem = problemOf(options.bank, record);
+      const list = this.problemsByWord.get(problem.wordId) ?? [];
+      list.push(problem);
+      this.problemsByWord.set(problem.wordId, list);
+    }
+    for (const row of options.progress) {
+      const [wordId, correct, run, recalls, mastered, seen, lastSeen, retryAt] =
+        row;
+      this.counters.set(wordId, {
+        correct,
+        run,
+        recalls,
+        mastered,
+        seen,
+        lastSeen,
+        retryAt,
+      });
+    }
+    for (const [wordId, type, count] of options.typeCounts) {
+      const byType =
+        this.typeCounts.get(wordId) ?? new Map<QuestionType, number>();
+      byType.set(type as QuestionType, count);
+      this.typeCounts.set(wordId, byType);
+    }
+    this.attemptCount = options.attemptCount;
+    this.recent = [...options.recent];
+    this.options = {
+      level: options.level,
+      types: options.types,
+      allowed: options.allowedWordIds,
+      added: options.addedWords.map((word) => ({
+        id: word.id,
+        word: word.word,
+        definition: word.definition,
+        example: word.example,
+        syn: "—",
+        ant: "—",
+        // A parent's own word has no corpus frequency, so it sits in the middle
+        // band, which is what the server's own estimate does for a word with no
+        // reading. What matters is that it is not filtered out by a level the
+        // child did not choose.
+        difficulty: 1,
+        source: "vocabquest" as Word["source"],
+        help: word.definition,
+        clue: "",
+      })),
+      excluded: new Set(options.excluded),
+      random,
+      now,
+    };
+  }
+
+  /** Words this account may be asked about, in bank order. */
+  private pool(): EngineWord[] {
+    const excluded = this.options.excluded;
+    const allowed = this.options.allowed;
+    return [...this.words, ...this.options.added].filter(
+      (word) =>
+        !excluded.has(word.id) &&
+        (!allowed || allowed.has(word.id)) &&
+        (this.options.level === null || word.difficulty === this.options.level),
+    );
+  }
+
+  private countersFor(wordId: string): ClientProgress {
+    return (
+      this.counters.get(wordId) ?? {
+        correct: DEFAULTS,
+        run: DEFAULTS,
+        recalls: DEFAULTS,
+        mastered: DEFAULTS,
+        seen: DEFAULTS,
+        lastSeen: null,
+        retryAt: null,
+      }
+    );
+  }
+
+  /**
+   * The next question, or null when there is nothing left to ask.
+   *
+   * Null is a real answer, not a failure: a child who has mastered every word they
+   * are allowed has finished, and the caller shows them that rather than looping.
+   */
+  next(): ShownQuestion | null {
+    const available = this.pool().filter(
+      (word) => !hasMastered(this.countersFor(word.id)),
+    );
+    if (!available.length) return null;
+    const chosenId = chooseWord(
+      available.map((word) => {
+        const counters = this.countersFor(word.id);
+        return { id: word.id, seen: counters.seen, retryAt: counters.retryAt };
+      }),
+      this.recent,
+      this.attemptCount,
+      this.options.random,
+    );
+    if (!chosenId) return null;
+    const word =
+      this.byId.get(chosenId) ??
+      this.options.added.find((w) => w.id === chosenId);
+    if (!word) return null;
+    // Cycle the word through the question types it is eligible for before
+    // repeating one, while the choice of word stays with chooseWord.
+    const eligible = (this.problemsByWord.get(chosenId) ?? []).filter(
+      (problem) => this.options.types.includes(problem.type),
+    );
+    if (!eligible.length) return null;
+    const counts =
+      this.typeCounts.get(chosenId) ?? new Map<QuestionType, number>();
+    const leastSeen = Math.min(
+      ...eligible.map((p) => counts.get(p.type) ?? DEFAULTS),
+    );
+    const candidates = eligible.filter(
+      (p) => (counts.get(p.type) ?? DEFAULTS) === leastSeen,
+    );
+    const problem =
+      candidates[Math.floor(this.options.random() * candidates.length)];
+    const counters = this.countersFor(chosenId);
+    const shown: ShownQuestion = {
+      id: `${problem.type}:${word.id}`,
+      wordId: word.id,
+      type: problem.type,
+      prompt: problem.prompt || `Choose the definition for '${word.word}'.`,
+      choices: optionsFor(problem, this.options.random),
+      answer: problem.answer,
+      word: word.word,
+      definition: word.definition,
+      example: word.example,
+      syn: word.syn,
+      ant: word.ant,
+      help: word.help,
+      clue: wordClue(word, problem.answer, problem.type),
+      difficulty: word.difficulty,
+      mastery: masteryProgress(
+        {
+          correct: counters.correct,
+          run: counters.run,
+          recalls: counters.recalls,
+          mastered: hasMastered(counters),
+        },
+        word.difficulty,
+      ),
+      correctCount: counters.correct,
+      seen: counters.seen,
+      shownAt: this.options.now(),
+    };
+    this.lastQuestion = shown;
+    return shown;
+  }
+
+  /**
+   * Grade an answer and advance every counter it should.
+   *
+   * The evidence verdict is computed from the time the question was *shown*, not
+   * from when the answer arrived and not from any server timestamp. That matters
+   * more here than it used to: a prefetched question sits in the queue for a while,
+   * and measuring from the wrong origin makes every question read as a guess,
+   * which stops counting towards mastery.
+   */
+  grade(selected: number): GradedAnswer | null {
+    const question = this.lastQuestion;
+    if (!question) return null;
+    const correct =
+      selected >= 0 && question.choices[selected] === question.answer;
+    const skipped = selected === -1;
+    const seconds = Math.max(0, (this.options.now() - question.shownAt) / 1000);
+    const evidence = classify({
+      correct,
+      revealed: skipped,
+      assisted: false,
+      seconds,
+      wallSeconds: seconds,
+      window: answerWindow(question.choices),
+    });
+    const previous = this.countersFor(question.wordId);
+    const mastery = advanceMastery(
+      masteryState(previous),
+      evidence,
+      question.difficulty,
+    );
+    const day = new Date(this.options.now()).toISOString().slice(0, 10);
+    this.counters.set(question.wordId, {
+      correct: previous.correct,
+      run: previous.run,
+      recalls: previous.recalls,
+      mastered: hasMastered(mastery) ? 1 : previous.mastered,
+      seen: previous.seen + 1,
+      lastSeen: day,
+      // A mistake is scheduled against the attempt count, which is a logical
+      // clock and not a date. The count is the one this session has been
+      // advancing, and a flush reconciles it with the server's.
+      retryAt: correct ? previous.retryAt : reviewDueAt(this.attemptCount + 1),
+    });
+    const byType =
+      this.typeCounts.get(question.wordId) ?? new Map<QuestionType, number>();
+    if (!skipped)
+      byType.set(question.type, (byType.get(question.type) ?? DEFAULTS) + 1);
+    this.typeCounts.set(question.wordId, byType);
+    this.attemptCount += 1;
+    this.recent = [question.wordId, ...this.recent].slice(
+      0,
+      RECENT_WORD_WINDOW * 2,
+    );
+    this.lastQuestion = null;
+    return {
+      correct,
+      skipped,
+      selected,
+      evidence,
+      mastery: masteryProgress(mastery, question.difficulty),
+      newlyMastered: mastery.newlyMastered,
+      help: question.help,
+      daysSince: daysSince(previous.lastSeen, this.options.now()),
+    };
+  }
+
+  /** The state to hand a flush, so the server can apply exactly this difference. */
+  pending(): {
+    attemptCount: number;
+    recent: string[];
+    progress: ProgressRow[];
+    typeCounts: [string, string, number][];
+  } {
+    return {
+      attemptCount: this.attemptCount,
+      recent: this.recent,
+      progress: [...this.counters].map(
+        ([wordId, c]): ProgressRow => [
+          wordId,
+          c.correct,
+          c.run,
+          c.recalls,
+          c.mastered,
+          c.seen,
+          c.lastSeen,
+          c.retryAt,
+        ],
+      ),
+      typeCounts: [...this.typeCounts].flatMap(([wordId, byType]) =>
+        [...byType].map(([type, count]): [string, string, number] => [
+          wordId,
+          type,
+          count,
+        ]),
+      ),
+    };
+  }
+}
+
+function daysSince(lastSeen: string | null, now: number): number | undefined {
+  if (!lastSeen) return undefined;
+  const then = Date.parse(`${lastSeen}T12:00:00Z`);
+  if (!Number.isFinite(then)) return undefined;
+  const days = Math.round((now - then) / 86_400_000);
+  return days > 0 ? days : undefined;
+}
+
+export { initialMastery, hasMastered, masteryProgress, reviewDueAt };
