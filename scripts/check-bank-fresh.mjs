@@ -16,11 +16,17 @@ import { readFileSync } from "node:fs";
 
 const bank = new URL("../data/problem-bank.json", import.meta.url);
 const generator = new URL("./generate-problem-bank.mjs", import.meta.url);
+const clientGenerator = new URL("./generate-client-bank.mjs", import.meta.url);
+const clientManifest = new URL("../data/client-bank.json", import.meta.url);
 
 const before = readFileSync(bank);
-execFileSync(process.execPath, ["--experimental-strip-types", generator.pathname], {
-  stdio: "ignore",
-});
+execFileSync(
+  process.execPath,
+  ["--experimental-strip-types", generator.pathname],
+  {
+    stdio: "ignore",
+  },
+);
 const after = readFileSync(bank);
 
 /**
@@ -42,13 +48,32 @@ const content = (bytes) => {
   return JSON.stringify(parsed);
 };
 
-if (content(before) === content(after)) {
+const bankCurrent = content(before) === content(after);
+
+// The browser's copy of the bank, and the manifest that names it, are derived
+// from the bank. They can only fall behind if someone runs the bank generator on
+// its own, which `npm run build` does not do - it chains both. But a stale
+// manifest is not merely a stale file, it is a URL that points at nothing, and
+// the symptom is a 404 on a child's first question rather than anything a test
+// would notice.
+const manifestBefore = readFileSync(clientManifest, "utf8");
+execFileSync(process.execPath, [clientGenerator.pathname], { stdio: "ignore" });
+const clientCurrent = manifestBefore === readFileSync(clientManifest, "utf8");
+
+if (bankCurrent && clientCurrent) {
   console.log("question bank is current");
 } else {
-  console.error(
-    "\nThe question bank was out of date and has now been regenerated.\n" +
-      "It is committed, so commit the change next to whatever you edited:\n\n" +
-      "  git add data/problem-bank.json\n",
-  );
+  if (!bankCurrent)
+    console.error(
+      "\nThe question bank was out of date and has now been regenerated.\n" +
+        "It is committed, so commit the change next to whatever you edited:\n\n" +
+        "  git add data/problem-bank.json\n",
+    );
+  if (!clientCurrent)
+    console.error(
+      "\nThe client's copy of the bank was out of date and has now been regenerated.\n" +
+        "Commit it too, or /api/progress will name a file that is not in the deploy:\n\n" +
+        "  git add data/client-bank.json\n",
+    );
   process.exitCode = 1;
 }
