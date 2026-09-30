@@ -66,6 +66,12 @@ node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0005_perpetual_hercules.sql
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0006_dazzling_doctor_faustus.sql
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0007_long_human_torch.sql
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0008_square_metal_master.sql
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0009_white_ricochet.sql
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0010_coach_last_seen.sql
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0011_reconcile_mastered_totals.sql
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0012_entitlement_and_purchases.sql
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0013_password_reset.sql
 # Apply future migrations once, in filename order.
 npm run dev
 ```
@@ -99,11 +105,11 @@ node scripts/run-framework.mjs build
 
 ## Accounts and login credentials
 
-Visit `/account`, choose **Create an account**, and register with your email and a 12–128 character password. New free accounts receive full vocabulary practice, saved progress, word summaries, revision exports and badges for the first seven days after sign-up. Configure `FREE_TRIAL_DAYS` in `.env` locally or in the hosting environment (whole number from 0 to 365; default 7; set to 0 to disable free trials). The countdown is enforced by server-side access checks. After the trial, free users keep saved access to a stable, difficulty-balanced selection of 20 words (set `FREE_WORD_LIMIT` to a whole number from 0 to the size of the word bank; default 20). Signed-out visitors can try the same free collection without saved progress. Subscribing unlocks the complete library and preserves existing progress.
+Visit `/account`, choose **Create an account**, and register with your email and an 8–128 character password. New free accounts receive full vocabulary practice, saved progress, word summaries, revision exports and badges for the first seven days after sign-up. Configure `FREE_TRIAL_DAYS` in `.env` locally or in the hosting environment (whole number from 0 to 365; default 7; set to 0 to disable free trials). The countdown is enforced by server-side access checks. After the trial, free users keep saved access to a stable, difficulty-balanced selection of 20 words (set `FREE_WORD_LIMIT` to a whole number from 0 to the size of the word bank; default 20). Signed-out visitors can try the same free collection without saved progress. Subscribing unlocks the complete library and preserves existing progress.
 
-Passwords use salted scrypt (N=16384, r=8, p=5); session tokens are random, stored only as hashes in D1, and sent in HttpOnly/SameSite cookies (Secure on HTTPS). Authentication endpoints are rate-limited, mutations check Origin, sessions expire after seven days, and logout revokes the session. Emails are normalized to lowercase.
+Passwords use salted scrypt (N=16384, r=8, p=5); session tokens are random, stored only as hashes in D1, and sent in HttpOnly/SameSite cookies (Secure on HTTPS). Authentication endpoints are rate-limited, mutations check Origin, sessions expire after seven days, and logout revokes the session. Emails are normalized to lowercase. A reset link is rate-limited like any other, expires after an hour, and revokes every session on the account when it is used.
 
-This implementation does not yet provide email verification or self-service forgotten-password email delivery. Add an email provider and token-based recovery before a broad customer launch. No test account or test paid entitlement is included in deployment migrations.
+A forgotten password is recovered from `/account`: the parent asks for a link, and a single-use token is emailed to the address on the account, stored only as a hash and valid for one hour. Using it sets the new password, revokes every session on the account and signs the parent in on that device; asking for a link always answers the same way whether or not that address has an account. It needs `RESEND_API_KEY` and `EMAIL_FROM`; without them a request succeeds and no message is sent. This implementation does not yet provide email verification. Add it before a broad customer launch. No test account or test paid entitlement is included in deployment migrations.
 
 ## Monthly payments
 

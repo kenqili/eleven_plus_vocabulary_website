@@ -119,6 +119,36 @@ test("the collapsed navigation is actually hidden until the button is pressed", 
   );
 });
 
+test("your account is not behind the grown-ups disclosure", () => {
+  // It used to be. That panel exists to hide pages that talk about exam
+  // pressure from a nine-year-old, and it was also hiding the only way to sign
+  // in, cancel a subscription or delete an account - three things a parent
+  // arrives wanting and none of which they look for by browsing. It is now a
+  // link in the row with the four child links, before the disclosure.
+  const link = header.indexOf('href="/account"');
+  const panel = header.indexOf("grown-ups-menu");
+  assert.ok(link > 0, "there is no link to the account page at all");
+  assert.ok(
+    panel > 0,
+    "the grown-ups panel is gone, so this test needs rethinking",
+  );
+  assert.ok(
+    link < panel,
+    "the account link is inside the grown-ups panel, so signing in is behind the thing the panel exists to hide",
+  );
+  // Exactly one. Two would put it back in front of a parent as a duplicate, and
+  // a second copy inside the panel is how it ended up hidden in the first place.
+  assert.equal(
+    (header.match(/href="\/account"/g) ?? []).length,
+    1,
+    "the account link appears more than once, so the parent is shown a duplicate or it is back inside the panel",
+  );
+  assert.ok(
+    header.includes("Your account"),
+    "the account link has lost its label, so the row now has an unlabelled icon",
+  );
+});
+
 test("the grown-ups disclosure is a button, not a link, and says so", () => {
   // It opens a panel rather than going anywhere, so it has to be a button with
   // an expanded state. A div with a click handler would be unreachable by

@@ -15,6 +15,7 @@ const ROUTES = [
   "app/api/auth/[action]/route.ts",
   "app/api/billing/[action]/route.ts",
   "app/api/challenge/route.ts",
+  "app/api/password-reset/[action]/route.ts",
   "app/api/parent-words/route.ts",
   "app/api/rewards/route.ts",
   "app/api/stories/route.ts",

@@ -381,6 +381,36 @@ export const wordExclusions = sqliteTable(
   (t) => [primaryKey({ columns: [t.userId, t.wordId] })],
 );
 
+/**
+ * Password recovery, one live link per account.
+ *
+ * `tokenHash` is the sha256 of the token the parent was emailed, never the token
+ * itself, so a copy of the database is not a list of links that still work.
+ * `expiresAt` is read in the lookup rather than by a sweeper, which is what
+ * makes it safe to leave the purge to whoever gets round to it.
+ */
+export const passwordResets = sqliteTable(
+  "password_resets",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    tokenHash: text("token_hash").notNull(),
+    /** When the link stops working, as epoch milliseconds. One hour. */
+    expiresAt: integer("expires_at").notNull(),
+    createdAt: integer("created_at").notNull(),
+  },
+  (t) => [
+    /** Unique, so one token cannot back two rows and be spent twice. */
+    uniqueIndex("password_reset_token").on(t.tokenHash),
+    /** Serves retiring an account's previous link when a new one is asked for. */
+    index("password_resets_user").on(t.userId),
+    /** Serves clearing rows that can no longer be used. */
+    index("password_resets_expiry").on(t.expiresAt),
+  ],
+);
+
 /** Words a parent has added for their own child to practise. */
 export const customWords = sqliteTable(
   "custom_words",

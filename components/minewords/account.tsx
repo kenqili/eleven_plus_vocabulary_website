@@ -37,6 +37,8 @@ export default function Account() {
   const [email, setEmail] = useState(""),
     [password, setPassword] = useState(""),
     [notice, setNotice] = useState("");
+  const [resetting, setResetting] = useState(false),
+    [resetEmail, setResetEmail] = useState("");
   function refresh() {
     return api<{
       user: User | null;
@@ -80,6 +82,32 @@ export default function Account() {
       });
       setPassword("");
       await refresh();
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+  /**
+   * Ask for a reset link, from the sign-in form rather than a page of its own.
+   *
+   * The wording is the server's, not ours. A message that said "no account has
+   * that address" would be a way of finding out who has one here, which is the
+   * exact thing a reset flow should not hand over, so whatever comes back is
+   * shown word for word.
+   */
+  async function requestReset(event: FormEvent) {
+    event.preventDefault();
+    setBusy(true);
+    setError("");
+    setNotice("");
+    try {
+      const result = await api<{ ok: boolean; message: string }>(
+        "/api/password-reset/request",
+        { email: resetEmail },
+      );
+      setResetEmail("");
+      setNotice(result.message);
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -216,58 +244,124 @@ export default function Account() {
             </>
           ) : (
             <>
-              <h1>{register ? "Start your word journey." : "Welcome back."}</h1>
+              <h1>
+                {resetting
+                  ? "Send yourself a new password."
+                  : register
+                    ? "Start your word journey."
+                    : "Welcome back."}
+              </h1>
               <p className="muted">
-                {register
-                  ? `Create a free account for ${trialDays} days of full access, then subscribe to keep practising.`
-                  : "Sign in to continue your vocabulary practice."}
+                {resetting
+                  ? "Put in the email address you signed up with and we will send a link to set a new password."
+                  : register
+                    ? `Create a free account for ${trialDays} days of full access, then subscribe to keep practising.`
+                    : "Sign in to continue your vocabulary practice."}
               </p>
-              <form onSubmit={submit}>
-                <label htmlFor="email">Email address</label>
-                <input
-                  id="email"
-                  type="email"
-                  autoComplete="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  maxLength={254}
-                />
-                <label htmlFor="password">Password</label>
-                <input
-                  id="password"
-                  type="password"
-                  autoComplete={register ? "new-password" : "current-password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  minLength={8}
-                  maxLength={128}
-                />
-                <p className="muted">
-                  At least 8 characters. A short phrase you will remember works
-                  better than a long one you will not.
-                </p>
-                <button className="primary-button" disabled={busy}>
-                  {busy
-                    ? "Please wait…"
-                    : register
-                      ? "Create account"
-                      : "Sign in"}
-                </button>
-              </form>
+              {resetting ? (
+                <form onSubmit={requestReset}>
+                  <label htmlFor="reset-email">Email address</label>
+                  <input
+                    id="reset-email"
+                    type="email"
+                    autoComplete="email"
+                    value={resetEmail}
+                    onChange={(e) => setResetEmail(e.target.value)}
+                    required
+                    maxLength={254}
+                  />
+                  <p className="muted">
+                    Check the junk folder if nothing arrives. You can keep using
+                    the site meanwhile.
+                  </p>
+                  <button className="primary-button" disabled={busy}>
+                    {busy ? "Please wait…" : "Email me a reset link"}
+                  </button>
+                </form>
+              ) : (
+                <form onSubmit={submit}>
+                  <label htmlFor="email">Email address</label>
+                  <input
+                    id="email"
+                    type="email"
+                    autoComplete="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    maxLength={254}
+                  />
+                  <label htmlFor="password">Password</label>
+                  <input
+                    id="password"
+                    type="password"
+                    autoComplete={
+                      register ? "new-password" : "current-password"
+                    }
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    minLength={8}
+                    maxLength={128}
+                  />
+                  <p className="muted">
+                    At least 8 characters. A short phrase you will remember
+                    works better than a long one you will not.
+                  </p>
+                  <button className="primary-button" disabled={busy}>
+                    {busy
+                      ? "Please wait…"
+                      : register
+                        ? "Create account"
+                        : "Sign in"}
+                  </button>
+                </form>
+              )}
               <p className="muted">
-                {register ? "Already have an account?" : "New to MineWords?"}{" "}
-                <button
-                  className="text-button"
-                  disabled={busy}
-                  onClick={() => {
-                    setRegister(!register);
-                    setError("");
-                  }}
-                >
-                  {register ? "Sign in" : "Create an account"}
-                </button>
+                {resetting ? (
+                  <button
+                    className="text-button"
+                    disabled={busy}
+                    onClick={() => {
+                      setResetting(false);
+                      setError("");
+                      setNotice("");
+                    }}
+                  >
+                    Back to sign in
+                  </button>
+                ) : (
+                  <>
+                    {register
+                      ? "Already have an account?"
+                      : "New to MineWords?"}{" "}
+                    <button
+                      className="text-button"
+                      disabled={busy}
+                      onClick={() => {
+                        setRegister(!register);
+                        setError("");
+                      }}
+                    >
+                      {register ? "Sign in" : "Create an account"}
+                    </button>
+                    {!register && (
+                      <>
+                        {" · "}
+                        <button
+                          className="text-button"
+                          disabled={busy}
+                          onClick={() => {
+                            setResetting(true);
+                            setError("");
+                            setNotice("");
+                          }}
+                        >
+                          Forgotten your password?
+                        </button>
+                      </>
+                    )}
+                  </>
+                )}
               </p>
             </>
           )}

@@ -13,7 +13,8 @@ import {
 import ThemePicker from "./theme-picker";
 
 /**
- * Four things a child came for, and a disclosure for the rest.
+ * Four things a child came for, a disclosure for the rest, and one link that is
+ * deliberately neither.
  *
  * There were eleven equal links, and a review of this app as a nine-year-old
  * found the wrong ones in it: the guides open with an article about exam
@@ -23,6 +24,13 @@ import ThemePicker from "./theme-picker";
  *
  * The 11+ page used to be one of those ten links, as an index of articles. It
  * is now a single page, which is what a parent arriving cold actually wants.
+ *
+ * "Your account" sat inside the grown-ups panel, which put the thing that panel
+ * exists for behind the thing it was hiding. Reading the privacy notice is
+ * optional. Signing in, cancelling a subscription or deleting an account is
+ * not, and nobody arrives looking for it by browsing. So it sits outside the
+ * disclosure, next to the four links, and costs one more word on an already
+ * full row.
  */
 const FOR_CHILDREN = [
   { href: "/stories", label: "Word Adventures" },
@@ -72,6 +80,9 @@ export default function Header() {
             {link.label}
           </Link>
         ))}
+        <Link className="account-link" href="/account">
+          <UserRound size={17} aria-hidden /> Your account
+        </Link>
         <div
           className={`grown-ups${grownUpsOpen ? " is-open" : ""}`}
           onClick={(event) => event.stopPropagation()}
@@ -96,9 +107,6 @@ export default function Header() {
                   {link.label}
                 </Link>
               ))}
-              <Link className="account-link" href="/account">
-                <UserRound size={17} aria-hidden /> Your account
-              </Link>
             </div>
           ) : null}
         </div>
