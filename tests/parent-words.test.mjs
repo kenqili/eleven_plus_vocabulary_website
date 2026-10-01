@@ -2,6 +2,7 @@
 // parent's own words, minus whatever the parent has set aside.
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { problemsForAddedWords } from "../lib/challenge/problems.ts";
 import { problems as bankProblems } from "../scripts/load-problem-bank.mjs";
 import { chosenWordExplanation, optionGlosses } from "../lib/challenge/option-gloss.ts";
@@ -12,6 +13,12 @@ import {
   toCustomWord,
 } from "../lib/challenge/added-words.ts";
 import { words } from "../scripts/load-word-bank.mjs";
+import {
+  emptyWordDraft,
+  readWordDraft,
+  saveWordDraft,
+} from "../lib/client/word-draft.ts";
+import { withLocalStorage } from "./helpers/local-storage.mjs";
 
 /** @returns {{id:string,word:string,definition:string,example:string,createdAt:number}} */
 const added = (
@@ -213,4 +220,88 @@ test("a client can get every gloss in one go, and never for the answer", () => {
   for (const option of Object.keys(all))
     assert.ok(options.includes(option), `${option} was not offered`);
   assert.ok(Object.keys(all).length >= 2, "expected glosses for the real words");
+});
+
+test("a half-typed word outlives the page and leaves nothing when it is finished", () => {
+  withLocalStorage(() => {
+    const blank = { word: "", definition: "", example: "" };
+    assert.deepEqual(readWordDraft(), blank, "a browser with no draft has nothing");
+    saveWordDraft({
+      word: "quaff",
+      definition: "To drink something, usually in a noisy way.",
+      example: "They quaffed the lemonade.",
+    });
+    assert.deepEqual(readWordDraft(), {
+      word: "quaff",
+      definition: "To drink something, usually in a noisy way.",
+      example: "They quaffed the lemonade.",
+    });
+    // Once the word is added the form is emptied, and an empty form is removed
+    // rather than stored, so the next visit starts from nothing.
+    saveWordDraft(emptyWordDraft());
+    assert.deepEqual(readWordDraft(), blank);
+  });
+});
+
+test("a corrupt or oversized draft is refused rather than put in a field", () => {
+  withLocalStorage((values) => {
+    const blank = { word: "", definition: "", example: "" };
+    values.set("minewords:parent-word-draft", "not json at all");
+    assert.deepEqual(readWordDraft(), blank);
+    values.set("minewords:parent-word-draft", "[]");
+    assert.deepEqual(readWordDraft(), blank);
+    // A value longer than the input's own maxLength cannot come back, because
+    // the server truncates and a field that silently disagrees with it is worse
+    // than one that is short.
+    values.set(
+      "minewords:parent-word-draft",
+      JSON.stringify({
+        word: 7,
+        definition: "d".repeat(400),
+        example: "e".repeat(400),
+      }),
+    );
+    assert.deepEqual(readWordDraft(), {
+      word: "",
+      definition: "d".repeat(200),
+      example: "e".repeat(240),
+    });
+  });
+});
+
+test("the add form is only emptied when the word was actually added", () => {
+  // No request can observe this. `send` catches its own errors and resolves
+  // either way, so the promise a submit waits on says nothing about whether the
+  // word was accepted, and a page that cleared on it lost a parent's typing on
+  // a 409 - the most likely refusal there is, being a word the collection
+  // already teaches - while telling them it had been added. There is no
+  // component renderer here, so the wiring is read instead. What that proves is
+  // the regression above; what it cannot prove is anything the browser would.
+  const page = readFileSync(
+    new URL("../components/minewords/manage-words.tsx", import.meta.url),
+    "utf8",
+  );
+  assert.match(
+    page,
+    /\.then\(\s*\n?\s*\(added\) =>/,
+    "the submit is not told whether the add worked, so it cannot know when to clear",
+  );
+  assert.match(
+    page,
+    /if \(added\) setForm\(/,
+    "the form is emptied whatever the server said, so a refused word is lost",
+  );
+  // And the draft the parent would come back to has to be written on the way in,
+  // not only once the word has been accepted - the link above the form is the
+  // way out of it.
+  assert.match(
+    page,
+    /setForm\(readWordDraft\(\)\)/,
+    "the form does not restore a half-typed word, so leaving and coming back loses it",
+  );
+  assert.match(
+    page,
+    /saveWordDraft\(/,
+    "the form is never mirrored, so the restore above would have nothing to restore",
+  );
 });

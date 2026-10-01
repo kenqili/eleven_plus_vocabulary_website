@@ -424,6 +424,12 @@ export function useChallenge() {
    * document; if even that is dropped, the answers carry ids the server has
    * already seen and a later flush cannot pay for them twice. The worst case is
    * losing one sitting, which is the trade this design was built on.
+   *
+   * Unmounting is the navigation case, and it is the common one. Every link in
+   * this app is a `next/link`, which is a client-side route change: the document
+   * is not unloaded, so neither `pagehide` nor `beforeunload` fires for any of
+   * the fourteen links in the header. Cleanup runs on unmount and unmount is
+   * what navigation does, which is why the three sibling hooks flush there.
    */
   useEffect(() => {
     const leave = () => void session.current?.flushOnExit();
@@ -435,6 +441,19 @@ export function useChallenge() {
     return () => {
       window.removeEventListener("pagehide", leave);
       document.removeEventListener("visibilitychange", hidden);
+      // Flush first, then stop. The order is not what makes the request go out:
+      // `flushOnExit` reads the queue directly and neither consults `stopped`
+      // nor re-arms the timer, so it sends whichever way round these run. It is
+      // written this way because it is the order that means something - the
+      // last write is issued, and only then is the session retired - and because
+      // `stop` is a statement about the future ("no more scheduled writes")
+      // while a flush is a statement about the queue right now.
+      //
+      // The request is safe to make from a cleanup: `api` builds its own abort
+      // controller on its own 4s timer, nothing here is tied to the component's
+      // lifetime, and `keepalive` covers the full-page-load case where the
+      // document really is going away.
+      void session.current?.flushOnExit();
       session.current?.stop();
     };
   }, []);

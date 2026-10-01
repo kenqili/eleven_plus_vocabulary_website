@@ -166,14 +166,33 @@ export default function Account() {
       setBusy(false);
     }
   }
+  /**
+   * This session is over, and the card on screen says otherwise.
+   *
+   * Both ways a parent can end one - changing the password, and signing out
+   * everywhere - arrive here rather than clearing themselves. The account card
+   * shows a Change password form that wants the password they have just
+   * replaced, on a session the server has already ended, which is the one state
+   * a parent must not be left looking at.
+   *
+   * The message is passed in rather than written here for a second reason: the
+   * component that produces it is rendered only while a parent is signed in, so
+   * this call unmounts it. Anything it held in its own state goes with it, and a
+   * parent who typed a new password and was then shown a bare sign-in form has
+   * learned nothing. The notice below is rendered outside the signed-in branch,
+   * so this is the only place the sentence can live.
+   */
+  function endSession(message: string) {
+    setUser(null);
+    setBilling(null);
+    setNotice(message);
+  }
   async function logout() {
     setBusy(true);
     setError("");
     try {
       await api("/api/auth/logout", {});
-      setUser(null);
-      setBilling(null);
-      setNotice("You are signed out.");
+      endSession("You are signed out.");
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -280,7 +299,7 @@ export default function Account() {
                   Sign out
                 </button>
               </div>
-              <AccountSecurity />
+              <AccountSecurity onSignedOut={endSession} />
               <DeleteAccount />
             </>
           ) : (

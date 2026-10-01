@@ -5,6 +5,7 @@ import assert from "node:assert/strict";
 import { DatabaseSync } from "node:sqlite";
 import { randomUUID } from "node:crypto";
 import { mkdirSync } from "node:fs";
+import { signedUp } from "./helpers/account.mjs";
 const root = process.cwd(),
   origin = process.env.TEST_ORIGIN || "http://127.0.0.1:5173";
 if (
@@ -21,7 +22,7 @@ const browser = await engine.launch({
 });
 const db = new DatabaseSync(process.env.TEST_NODE_DB);
 db.exec("PRAGMA foreign_keys=ON;PRAGMA busy_timeout=5000");
-let user;
+let user, navigated;
 const errors = [];
 mkdirSync(root + "/outputs/child-experience", { recursive: true });
 try {
@@ -360,16 +361,100 @@ try {
   assert.ok(
     await page.getByText("Badge receipts", { exact: true }).isVisible(),
   );
+
+  /**
+   * Leaving the practice page through a link in the header.
+   *
+   * Every journey above arrives with `page.goto`, which is a full page load, and
+   * that is exactly why this was never caught: an in-app link is a client-side
+   * route change, so the document is not unloaded, `pagehide` does not fire and
+   * `beforeunload` does not fire either. A queued answer is only saved by the
+   * component being unmounted, so a header link used to discard it.
+   *
+   * Counted in the database rather than by watching for a request: what matters
+   * is the answer arriving, not that the browser tried.
+   *
+   * A second account, and a wide window, because the account above has spent its
+   * daily mission and its auto-advance setting would move the question out from
+   * under the click, and the header collapses behind a button on a phone.
+   */
+  navigated = await signedUp("child-nav");
+  const site = new URL(origin);
+  const [sessionName, sessionValue] = navigated.cookie.split("=");
+  const leaving = await browser.newContext({
+    viewport: { width: 1280, height: 900 },
+    storageState: {
+      cookies: [
+        {
+          name: sessionName,
+          value: sessionValue,
+          domain: site.hostname,
+          path: "/",
+          expires: -1,
+          httpOnly: true,
+          secure: site.protocol === "https:",
+          sameSite: "Lax",
+        },
+      ],
+      origins: [],
+    },
+  });
+  const leaver = await leaving.newPage();
+  leaver.on("pageerror", (e) => errors.push(e.message));
+  const savedAnswers = () =>
+    db
+      .prepare(
+        "SELECT COUNT(*) n FROM attempts WHERE user_id=? AND answered_at IS NOT NULL",
+      )
+      .get(navigated.id).n;
+  await leaver.goto(origin);
+  // aria-disabled, not disabled: challenge.tsx sets aria-disabled on an answer
+  // that is busy or already answered, and leaves the real attribute off, so
+  // `:not(:disabled)` would match every answer forever and `waitFor` would
+  // resolve against a button the click would then be refused by.
+  await leaver.locator('.answer[aria-disabled="false"]').first().waitFor();
+  // The select's accessible name is its aria-label, which shadows the wrapping
+  // label's text - so "Next word appears" does not select it, and the existing
+  // case above that reaches for "Next word" is looking for a control that is not
+  // on the page. 0 is "When I'm ready", which is what stops auto-advance from
+  // moving the question out from under the click below.
+  await leaver.getByLabel("How quickly the next word appears").selectOption("0");
+  const beforeAnswering = savedAnswers();
+  await leaver.locator('.answer[aria-disabled="false"]').first().click();
+  await leaver.locator(".feedback").waitFor();
+  assert.equal(
+    savedAnswers(),
+    beforeAnswering,
+    "answering is queued in the browser, so the database cannot have moved yet",
+  );
+  await leaver
+    .locator("nav")
+    .getByRole("link", { name: "Word list", exact: true })
+    .click();
+  await leaver.locator(".word-table").first().waitFor();
+  let written = beforeAnswering;
+  for (let attempt = 0; attempt < 40 && written === beforeAnswering; attempt++) {
+    await leaver.waitForTimeout(250);
+    written = savedAnswers();
+  }
+  assert.equal(
+    written,
+    beforeAnswering + 1,
+    "navigating away through a header link flushed the answer that was still queued",
+  );
+  await leaving.close();
+
   assert.deepEqual(errors, []);
   await second.close();
   await context.close();
   await bootstrap.close();
   console.log(`${process.env.TEST_BROWSER || "chromium"} ${browser.version()}`);
   console.log(
-    "PASS child journeys: clues, pacing, synced levels/bookmarks, restart, word help, compact reader, badge collection and 35 responsive page checks.",
+    "PASS child journeys: clues, pacing, synced levels/bookmarks, restart, word help, compact reader, badge collection, an in-app link that saves, and 35 responsive page checks.",
   );
 } finally {
   await browser.close();
   if (user) db.prepare("DELETE FROM users WHERE id=?").run(user);
+  if (navigated) db.prepare("DELETE FROM users WHERE id=?").run(navigated.id);
   db.close();
 }

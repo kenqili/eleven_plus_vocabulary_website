@@ -73,6 +73,87 @@ export async function sendPasswordResetEmail(
 }
 
 /**
+ * When it happened, in a form a parent can read and check against their own day.
+ *
+ * A fixed locale and UTC rather than the runtime's own, because this line is a
+ * record of when a password changed: "14:05" with no zone on it, in whatever
+ * language the Worker happens to be running, is not a record of anything.
+ */
+const when = (at: number) =>
+  `${new Date(at).toLocaleString("en-GB", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: "UTC",
+  })} UTC`;
+
+/**
+ * The message a parent reads after the password on their account has changed,
+ * whichever route changed it.
+ *
+ * `how` is not decoration. A parent who changed their own password and one whose
+ * account was recovered through a link have just had the same thing happen to
+ * them, and the only thing that tells them apart is that one of them had to open
+ * a link to get in. The subjects differ for that reason too: a parent deciding
+ * whether to worry reads the subject line in the list before the body.
+ *
+ * The link is the account page and carries no token. That page holds both halves
+ * of what comes next - the form that changes a password, and the "Forgotten your
+ * password?" control for a parent who cannot sign in - and a token here would be
+ * a second way into an account that nobody asked for one.
+ *
+ * No IP address, and no user agent either, both rejected rather than dropped:
+ * neither is a thing a parent can act on, a user agent names a browser rather
+ * than whose hands were on it, and a real one wraps badly in a plain-text client.
+ * What is left is the time and the sign-out, the two facts that can be compared
+ * against memory.
+ *
+ * `at` is passed in rather than read here, so the caller states when the change
+ * happened - the moment the password was written, not the moment this was sent.
+ */
+export async function sendPasswordChangedEmail(
+  to: string,
+  context: {
+    /** Where the account page is, built from APP_ORIGIN by the caller. */
+    link: string;
+    /** When the password changed, in milliseconds. */
+    at: number;
+    /** Which of the two routes changed it. A parent has to be able to tell. */
+    how: "changed" | "reset";
+  },
+): Promise<void> {
+  // Wording, not behaviour, is all that differs. The session delete is identical
+  // in both routes; what a parent needs is to know whether this was them.
+  const reset = context.how === "reset";
+  const sessions = reset
+    ? "Every device signed in to this account was signed out at the same time."
+    : "Every other device signed in to this account was signed out at the same time.";
+  await sendEmail({
+    to,
+    subject: reset
+      ? "Your MineWords password was reset"
+      : "Your MineWords password was changed",
+    text: [
+      reset
+        ? "The password on your MineWords account has been reset, with a link sent to your email address."
+        : "The password on your MineWords account has been changed.",
+      "",
+      `${when(context.at)}. ${sessions}`,
+      "",
+      "If this was not you, change the password again straight away, from",
+      "your account page:",
+      "",
+      context.link,
+      "",
+      'If you cannot sign in, choose "Forgotten your password?" on that same',
+      "page and we will email you a link to set a new one, to the address on",
+      "the account.",
+      "",
+      "MineWords",
+    ].join("\n"),
+  });
+}
+
+/**
  * The message a parent reads when an address is about to be used for the first
  * time.
  *

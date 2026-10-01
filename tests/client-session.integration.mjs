@@ -250,3 +250,63 @@ test(
     db.close();
   },
 );
+
+test(
+  "leaving the page flushes the queue, which is what an unmount is",
+  { skip: !local },
+  async () => {
+    // The practice page has no useRouter and no router.push, so every link in
+    // it is a `next/link` and every departure from it is a client-side route
+    // change: the document is not unloaded, so `pagehide` and `beforeunload`
+    // never fire. `flushOnExit` is what the unmount calls instead, and it had no
+    // coverage at all, so nothing here would have noticed a queue being thrown
+    // away with the component.
+    if (!local || !process.env.TEST_NODE_DB) return;
+    const { loadSession, ClientSession } = await import("../lib/client/session.ts");
+    const db = sql();
+    db.prepare("DELETE FROM rate_limits").run();
+    const user = await register();
+    const realFetch = globalThis.fetch;
+    const calls = [];
+    const withDefaults = browserDefaults(user.cookie);
+    globalThis.fetch = (url, init) => {
+      const target = new URL(String(url), origin);
+      calls.push(target.pathname);
+      return realFetch(target, withDefaults(init));
+    };
+    let session;
+    try {
+      const loaded = await loadSession();
+      session = new ClientSession(loaded.engine, loaded.stats);
+      const question = session.next();
+      session.answer(question.choices.indexOf(question.answer));
+      assert.equal(session.dirty, true, "one answer is waiting to be written");
+
+      const beforeExit = calls.length;
+      await session.flushOnExit();
+      assert.ok(
+        calls.slice(beforeExit).includes("/api/flush"),
+        `leaving the page sent ${calls.slice(beforeExit).join(", ")}`,
+      );
+      assert.equal(session.dirty, false, "and the queue is empty afterwards");
+    } finally {
+      globalThis.fetch = realFetch;
+    }
+
+    const written = db
+      .prepare(
+        "SELECT COUNT(*) AS c FROM attempts WHERE user_id=? AND answered_at IS NOT NULL",
+      )
+      .get(user.id).c;
+    assert.equal(written, 1, "the answer reached the database");
+
+    // Nothing left to send, so nothing is sent. A child who backs out of the
+    // practice page must not cost the server a write every time.
+    const beforeSecond = calls.length;
+    await session.flushOnExit();
+    assert.equal(calls.length, beforeSecond, "a clean session has nothing to send");
+
+    db.prepare("DELETE FROM users WHERE id=?").run(user.id);
+    db.close();
+  },
+);

@@ -1,9 +1,15 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { EyeOff, Plus, RotateCcw, Trash2 } from "lucide-react";
 import Header from "./header";
 import { api } from "@/lib/client/api";
+import {
+  emptyWordDraft,
+  readWordDraft,
+  saveWordDraft,
+  type WordDraft,
+} from "@/lib/client/word-draft";
 
 type Excluded = { id: string; word: string };
 type Added = {
@@ -28,7 +34,29 @@ export default function ManageWordsPage() {
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
-  const [form, setForm] = useState({ word: "", definition: "", example: "" });
+  const [form, setForm] = useState<WordDraft>(emptyWordDraft);
+
+  /**
+   * The typed word, mirrored to this browser.
+   *
+   * One effect rather than a restore and a save, because two would land in the
+   * same commit on mount and the save would overwrite the draft it had just
+   * read. It restores on the first run and mirrors on every one after, and an
+   * effect rather than a `useState` initialiser because this page is server
+   * rendered and there is no `localStorage` there to read.
+   */
+  const restored = useRef(false);
+  useEffect(() => {
+    if (!restored.current) {
+      restored.current = true;
+      setForm(readWordDraft());
+      return;
+    }
+    saveWordDraft(form);
+  }, [form]);
+
+  const edit = (patch: Partial<WordDraft>) =>
+    setForm((current) => ({ ...current, ...patch }));
 
   useEffect(() => {
     let active = true;
@@ -55,17 +83,31 @@ export default function ManageWordsPage() {
     };
   }, []);
 
-  const send = async (body: Record<string, unknown>, message: string) => {
+  /**
+   * Send one action, and say whether it worked.
+   *
+   * It used to resolve either way, which was invisible for the three actions
+   * that ignore the answer and cost a typed word for the one that does not. The
+   * add form cleared itself on the promise, so a word the server refused - a 409
+   * for one the collection already teaches, or the limit - was erased on a
+   * render that said it had been added.
+   */
+  const send = async (
+    body: Record<string, unknown>,
+    message: string,
+  ): Promise<boolean> => {
     setBusy(true);
     setError("");
     setNotice("");
     try {
       setData(await api<Snapshot>("/api/parent-words", body));
       setNotice(message);
+      return true;
     } catch (cause) {
       setError(
         cause instanceof Error ? cause.message : "That did not work.",
       );
+      return false;
     } finally {
       setBusy(false);
     }
@@ -120,8 +162,13 @@ export default function ManageWordsPage() {
             className="manage-form"
             onSubmit={(event) => {
               event.preventDefault();
-              void send({ action: "add", ...form }, "Word added.").then(() =>
-                setForm({ word: "", definition: "", example: "" }),
+              void send({ action: "add", ...form }, "Word added.").then(
+                (added) => {
+                  // Only a word that was actually added is thrown away. The
+                  // mirror clears itself from the empty form this puts back, so
+                  // there is nothing else to remove here.
+                  if (added) setForm(emptyWordDraft());
+                },
               );
             }}
           >
@@ -131,9 +178,7 @@ export default function ManageWordsPage() {
               maxLength={60}
               required
               value={form.word}
-              onChange={(event) =>
-                setForm({ ...form, word: event.target.value })
-              }
+              onChange={(event) => edit({ word: event.target.value })}
               placeholder="quaff"
             />
             <label htmlFor="own-definition">What it means</label>
@@ -142,9 +187,7 @@ export default function ManageWordsPage() {
               maxLength={200}
               required
               value={form.definition}
-              onChange={(event) =>
-                setForm({ ...form, definition: event.target.value })
-              }
+              onChange={(event) => edit({ definition: event.target.value })}
               placeholder="To drink something, usually in a noisy way."
             />
             <label htmlFor="own-example">A sentence using it</label>
@@ -153,9 +196,7 @@ export default function ManageWordsPage() {
               maxLength={240}
               required
               value={form.example}
-              onChange={(event) =>
-                setForm({ ...form, example: event.target.value })
-              }
+              onChange={(event) => edit({ example: event.target.value })}
               placeholder="They quaffed the lemonade and made a face."
             />
             <button

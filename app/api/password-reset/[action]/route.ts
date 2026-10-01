@@ -1,6 +1,10 @@
 import { createSession, rateLimit } from "@/lib/server/auth";
 import { database, setting } from "@/lib/server/db";
-import { emailReady, sendPasswordResetEmail } from "@/lib/server/email";
+import {
+  emailReady,
+  sendPasswordChangedEmail,
+  sendPasswordResetEmail,
+} from "@/lib/server/email";
 import { body, boundary, HttpError, json, sameOrigin } from "@/lib/server/http";
 import {
   hashPassword,
@@ -168,6 +172,7 @@ async function confirmReset(request: Request) {
   // old one is a parent who believed they had recovered the account and did not.
   if (verifyPassword(password, reset.storedHash))
     throw new HttpError(400, "The new password matches the old one.");
+  const changedAt = Date.now();
   const db = database();
   await db.batch([
     db
@@ -207,6 +212,41 @@ async function confirmReset(request: Request) {
   // asking for - it arrived at the same address - so a successful reset is allowed
   // to confirm it.
   await markVerified(reset.userId);
+  // The notice a reset owes its account owner, and the same one the change-
+  // password route sends, because a parent who hears that their address was used
+  // to reset the account can change the password again straight away rather than
+  // find out from a child who cannot sign in.
+  //
+  // It is also the only message some accounts will ever get: an address whose
+  // confirmation was lost has no other evidence that it can receive mail at all,
+  // which is the trap markVerified above exists to stop being fatal.
+  //
+  // emailReady() first, sharing this module's flag with requestReset, so one
+  // deployment with no mail configured says so once rather than once per route.
+  // Then the same try that requestReset uses: nothing here may change the reply,
+  // because the reply is the one that signs the parent in, and a parent who has
+  // just recovered their account cannot be told their mail is broken.
+  if (!emailReady() && !warnedAboutEmail) {
+    warnedAboutEmail = true;
+    console.warn(
+      "Password reset cannot send mail. Set RESEND_API_KEY and EMAIL_FROM.",
+    );
+  }
+  try {
+    const origin = setting("APP_ORIGIN");
+    if (!origin)
+      throw new Error("APP_ORIGIN is not set, so the link cannot be built.");
+    await sendPasswordChangedEmail(reset.email, {
+      link: `${new URL(origin).origin}/account`,
+      at: changedAt,
+      how: "reset",
+    });
+  } catch (error) {
+    console.error(
+      "Password reset email could not be sent",
+      error instanceof Error ? error.message : "Unknown error",
+    );
+  }
   return json({ ok: true }, 200, {
     "Set-Cookie": await createSession(reset.userId, request),
   });

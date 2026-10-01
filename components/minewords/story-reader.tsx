@@ -16,11 +16,30 @@ import type { Catalog } from "./story-library";
 import { useReadingClock } from "./use-reading-clock";
 import DailyMission from "./daily-mission";
 import { useReadingBookmark } from "./use-reading-bookmark";
+import {
+  readStoryAnswer,
+  saveStoryAnswer,
+} from "@/lib/client/reading-bookmarks";
 import { useEventSound } from "@/lib/theme/use-sounds";
 
 function Reading({ story }: { story: StoryDetail }) {
   const [progress, setProgress] = useState(story.progress);
-  const [answer, setAnswer] = useState<number | null>(null);
+  /**
+   * The option this child picked, restored from the browser if they were here
+   * before.
+   *
+   * The reading time is already recorded, so without this a child who answers
+   * and then follows one of the eight links on this page comes back to a blank
+   * question and the whole story reads as having forgotten them. Nothing is sent
+   * to the server: the only call that takes an answer awards the credits, and a
+   * story the child walked away from has not been finished.
+   *
+   * `Reading` is keyed by id, so a different story is a different component and
+   * a different draft rather than this one being cleared.
+   */
+  const [answer, setAnswer] = useState<number | null>(() =>
+    readStoryAnswer(story.bookmarkScope, story.id),
+  );
   const [busy, setBusy] = useState(false),
     [notice, setNotice] = useState(""),
     [error, setError] = useState("");
@@ -108,6 +127,9 @@ function Reading({ story }: { story: StoryDetail }) {
       setWrongAnswer(null);
       setProgress(result.progress);
       setFinishedVisit(true);
+      // The answer is on the server now, so keeping a copy would put the radio
+      // back on the question for a story that is already finished.
+      saveStoryAnswer(story.bookmarkScope, story.id, null);
       setNotice(
         result.credits
           ? `Adventure complete! You earned ${result.credits} credits.`
@@ -245,6 +267,7 @@ function Reading({ story }: { story: StoryDetail }) {
                   onChange={() => {
                     setAnswer(index);
                     setWrongAnswer(null);
+                    saveStoryAnswer(story.bookmarkScope, story.id, index);
                   }}
                 />
                 {option}

@@ -15,8 +15,11 @@ import {
 } from "../lib/challenge/story-meanings.ts";
 import {
   readBookmarks,
+  readStoryAnswer,
   saveBookmark,
+  saveStoryAnswer,
 } from "../lib/client/reading-bookmarks.ts";
+import { withLocalStorage } from "./helpers/local-storage.mjs";
 const help = JSON.parse(readFileSync("data/learning/word-help.json"));
 const contexts = JSON.parse(readFileSync("data/learning/story-meanings.json"));
 const stories = [0, 1, 2, 3, 4, 5].flatMap((level) =>
@@ -108,16 +111,7 @@ test("every word and problem has readable help and a clue without its exact answ
   );
 });
 test("guest bookmarks reject corrupt data and stay isolated by account", () => {
-  const values = new Map();
-  const old = Object.getOwnPropertyDescriptor(globalThis, "localStorage");
-  Object.defineProperty(globalThis, "localStorage", {
-    configurable: true,
-    value: {
-      getItem: (k) => values.get(k) ?? null,
-      setItem: (k, v) => values.set(k, v),
-    },
-  });
-  try {
+  withLocalStorage((values) => {
     saveBookmark("guest", "level-1-01", {
       paragraph: 2,
       fraction: 0.25,
@@ -132,10 +126,77 @@ test("guest bookmarks reject corrupt data and stay isolated by account", () => {
     assert.deepEqual(readBookmarks("guest"), { level: 0, stories: {} });
     values.set("minewords:reading:guest", "bad json");
     assert.deepEqual(readBookmarks("guest").stories, {});
-  } finally {
-    if (old) Object.defineProperty(globalThis, "localStorage", old);
-    else delete globalThis.localStorage;
-  }
+  });
+});
+
+test("a story answer comes back after the page has gone, for that child only", () => {
+  withLocalStorage(() => {
+    // Nothing chosen yet is the only honest starting point. A draft that
+    // arrived already ticked would offer a child an answer nobody chose.
+    assert.equal(readStoryAnswer("guest", "level-1-01"), null);
+    saveStoryAnswer("guest", "level-1-01", 2);
+    assert.equal(readStoryAnswer("guest", "level-1-01"), 2);
+    // Another account on the same laptop, and another story, are different
+    // drafts - the same isolation the bookmarks above rely on.
+    assert.equal(readStoryAnswer("another-user", "level-1-01"), null);
+    assert.equal(readStoryAnswer("guest", "level-1-02"), null);
+    // Finishing a story throws its draft away, and only that story's: the
+    // other is still one this child has not finished.
+    saveStoryAnswer("guest", "level-1-02", 1);
+    saveStoryAnswer("guest", "level-1-01", null);
+    assert.equal(readStoryAnswer("guest", "level-1-01"), null);
+    assert.equal(readStoryAnswer("guest", "level-1-02"), 1);
+    // Not a story, so nothing is kept under that name at all.
+    saveStoryAnswer("guest", "../../etc/passwd", 1);
+    assert.equal(readStoryAnswer("guest", "../../etc/passwd"), null);
+  });
+});
+
+test("leaving a practice session through a link saves the answers still queued", () => {
+  // The regression this file cannot catch on its own: every link in this app is
+  // a `next/link`, so leaving practice is an unmount and not an unload. Neither
+  // `pagehide` nor `beforeunload` fires for a client-side route change, so the
+  // queue is only saved by the effect cleanup - which is why the three sibling
+  // clocks flush there too.
+  //
+  // Asserted by reading the source because there is no React renderer in this
+  // suite, and the behavioural guard is
+  // `tests/child-experience.browser.mjs`, which needs a local preview on macOS
+  // 13.5 or newer and is not part of CI. Without this the cleanup could lose the
+  // flush and every runnable test would still be green.
+  const source = readFileSync(
+    new URL("../components/minewords/use-challenge.ts", import.meta.url),
+    "utf8",
+  );
+  const cleanup = source.slice(
+    source.indexOf("return () => {", source.indexOf("flushOnExit")),
+  );
+  assert.match(
+    cleanup,
+    /session\.current\?\.flushOnExit\(\)/,
+    "the unmount no longer flushes, so a next/link navigation discards queued answers",
+  );
+  assert.ok(
+    cleanup.indexOf("flushOnExit") < cleanup.indexOf("stop()"),
+    "the session is stopped before the queue is written out, so the flush cannot be trusted to go out",
+  );
+});
+
+test("a corrupt story answer draft is refused rather than believed", () => {
+  withLocalStorage((values) => {
+    values.set("minewords:story-answer:guest", "not json at all");
+    assert.equal(readStoryAnswer("guest", "level-1-01"), null);
+    values.set("minewords:story-answer:guest", '"a string"');
+    assert.equal(readStoryAnswer("guest", "level-1-01"), null);
+    // A story question has three options, so an index outside 0-2 is a stale
+    // key rather than something to put a tick against.
+    values.set("minewords:story-answer:guest", '{"level-1-01":9}');
+    assert.equal(readStoryAnswer("guest", "level-1-01"), null);
+    values.set("minewords:story-answer:guest", '{"level-1-01":"1"}');
+    assert.equal(readStoryAnswer("guest", "level-1-01"), null);
+    values.set("minewords:story-answer:guest", '{"level-1-01":1}');
+    assert.equal(readStoryAnswer("guest", "level-1-01"), 1);
+  });
 });
 
 test("the plain-language help can never fall behind the definition again", () => {

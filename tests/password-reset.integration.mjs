@@ -973,15 +973,106 @@ test("an unknown action is a 404, a traversal reaches confirm, and a GET sends n
 
   // The GET is the one exemption from the origin check, and it earns it by writing
   // nothing: opened on the POST-only action it is still a read, and it sends no
-  // mail.
+  // mail. Counted rather than asserted as a number, because a confirm sends two
+  // messages now - the link, and the notice that the password changed - and a
+  // fixed count would be asserting how many notices there are rather than that
+  // the GET adds none.
+  const before = sent.length;
   const got = await read(await check(undefined));
   assert.equal(got.status, 200, JSON.stringify(got.body));
   assert.deepEqual(got.body, { ok: false });
+  assert.equal(sent.length, before, "and the GET sent nothing of its own");
+});
+
+test("a reset tells the account owner their password has changed", async () => {
+  // A link read by somebody else is the same as the password for an hour, and
+  // after it is spent the account looks exactly as it did - so this is the only
+  // moment the owner can hear about it. Nothing told them before.
+  await reset();
+  const token = await askForLink();
+  assert.equal(sent.length, 1, "the link is the only message so far");
+  const confirmed = await read(
+    await post("/api/password-reset/confirm", {
+      token,
+      password: NEW_PASSWORD,
+    }),
+  );
+  assert.equal(confirmed.status, 200, JSON.stringify(confirmed.body));
+  assert.equal(sent.length, 2, "and the change is told to the account owner");
+
+  const notice = sent[1];
+  assert.equal(notice.to, USER.email, "to the account's own address");
+  assert.match(
+    notice.subject,
+    /password was reset/,
+    "in a subject that says a reset happened, which is not what a deliberate change looks like",
+  );
+  assert.ok(
+    notice.text.includes(`${APP_ORIGIN}/account`),
+    `the notice should point at the account page, and it says: ${notice.text}`,
+  );
+  // No token of its own. This message proves nothing and must not be able to do
+  // anything by itself; it is a warning, not a door.
+  assert.ok(
+    !/[?&]token=/.test(notice.text),
+    "the notification must not carry a token",
+  );
+  // And it names the way back in for somebody who has been locked out by it,
+  // which is the half of the advice that is easy to leave out.
+  assert.match(notice.text, /Forgotten your password\?/);
+});
+
+test("a provider that is down cannot stop a reset that has already worked", async () => {
+  // The password is written by the batch before any mail is attempted, so by the
+  // time the provider refuses there is nothing left to refuse: the parent has
+  // their account back, and a 500 here would be a reset that worked and told
+  // them it had not.
+  await reset();
+  provider = refuses(500, "The email service had an internal error.");
+  const token = await askForLink();
+  const failed = await read(
+    await post("/api/password-reset/confirm", {
+      token,
+      password: NEW_PASSWORD,
+    }),
+  );
+  assert.equal(
+    failed.status,
+    200,
+    "a provider that is down must not fail a reset",
+  );
+  assert.deepEqual(failed.body, { ok: true });
+  assert.ok(
+    failed.cookie,
+    "and must still leave the parent signed in on the device they used",
+  );
+
+  // The same when nothing is configured at all, which is the case a deployment
+  // reaches by forgetting RESEND_API_KEY rather than by Resend being unwell.
+  // Asked for the link first, because the one thing this can still deliver is the
+  // token the parent needs.
+  await reset();
+  const configured = await askForLink();
+  delete process.env.RESEND_API_KEY;
+  delete process.env.EMAIL_FROM;
+  const unconfigured = await read(
+    await post("/api/password-reset/confirm", {
+      token: configured,
+      password: NEW_PASSWORD,
+    }),
+  );
+  assert.equal(
+    unconfigured.status,
+    200,
+    "a deployment with no mail must not fail a reset",
+  );
+  assert.ok(unconfigured.cookie, "or refuse to sign the parent back in");
   assert.equal(
     sent.length,
     1,
-    "and the one message is still the only one sent",
+    "though nothing could be sent once the settings were gone",
   );
+  await reset();
 });
 
 test("the emailed link is built from the configured APP_ORIGIN", async () => {

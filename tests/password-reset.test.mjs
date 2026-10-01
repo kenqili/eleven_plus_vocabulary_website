@@ -22,10 +22,12 @@ const read = (path) =>
 
 const ROUTE = "app/api/password-reset/[action]/route.ts";
 const route = read(ROUTE);
+const auth = read("app/api/auth/[action]/route.ts");
 const reset = read("lib/server/password-reset.ts");
 const email = read("lib/server/email.ts");
 const page = read("components/minewords/reset-password.tsx");
 const account = read("components/minewords/account.tsx");
+const security = read("components/minewords/account-security.tsx");
 const migration = read("drizzle/0000_baseline.sql");
 
 /** The source of one function, from its declaration to whatever follows it. */
@@ -460,6 +462,199 @@ test("the email module never puts a live token in a log", () => {
   );
 });
 
+test("a password change is told to the owner, and only the owner", () => {
+  // A password can change without the owner doing it: through a stolen session,
+  // or through a reset link that somebody else read. Nothing said so before, and
+  // the omission is silent - the account is simply changed and nobody is any the
+  // wiser, which is the state a parent can only discover when a child cannot
+  // sign in.
+  //
+  // So the send is asserted at both call sites rather than in email.ts. A message
+  // nothing sends is still a message: asserting the function exists, or even
+  // that it reads well, passes just as happily when the call is deleted from the
+  // route, which is the edit somebody makes without noticing.
+  const confirm = withoutComments(
+    between(route, "async function confirmReset", "\n}\n"),
+  );
+  const change = withoutComments(
+    between(auth, 'action === "password"', 'action === "signout-all"'),
+  );
+  // `how` is what makes the two messages different, so a route that passes the
+  // wrong one is a parent told their deliberate change was a reset.
+  for (const [what, source, to] of [
+    ["confirmReset", confirm, "reset.email"],
+    ["the password action", change, "user.email"],
+  ]) {
+    assert.ok(
+      new RegExp(
+        `await sendPasswordChangedEmail\\(\\s*${to.replace(".", "\\.")}`,
+      ).test(source),
+      `${what} no longer sends the password-changed notification, so the owner never hears about it`,
+    );
+    // Where it is sent from matters as much as that it is sent: a hard-coded
+    // address would deliver this to a stranger.
+    assert.ok(
+      source.includes(`${to}`),
+      `${what} sends the notification to something other than the account's own address`,
+    );
+    // The identity it came from. `at: Date.now()` - the moment the notification
+    // was composed, not the moment the password changed - would leave a parent
+    // who can prove they were not on site at 14:05 with nothing to weigh against.
+    assert.match(
+      source,
+      /at: [A-Za-z][A-Za-z0-9_]*,/,
+      `${what} does not pass a timestamp for when the password changed`,
+    );
+    assert.ok(
+      !/at: Date\.now\(\)/.test(source),
+      `${what} stamps the message with the moment it sends, so the time it names is not when the password changed`,
+    );
+    // The link is the account page, which is where the change-password form and
+    // the forgotten-password control both live. A token here would be a second
+    // way in that nothing asked for; this message proves nothing and must not be
+    // able to do anything on its own.
+    assert.match(
+      source,
+      /link: `\$\{new URL\(origin\)\.origin\}\/account`/,
+      `${what} does not point the notification at the account page`,
+    );
+    assert.ok(
+      !/link: `[^`]*\?token=/.test(source),
+      `${what} puts a token in a message that is only a notification`,
+    );
+  }
+
+  // Plain text, and no markup to render, because the other two messages in this
+  // file are not HTML either and a parent should not meet two kinds of email.
+  const message = between(
+    email,
+    "export async function sendPasswordChangedEmail",
+    "export function verificationEmail",
+  );
+  assert.ok(
+    message.length > 0,
+    "there is no password-changed message, so neither route can be sending one",
+  );
+  assert.match(message, /\.join\("\\n"\)/, "the message is not plain text");
+  assert.ok(
+    !/\bhtml\b/i.test(message),
+    "the message carries markup the other two do not",
+  );
+  // The two events have to be distinguishable, in the subject as well as the body:
+  // a parent deciding whether to worry reads the subject in the list first.
+  assert.match(
+    message,
+    /how: "changed" \| "reset"/,
+    "the two routes can no longer be told apart, so both send the same message",
+  );
+  assert.match(message, /"Your MineWords password was changed"/);
+  assert.match(message, /"Your MineWords password was reset"/);
+  // The locked-out parent is the case this exists for. Somebody holding the
+  // account has the password; the owner has an email and no way in, and the two
+  // are the same account.
+  assert.match(
+    message,
+    /cannot sign in/,
+    "the message does not cover a parent who cannot sign in",
+  );
+  assert.match(
+    message,
+    /Forgotten your password\?/,
+    "the message does not say where to recover the account, so a locked-out parent is told nothing",
+  );
+  // And an IP address, which the sign-in route has to hand over and this must
+  // not. Not because it cannot be read - the recipient cannot act on it, and
+  // whatever a stranger got hold of, this is the copy they did not choose to
+  // publish.
+  assert.ok(
+    !/cf-connecting-ip|\bip\b/i.test(message),
+    "the notification carries an IP address, which the owner cannot act on",
+  );
+});
+
+test("a broken mail provider cannot stop a password being changed or reset", () => {
+  // The notification is the one thing in these two routes that is not about the
+  // account, so it is the one thing that can be broken by something outside:
+  // no RESEND_API_KEY, no provider, no APP_ORIGIN to build the link from. It must
+  // not be able to refuse the work, because the work is a parent locking
+  // somebody out and then finding they cannot get back in - the situation where
+  // the mail is most likely to be the thing that is already broken.
+  //
+  // Comments are stripped first: the prose in each try names the failure it is
+  // describing, and a test a well-worded comment can pass is not a test.
+  const cases = [
+    [
+      "confirmReset",
+      withoutComments(between(route, "async function confirmReset", "\n}\n")),
+    ],
+    [
+      "the password action",
+      withoutComments(
+        between(auth, 'action === "password"', 'action === "signout-all"'),
+      ),
+    ],
+  ];
+  for (const [what, source] of cases) {
+    const start = source.indexOf("try {");
+    assert.ok(
+      start > 0,
+      `${what} sends the notification outside a try altogether`,
+    );
+    const caught = source.indexOf("} catch", start);
+    assert.ok(
+      caught > start,
+      `the notification in ${what} has no catch, so a provider that is down escapes to boundary() and the password is changed with a 503`,
+    );
+    const block = source.slice(start, caught);
+    // Asked before the request is made, so a deployment with no mail configured
+    // is a configuration problem in the log rather than a provider failure
+    // carrying a status.
+    const ready = source.indexOf("emailReady()");
+    assert.ok(
+      ready > 0 && ready < start,
+      `${what} checks the configuration after the send has been attempted`,
+    );
+    // Which setting is missing, by name. `new URL("")` throws "Invalid URL
+    // string", which names no setting and leaves the person reading the log with
+    // a TypeError about a variable they have never heard of. And it is checked
+    // inside the try on purpose: a missing APP_ORIGIN must land in the same place
+    // as a provider that is down, which is nowhere near the reply.
+    //
+    // \s* inside the call as well as after the keyword, because prettier wraps a
+    // throw whose message is too long by putting the message on the next line -
+    // and it wraps it in one route and not the other, depending on the
+    // indentation. This is about where the guard is, not how it is set.
+    assert.match(
+      block,
+      /if \(!origin\)\s*throw new Error\(\s*"APP_ORIGIN/,
+      `${what} does not check APP_ORIGIN before parsing it, so a missing one fails as an unparseable URL that names no setting`,
+    );
+    // Logged, so the failure is visible to whoever is running the site rather
+    // than only to the parent who never hears anything. In the catch, which is
+    // the only place it can be: the try is the part that is allowed to fail.
+    assert.match(
+      source.slice(caught),
+      /console\.error\(/,
+      `a failed notification in ${what} is not logged, so the person running the app never finds out`,
+    );
+    // And then nothing. A throw here is the whole failure this test exists for.
+    const after = source.slice(caught);
+    assert.ok(
+      !/\bthrow\b/.test(after),
+      `${what} rethrows after the send, so a broken mail provider stops a password being changed`,
+    );
+    // What it falls through to is the reply that was always going to be sent:
+    // no status of its own, and for a reset the session that signs the parent
+    // back in.
+    if (what === "confirmReset")
+      assert.match(
+        after,
+        /return json\(\{ ok: true \}, 200, \{\s*"Set-Cookie": await createSession/,
+        "the failure path in confirmReset answers with something other than the successful reply",
+      );
+  }
+});
+
 test("the reset page checks the link before it shows a password box", () => {
   // The token arrives in the URL, which is the least trustworthy thing on the
   // page: anyone can put anything after the ? and follow the link. Rendering a
@@ -524,6 +719,142 @@ test("the page shows the server's sentence, not one of its own", () => {
     account,
     /Check the junk folder if nothing arrives/,
     "the form no longer says where to look if the email does not arrive",
+  );
+});
+
+test("changing a password ends the session the change was made from", () => {
+  // The bug this is about is silent. The password really is changed, the other
+  // devices really are signed out, the server really does keep this one alive,
+  // and the page then shows a signed-in account card with nothing wrong on it -
+  // so a parent who mistyped the new password sails on until the next sign-in
+  // discovers it, and this account cannot be signed into at all without
+  // email_verified_at. Signing the parent out here is the only moment they can
+  // find out, because it is the only moment they are made to type it.
+  //
+  // Comments are stripped first. The prose in this flow names logout, the
+  // session cookie and the notice, and a test a well-worded comment can pass is
+  // a test of the comment.
+  const change = withoutComments(
+    between(
+      security,
+      "async function submit",
+      "async function signOutEverywhere",
+    ),
+  );
+  const everywhere = withoutComments(
+    between(security, "async function signOutEverywhere", "\n  return ("),
+  );
+  // Both controls, because the second one was the same bug with worse
+  // consequences: the server had already expired the cookie, so the card was
+  // describing an account the parent no longer had.
+  for (const [what, source] of [
+    ["a password change", change],
+    ["signing out everywhere", everywhere],
+  ]) {
+    assert.match(
+      source,
+      /onSignedOut\(/,
+      `${what} does not tell the parent page that the session has ended, so the account card stays on screen`,
+    );
+  }
+  // The count of other devices is the part a parent who suspects somebody else
+  // is signed in is actually asking for, and it is in the message that is
+  // handed over - not in a banner that is thrown away with the component.
+  assert.match(
+    change,
+    /\$\{others\}/,
+    "the message no longer says how many other devices were signed out",
+  );
+  assert.match(
+    change,
+    /=== 1 \? "one other device"/,
+    "the count of one other device is no longer said in words",
+  );
+  // This device's own session is revoked rather than left to expire. Left alone
+  // it is still a valid cookie and the account page reads it on load, so a
+  // reload would put the parent back on the account card and they would never
+  // type the new password - which is the thing the sign-out exists to force.
+  // Asserted after the change and before the hand-off, so it is neither skipped
+  // nor run against a session the server has already ended.
+  const revoke = change.indexOf('"/api/auth/logout"');
+  const handoff = change.indexOf("onSignedOut(");
+  assert.ok(
+    revoke > change.indexOf('"/api/auth/password"') && revoke < handoff,
+    "a successful password change does not revoke the session the server just issued for this device",
+  );
+  // And it may not throw its way out of that. The password has already changed
+  // and cannot be un-changed, so a failed cleanup must not be reported as a
+  // failed change - and the parent is signed out of the card either way, because
+  // an account on screen they no longer trust is the state being fixed.
+  const caught = change.indexOf("} catch", revoke);
+  assert.ok(
+    caught > revoke,
+    "the revoke after a password change can escape, so a network failure is shown as a change that did not happen",
+  );
+  assert.ok(
+    !/\bthrow\b/.test(change.slice(caught)),
+    "the revoke after a password change rethrows, so a failed cleanup reads as a failed change",
+  );
+  assert.ok(
+    handoff > caught,
+    "the parent is signed out on screen from inside the failure path, so a failed revoke is also a failed change",
+  );
+  // The child keeps no message of its own. It is rendered only while a parent is
+  // signed in, so the call that signs them out unmounts it, and state held here
+  // dies at the one moment it had something to say.
+  assert.ok(
+    !/setDone|setNotice/.test(withoutComments(security)),
+    "the security component keeps its own success message, which the unmount destroys",
+  );
+});
+
+test("the parent's own state is what ends, so the notice has to be the parent's", () => {
+  // `user` is the only session state in this app: there is no context, no
+  // provider and no store, deliberately. So the account page is the only place
+  // that can take the parent off the card, and its notice is the only thing that
+  // can still be on screen afterwards - the notice is rendered below the
+  // signed-in branch, which is exactly why it survives the unmount that the
+  // hand-off causes.
+  const end = withoutComments(
+    between(account, "function endSession", "async function logout"),
+  );
+  assert.ok(
+    end.length > 0,
+    "the account page has no way to end a session other than by reloading",
+  );
+  assert.match(end, /setUser\(null\)/, "the parent stays on the account card");
+  assert.match(
+    end,
+    /setBilling\(null\)/,
+    "the membership on screen outlives the session that was paying for it",
+  );
+  // The message is an argument rather than a string written here, so the count of
+  // other devices signed out - which only the request knows - survives the trip
+  // out of the component that is about to be unmounted.
+  assert.match(
+    end,
+    /setNotice\(message\)/,
+    "the parent's notice ignores the message it was handed, so the reason for the sign-out is lost",
+  );
+  assert.match(
+    account,
+    /<AccountSecurity\s+onSignedOut=\{endSession\}/,
+    "the security component is not given the callback that signs the parent out",
+  );
+  // Once, and after the signed-in branch - `<DeleteAccount />` is the last thing
+  // rendered on the card, so a notice below it is outside the branch that the
+  // sign-out removes. A notice inside the branch is a message a parent can only
+  // read for as long as the thing it is describing.
+  const notice = account.indexOf("{notice &&");
+  assert.equal(
+    (account.match(/\{notice &&/g) ?? []).length,
+    1,
+    "the notice is rendered in more than one place, so one of them dies with the account card",
+  );
+  assert.ok(
+    notice > account.indexOf("<DeleteAccount />") &&
+      notice > account.indexOf(": user ? ("),
+    "the notice is rendered inside the signed-in branch, so it disappears when the parent is signed out",
   );
 });
 

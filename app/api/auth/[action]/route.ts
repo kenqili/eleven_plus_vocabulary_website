@@ -1,4 +1,4 @@
-import { database } from "@/lib/server/db";
+import { database, setting } from "@/lib/server/db";
 import {
   configuredFreeTrialDays,
   configuredFreeWordLimit,
@@ -21,6 +21,13 @@ import {
   tokenDigest,
   verifyPassword,
 } from "@/lib/server/password";
+import { emailReady, sendPasswordChangedEmail } from "@/lib/server/email";
+
+// Once per Worker instance, as in the reset route, and its own flag rather than
+// that route's: a flag in one module cannot quieten the other, and a deployment
+// with no mail provider should say so in the log of whichever route is used
+// rather than only in the log of the one that happened to be hit first.
+let warnedAboutEmail = false;
 
 export async function GET(request: Request) {
   return boundary(async () =>
@@ -149,6 +156,7 @@ export async function POST(
             .first<{ count: number }>()
         )?.count ?? 0;
 
+      const changedAt = Date.now();
       await database()
         .prepare("UPDATE users SET password = ? WHERE id = ?")
         .bind(hashPassword(next), user.id)
@@ -160,6 +168,45 @@ export async function POST(
         .prepare("DELETE FROM sessions WHERE user_id = ?")
         .bind(user.id)
         .run();
+      // Told after the change rather than before it, because the message says
+      // what happened and at what time, and neither is true until the two writes
+      // above have run. Told at all because this request does not prove the
+      // parent is the one making it: a session somebody else is holding reaches
+      // this route as readily as their own, and a password change is the moment
+      // the account owner is in a position to notice.
+      //
+      // Nothing below can change the reply, and that is the constraint rather
+      // than the polish. A parent whose mail is broken has to be able to change
+      // their password more than usual, not less, so every failure here is
+      // logged and dropped. emailReady() is asked first so a deployment with no
+      // mail configured is visible as a configuration problem rather than as a
+      // provider failure carrying a status, and APP_ORIGIN is checked inside the
+      // same try for the reason requestReset checks it: `new URL("")` throws
+      // "Invalid URL string", which names no setting, and a missing origin must
+      // never stop the password changing.
+      if (!emailReady() && !warnedAboutEmail) {
+        warnedAboutEmail = true;
+        console.warn(
+          "Password change cannot send mail. Set RESEND_API_KEY and EMAIL_FROM.",
+        );
+      }
+      try {
+        const origin = setting("APP_ORIGIN");
+        if (!origin)
+          throw new Error(
+            "APP_ORIGIN is not set, so the link cannot be built.",
+          );
+        await sendPasswordChangedEmail(user.email, {
+          link: `${new URL(origin).origin}/account`,
+          at: changedAt,
+          how: "changed",
+        });
+      } catch (error) {
+        console.error(
+          "Password change email could not be sent",
+          error instanceof Error ? error.message : "Unknown error",
+        );
+      }
       return json({ ok: true, signedOut: Math.max(0, live - 1) }, 200, {
         "Set-Cookie": await createSession(user.id, request),
       });
