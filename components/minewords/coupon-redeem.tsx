@@ -49,9 +49,9 @@ export default function CouponRedeem({
     <form className="manage-form" onSubmit={submit}>
       <h2>Have a code?</h2>
       <p className="muted">
-        If access is being paid for by someone else - a school, a grandparent, a
-        sponsor - enter the code they sent you and your child&apos;s access will
-        be extended.
+        If the cost is a problem, we may have sent you a code to keep your
+        access going. Enter it here and your child&apos;s access will be
+        extended.
       </p>
       <label htmlFor="coupon-code">Your code</label>
       <input

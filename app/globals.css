@@ -305,6 +305,25 @@ summary:focus-visible,
   font-size: 14px;
   font-weight: 600;
 }
+/*
+ * Practice, in the top ribbon.
+ *
+ * It is the thing a child came to do, so it is the one link that is visibly the
+ * primary action rather than one of a list. Styled with the brand surface rather
+ * than a border so it reads as a button at a glance on a small screen, and given
+ * an explicit focus ring because it is now the first control in the header and the
+ * keyboard path to every question on this site.
+ */
+.header-practice {
+  padding: 7px 14px;
+  border: 1px solid var(--line-brand);
+  border-radius: 999px;
+  background: var(--surface-brand-2);
+  color: var(--ink-brand);
+}
+.header-practice:hover {
+  background: var(--surface-brand-3);
+}
 .workspace {
   max-width: 1160px;
   padding: 44px 24px 0;

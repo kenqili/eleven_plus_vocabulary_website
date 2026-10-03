@@ -6,6 +6,7 @@ import {
   BookOpen,
   ChevronDown,
   Menu,
+  PencilLine,
   ShieldCheck,
   UserRound,
   X,
@@ -33,7 +34,7 @@ import ThemePicker from "./theme-picker";
  * full row.
  */
 const FOR_CHILDREN = [
-  { href: "/stories", label: "Word Adventures" },
+  { href: "/stories", label: "Stories" },
   { href: "/words", label: "Word list" },
   { href: "/rewards", label: "Badges" },
   { href: "/calendar", label: "Calendar" },
@@ -66,7 +67,11 @@ export default function Header() {
         aria-controls="learning-navigation"
         onClick={() => setMenuOpen((open) => !open)}
       >
-        {menuOpen ? <X size={20} aria-hidden /> : <Menu size={20} aria-hidden />}
+        {menuOpen ? (
+          <X size={20} aria-hidden />
+        ) : (
+          <Menu size={20} aria-hidden />
+        )}
         {menuOpen ? "Close" : "Menu"}
       </button>
       <nav
@@ -75,6 +80,14 @@ export default function Header() {
         aria-label="Your learning"
         onClick={() => setMenuOpen(false)}
       >
+        {/* Practice goes first, on its own, because it is the thing a child
+            came to do and it is a single click from anywhere on the site. It was not
+            here at all until the front page became a summary: with `/` as the
+            practice screen the link was free, and moving practice to `/practice`
+            would otherwise have made it the one page nothing points at. */}
+        <Link className="account-link header-practice" href="/practice">
+          <PencilLine size={17} aria-hidden /> Practice
+        </Link>
         {FOR_CHILDREN.map((link) => (
           <Link key={link.href} className="account-link" href={link.href}>
             {link.label}

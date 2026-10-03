@@ -1,10 +1,12 @@
 /**
- * Coupons: access a parent is given rather than pays for.
+ * Coupons: access issued to a family who cannot meet the cost.
  *
- * A school, a grandparent or a sponsor buys a year for a child who is not the
- * cardholder. There is no Stripe product for that, because the person paying and
- * the person who wants the access are different people, and there is no invoice
- * to send. So this writes the same column Stripe's webhook writes.
+ * Not a gift and not a purchase by anyone. A code exists because a family told us
+ * the price was a problem, and we issue one so their child keeps every word and
+ * keeps printing. Nobody pays for it, which is why there is no Stripe product and
+ * no invoice: this writes the same column the webhook writes, and records the
+ * grant as `status: 'redeemed'` rather than `paid`, so a parent who was given
+ * access is never shown a receipt for it.
  *
  * Which makes it the second writer of `expiry_date`, and the schema comment on
  * that column says only the webhook may write it. That is a real tension and it
@@ -33,7 +35,7 @@ import { randomBytes } from "node:crypto";
  * tell a code from a payment and this is the only thing in the row that says
  * which it was. It was a literal on each side, which is two places to keep in
  * step and one place to be wrong in - and being wrong in that direction puts a
- * sponsored code in front of a parent as something they paid for.
+ * hardship code in front of a parent as something they paid for.
  *
  * It carries the coupon's **id**, not its code, so the row does not republish a
  * bearer token into a table the account page reads back.

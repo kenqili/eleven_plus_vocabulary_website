@@ -501,7 +501,7 @@ test("a code is never presented to the parent as something they paid for", () =>
   // because the comment above that branch quotes the old shape to explain it.
   assert.match(
     code("components/minewords/account.tsx"),
-    /purchase\.viaCode[\s\S]{0,80}?purchase\.days\s*\?\s*`Code redeemed — \$\{purchase\.days\} days[\s\S]{0,120}?"Code redeemed — paid for by someone else"/,
+    /purchase\.viaCode[\s\S]{0,80}?purchase\.days\s*\?\s*`Code redeemed — \$\{purchase\.days\} days[\s\S]{0,120}?"Code redeemed — at no charge"/,
     'a code with no readable length is printed as "0 days"',
   );
   // The heading above it claimed the parent bought everything in the table.
@@ -509,6 +509,44 @@ test("a code is never presented to the parent as something they paid for", () =>
     account,
     /What you have bought/,
     "a table containing codes is still captioned as purchases",
+  );
+  // A code is hardship support - issued by us to a family who is finding the cost
+  // difficult - so it is never "paid for by someone else" either. That phrasing
+  // implies a third party bought a gift, which is not what a code is: nobody spent
+  // anything, and a parent who is struggling should never be shown a payer.
+  for (const [file, label] of [
+    ["components/minewords/account.tsx", "the account history table"],
+    ["components/minewords/coupon-redeem.tsx", "the code entry form"],
+    ["components/minewords/landing.tsx", "the landing page"],
+  ]) {
+    assert.doesNotMatch(
+      code(file),
+      /paid for by someone else|being paid for by someone else/i,
+      `${label} still describes a code as paid for by a third party, which is not what a hardship code is`,
+    );
+  }
+  assert.doesNotMatch(
+    code("components/minewords/coupon-redeem.tsx"),
+    /grandparent|sponsor/i,
+    "the code form still describes a code as a gift from a grandparent or sponsor",
+  );
+  assert.match(
+    code("components/minewords/account.tsx"),
+    /at no charge/,
+    "a redeemed code is not marked as free",
+  );
+  // The admin screen says what a code is for, and it is the screen where that
+  // matters most - this is the page somebody reads before deciding whether to
+  // issue one.
+  assert.match(
+    code("components/minewords/admin.tsx"),
+    /hardship|who has told you the cost is a problem/i,
+    "the admin screen does not say that codes are hardship support",
+  );
+  assert.doesNotMatch(
+    code("components/minewords/admin.tsx"),
+    /grandparent|sponsor|whoever is paying/i,
+    "the admin screen still describes codes as gifts from a third party",
   );
   // And the summary sentence and the table must agree about which rows exist -
   // they disagreed, because the sentence filtered on `status === "paid"` and so

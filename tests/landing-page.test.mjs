@@ -24,36 +24,75 @@ import { words } from "../scripts/load-word-bank.mjs";
 
 const landing = readFileSync("components/minewords/landing.tsx", "utf8");
 /** Comments stripped, so prose about a rule cannot satisfy the rule. */
-const code = landing
-  .replace(/\/\*[\s\S]*?\*\//g, "")
-  .replace(/^[ \t]*\/\/.*$/gm, "");
+const strip = (source) =>
+  source.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^[ \t]*\/\/.*$/gm, "");
+
+/**
+ * The landing page, comments removed.
+ *
+ * A string rather than a function, deliberately. It was a function taking an
+ * optional path, and fourteen assertions passed the *function* where a string was
+ * expected — so they were matching against the stringified function, which contains
+ * its own assertion messages. One of those messages names an exam board, which is
+ * how a test asserting "this page never says Bond" came to fail on a page that does
+ * not contain the word.
+ */
+const code = strip(landing);
+
+/** Comments stripped from any other file in the repository. */
+const stripped = (name) => strip(readFileSync(name, "utf8"));
 
 test("the word count is read from the app, never typed into the copy", () => {
   // A number typed into a sales page is a number that goes stale. The page asks the
   // same endpoint the practice screen draws from and shows the answer.
-  // `/api/words`, not `/api/challenge`. The challenge endpoint's `words` array is a
-  // set of *questions* drawn from the free tier, so reading the count from it showed
-  // a signed-out visitor — which is every visitor — "223 words" directly above a
-  // source list that sums to 2,247. `collection` is the whole bank, and it is sent
-  // for both the signed-out and signed-in cases.
+  // Read on the server and handed in as a prop, so it is right for every visitor and
+  // cannot be missing for a signed-out one.
+  //
+  // It was fetched on the client twice and wrong twice. From `/api/challenge?types=def`
+  // first, whose `words` is the free-tier *question* list — so a signed-out visitor saw
+  // "223 words" directly above a source list summing to 2,247. Then from
+  // `/api/words`, which is `requireUser` and answers 401 to exactly the audience a
+  // landing page exists for, so the page said "thousands of words" in three places.
+  assert.match(
+    readFileSync("app/page.tsx", "utf8"),
+    /bankSize\(\)/,
+    "the front page does not read the collection size from the word bank",
+  );
+  assert.match(
+    readFileSync("app/page.tsx", "utf8"),
+    /configuredFreeWordLimit\(\)/,
+    "the front page does not read the free word limit from configuration",
+  );
+  // Checked against comment-stripped source: the prose in app/page.tsx explains that
+  // this used to be fetched from `/api/words`, and naming the endpoint there is the
+  // point of the comment rather than a regression.
+  assert.doesNotMatch(
+    stripped("app/page.tsx") + code,
+    /api\/words|api\/challenge/,
+    "a number on this page is fetched at runtime, which is how it came to be wrong before",
+  );
   assert.match(
     code,
-    /api<[^>]*>\("\/api\/words"\)/,
-    "the landing page does not read the word count from the app",
+    /totalWords: number;/,
+    "the landing page does not take the count as a prop, so it must be fetching it and can be wrong",
   );
-  assert.match(code, /setCount\(result\.collection\)/);
+  // And the page must not be a client component, or the number arrives after paint and
+  // the page visibly changes from one figure to another.
+  assert.doesNotMatch(
+    landing,
+    /^\s*["']use client["']/m,
+    "the landing page is a client component, so the word count arrives after paint and the page changes figure in front of the reader",
+  );
+  assert.doesNotMatch(code, /thousands of/i);
+  // There is no "before the count arrives" state any more, and that is the point:
+  // the count is rendered on the server, so there is no moment at which the page
+  // shows a vague phrase and then changes figure in front of the reader. Asserted
+  // as an absence, because a fallback is exactly the kind of thing that gets
+  // reintroduced to make a client fetch tidier.
   assert.doesNotMatch(
     code,
-    /api\/challenge\?types=def/,
-    "the count is read from the challenge endpoint, whose `words` is the free-tier question list rather than the collection",
-  );
-  // And until it is known it says "thousands of", rather than a guess. A missing
-  // figure is fine on a sales page; a wrong one is the thing that cannot be fixed
-  // once a parent has read it.
-  assert.match(
-    code,
-    /count === null \? "thousands of"/,
-    "before the count arrives the page does not fall back to a vague phrase",
+    /thousands of/i,
+    "the page has a vague fallback for when the count is unknown, so the figure is arriving after paint",
   );
   // No hardcoded total anywhere in the prose.
   assert.doesNotMatch(
@@ -248,19 +287,19 @@ test("it says what happens after the trial, in the hero", () => {
   // eight, and finding it out feels like being sold to. Told in the hero, it reads as
   // honesty. The account page also says it; this is about being told early.
   const hero = code.slice(0, code.indexOf("What the 11+ actually asks for"));
-  // The number is a JSX interpolation of a named constant rather than a literal, so
-  // the assertion checks the constant and the sentence around it separately. A
-  // literal would drift from `FREE_WORD_LIMIT`, which is the number the app uses.
+  // The number is a prop rather than a literal, so the assertion checks the sentence
+  // and separately that the server reads the setting the app actually uses. A
+  // literal written into the page would drift from `FREE_WORD_LIMIT`.
   assert.match(
     hero,
-    /keeps the \{FREE_WORD_COUNT\} easiest words/i,
+    /keeps the \{freeWords\} easiest words/i,
     "the hero does not say what the child keeps after the trial ends",
   );
-  assert.match(code, /const FREE_WORD_COUNT = 224/);
+  assert.match(code, /freeWords: number;/);
   assert.doesNotMatch(
     code,
-    /const FREE_WORD_COUNT = (?!224)\d+/,
-    "the free word count on the page is not the 224 the app actually grants",
+    /FREE_WORD_COUNT/,
+    "the free word count is written into the page rather than passed in from configuration",
   );
   assert.match(hero, /Nothing is deleted/i);
   // And the facts a parent asks for before paying rather than after.
@@ -340,6 +379,87 @@ test("every internal link on the page is one that exists", () => {
     [],
     `the landing page links to pages that do not exist: ${dead}`,
   );
+});
+
+test("the page says where the words come from, without naming a third party", () => {
+  // It used to name four publications with a count for each. Every figure was right
+  // about the source files and the claim was wrong about the site: the words are
+  // collected by the family who runs this and by their two sons preparing for their
+  // own 11+, together with UK education sites and free resources.
+  //
+  // Naming third-party lists implied a licence and a curation this does not have,
+  // and a parent who went looking for the book would not find a shelf of them.
+  assert.match(code, /Where the words come from/i);
+  assert.match(
+    code,
+    /our own sons/i,
+    "the page does not say who collected the words",
+  );
+  // Whitespace-tolerant, because prettier rewraps prose and these are two-word
+  // phrases that can straddle a line break. `\s+` rather than a literal space, so
+  // reformatting the copy cannot fail a test that is not about formatting.
+  const flat = code.replace(/\s+/g, " ");
+  assert.match(flat, /UK education websites/i);
+  assert.match(flat, /free\s+revision\s+resources/i);
+  for (const publisher of ["Vocabulary Quest", "Blue Book", "flashcard set"]) {
+    assert.doesNotMatch(
+      code,
+      new RegExp(publisher, "i"),
+      `the page still names ${publisher} as a source, which implies a licence and a curation this does not have`,
+    );
+  }
+});
+
+test("the stories are the way to learn the words, and said so", () => {
+  // The thing a parent will not expect, and the strongest argument on the page. It
+  // needs its own section rather than a card, because a parent who skims this page
+  // reads headings.
+  assert.match(code, /Words are learned by meeting them/i);
+  assert.match(code, /stories/i);
+  assert.match(code, /funny/i, "the stories are not described as enjoyable");
+  assert.match(
+    code,
+    /More stories are being added/i,
+    "the page does not say more are coming, which is honest about what exists now",
+  );
+  // And it must be reachable.
+  assert.match(code, /href="\/stories"/);
+});
+
+test("Practice is in the header, and Stories is not called Word Adventures", () => {
+  // With `/` no longer the practice screen, nothing pointed at `/practice` — the one
+  // page a child came to use would have been the only page nothing reached. It goes
+  // first in the ribbon because it is the thing they came to do.
+  const header = readFileSync("components/minewords/header.tsx", "utf8");
+  assert.match(
+    header,
+    /href="\/practice"/,
+    "nothing in the header points at practice",
+  );
+  assert.match(header, /Practice/);
+  // First among the *rendered* links, so the comparison is inside the `<nav>` JSX
+  // rather than across the file. The `FOR_CHILDREN` array is declared above the
+  // return, so its position in the source says nothing about render order — an
+  // earlier version of this test compared against it and passed for the wrong
+  // reason.
+  const headerFlat = header.replace(/\s+/g, " ");
+  const nav = headerFlat.slice(headerFlat.indexOf("<nav"));
+  const practiceAt = nav.indexOf('href="/practice"');
+  const mapAt = nav.indexOf("FOR_CHILDREN.map");
+  assert.ok(practiceAt > -1, "the ribbon has no link to practice");
+  assert.ok(mapAt > -1, "the ribbon no longer renders the children links");
+  assert.ok(
+    practiceAt < mapAt,
+    "Practice is not the first thing in the ribbon",
+  );
+  // The rename, because "Word Adventures" describes a reading game and these are
+  // short stories carrying the vocabulary.
+  assert.doesNotMatch(
+    header,
+    /Word Adventures/,
+    "the stories link is still called Word Adventures",
+  );
+  assert.match(header, /label: "Stories"/);
 });
 
 test("the practice screen moved and everything that means 'practise' went with it", () => {

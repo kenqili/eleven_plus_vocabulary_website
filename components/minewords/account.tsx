@@ -610,11 +610,11 @@ export default function Account() {
                 reads as a page that failed to load.
 
                 Titled and headed by what happened rather than by who paid, because
-                a code is in here too. This account did not buy it - a school, a
-                grandparent or a sponsor did, which is the only reason the feature
-                exists - and a heading that said "What you have bought" above a row
-                for a code they were given asked a parent to reconcile a debt that
-                does not exist.
+                a code is in here too. This account did not pay for it — a code is
+                issued to a family finding the cost difficult, which is the only
+                reason the feature exists — and a heading that said "What you have
+                bought" above a row for one asked a parent who was already
+                struggling to reconcile a debt they do not owe.
               */}
               {!!billing?.purchases.length && (
                 <section className="account-purchases">
@@ -647,7 +647,7 @@ export default function Account() {
                               {/*
                                 Three states, not two. This read "Paid" for
                                 anything that was not a refund, so a code a
-                                grandparent paid for was shown to the parent as a
+                                grandparent-funded or hardship-issued was shown to the parent as a
                                 purchase they had paid for - in the one table whose
                                 job is to account for their money.
 
@@ -663,8 +663,8 @@ export default function Account() {
                                 ? "Refunded"
                                 : purchase.viaCode
                                   ? purchase.days
-                                    ? `Code redeemed — ${purchase.days} days, paid for by someone else`
-                                    : "Code redeemed — paid for by someone else"
+                                    ? `Code redeemed — ${purchase.days} days at no charge`
+                                    : "Code redeemed — at no charge"
                                   : "Paid"}
                             </td>
                           </tr>

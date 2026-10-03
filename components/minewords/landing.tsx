@@ -1,28 +1,27 @@
-"use client";
-
 /**
  * The front page: what this is, what it does, and how to start.
  *
  * Written to be read by a parent deciding whether to spend money, which shapes
  * almost every choice in it. They are not the child and they are not a teacher:
  * they are somebody's mum or dad with an 11+ somewhere between one and three years
- * away, a long list of things to sort out, and no vocabulary vocabulary of their
- * own to judge this with. So it leads with the problem they recognise, answers the
- * questions they actually ask in the order they ask them, and says plainly what
- * this does not do.
+ * away, a long list of things to sort out, and no vocabulary of their own to judge
+ * this with. So it leads with the problem they recognise, answers the questions they
+ * actually ask in the order they ask them, and says plainly what this does not do.
  *
  * That last part is not politeness. `about` already carries the hardship message and
  * the facts; repeating it here is what stops this page reading as marketing, and a
  * parent who finds out on their own that the app does not do maths is a parent who
  * does not come back.
  *
- * Every number on this page is read from the word bank rather than typed in, so the
- * page cannot drift away from what the app actually contains. The counts are
- * computed once at module load on the client, which is the same data the practice
- * screen uses to draw its questions.
+ * A server component, and that is what makes the numbers trustworthy. Both figures
+ * arrive as props from `app/page.tsx`, which reads them from the word bank. The
+ * first draft fetched them on the client and was wrong twice over — from an
+ * endpoint whose `words` is the free-tier question list, and then from one that
+ * needs a session, so a signed-out visitor — which is nearly all of them — saw no
+ * number at all. A number rendered from the bank cannot drift from the product and
+ * cannot be missing for the people who most need to read it.
  */
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import {
   ArrowRight,
   BookOpen,
@@ -33,27 +32,20 @@ import {
   Sparkles,
 } from "lucide-react";
 import Header from "./header";
-import { api } from "@/lib/client/api";
 
 /**
  * What the app covers, said to a parent.
  *
- * The vocabulary count is filled in at runtime rather than written here, because a
- * number on a sales page that disagrees with the app is worse than no number. The
- * source names come from the word bank, and they are the honest answer to "what is
- * this built from" - which is a question a parent with a Bond book in their hand is
- * actively asking.
+ * The count is a prop from the server rather than written here, because a number on
+ * a sales page that disagrees with the app is worse than no number.
+ *
+ * There used to be a second constant here naming four publications the words were
+ * said to come from, with a count for each. Every figure was right about the source
+ * files and the claim was wrong about the site: the words are collected by the
+ * family who runs this and by their two sons preparing for their own 11+, together
+ * with UK education sites and free resources. Naming third-party lists implied a
+ * licence and a curation this does not have.
  */
-const SOURCES = [
-  { name: "Vocabulary Quest", words: 1384 },
-  { name: "the Blue Book", words: 547 },
-  { name: "two flashcard sets", words: 200 },
-  // Not "the national curriculum word list". The app's own label for this source is
-  // "Curriculum extension" and 116 words is not the national word list, so calling
-  // it that is a claim about somebody else's document that is not true.
-  { name: "curriculum extension words", words: 116 },
-] as const;
-
 /**
  * The six levels, named the way the app names them, with a real word from each.
  *
@@ -103,8 +95,6 @@ const QUESTION_TYPES = [
  * informed; the same parent who finds it on day eight feels sold to. It is 224
  * rather than a round number because that is what the app actually does.
  */
-const FREE_WORD_COUNT = 224;
-
 /**
  * What a family gets that the app does not obviously have.
  *
@@ -132,42 +122,18 @@ const FACTS = [
   },
 ] as const;
 
-export default function Landing() {
-  const [count, setCount] = useState<number | null>(null);
-
-  /*
-   * The count comes from `/api/words`, and specifically from its `collection`
-   * field, which is the size of the whole bank.
-   *
-   * It was read from `/api/challenge?types=def` instead, and that was wrong twice
-   * over. That endpoint's `words` array is a set of *questions* drawn from the free
-   * tier, so a signed-out visitor — which is exactly who is reading a landing page —
-   * was shown "223 words" directly above a bulleted list of sources that sums to
-   * 2,247. A parent can add that up, and the one number on the page they had most
-   * reason to trust was the one that was wrong.
-   *
-   * Signed in, the same endpoint sends no `words` key at all, so the page said
-   * "thousands of words" in three places — vague, next to four specific numbers.
-   *
-   * `/api/words` sends `collection` for both cases, and it is the number the
-   * account page's own paywall compares against.
-   */
-  useEffect(() => {
-    api<{ collection?: number }>("/api/words")
-      .then((result) => {
-        if (typeof result.collection === "number" && result.collection > 0)
-          setCount(result.collection);
-      })
-      .catch(() => {
-        /*
-         * Left null on purpose. The page must render and sell without it, so the
-         * copy below reads "thousands of words" until it is known and the exact
-         * number once it is — a missing figure is fine, a wrong one is not.
-         */
-      });
-  }, []);
-
-  const words = count === null ? "thousands of" : count.toLocaleString("en-GB");
+/**
+ * @param totalWords  Every word in the bank, from the word bank itself.
+ * @param freeWords   What a child keeps when nothing has been bought.
+ */
+export default function Landing({
+  totalWords,
+  freeWords,
+}: {
+  totalWords: number;
+  freeWords: number;
+}) {
+  const words = totalWords.toLocaleString("en-GB");
 
   return (
     <>
@@ -193,7 +159,7 @@ export default function Landing() {
           </div>
           <p className="landing-fine">
             Free for 7 days with every word, no card needed. After the trial
-            your child keeps the {FREE_WORD_COUNT} easiest words; the rest, and
+            your child keeps the {freeWords} easiest words; the rest, and
             printing, need a paid term. Nothing is deleted when the trial ends.
           </p>
         </section>
@@ -249,30 +215,54 @@ export default function Landing() {
           trust. The names are the actual files the words came from.
         */}
         <section className="landing-section">
-          <h2>What is in it</h2>
+          <h2>Where the words come from</h2>
           <p>
-            {words} words in total, drawn from the lists 11+ preparation is
-            built on:
+            We built the {words} words by collecting them the way our own sons
+            would: writing down every unfamiliar word they met in their reading
+            and their papers, working through UK education websites and free
+            revision resources, and adding the ones that kept coming up. Every
+            word has a definition, and most have synonyms, antonyms and an
+            example sentence.
           </p>
-          <ul className="landing-sources">
-            {SOURCES.map((source) => (
-              <li key={source.name}>
-                <strong>{source.name}</strong>
-                <span className="muted">
-                  {" "}
-                  — {source.words.toLocaleString("en-GB")} words
-                </span>
-              </li>
-            ))}
-          </ul>
-          <p className="muted">
-            Every word has a definition, and most have synonyms, antonyms and an
-            example sentence — so a word your child meets in the app is a word
-            they can see used, not just defined. The words run from everyday
-            ones to the rare ones that turn up once in a passage, and the papers
-            are written to be resistant to syllabus coverage, which is why we
-            cover the vocabulary rather than the format.
+          <p>
+            They run from everyday words to rare ones that turn up once in a
+            passage, sorted into six levels. The 11+ papers are written to be
+            resistant to covering a syllabus, which is why this covers the words
+            themselves rather than the format.
           </p>
+        </section>
+
+        {/*
+          Stories. A parent will not expect this and it is arguably the best thing
+          here, so it gets a section rather than a card among "also here".
+
+          The section it replaced named four publications and a count for each.
+          That was accurate about the source files and wrong about the site: the
+          words are collected by the family who runs this and by their two sons
+          preparing for their own 11+, together with UK education sites and free
+          resources. Naming third-party lists implied a licence and a curation this
+          does not have, and a parent who went looking for the book would not find
+          a shelf of them.
+        */}
+        <section className="landing-section">
+          <h2>Words are learned by meeting them, not by being told</h2>
+          <p>
+            A word on a list is a word a child can recognise and not much more.
+            A word they have read used, in a story they wanted to finish, is a
+            word they own. So we write the vocabulary into short stories —
+            properly funny ones, because a child who is laughing is a child who
+            is reading — and the word turns up in the middle of a sentence they
+            have to understand to follow.
+          </p>
+          <p>
+            It is the single most effective thing on this site, and it costs
+            nothing. More stories are being added all the time.
+          </p>
+          <div className="landing-actions">
+            <Link className="text-button" href="/stories">
+              <BookOpen size={16} /> Read the stories
+            </Link>
+          </div>
         </section>
 
         {/*
@@ -460,9 +450,11 @@ export default function Landing() {
             ))}
           </div>
           <p className="muted">
-            If someone is paying for your access — a school, a grandparent, a
-            sponsor — they can buy you a code instead, and you enter it on your
-            account page. You do not need to know they have until you use it.
+            If the cost is a problem, ask. We issue codes to families who are
+            finding it hard, so you can keep every word and keep printing
+            without paying. There is nothing to prove beyond what you are
+            comfortable sharing, and a code appears on your account page the
+            moment we send it.
           </p>
         </section>
 
