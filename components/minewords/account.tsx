@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useEffect, useState, type FormEvent } from "react";
 import Header from "./header";
 import { api } from "@/lib/client/api";
+import { CONTACT_EMAIL } from "@/lib/contact";
 import AccountSecurity from "./account-security";
 import CouponRedeem from "./coupon-redeem";
 import DeleteAccount from "./delete-account";
@@ -150,7 +151,11 @@ export default function Account() {
                 // directly above "Access until 2 November 2026" and had no way
                 // to tell whether they described the same day.
                 `Payment received. Access runs until ${date(current.periodEnd!)}.`
-              : "We have your payment, but your access has not been applied yet. It normally appears within a minute. If it does not, email us and we will sort it today.",
+              : // The address is printed, not just promised. This is the one message a parent
+                // reads knowing they have been charged and not sure whether it
+                // worked, and "email us" with no address is nowhere to go - which is
+                // how a parent ends up paying a second time.
+                `We have your payment, but your access has not been applied yet. It normally appears within a minute. If it does not, email ${CONTACT_EMAIL} and we will sort it today.`,
           );
         }
         if (checkout === "cancelled")

@@ -112,7 +112,7 @@ before anything is uploaded. It is not a bare `wrangler deploy` because
 vinext writes `dist/server/wrangler.json` with no `migrations_dir` in it, so
 `d1 migrations apply` would find nothing to read. The script therefore runs
 `scripts/patch-wrangler-migrations.mjs` after the build to point that key at
-`drizzle/` and name the ledger `d1_migrations`, and *then* runs
+`drizzle/` and name the ledger `d1_migrations`, and _then_ runs
 `d1 migrations apply`. The patch is what makes `apply` work here; it is not
 optional and it is not a convenience.
 
@@ -261,11 +261,11 @@ Worker.
 
 In the Stripe dashboard, three **one-time** prices:
 
-| Setting | Length | Terms | Must be created as |
-| --- | --- | --- | --- |
-| `STRIPE_PRICE_MONTHLY` | 1 month | 30 days | One-time payment |
-| `STRIPE_PRICE_QUARTERLY` | 3 months | 90 days | One-time payment |
-| `STRIPE_PRICE_YEARLY` | 1 year | 365 days | One-time payment |
+| Setting                  | Length   | Terms    | Must be created as |
+| ------------------------ | -------- | -------- | ------------------ |
+| `STRIPE_PRICE_MONTHLY`   | 1 month  | 30 days  | One-time payment   |
+| `STRIPE_PRICE_QUARTERLY` | 3 months | 90 days  | One-time payment   |
+| `STRIPE_PRICE_YEARLY`    | 1 year   | 365 days | One-time payment   |
 
 Put each price id in the setting its row names. **They must be one-time prices,
 not recurring.** A fixed term is bought once and ends; there is nothing to renew
@@ -273,8 +273,9 @@ and nothing to cancel. The app checks each price before starting a checkout and
 refuses a recurring one, because that configuration fails in the worst possible
 way: Stripe charges the quarterly price once and then bills the parent every
 month, while the app - which grants a fixed term and never listens for a renewal
+
 - granted three months and stopped there. The parent would be charged monthly for
-access that quietly ended.
+  access that quietly ended.
 
 The length of access comes from the table above, not from Stripe, because a
 one-time price carries no interval: there is nothing in the price object that
@@ -300,6 +301,7 @@ one at a time. **A subscription for a price that is not one of these three clear
 access rather than leaving a stale grant behind** - so after adding a tier, check
 that its id is set before selling it, or a parent who buys it will have their
 membership revoked by the webhook.
+
 - A webhook endpoint at `https://<your-origin>/api/stripe/webhook`, subscribed
   to **`checkout.session.completed`** and **`charge.refunded`**.
   `checkout.session.completed` grants the term. `charge.refunded` takes it back -
@@ -394,6 +396,47 @@ Set it as `APP_ORIGIN` and use it for the Stripe webhook endpoint.
 3. Keep the `workers.dev` name working while you test. Both can serve the same
    Worker, so nothing breaks if the custom domain has a problem.
 
+### Option C: receiving mail at `support@`
+
+The site tells parents to write to `support@11pluswords.com` — in the payment
+"not applied yet" message, the hardship note on `/about`, and the privacy notice.
+That address is a literal in `lib/contact.ts`, so **the code needs no
+configuration for it**; it needs a mailbox behind it, or the promise is a dead
+end. There is no such thing as a free mailbox on its own, and this app sends its
+own mail through Resend (`EMAIL_FROM`), which is for sending and cannot receive.
+
+**Cloudflare Email Routing is the free half, and it is the right tool here.** It
+is inbound only — it receives mail for your domain and forwards it to an address
+that already exists. On the free plan that is unlimited, and it needs no
+mailbox on Cloudflare at all.
+
+**Email → Email Routing → Get started**, then:
+
+1. **Add a destination address** — `ken.qi.li@gmail.com`. Cloudflare sends a
+   confirmation link to it; **you must click it**. An unverified destination is
+   silently not used, and the failure looks exactly like "email is not arriving".
+2. **Routing rules → Create address** — custom address `support`, action
+   **Forward to** `ken.qi.li@gmail.com`. Only the local part is typed; the zone
+   supplies the rest.
+3. **Send yourself a test** from outside Cloudflare. Check the address you
+   confirmed, not the one you typed.
+
+Two things it will not do, both of which matter:
+
+- **Replies will come from your Gmail, not from `support@`.** A parent who writes
+  to `support@` and gets a reply from a personal address will reasonably wonder
+  whether they have reached the right place. The fix is a **Reply address** on the
+  routing rule (`Reply with custom address` → Cloudflare provides an SMTP address
+  to reply as). You do not have to set it up on day one.
+- **It does not send.** Outgoing mail from `support@` still needs Resend. The
+  site already sends through Resend and sets `From:`, so nothing here changes —
+  but do not expect to send _from_ `support@` from the Cloudflare side.
+
+If you would rather not forward into a personal inbox, the alternatives are
+Google Workspace (paid, and then `support@` is a real mailbox) or Cloudflare
+Email Routing into a dedicated alias. The forwarding setup above is the free one
+and is fine while the site is small.
+
 ### Changing hostname afterwards
 
 Two things must be updated, in this order, or a paying parent is stranded:
@@ -446,7 +489,7 @@ The line above is missing one step, and its absence is not a small thing.
 `wrangler deploy` alone does not migrate anything. If a release reads a column
 the database does not have, the Worker starts serving requests that fail, and
 rolling the deploy back does not help because the previous code was happy with
-the previous schema. `users.expiry_date` is read by `membership()` on *every*
+the previous schema. `users.expiry_date` is read by `membership()` on _every_
 authenticated request, so that is not a degraded feature - it is every signed-in
 request failing.
 
@@ -459,18 +502,18 @@ so it cannot be pointed at the wrong database by a stale environment variable.
 In the dashboard: **Workers & Pages → your Worker → Settings → Builds**, or
 **Create → Workers Builds** to connect the repository.
 
-| Setting | Value |
-| --- | --- |
-| **Build command** | `npm run build` |
+| Setting            | Value                                             |
+| ------------------ | ------------------------------------------------- |
+| **Build command**  | `npm run build`                                   |
 | **Deploy command** | `bash scripts/deploy.sh --skip-verify --no-build` |
-| **Root directory** | leave at the repository root |
-| **Build variable** | `D1_ID` = the D1 database id |
-| **Build variable** | `D1_NAME` = `minewords` |
-| **Build variable** | `WORKER_NAME` = the Worker's own name |
+| **Root directory** | leave at the repository root                      |
+| **Build variable** | `D1_ID` = the D1 database id                      |
+| **Build variable** | `D1_NAME` = `minewords`                           |
+| **Build variable** | `WORKER_NAME` = the Worker's own name             |
 
 Notes on each, because the two commands are not interchangeable:
 
-- **`--no-build` matters.** Workers Builds runs the build command and *then* the
+- **`--no-build` matters.** Workers Builds runs the build command and _then_ the
   deploy command. Without this flag the deploy command would build a second time,
   wasting several minutes on every deploy.
 - **`--skip-verify` matters.** The tests, typecheck and lint belong in the build
@@ -527,13 +570,13 @@ on Cloudflare.
 5. Click a link in the deployed app.
 
 **Step 4 is the deploy script, not `wrangler deploy`.** The script applies
-pending migrations and *then* uploads the Worker, in that order, and stops
+pending migrations and _then_ uploads the Worker, in that order, and stops
 before uploading anything if a migration fails. A bare `wrangler deploy` uploads
 the code first and migrates never, which is the outage described under
 [Migrations have to run before the code](#migrations-have-to-run-before-the-code).
 
 **Step 3 is not optional, and step 5 is not ceremonial.** This repository once
-shipped a build where *every* link in the app did nothing when clicked, while
+shipped a build where _every_ link in the app did nothing when clicked, while
 the whole suite passed. The cause was a circular dynamic import between the
 framework's client entry chunk and its Link chunk: the bundler left
 `navigateClientSide` out of the entry chunk's export list, the Link chunk

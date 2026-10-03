@@ -122,9 +122,10 @@ export default function PrivacyPage() {
 
           <h2>Contact</h2>
           <p>
-            Questions about any of this can go to the address on the{" "}
-            <a href="/about">about page</a>. If you want something removed that
-            this page does not cover, ask and it will be.
+            Questions about any of this can go to{" "}
+            <a href="mailto:support@11pluswords.com">support@11pluswords.com</a>
+            . If you want something removed that this page does not cover, ask
+            and it will be.
           </p>
         </article>
 
