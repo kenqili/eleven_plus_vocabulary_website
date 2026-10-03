@@ -326,8 +326,7 @@ export default function LearningCalendar() {
                       {selectedDay.reveals}{" "}
                       {selectedDay.reveals === 1 ? "answer" : "answers"}{" "}
                       revealed. Study time includes reading questions and
-                      explanations and Word Adventures; it pauses while you’re
-                      away.
+                      explanations and stories; it pauses while you’re away.
                     </p>
                   </>
                 )}

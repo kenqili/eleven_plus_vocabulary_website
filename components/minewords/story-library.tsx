@@ -105,7 +105,7 @@ export default function StoryLibrary() {
         <section className="stories-hero">
           <div>
             <div className="eyebrow">BIG LAUGHS. BRILLIANT WORDS.</div>
-            <h1>Word Adventures</h1>
+            <h1>Stories</h1>
             <p>
               Runaway inventions, peculiar pets and plans that go wonderfully
               wrong. Meet your vocabulary words inside a story worth finishing.
@@ -183,9 +183,10 @@ export default function StoryLibrary() {
             </p>
           )}
         <p className="muted">
-          {stories.length} {stories.length === 1 ? "story explores" : "stories explore"}{" "}
-          every word in this level. Pick any adventure;
-          levels describe the vocabulary, not your age.
+          {stories.length}{" "}
+          {stories.length === 1 ? "story explores" : "stories explore"} every
+          word in this level. Pick any adventure; levels describe the
+          vocabulary, not your age.
         </p>
         <p className="story-unread-legend">
           <span className="story-unread-dot" aria-hidden="true" /> Unread · the

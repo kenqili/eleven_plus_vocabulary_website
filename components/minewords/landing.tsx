@@ -125,15 +125,19 @@ const FACTS = [
 /**
  * @param totalWords  Every word in the bank, from the word bank itself.
  * @param freeWords   What a child keeps when nothing has been bought.
+ * @param storyCount  How many stories there are, counted rather than guessed.
  */
 export default function Landing({
   totalWords,
   freeWords,
+  storyCount,
 }: {
   totalWords: number;
   freeWords: number;
+  storyCount: number;
 }) {
   const words = totalWords.toLocaleString("en-GB");
+  const stories = storyCount.toLocaleString("en-GB");
 
   return (
     <>
@@ -210,9 +214,20 @@ export default function Landing({
         </section>
 
         {/*
-          The word count and its sources. A parent comparing this to a book in their
-          hand is doing a real calculation, and being able to do it is most of the
-          trust. The names are the actual files the words came from.
+          The word count and where the words came from. A parent is doing a real
+          comparison against the book in their hand, and being able to do it is most
+          of the trust.
+
+          The last sentence used to read "Every word has a definition, and most have
+          synonyms, antonyms and an example sentence." Not wrong, but it buried the
+          fact: every word has an example sentence, all 2,247 of them, and only
+          synonyms and antonyms are ever missing. Lumping a universal in with a
+          near-universal made the site sound patchier than it is, in the one
+          sentence a sceptical parent reads most closely.
+
+          The counts below are measured from the word bank by
+          `tests/landing-page.test.mjs`, so the sentence cannot drift from the data
+          the way a typed-in figure would.
         */}
         <section className="landing-section">
           <h2>Where the words come from</h2>
@@ -220,9 +235,12 @@ export default function Landing({
             We built the {words} words by collecting them the way our own sons
             would: writing down every unfamiliar word they met in their reading
             and their papers, working through UK education websites and free
-            revision resources, and adding the ones that kept coming up. Every
-            word has a definition, and most have synonyms, antonyms and an
-            example sentence.
+            revision resources, and adding the ones that kept coming up.
+          </p>
+          <p>
+            Every one of them has a definition and a real example sentence. All
+            but a handful also have synonyms and antonyms, which is what makes
+            the nearest-word questions possible.
           </p>
           <p>
             They run from everyday words to rare ones that turn up once in a
@@ -255,8 +273,8 @@ export default function Landing({
             have to understand to follow.
           </p>
           <p>
-            It is the single most effective thing on this site, and it costs
-            nothing. More stories are being added all the time.
+            There are {stories} of them, across all six levels, and they cost
+            nothing to read. More are being added all the time.
           </p>
           <div className="landing-actions">
             <Link className="text-button" href="/stories">

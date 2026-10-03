@@ -364,7 +364,7 @@ export default function StoryReader({ id }: { id: string }) {
       <Header />
       <main className="workspace story-reader">
         <Link className="text-button" href="/stories">
-          ← All Word Adventures
+          ← All stories
         </Link>
         {story?.id === id && <Reading key={id} story={story} />}
         {!story && !error && <p role="status">Opening your adventure…</p>}

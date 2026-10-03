@@ -32,11 +32,8 @@ export async function POST(request: Request) {
       await rateLimit(`reading-position:${user.id}`, 600);
       return json(await saveReadingPreference(user.id, input));
     }
-    if (
-      typeof input.storyId !== "string" ||
-      !STORY_ID.test(input.storyId)
-    )
-      throw new HttpError(400, "Choose a story from Word Adventures.");
+    if (typeof input.storyId !== "string" || !STORY_ID.test(input.storyId))
+      throw new HttpError(400, "Choose a story from Stories.");
     await rateLimit(`stories:${user.id}`, 600);
     if (input.action === "bookmark")
       return json(

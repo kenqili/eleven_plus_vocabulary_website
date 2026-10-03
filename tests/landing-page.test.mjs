@@ -22,6 +22,20 @@ import test from "node:test";
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { words } from "../scripts/load-word-bank.mjs";
 
+/**
+ * The story library, counted the same way the app counts it.
+ *
+ * Read rather than imported, because `lib/server/story-library` imports
+ * `cloudflare:workers` and does not load under Node. The files are JSON in a `.txt`
+ * wrapper, which is why they are parsed here at all.
+ */
+const storyFiles = readdirSync("data/stories").filter((name) =>
+  name.endsWith(".txt"),
+);
+const allStories = storyFiles.flatMap((name) =>
+  JSON.parse(readFileSync(`data/stories/${name}`, "utf8")),
+);
+
 const landing = readFileSync("components/minewords/landing.tsx", "utf8");
 /** Comments stripped, so prose about a rule cannot satisfy the rule. */
 const strip = (source) =>
@@ -381,6 +395,59 @@ test("every internal link on the page is one that exists", () => {
   );
 });
 
+test("what the page says about each word is what the word bank actually holds", () => {
+  // The sentence this checks used to read "Every word has a definition, and most
+  // have synonyms, antonyms and an example sentence." Not false — but it grouped a
+  // universal in with a near-universal and so made the library sound patchier than
+  // it is, in the one sentence a sceptical parent reads most closely.
+  //
+  // Measured rather than asserted as prose, so the claim cannot drift from the data.
+  const n = words.length;
+  const has = (field) => words.filter((w) => w[field]?.trim()).length;
+  const definition = has("definition");
+  const example = has("example");
+  const synonyms = has("syn");
+  const antonyms = has("ant");
+
+  // The page says both of these without qualification, so both must be universal.
+  assert.equal(
+    definition,
+    n,
+    "the page says every word has a definition, but some do not",
+  );
+  assert.equal(
+    example,
+    n,
+    "the page says every word has an example sentence, but some do not",
+  );
+
+  // It says "all but a handful" about synonyms and antonyms. Measured at 98.3% and
+  // 96.3%, so the loose claim holds with room to spare; a bank that lost its synonym
+  // data would break it.
+  assert.ok(
+    synonyms / n > 0.9 && antonyms / n > 0.9,
+    `the page says all but a handful have synonyms and antonyms, but it is ${((synonyms / n) * 100).toFixed(1)}% and ${((antonyms / n) * 100).toFixed(1)}%`,
+  );
+
+  // And the loose claim is not an accident of the numbers — it is what the page says.
+  const flat = code.replace(/\s+/g, " ");
+  assert.doesNotMatch(
+    flat,
+    /most have synonyms[^.]*example sentence/i,
+    "the page still buries a universal next to a near-universal",
+  );
+  assert.match(
+    flat,
+    /Every one of them has a definition and a real example sentence/,
+    "the page does not state that every word has a definition and an example sentence",
+  );
+  assert.match(
+    flat,
+    /All but a handful also have synonyms and antonyms/,
+    "the page does not qualify the synonyms and antonyms",
+  );
+});
+
 test("the page says where the words come from, without naming a third party", () => {
   // It used to name four publications with a count for each. Every figure was right
   // about the source files and the claim was wrong about the site: the words are
@@ -417,13 +484,124 @@ test("the stories are the way to learn the words, and said so", () => {
   assert.match(code, /Words are learned by meeting them/i);
   assert.match(code, /stories/i);
   assert.match(code, /funny/i, "the stories are not described as enjoyable");
+  // Whitespace-tolerant, and wording-agnostic: the sentence was reworded when the
+  // count went in ("More are being added" rather than "More stories are being
+  // added"), and the point of the assertion is that the page stays honest about
+  // there being more, not the exact phrasing.
   assert.match(
-    code,
-    /More stories are being added/i,
+    code.replace(/\s+/g, " "),
+    /More (stories )?are being added/i,
     "the page does not say more are coming, which is honest about what exists now",
   );
   // And it must be reachable.
   assert.match(code, /href="\/stories"/);
+});
+
+test("the page says how many stories there are, and the number is counted", () => {
+  // It said only "more are being added", which a parent reads as a handful. There
+  // are 120 of them, which is the strongest concrete fact the section has, and it
+  // was going unsaid.
+  //
+  // The count is asserted against the story files rather than trusted, because the
+  // whole failure this fixes is a number that is true of the data and missing from
+  // the page.
+  assert.ok(
+    allStories.length > 100,
+    "the story library is smaller than expected",
+  );
+  assert.match(
+    code,
+    /There are \{stories\} of them/,
+    "the stories section does not state a count",
+  );
+  assert.match(
+    code,
+    /storyCount: number;/,
+    "the count is not a prop, so it is typed into the copy and will go stale",
+  );
+  // Counted on the server from the same list the library is seeded from, so the page
+  // cannot claim a number the site does not serve.
+  assert.match(
+    readFileSync("app/page.tsx", "utf8"),
+    /STORY_COUNT/,
+    "the front page does not read the story count from the library",
+  );
+  assert.match(
+    readFileSync("lib/server/story-library.ts", "utf8"),
+    /STORY_COUNT = stories\.length/,
+    "the story count is not taken from the parsed story list",
+  );
+  // Whitespace-tolerant: prettier rewraps prose, and this is a phrase that can
+  // straddle a line break.
+  const flat = code.replace(/\s+/g, " ");
+  assert.match(
+    flat,
+    /across all six levels/,
+    "the count does not say the stories are spread across the levels, so '120' reads as 120 identical things",
+  );
+  // Six levels, and the page claims six in two other places.
+  assert.equal(
+    new Set(allStories.map((story) => story.level)).size,
+    6,
+    "the stories are not spread across all six levels the page claims",
+  );
+});
+
+test("the stories section claims nothing the library cannot back", () => {
+  // "Read the stories" leads to a real library, and the count on the page is the
+  // real one. What it must not do is promise a feature the library does not have —
+  // so the words a story is said to teach are checked to be words it really uses.
+  const withWords = allStories.filter((story) => (story.wordIds || []).length);
+  assert.equal(
+    withWords.length,
+    allStories.length,
+    "a story carries no vocabulary, so the page's claim about meeting words in stories is not true of it",
+  );
+  // Every word a story uses is a real word in the bank, or the hover-over hint
+  // offers a parent a definition that does not exist.
+  const known = new Set(words.map((word) => word.id));
+  const unknown = new Set(
+    withWords.flatMap((story) =>
+      (story.wordIds || []).filter((id) => !known.has(id)),
+    ),
+  );
+  assert.deepEqual(
+    [...unknown],
+    [],
+    `stories reference words that are not in the bank: ${[...unknown].slice(0, 5).join(", ")}`,
+  );
+});
+
+test("nothing on the site is still called Word Adventures", () => {
+  // The rename to "Stories" was applied to the nav and left everywhere else, so a
+  // parent clicked "Stories" and landed on a page whose heading, browser tab, back
+  // link and error message all said "Word Adventures" — which reads as two features.
+  const files = [
+    "app/stories/page.tsx",
+    "app/api/stories/route.ts",
+    "components/minewords/story-library.tsx",
+    "components/minewords/story-reader.tsx",
+    "components/minewords/learning-calendar.tsx",
+    "components/minewords/header.tsx",
+  ];
+  for (const file of files) {
+    assert.doesNotMatch(
+      readFileSync(file, "utf8"),
+      /Word Adventures/,
+      `${file} still calls the stories "Word Adventures"`,
+    );
+  }
+  // And the name it does use is consistent, including in the browser tab.
+  assert.match(
+    readFileSync("components/minewords/story-library.tsx", "utf8"),
+    /<h1>Stories<\/h1>/,
+    "the stories page heading is not simply 'Stories'",
+  );
+  assert.match(
+    readFileSync("app/stories/page.tsx", "utf8"),
+    /title: "Stories \| MineWords"/,
+    "the stories page title is not renamed, so the search result and the tab say the old name",
+  );
 });
 
 test("Practice is in the header, and Stories is not called Word Adventures", () => {

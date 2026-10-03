@@ -1,6 +1,7 @@
 import Landing from "@/components/minewords/landing";
 import { bankSize } from "@/lib/server/free-words";
 import { configuredFreeWordLimit } from "@/lib/server/billing";
+import { STORY_COUNT } from "@/lib/server/story-library";
 
 /**
  * The front page.
@@ -21,6 +22,10 @@ export default function Home() {
   // child keeps after the trial and that number is a setting. A hard-coded 224 on a
   // page whose job is to be believed would eventually disagree with the app.
   return (
-    <Landing totalWords={bankSize()} freeWords={configuredFreeWordLimit()} />
+    <Landing
+      totalWords={bankSize()}
+      freeWords={configuredFreeWordLimit()}
+      storyCount={STORY_COUNT}
+    />
   );
 }
