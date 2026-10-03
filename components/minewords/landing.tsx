@@ -61,7 +61,19 @@ import Header from "./header";
  * "Literary" here and sees it in the app is not being sold something else.
  */
 const LEVELS = [
-  { name: "Everyday", example: "accommodate" },
+  // Level 0's example used to be `accommodate`. That is genuinely level 0 and
+  // genuinely in the bank — but it is the first word a parent reads under the
+  // label "Everyday", and it does not read as everyday to anybody who is not
+  // already a teacher. Every parent does a small double-take, and a first
+  // impression is a bad place to look like the levels are mislabelled.
+  //
+  // `vegetable` is level 0 too, and is plainly what the label claims. The band
+  // is the curriculum-extension set rather than a frequency band — see
+  // `data/word-levels/levels.json` — so it holds both plain words and ones like
+  // `alliteration`, and picking from it is a judgement about which member to
+  // show. `tests/landing-page.test.mjs` still checks the level, so this cannot
+  // quietly become a word from the wrong band.
+  { name: "Everyday", example: "vegetable" },
   { name: "Common", example: "abandon" },
   { name: "Less common", example: "abundance" },
   { name: "Uncommon", example: "antiquity" },
@@ -126,18 +138,43 @@ const FACTS = [
  * @param totalWords  Every word in the bank, from the word bank itself.
  * @param freeWords   What a child keeps when nothing has been bought.
  * @param storyCount  How many stories there are, counted rather than guessed.
+ * @param priced      What a membership costs, read from Stripe. Empty when it
+ *                    cannot be read, and the page then says what it always said.
  */
 export default function Landing({
   totalWords,
   freeWords,
   storyCount,
+  priced,
 }: {
   totalWords: number;
   freeWords: number;
   storyCount: number;
+  priced: {
+    tier: string;
+    label: string;
+    formatted: string | null;
+    recurring: boolean;
+  }[];
 }) {
   const words = totalWords.toLocaleString("en-GB");
   const stories = storyCount.toLocaleString("en-GB");
+  /*
+   * Only prices that have an amount, and all of them or none.
+   *
+   * `publicPrices()` returns one entry per tier with `formatted: null` when it
+   * could not read that one. Rendering the list on `priced.length > 0` — which is
+   * what this did first — produced "for 1 month / for 3 months / for 1 year" with
+   * no amounts in front of any of them, when Stripe was unreachable. A shelf of
+   * three terms and no prices is worse than the sentence it replaced: the reader
+   * is told there is a cost, and then not what it is.
+   *
+   * So a price without an amount is not shown at all, and a partial list is not
+   * shown either. One unknown tier drops the section back to the wording that
+   * does not need the numbers, which is honest and complete.
+   */
+  const shownPrices =
+    priced.length > 0 && priced.every((price) => price.formatted) ? priced : [];
 
   return (
     <>
@@ -411,17 +448,66 @@ export default function Landing({
         */}
         <section className="landing-section">
           <h2>What it costs</h2>
-          <p>
-            Seven days free, with no card needed. After that a fixed length — a
-            month, three months or a year — at a price shown before you pay
-            anything. It is a one-off payment: it does not renew, there is
-            nothing to cancel, and we will not charge you again.
-          </p>
-          <p className="muted">
-            Prices are on the <Link href="/account">account page</Link>, and
-            buying again adds to the time your child has rather than replacing
-            it.
-          </p>
+          {/*
+            The prices, read from Stripe and rendered on the server.
+
+            This used to say "at a price shown before you pay anything" and send the
+            reader to the account page to find out — on the one section whose job is
+            to answer "how much". A parent who has to sign in to learn the price has
+            been asked for a commitment before being told the cost, which is the
+            thing that stops people buying.
+
+            The amounts come from `publicPrices()` rather than being written here,
+            because the real price lives in Stripe and a second copy of it in the
+            copy is a number that can disagree with what the card is charged. The
+            same class of bug as the word count.
+
+            And when they cannot be read the section says what it always said. A
+            Stripe outage must not blank the price or, worse, fail the front page:
+            `publicPrices()` returns `amount: null` per tier and never throws, so
+            this falls back to the old wording with no error and no missing figure.
+          */}
+          {shownPrices.length > 0 ? (
+            <>
+              <p>
+                Seven days free, with no card needed. After that a fixed length,
+                bought once:
+              </p>
+              <ul className="landing-prices">
+                {shownPrices.map((price) => (
+                  <li key={price.tier}>
+                    <strong>{price.formatted}</strong>
+                    <span className="muted">
+                      {" "}
+                      for {price.label}
+                      {price.recurring
+                        ? " — this one renews, which we do not otherwise use"
+                        : ""}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <p>
+                It is a one-off payment: it does not renew, there is nothing to
+                cancel, and we will not charge you again. Buying again adds to
+                the time your child has rather than replacing it.
+              </p>
+            </>
+          ) : (
+            <>
+              <p>
+                Seven days free, with no card needed. After that a fixed length
+                — a month, three months or a year — at a price shown before you
+                pay anything. It is a one-off payment: it does not renew, there
+                is nothing to cancel, and we will not charge you again.
+              </p>
+              <p className="muted">
+                Prices are on the <Link href="/account">account page</Link>, and
+                buying again adds to the time your child has rather than
+                replacing it.
+              </p>
+            </>
+          )}
         </section>
 
         {/*
@@ -432,17 +518,35 @@ export default function Landing({
         <section className="landing-section landing-help">
           <HeartHandshake size={24} />
           <h2>If money is the problem, it should not stand in the way</h2>
+          {/*
+            Three paragraphs here said three different things about proof, and a
+            parent who is genuinely struggling is exactly the person who notices.
+
+            It used to ask for proof of free school meals, then two sentences later
+            promise "no means test form, nothing that puts you in a position where
+            you have to prove you are struggling" — and the coupon paragraph at the
+            bottom added a third version. Asking and then promising not to ask is
+            worse than either alone, because it teaches the reader to distrust the
+            promise.
+
+            So: nothing is required, and proof is offered only as something that
+            helps if it happens to be to hand. That is what /about already says and
+            it is what /privacy already describes — the evidence is read once and
+            deleted. Asserted across all three files by `tests/landing-page.test.mjs`,
+            because the failure is internal disagreement between pages.
+          */}
           <p>
             Every child is entitled to learn, and a fee should not decide
-            whether yours does. If it is difficult, email us and say so — if you
-            can share proof that your child qualifies for free school meals or
-            another government low-income scheme, we will do our best to arrange
-            free access.
+            whether yours does. If it is difficult, email us and say so — that
+            is the whole process. No form, no means test, no interview, and
+            nothing that asks you to account for your finances to a stranger.
           </p>
           <p>
-            No conversation, no means test form, nothing that puts you in a
-            position where you have to prove you are struggling to someone who
-            might think less of you. One email is enough.
+            You do not need to send any evidence. If you happen to have proof
+            that your child qualifies for free school meals or another
+            government low-income scheme and it is already in your inbox,
+            sending it will simply speed things up. Either way you get an
+            answer.
           </p>
           <p>
             Write to{" "}
@@ -470,9 +574,8 @@ export default function Landing({
           <p className="muted">
             If the cost is a problem, ask. We issue codes to families who are
             finding it hard, so you can keep every word and keep printing
-            without paying. There is nothing to prove beyond what you are
-            comfortable sharing, and a code appears on your account page the
-            moment we send it.
+            without paying. No proof needed — one email and a code appears on
+            your account page.
           </p>
         </section>
 

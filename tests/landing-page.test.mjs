@@ -189,6 +189,142 @@ test("the free trial, the price and the fact it is not a subscription are all th
   assert.match(code, /will not charge you again/i);
 });
 
+test("the price is on the page, read from Stripe, and never hard-coded", () => {
+  // The section whose job is to answer "how much" used to say "at a price shown
+  // before you pay anything" and send the reader to the account page. A parent who
+  // has to sign in to learn the price has been asked to commit before being told
+  // the cost, which is the thing that stops people buying.
+  const flat = code.replace(/\s+/g, " ");
+
+  // It is a prop, not a number in the copy. A number written here is a second source
+  // of truth that can quietly disagree with what the card is charged — the same bug
+  // as the word count, on the one page about money.
+  assert.match(
+    code,
+    /priced:[\s\S]{0,220}formatted: string \| null;/,
+    "the prices are not a typed-in shape, so the page has no price to show",
+  );
+  assert.doesNotMatch(
+    flat,
+    /£\s?\d/,
+    "a price is written into the landing page copy, so it can disagree with Stripe",
+  );
+
+  // And the shape only means something if the server fills it from Stripe.
+  assert.match(
+    readFileSync("app/page.tsx", "utf8"),
+    /publicPrices\(\)/,
+    "the front page does not read the prices from Stripe",
+  );
+  assert.match(
+    readFileSync("lib/server/billing.ts", "utf8"),
+    /export async function publicPrices/,
+    "there is no public price reader for the page to call",
+  );
+
+  // Priced rows, not a sentence: a parent in this section is comparing three
+  // numbers, and a number in a run of prose is one they have to stop and parse.
+  assert.match(
+    code,
+    /<ul className="landing-prices">/,
+    "the prices are not rendered as a list of amounts",
+  );
+});
+
+test("the price section degrades rather than failing", () => {
+  // A third party being down must never take the front page down. It is the most
+  // visited page on the site and the one a parent arrives on from a search result,
+  // so a Stripe outage failing to render would turn an inconvenience into a 500 on
+  // the sales page.
+  //
+  // Two halves to that: `publicPrices()` must not throw, and the page must have the
+  // old wording to fall back to rather than an empty section.
+  const billing = readFileSync("lib/server/billing.ts", "utf8");
+  const reader = billing.slice(
+    billing.indexOf("export async function publicPrices"),
+  );
+
+  assert.doesNotMatch(
+    reader.slice(0, reader.indexOf("\n}\n")),
+    /\bthrow\b/,
+    "publicPrices can throw, so a Stripe outage fails the front page instead of costing the price",
+  );
+  // `billingReady()` gates the network calls, so a deployment with no Stripe
+  // configured does not make three pointless requests per page view.
+  assert.match(
+    reader,
+    /if \(!billingReady\(\)\) return \[\];/,
+    "the price reader calls Stripe even when billing is not configured",
+  );
+  // A tier whose amount could not be read comes back null rather than absent, and the
+  // page filters on it — so one unreadable price cannot blank the other two.
+  assert.match(
+    reader,
+    /amount: null/,
+    "an unreadable price is dropped rather than reported as unreadable",
+  );
+
+  // And the page must require *every* price to have an amount, not just one of them.
+  // It first rendered the list whenever `priced.length > 0`, so with Stripe
+  // unreachable it produced "for 1 month / for 3 months / for 1 year" with no
+  // amounts — a shelf of three terms and no prices, which is worse than the
+  // sentence it replaced: the reader is told there is a cost and not what it is.
+  assert.match(
+    code,
+    /priced\.every\(\(price\) => price\.formatted\)/,
+    "the page renders prices without checking they have amounts, so a failed lookup shows terms with no figures",
+  );
+  assert.doesNotMatch(
+    code,
+    /priced\.length > 0 \?/,
+    "the page decides to show prices from how many there are rather than whether any could be read",
+  );
+
+  // And the fallback wording still exists on the page.
+  const flat = code.replace(/\s+/g, " ");
+  assert.match(
+    flat,
+    /a month, three months or a year — at a price shown before you pay anything/,
+    "with no prices the page says nothing about what a term costs",
+  );
+});
+
+test("the prices endpoint is public and gives away nothing", () => {
+  // It has to be public: `/api/billing` is `requireUser`, and the reader who most
+  // needs a price is exactly the one not signed in yet. So this is the assertion
+  // that it stays public without an account, and that being public costs nothing.
+  // Comment-stripped, because the module comment explains *why* this route is not
+  // behind `requireUser` and names it while doing so. Reading the raw file makes a
+  // true statement in a comment fail the assertion that guards the code.
+  const route = stripped("app/api/prices/route.ts");
+  assert.doesNotMatch(
+    route,
+    /requireUser/,
+    "the prices endpoint requires an account, so the front page cannot show a price to a parent who has not signed in",
+  );
+  // No session, no customer, no email — the catalogue and nothing else.
+  for (const leak of [
+    "user",
+    "session",
+    "customer",
+    "email",
+    "purchase",
+    "token",
+  ]) {
+    assert.doesNotMatch(
+      route,
+      new RegExp(`\\b${leak}\\b`, "i"),
+      `the public prices route reads a ${leak}, which is not the catalogue`,
+    );
+  }
+  // Only GET. It must not be possible to buy something by calling it.
+  assert.doesNotMatch(
+    route,
+    /export async function (POST|PUT|PATCH|DELETE)/,
+    "the prices endpoint accepts a write, and it should only ever be read",
+  );
+});
+
 test("the hardship route is on this page, not only on /about", () => {
   // Somebody who cannot pay has usually already decided this is not for them. If
   // the offer is on another page they have to go and find it, and they do not, so
@@ -251,6 +387,26 @@ test("every difficulty example is a real word at the level claimed", () => {
       `"${example}" is listed as "${name}" but the bank has it at level ${row[5]} (${LEVEL_NAMES[row[5]]})`,
     );
   }
+
+  // A word that is in the right band can still be the wrong choice to put in front
+  // of a parent, and nothing else here catches that. Level 0's example was
+  // `accommodate`: genuinely level 0, genuinely in the bank, and not something a
+  // parent reads as "Everyday" — which is how the level labels looked mislabelled
+  // before anyone had used the app.
+  //
+  // Asserted as a length bound rather than a banned word list, because the problem
+  // is length and concreteness, not a specific word. A test that only banned
+  // `accommodate` would be satisfied by swapping in the next odd word.
+  const everyday = listed[0];
+  assert.equal(
+    everyday.name,
+    "Everyday",
+    "the first level is not the everyday one",
+  );
+  assert.ok(
+    everyday.example.length <= 10,
+    `"${everyday.example}" is listed as Everyday; a long Latinate word there makes the level labels look wrong to a parent who has not used the app`,
+  );
 });
 
 test("the source names and counts match the word bank", () => {
@@ -274,6 +430,51 @@ test("the source names and counts match the word bank", () => {
     code,
     /national curriculum word list/i,
     "the curriculum source is described as the national word list, which 116 words is not",
+  );
+});
+
+test("what hardship access asks for is the same on every page that says", () => {
+  // The landing page asked for proof of free school meals, then two sentences
+  // later promised "no means test form, nothing that puts you in a position where
+  // you have to prove you are struggling", and the coupon paragraph added a third
+  // version. Asking and then promising not to ask is worse than either alone: it
+  // teaches the reader to distrust the promise, and the reader most likely to
+  // notice is the one who is actually struggling and deciding whether to ask.
+  //
+  // Checked across all three pages that describe it, because the failure was
+  // internal disagreement rather than anything visible from outside.
+  const flat = (file) => stripped(file).replace(/\s+/g, " ");
+  const pages = [
+    ["components/minewords/landing.tsx", "the landing page"],
+    ["app/about/page.tsx", "/about"],
+    ["app/privacy/page.tsx", "/privacy"],
+  ];
+
+  // Nothing may require evidence. "may" and "if you happen to" are the only
+  // permitted shapes; "please provide", "you must" and a bare "share proof" as an
+  // instruction are not.
+  for (const [file, label] of pages) {
+    assert.doesNotMatch(
+      flat(file),
+      /(please (send|provide)|you (must|are required to) (send|provide)|proof is required)/i,
+      `${label} asks for evidence as a requirement, while another page promises never to ask`,
+    );
+  }
+
+  // And the landing page must say plainly that nothing is needed, because that is
+  // the promise a parent is being asked to trust.
+  assert.match(
+    flat("components/minewords/landing.tsx"),
+    /You do not need to send any evidence/i,
+    "the landing page never says outright that no evidence is required",
+  );
+
+  // "no means test" and the equivalent on /about: a claim about process, which is
+  // the thing that has to be consistent.
+  assert.match(
+    flat("components/minewords/landing.tsx"),
+    /No form, no means test, no interview/i,
+    "the landing page does not promise there is no process to get through",
   );
 });
 

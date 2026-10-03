@@ -1,6 +1,6 @@
 import Landing from "@/components/minewords/landing";
 import { bankSize } from "@/lib/server/free-words";
-import { configuredFreeWordLimit } from "@/lib/server/billing";
+import { configuredFreeWordLimit, publicPrices } from "@/lib/server/billing";
 import { STORY_COUNT } from "@/lib/server/story-library";
 
 /**
@@ -17,7 +17,7 @@ import { STORY_COUNT } from "@/lib/server/story-library";
  * exactly the audience a landing page exists for. Both produced a number that was
  * wrong or missing for the people reading this page.
  */
-export default function Home() {
+export default async function Home() {
   // `configuredFreeWordLimit` rather than a literal, because the hero says what a
   // child keeps after the trial and that number is a setting. A hard-coded 224 on a
   // page whose job is to be believed would eventually disagree with the app.
@@ -26,6 +26,7 @@ export default function Home() {
       totalWords={bankSize()}
       freeWords={configuredFreeWordLimit()}
       storyCount={STORY_COUNT}
+      priced={await publicPrices()}
     />
   );
 }

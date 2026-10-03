@@ -108,6 +108,100 @@ export const billingReady = () =>
       setting("STRIPE_WEBHOOK_SECRET") &&
       setting("APP_ORIGIN"),
   );
+
+export type PublicPrice = {
+  tier: Tier;
+  label: string;
+  days: number;
+  /** Minor units, as Stripe sends it. Null when the price could not be read. */
+  amount: number | null;
+  currency: string;
+  /** True when Stripe has this price set to recur, which this site never sells. */
+  recurring: boolean;
+  /** `£3.50`, or null when there is nothing to write. */
+  formatted: string | null;
+};
+
+/**
+ * A price as a parent would read it, or null when there is no amount to write.
+ *
+ * Minor units, because that is what Stripe sends: `unit_amount` is in pence, and a
+ * caller that treats it as pounds offers a year for £300.
+ */
+function formatPrice(amount: number | null, currency: string): string | null {
+  if (amount === null) return null;
+  try {
+    // Read the currency off the amount rather than assuming, so a price in a
+    // currency nobody chose is not shown with a pound sign in front of it. The
+    // account page already does this and renders an unpriced option rather than a
+    // wrong one; this is the same rule for the page that decides the sale.
+    return new Intl.NumberFormat("en-GB", {
+      style: "currency",
+      currency: currency.toUpperCase(),
+    }).format(amount / 100);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * The prices, for a visitor who has not signed in and may never.
+ *
+ * Why this is a function and not a constant: the amounts live in Stripe, so the
+ * only honest version of a price on a sales page is one read from Stripe. A number
+ * typed into the copy is a second source of truth that can disagree with the amount
+ * the card will actually be charged — which is the same bug as the word count, and
+ * on a page about money rather than a page about vocabulary.
+ *
+ * Best effort per tier, and never throws. Stripe being unreachable must not take
+ * the front page down: it is the most visited page on the site and the one a parent
+ * reaches from a search result. A tier whose price could not be read comes back with
+ * `amount: null`, which the page renders by falling back to the wording it used
+ * before prices were shown at all.
+ *
+ * `billingReady()` gates the whole thing. With no Stripe configured there are no
+ * tiers to read and this returns an empty array without a network call.
+ */
+export async function publicPrices(): Promise<PublicPrice[]> {
+  if (!billingReady()) return [];
+  return Promise.all(
+    availableTiers().map(async (tier): Promise<PublicPrice> => {
+      const base = {
+        tier: tier.id,
+        label: tier.label,
+        days: tier.days,
+        currency: "gbp",
+        // Shown so the page can say an option is unavailable rather than printing a
+        // recurring price for a product this site only ever sells once.
+        recurring: false,
+      };
+      try {
+        const price = await stripe<{
+          unit_amount: number | null;
+          currency: string;
+          recurring: unknown;
+        }>(`prices/${encodeURIComponent(priceFor(tier.id))}`);
+        const currency = price.currency || "gbp";
+        return {
+          ...base,
+          amount: price.unit_amount ?? null,
+          currency,
+          recurring: Boolean(price.recurring),
+          formatted: formatPrice(price.unit_amount ?? null, currency),
+        };
+      } catch (error) {
+        console.error(
+          "Could not read a Stripe price for the public list",
+          tier.id,
+          error instanceof Error ? error.message : "Unknown error",
+        );
+        // `amount: null` is what the account page already renders as an unpriced,
+        // disabled option, so this needs no new state on either side.
+        return { ...base, amount: null, formatted: null };
+      }
+    }),
+  );
+}
 export async function stripe<T = Record<string, unknown>>(
   path: string,
   data?: Record<string, string>,

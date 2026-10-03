@@ -5981,10 +5981,32 @@ hr {
   line-height: 1.75;
 }
 .landing-list,
-.landing-sources {
+.landing-sources,
+/*
+ * The prices, as three rows rather than a sentence.
+ *
+ * A shelf and not a paragraph because a parent reading this section is comparing
+ * three numbers, and a number in a run of prose is a number they have to stop and
+ * parse. The amount is the strong element and the term is the quiet one, because
+ * the amount is what they came for and the term is what they check afterwards.
+ * No bullets: the `£` reads as the marker, and three of them in a column is
+ * already a list.
+ */
+.landing-prices {
   margin: 0 0 16px;
   padding: 0;
   list-style: none;
+}
+.landing-prices li {
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line-2);
+  line-height: 1.6;
+}
+.landing-prices li:last-child {
+  border-bottom: 0;
+}
+.landing-prices strong {
+  font-size: 17px;
 }
 .landing-list li,
 .landing-sources li {

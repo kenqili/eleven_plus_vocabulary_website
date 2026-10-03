@@ -232,9 +232,11 @@ export default function AboutPage() {
               <a href="mailto:support@11pluswords.com">
                 support@11pluswords.com
               </a>
-              . If you can share proof that your child qualifies for free school
-              meals or other government low-income support, I’ll do my best to
-              arrange free access.
+              . You do not need to send any proof. If you happen to have
+              something showing your child qualifies for free school meals or
+              other government low-income support and it is already to hand,
+              that will speed things up — but I will not ask you for it, and I
+              will not ask you to explain your finances.
             </p>
             <p>
               Hosting has ongoing costs, and building and maintaining MineWords
