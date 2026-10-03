@@ -15,7 +15,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { readFileSync, readdirSync, existsSync } from "node:fs";
-import { INDEXABLE_PAGES, PAGE_METADATA, SITE_URL } from "../lib/seo.ts";
+import { INDEXABLE_PAGES, PAGE_METADATA, resolveOrigin } from "../lib/seo.ts";
 
 const config = readFileSync("next.config.ts", "utf8");
 
@@ -242,6 +242,57 @@ test("every indexable page exists and has its own title and description", () => 
   }
 });
 
+test("every indexable page has its own canonical URL", () => {
+  // The silent page-loser. `/info` inherited the layout's
+  // `alternates.canonical: "/"`, so it told a search engine it *was* the front page.
+  // Google treats that as a duplicate and keeps one of the two - normally the more
+  // prominent one - so a page can be reachable, indexable, in the sitemap, and still
+  // never appear in a result for its own title.
+  //
+  // Nothing about that is visible from the outside. It does not fail a build and it
+  // does not error; the page just quietly never ranks.
+  for (const page of INDEXABLE_PAGES) {
+    const file = page ? `app/${page}/page.tsx` : "app/page.tsx";
+    const source = readFileSync(file, "utf8");
+    const expected = `/${page}`;
+    if (page === "") {
+      // The front page's canonical is the layout's, and is correct.
+      assert.match(
+        readFileSync("app/layout.tsx", "utf8"),
+        /alternates:\s*\{\s*canonical: "\/"/,
+        "the layout has no canonical for the front page",
+      );
+      continue;
+    }
+    assert.match(
+      source,
+      new RegExp(`alternates:\\s*\\{\\s*canonical: "${expected}"`),
+      `${expected} declares no canonical of its own, so it inherits "/" and a search engine will treat it as a duplicate of the front page`,
+    );
+  }
+});
+
+test("no page's title carries its own site name as well as the template's", () => {
+  // The layout applies `template: "%s | MineWords"`. A page whose title already
+  // ends in a brand renders both, and a search result reading
+  // "... | 11+ Vocabulary Challenge | MineWords" is a page that looks machine-made.
+  const layout = readFileSync("app/layout.tsx", "utf8");
+  assert.match(layout, /template: "%s \| MineWords"/);
+  for (const page of INDEXABLE_PAGES) {
+    if (!page) continue;
+    const source = readFileSync(`app/${page}/page.tsx`, "utf8");
+    const title = /title:\s*(?:PAGE_METADATA[^\n]*|["'`]([^"'`]+))/.exec(
+      source,
+    );
+    if (!title?.[1]) continue;
+    assert.doesNotMatch(
+      title[1],
+      /\|\s*(MineWords|11\+\s*Vocabulary\s*Challenge)\s*$/i,
+      `/${page} ends its title with a site name, which the layout template then appends again`,
+    );
+  }
+});
+
 test("robots.txt disallows nothing", () => {
   // The wrong way round is a classic way to lose a page permanently: a disallowed
   // URL cannot be crawled, so the noindex header on it is never read, and a page
@@ -264,23 +315,94 @@ test("robots.txt disallows nothing", () => {
   );
 });
 
-test("the canonical origin comes from APP_ORIGIN, with a real fallback", () => {
+test("the canonical origin is read from the Worker binding, not process.env", () => {
   // A hard-coded host is wrong on every deployment that is not the default one, and
   // a sitemap pointing at the wrong host is worse than no sitemap: the crawler is
   // told these pages are somewhere they are not.
+  const reader = readFileSync("lib/server/origin.ts", "utf8");
+  const seo = readFileSync("lib/seo.ts", "utf8");
+
+  // The part that was wrong, and it was wrong twice. `APP_ORIGIN` is a Worker secret
+  // — `wrangler secret put` puts it in the Workers `env` binding and not in
+  // `process.env` — so a reader using `process.env` finds nothing once deployed,
+  // falls through to its fallback, and every canonical and every sitemap entry
+  // names a host that is not this site. Nothing errors; the pages are just never
+  // found. The fix was `setting()`, which checks the binding first.
   assert.match(
-    readFileSync("lib/seo.ts", "utf8"),
-    /process\.env\.APP_ORIGIN/,
-    "the site URL is not read from configuration",
+    reader,
+    /setting\("APP_ORIGIN"\)/,
+    "the origin is not read from the Workers binding, so canonicals and the sitemap would name the fallback host in production",
   );
+
+  // And the first attempt at fixing it was itself a no-op: a `require()` of
+  // `lib/server/db` inside a `try`. Under Node it threw and was swallowed; inside
+  // the Worker bundle `require` is not defined for an ES module, so it would have
+  // thrown and been swallowed there too, and `SITE_URL` resolved to `""` — an
+  // origin of nothing, and a silent failure in both places. A guarded dynamic read
+  // looks like it works in every environment it fails in, which is the reason it
+  // is pinned here as a static import at module scope.
+  assert.doesNotMatch(
+    reader,
+    /\brequire\s*\(/,
+    "the origin is read through a guarded require, which silently yields nothing both in Node and in the Worker bundle",
+  );
+
+  // A real domain rather than a placeholder, and never a relative one: a crawler
+  // cannot resolve a relative sitemap entry at all.
   assert.match(
-    readFileSync("lib/seo.ts", "utf8"),
-    /\|\| "https:\/\/minewords\.app"/,
-    "there is no fallback, so a build without APP_ORIGIN throws",
+    seo,
+    /\|\| "https:\/\/11pluswords\.com"/,
+    "there is no real fallback domain, so a build without APP_ORIGIN names nothing resolvable",
   );
-  // And it is the same variable the Stripe return URLs and the emailed links use,
-  // so a sitemap and a password-reset email cannot describe two different sites.
-  assert.match(SITE_URL, /^https?:\/\//);
+  assert.doesNotMatch(
+    seo,
+    /minewords\.app/,
+    "the fallback is still the old wrong domain",
+  );
+
+  // Every consumer goes through the reader, so there is one place that reads the
+  // binding and one place that can be wrong about it.
+  for (const [file, why] of [
+    ["app/layout.tsx", "every canonical URL"],
+    ["app/sitemap.ts", "the sitemap"],
+    ["app/robots.ts", "the sitemap pointer in robots.txt"],
+  ]) {
+    const source = readFileSync(file, "utf8");
+    assert.match(
+      source,
+      /siteUrl\(\)/,
+      `${why} does not come from the Worker-aware origin reader`,
+    );
+    assert.doesNotMatch(
+      source,
+      /SITE_URL/,
+      `${file} still uses the process.env-only SITE_URL, which is empty on the Worker`,
+    );
+  }
+  assert.doesNotMatch(
+    seo,
+    /export const SITE_URL/,
+    "the process.env-only SITE_URL constant is still exported, so the wrong value is still reachable",
+  );
+});
+
+test("a trailing slash in the origin cannot produce a double slash in a URL", () => {
+  // `APP_ORIGIN` is documented as "the public origin including scheme", which people
+  // write with a trailing slash. Every consumer appends `/sitemap.xml` or `/` + a
+  // path, so an untrimmed origin produces `https://site.com//about` — a URL that is
+  // a different URL to a crawler, so the canonical and the sitemap disagree.
+  assert.equal(
+    resolveOrigin("https://11pluswords.com/"),
+    "https://11pluswords.com",
+  );
+  // Empty is the case that actually bites: no secret set, so the fallback must still
+  // be an absolute URL rather than a relative one.
+  assert.match(resolveOrigin(""), /^https:\/\//);
+  assert.equal(
+    resolveOrigin("http://localhost:5173"),
+    "http://localhost:5173",
+    "a configured origin must be used as given, not replaced by the fallback",
+  );
 });
 
 test("the landing page is the one the sitemap leads with", () => {

@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { SITE_URL } from "@/lib/seo";
+import { siteUrl } from "@/lib/server/origin";
 
 /**
  * What a crawler is allowed to fetch.
@@ -20,9 +20,10 @@ import { SITE_URL } from "@/lib/seo";
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [{ userAgent: "*", allow: "/" }],
-    // The sitemap is how the pages that may be indexed get found at all. Pointed at
-    // the origin from configuration rather than hard-coded, so it is correct on a
-    // deployment whose domain differs from the default in this repository.
-    sitemap: `${SITE_URL}/sitemap.xml`,
+    // The sitemap is how the pages that may be indexed get found at all. Read from
+    // the Workers environment rather than hard-coded, so it is correct on a
+    // deployment whose domain differs from the default in this repository — and read
+    // from the *binding*, since `APP_ORIGIN` is a secret and not in `process.env`.
+    sitemap: `${siteUrl()}/sitemap.xml`,
   };
 }

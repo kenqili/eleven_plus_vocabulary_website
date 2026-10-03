@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
-import { INDEXABLE_PAGES, SITE_URL } from "@/lib/seo";
+import { INDEXABLE_PAGES } from "@/lib/seo";
+import { siteUrl } from "@/lib/server/origin";
 
 /**
  * The pages that may be indexed, and nothing else.
@@ -17,8 +18,11 @@ import { INDEXABLE_PAGES, SITE_URL } from "@/lib/seo";
  */
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
+  // Read once rather than per entry, so every URL in the file comes from the same
+  // value and a sitemap cannot end up describing two different sites.
+  const origin = siteUrl();
   return INDEXABLE_PAGES.map((path, index) => ({
-    url: `${SITE_URL}/${path}`.replace(/\/$/, ""),
+    url: `${origin}/${path}`.replace(/\/$/, ""),
     lastModified,
     changeFrequency: index === 0 ? "weekly" : "monthly",
     // The front page first and highest; the privacy notice last and lowest,

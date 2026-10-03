@@ -4,7 +4,8 @@ import { APPLY_SAVED_THEME } from "@/lib/theme/theme-script";
 import "./globals.css";
 import { initializeStoryLibrary } from "@/lib/server/story-library";
 import type { Metadata } from "next";
-import { PAGE_METADATA, SITE_URL } from "@/lib/seo";
+import { PAGE_METADATA } from "@/lib/seo";
+import { siteUrl } from "@/lib/server/origin";
 
 export const metadata: Metadata = {
   // A template rather than a fixed title, so each page gets its own. A single fixed
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
   // The canonical origin, from the same place the sitemap and the emailed links
   // read it. Without a canonical, the same page served from `workers.dev` and from
   // the custom domain is two URLs for one thing, and the search engine picks.
-  metadataBase: new URL(SITE_URL),
+  metadataBase: new URL(siteUrl()),
   alternates: { canonical: "/" },
   openGraph: {
     // A link a parent pastes into a message. Without a title and description the

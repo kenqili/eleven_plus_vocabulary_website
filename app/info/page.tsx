@@ -7,9 +7,17 @@ import { infoGroups, infoPage } from "@/lib/info/info";
 const page = infoPage();
 
 export const metadata: Metadata = {
-  title: "The 11+ in the UK: papers, schools, timeline and preparation | 11+ Vocabulary Challenge",
+  // No site name at the end: the layout's title template appends "| MineWords".
+  // This used to carry its own "| 11+ Vocabulary Challenge", so the rendered title
+  // read "... | 11+ Vocabulary Challenge | MineWords" — two brand names and a pipe in
+  // a search result.
+  title: "The 11+ in the UK: papers, schools, timeline and preparation",
   description:
     "Everything a UK parent needs about the 11+ in one place: what the papers test, who writes them, how grammar and independent schools differ, when everything happens, and what the evidence says about preparing.",
+  // Without this the layout's `alternates.canonical: "/"` is inherited, which told a
+  // search engine this page *was* the front page. Google would then have treated the
+  // two as duplicates and kept one — most likely the front page, dropping this.
+  alternates: { canonical: "/info" },
 };
 
 function dateLabel(iso: string) {
@@ -66,7 +74,10 @@ export default function InfoPage() {
             ))}
 
             {page.keyPoints.length > 0 && (
-              <section className="info-key-points" aria-label="The short version">
+              <section
+                className="info-key-points"
+                aria-label="The short version"
+              >
                 <h2>The short version</h2>
                 <ul>
                   {page.keyPoints.map((point) => (
@@ -77,10 +88,18 @@ export default function InfoPage() {
             )}
 
             {groups.map((group) => (
-              <section key={group.name} className="info-group" aria-label={group.name}>
+              <section
+                key={group.name}
+                className="info-group"
+                aria-label={group.name}
+              >
                 <h2 className="info-group-name">{group.name}</h2>
                 {group.sections.map((section) => (
-                  <section key={section.id} id={section.id} className="info-section">
+                  <section
+                    key={section.id}
+                    id={section.id}
+                    className="info-section"
+                  >
                     <h3>{section.heading}</h3>
                     {section.summary && (
                       <p className="info-section-summary">{section.summary}</p>
@@ -128,7 +147,9 @@ export default function InfoPage() {
                           </tbody>
                         </table>
                         {section.table.note && (
-                          <p className="info-table-note">{section.table.note}</p>
+                          <p className="info-table-note">
+                            {section.table.note}
+                          </p>
                         )}
                       </div>
                     )}
@@ -138,8 +159,13 @@ export default function InfoPage() {
                         <ul>
                           {section.sources.map((source) => (
                             <li key={source.url}>
-                              <a href={source.url} rel="noopener noreferrer" target="_blank">
-                                {source.title} <ExternalLink size={13} aria-hidden />
+                              <a
+                                href={source.url}
+                                rel="noopener noreferrer"
+                                target="_blank"
+                              >
+                                {source.title}{" "}
+                                <ExternalLink size={13} aria-hidden />
                               </a>
                               <span>{source.publisher}</span>
                             </li>
@@ -152,7 +178,10 @@ export default function InfoPage() {
               </section>
             ))}
 
-            <section className="info-sources" aria-labelledby="info-sources-heading">
+            <section
+              className="info-sources"
+              aria-labelledby="info-sources-heading"
+            >
               <h2 id="info-sources-heading">
                 <List size={20} aria-hidden /> Every source on this page
               </h2>
@@ -164,7 +193,11 @@ export default function InfoPage() {
               <ul>
                 {page.sources.map((source) => (
                   <li key={source.url}>
-                    <a href={source.url} rel="noopener noreferrer" target="_blank">
+                    <a
+                      href={source.url}
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       {source.title} <ExternalLink size={13} aria-hidden />
                     </a>
                     <span>{source.publisher}</span>

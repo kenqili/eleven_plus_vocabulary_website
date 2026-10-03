@@ -1,20 +1,29 @@
 /**
- * The canonical origin, in one place.
+ * The canonical origin, from whatever the caller was able to read.
  *
- * Read from `APP_ORIGIN` when it is set and falling back to the site's own address
- * otherwise. `APP_ORIGIN` is already required by `billingReady()` and is the value
- * the Stripe return URLs and the emailed links are built from, so using it here
- * means a sitemap, a canonical URL and a password-reset link cannot end up
- * describing three different sites.
+ * Deliberately a function taking the value, and not a reader. Two reasons, and the
+ * second is the one that cost a real bug:
  *
- * The fallback rather than a hard-coded string because a hard-coded one is wrong on
- * every deployment that is not the default, and a sitemap with the wrong host is
- * worse than no sitemap - a crawler is told the pages are somewhere they are not.
- * It is read at build time, which is when Next renders these, so a deployment
- * builds with the origin it will serve.
+ * `APP_ORIGIN` is a **Worker secret**: `wrangler secret put` puts it in the Workers
+ * `env` binding and *not* in `process.env`. So a module that reads `process.env`
+ * finds nothing once deployed, falls through to its fallback, and every canonical
+ * URL and every sitemap entry quietly names the wrong host — a host a crawler
+ * resolves to a different website. Nothing errors; the pages are simply never found.
+ *
+ * The reading therefore has to come from `setting()` in `lib/server/db`, which
+ * checks the binding first and `process.env` second. That module imports
+ * `cloudflare:workers`, which does not resolve outside a Worker — so it is kept on
+ * the far side of this function, and the caller does the reading. `lib/seo.ts` stays
+ * importable by `tests/seo.test.mjs` under plain Node, which is what lets the tests
+ * check this at all.
+ *
+ * The fallback is a real domain rather than a placeholder, so a build with no
+ * `APP_ORIGIN` still produces a coherent absolute URL. A relative one would be
+ * worse than wrong: a crawler cannot resolve a relative sitemap entry at all.
  */
-export const SITE_URL =
-  process.env.APP_ORIGIN?.replace(/\/$/, "") || "https://minewords.app";
+export function resolveOrigin(configured: string): string {
+  return configured?.replace(/\/$/, "") || "https://11pluswords.com";
+}
 
 /**
  * The pages a search engine is allowed to read.
