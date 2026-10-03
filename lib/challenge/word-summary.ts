@@ -33,6 +33,14 @@ export type WordSummaryData = {
   trial?: boolean;
   trialDaysRemaining?: number;
   trialEndsAt?: number | null;
+  /**
+   * A paid term, as opposed to a trial. Present so the export note can tell a
+   * family who has bought a year from one still inside its trial, instead of
+   * telling both of them how many days of trial they have left.
+   */
+  active?: boolean;
+  /** Whole days left on the paid term; zero when nothing is paid for. */
+  daysRemaining?: number;
   trialExpired?: boolean;
   freeWordCount?: number;
   /** How many words the account may see in total, for "n of m". */

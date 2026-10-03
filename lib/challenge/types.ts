@@ -106,5 +106,17 @@ export type ChallengeState = {
   trialDaysRemaining?: number;
   trialDaysConfigured?: number;
   trialEndsAt?: number | null;
+  /**
+   * A paid term, as opposed to a trial.
+   *
+   * Present because a banner that cannot tell the two apart tells a parent who
+   * has just paid a year how many days of trial they have left. `active` is
+   * whether a term is running; `daysRemaining` is how much of it is left, so
+   * the practice page can warn before it runs out rather than after.
+   */
+  active?: boolean;
+  daysRemaining?: number;
+  /** When the paid term ends, epoch ms. */
+  periodEnd?: number | null;
   feedback?: Feedback;
 };

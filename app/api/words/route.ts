@@ -41,6 +41,8 @@ export async function GET(request: Request) {
       trialDaysRemaining: entitlement.trialDaysRemaining,
       trialEndsAt: entitlement.trialEndsAt,
       trialExpired: entitlement.trialExpired,
+      active: entitlement.active,
+      daysRemaining: entitlement.daysRemaining,
       freeWordCount: allowedWordIds?.size,
       // How many words there are in total, so the list can say "n of m"
       // without the browser holding all of them.

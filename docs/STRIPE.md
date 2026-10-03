@@ -5,10 +5,11 @@ on 28 September 2026, and each step says why it matters where getting it wrong
 is silent.
 
 **You do not have to do this to launch.** `billingReady()` in
-`lib/server/billing.ts` returns false unless all four of `STRIPE_SECRET_KEY`,
-`STRIPE_PRICE_ID`, `STRIPE_WEBHOOK_SECRET` and `APP_ORIGIN` are set, and
-while it is false the account page says payments are not available yet rather
-than erroring. Deploy first, take money later.
+`lib/server/billing.ts` returns false unless `STRIPE_SECRET_KEY`,
+`STRIPE_WEBHOOK_SECRET` and `APP_ORIGIN` are all set **and at least one
+`STRIPE_PRICE_*` is configured**, and while it is false the account page says
+payments are not available yet rather than erroring. Deploy first, take money
+later.
 
 ---
 
@@ -18,19 +19,27 @@ than erroring. Deploy first, take money later.
 2. Name it. Whatever you want; the app never reads it.
 3. **Add a price** with these exact settings:
 
-   | Field | Value | Why |
-   |---|---|---|
-   | Recurring | **Yes** | Checkout is created with `mode: "subscription"` |
-   | Interval | **Month** | The app refuses anything else |
-   | Interval count | **1** | Ditto |
+   | Field      | Value        | Why                                        |
+   | ---------- | ------------ | ------------------------------------------ |
+   | Recurring  | **No**       | Checkout is created with `mode: "payment"` |
+   | Price type | **One-time** | Ditto                                      |
 
    **This is the one that fails silently.** `app/api/billing/[action]/route.ts`
-   fetches the price at checkout time and throws `503 "The monthly subscription
-   is not configured correctly."` if the interval is not `month` with a count of
-   `1`. A yearly price, or a one-off payment, passes every setup screen and only
-   fails when a parent tries to pay. The account page renders the price without
-   checking, so you will not see the problem until someone tries to buy.
-4. Copy the price id, `price_...`.
+   fetches the price at checkout time and refuses it with `503 "The 3 months
+option is set up as a recurring price, which this site does not use."` if
+   `recurring` is set. A recurring price passes every setup screen and only fails
+   when a parent tries to pay — and it fails in the worst direction, because
+   Stripe would go on billing that parent every month for an app that grants a
+   fixed term once and never listens for a renewal.
+
+   Create **one price per length**, all one-time. The length each price buys is
+   not stored in Stripe — a one-time price carries no interval, so there is
+   nothing in the price object saying how long anything lasts. It is the
+   `TIERS` map in `lib/server/billing.ts` that decides, which is why a price
+   filed under the wrong setting grants the wrong number of days and Stripe
+   cannot catch it.
+
+4. Copy each price id, `price_...`.
 
 ## 2. Get the three secrets
 
@@ -44,7 +53,9 @@ than erroring. Deploy first, take money later.
 ```sh
 npx wrangler@latest secret put APP_ORIGIN
 npx wrangler@latest secret put STRIPE_SECRET_KEY
-npx wrangler@latest secret put STRIPE_PRICE_ID
+npx wrangler@latest secret put STRIPE_PRICE_MONTHLY
+npx wrangler@latest secret put STRIPE_PRICE_QUARTERLY
+npx wrangler@latest secret put STRIPE_PRICE_YEARLY
 npx wrangler@latest secret put STRIPE_WEBHOOK_SECRET
 ```
 
@@ -53,29 +64,34 @@ npx wrangler@latest secret put STRIPE_WEBHOOK_SECRET
 built from it, so a wrong value sends a paying parent to a page that does not
 exist after they have entered their card.
 
-`secrets put` is interactive. Or set all four at once, non-interactively:
+`secrets put` is interactive. Or set them all at once, non-interactively:
 
 ```sh
-for kv in APP_ORIGIN STRIPE_SECRET_KEY STRIPE_PRICE_ID STRIPE_WEBHOOK_SECRET; do
+for kv in APP_ORIGIN STRIPE_SECRET_KEY STRIPE_PRICE_MONTHLY \
+  STRIPE_PRICE_QUARTERLY STRIPE_PRICE_YEARLY STRIPE_WEBHOOK_SECRET; do
   printf '%s' "${!kv}" | npx wrangler@latest secret put "$kv"
 done
 ```
+
+The three prices are the lengths sold — 1 month, 3 months and 1 year — and each
+has to be a **one-time** price. At least one is required; any left unset is
+simply not offered, so a partial setup sells less rather than failing. See
+`docs/DEPLOY.md` for the table, which is the one to work from.
 
 ## 4. Create the webhook
 
 **Developers → Webhooks → Add endpoint**
 
 - **URL:** `https://<your-origin>/api/stripe/webhook`
-- **Events**, exactly these four:
-
-  - `checkout.session.completed`
-  - `customer.subscription.created`
-  - `customer.subscription.updated`
-  - `customer.subscription.deleted`
+- **Events**, exactly these two:
+  - `checkout.session.completed` — grants the term
+  - `charge.refunded` — takes it back
 
 - Copy the **signing secret**, `whsec_...`, into `STRIPE_WEBHOOK_SECRET`.
 
-The app ignores every other event, so subscribing to more only adds noise.
+There are no `customer.subscription.*` events, because nothing here is a
+subscription. The app ignores every other event, so subscribing to more only
+adds noise.
 
 **The signing secret is per-endpoint.** Regenerating it invalidates the old
 one. If you redeploy to a different hostname, the endpoint URL changes, the old
@@ -86,8 +102,8 @@ endpoint keeps its old secret, and payments stop being recorded.
 **Settings → Billing → Customer portal → Enable**
 
 Without it, the account page's "Manage billing" button fails. Nothing else
-depends on it, so the app runs without it — it just cannot cancel a
-subscription.
+depends on it, so the app runs without it — the button is only offered to a
+parent who has a Stripe customer, and the portal is where they get receipts.
 
 ---
 
@@ -95,17 +111,26 @@ subscription.
 
 Worth knowing, because it explains why the setup above is the whole of it:
 
-- **Checkout** is created server-side with `mode: "subscription"`, a customer
+- **Checkout** is created server-side with `mode: "payment"`, a customer
   created on first use (idempotency key `customer-${userId}`, so a retry cannot
   create two), and `client_reference_id` set to the user id.
-- **The webhook does not fire the grant.** It calls `syncSubscription`, which
-  re-fetches the subscription from Stripe and writes the current state. So a
-  delayed or replayed webhook cannot restore access that has since been
-  cancelled, and the order events arrive in does not matter. You do not need to
-  worry about delivery order.
-- **A second subscription is refused.** Before starting a checkout the app asks
-  Stripe for any existing non-cancelled subscription and returns `409` if one
-  exists. A parent cannot be charged twice.
+- **A term is bought once and ends.** There is nothing to renew and nothing to
+  cancel, so there are no subscription events to watch and no renewal to miss. A
+  family wanting longer buys again, and the second purchase adds to the first.
+- **Repeat purchases are allowed and are meant to be.** An 11+ is a dated exam
+  and a family preparing for one needs access until then, so a second term in
+  month two has to be possible. The account page offers the lengths to somebody
+  who already has access, not only to somebody whose access has run out.
+- **The grant is idempotent on the payment intent**, keyed on a UNIQUE
+  `purchases.confirmation`. Stripe delivers `checkout.session.completed` at
+  least once and sometimes twice; the second delivery changes nothing. The grant
+  and its audit row are written in one transaction, so a payment cannot be
+  recorded without the access — or the reverse.
+- **The price reaches the webhook in metadata.** Stripe does not expand
+  `line_items` in an event payload, so a webhook reading the price from there
+  finds nothing, grants nothing, and answers `200`. That is not hypothetical:
+  it is how a real annual purchase was taken and dropped. `checkoutSession`
+  writes `metadata[price_id]` on both the session and the payment intent.
 - **The Stripe customer is linked to your user by `customer_id`** in your own
   database, not by Stripe metadata. The metadata is set but not relied on.
 
@@ -129,13 +154,17 @@ curl -s "https://<origin>/api/auth" | python3 -m json.tool
 ```
 
 **Step 3 is the one that matters, and it is the one to do with a real card.**
-It exercises checkout, the signature check, `syncSubscription`, and the
-membership query, in that order. A webhook that is subscribed to the wrong
-events, or signed with an old secret, produces a completed payment that grants
-nothing, and nothing in the app will tell you that — the parent is charged and
-stays on the free tier.
+It exercises checkout, the signature check, the grant, and the membership query,
+in that order. A webhook that is subscribed to the wrong events, or signed with
+an old secret, produces a completed payment that grants nothing, and nothing in
+the app will tell you that — the parent is charged and stays on the free tier.
 
-Then refund it from the Stripe dashboard.
+Then buy a **second** term from the account page and check that the expiry moves
+further out rather than being replaced. That is the flow the 409 bug broke: a
+family with months left could not buy more at all.
+
+Then refund the first payment from the Stripe dashboard and check that the term
+comes back off and is marked refunded, while the second purchase is untouched.
 
 **The log to read:** `Developers → Webhooks → [endpoint] → Events`. Every
 delivery should show `200`. A `400` means the signature check failed, which in
@@ -155,3 +184,9 @@ because either one on its own would look like a gap.
 **There is no route that grants access based on the webhook payload's
 contents.** It is treated as a signal to go and re-read the truth. If the
 webhook is delivered three times, the answer is the same three times.
+
+**The date a purchase bought lives in this repository, not in Stripe.** `TIERS` in
+`lib/server/billing.ts` is the only record of what a term is worth, because a
+one-time price carries no interval. Renaming a price setting does not change a
+term; editing `TIERS` does. Do not let the two drift — a price filed under the
+wrong setting grants the wrong number of days, and nothing at Stripe will notice.

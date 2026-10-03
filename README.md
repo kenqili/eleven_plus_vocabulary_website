@@ -133,7 +133,7 @@ A forgotten password is recovered from `/account`: the parent asks for a link, a
 The monthly price and currency have not been set. The account page displays the actual amount and currency from the configured Stripe recurring Price; it never invents a price. Until all required settings exist, checkout is disabled with a clear message. The configured free-account trial remains available; signed-out visitors can also try the configured free-word collection.
 
 1. In Stripe **test mode**, create a product and a recurring Price with interval `month` and interval count `1`.
-2. Configure `APP_ORIGIN`, `STRIPE_SECRET_KEY`, `STRIPE_PRICE_ID`, and `STRIPE_WEBHOOK_SECRET`. Use `.env` locally and the hosting secret manager for production. Never use `NEXT_PUBLIC_` for secrets.
+2. Configure `APP_ORIGIN`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, and at least one of `STRIPE_PRICE_MONTHLY`, `STRIPE_PRICE_QUARTERLY`, `STRIPE_PRICE_YEARLY` — the lengths sold, each Stripe price id matching its length. Use `.env` locally and the hosting secret manager for production. Never use `NEXT_PUBLIC_` for secrets.
 3. Configure Stripe Customer Portal to let subscribers update payment details and cancel.
 4. Point the webhook at `https://YOUR-PUBLIC-ORIGIN/api/stripe/webhook`, subscribing to `checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated`, and `customer.subscription.deleted`.
 5. Locally, use Stripe CLI forwarding to the same route, with its own webhook signing secret.

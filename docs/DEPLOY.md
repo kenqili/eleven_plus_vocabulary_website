@@ -190,6 +190,9 @@ npx wrangler@latest secret put APP_ORIGIN
 npx wrangler@latest secret put RESEND_API_KEY
 npx wrangler@latest secret put EMAIL_FROM
 npx wrangler@latest secret put STRIPE_SECRET_KEY
+npx wrangler@latest secret put STRIPE_PRICE_MONTHLY
+npx wrangler@latest secret put STRIPE_PRICE_QUARTERLY
+npx wrangler@latest secret put STRIPE_PRICE_YEARLY
 npx wrangler@latest secret put STRIPE_PRICE_ID
 npx wrangler@latest secret put STRIPE_WEBHOOK_SECRET
 ```
@@ -256,15 +259,53 @@ Worker.
 
 **Full steps are in [docs/STRIPE.md](STRIPE.md).** The short version:
 
-In the Stripe dashboard:
+In the Stripe dashboard, three **one-time** prices:
 
-- A **recurring monthly** price. The app checks that `recurring.interval` is
-  `month` and `interval_count` is 1, and refuses to start a checkout otherwise,
-  so a yearly price fails at the last step rather than charging wrongly.
-- The price id into `STRIPE_PRICE_ID`.
+| Setting | Length | Terms | Must be created as |
+| --- | --- | --- | --- |
+| `STRIPE_PRICE_MONTHLY` | 1 month | 30 days | One-time payment |
+| `STRIPE_PRICE_QUARTERLY` | 3 months | 90 days | One-time payment |
+| `STRIPE_PRICE_YEARLY` | 1 year | 365 days | One-time payment |
+
+Put each price id in the setting its row names. **They must be one-time prices,
+not recurring.** A fixed term is bought once and ends; there is nothing to renew
+and nothing to cancel. The app checks each price before starting a checkout and
+refuses a recurring one, because that configuration fails in the worst possible
+way: Stripe charges the quarterly price once and then bills the parent every
+month, while the app - which grants a fixed term and never listens for a renewal
+- granted three months and stopped there. The parent would be charged monthly for
+access that quietly ended.
+
+The length of access comes from the table above, not from Stripe, because a
+one-time price carries no interval: there is nothing in the price object that
+says how long anything lasts. Those days are the same numbers as `COUPON_DAYS` in
+`lib/server/coupon.ts`, so a family given a three-month coupon and a family that
+bought three months end up with the same length.
+
+Buying again while access is still running adds to it rather than replacing it,
+so a family can buy a second term at any point. That is the whole reason repeat
+purchases are allowed - an 11+ is a dated exam and some families spread the cost
+across two purchases.
+
+`STRIPE_PRICE_ID` is the single price this app used to sell, and it is kept only
+as a fallback for the monthly tier: if `STRIPE_PRICE_MONTHLY` is unset, that old
+setting is read instead. It exists so that deploying this change does not take
+payments down on the day, before the three ids above are set. A deployment still
+carrying it is one that has not finished rolling out; it can be deleted once
+`STRIPE_PRICE_MONTHLY` is set.
+
+You do not need all three. At least one configured price is what enables payments,
+and a tier with no price id is simply not offered, so the three can be rolled out
+one at a time. **A subscription for a price that is not one of these three clears
+access rather than leaving a stale grant behind** - so after adding a tier, check
+that its id is set before selling it, or a parent who buys it will have their
+membership revoked by the webhook.
 - A webhook endpoint at `https://<your-origin>/api/stripe/webhook`, subscribed
-  to `customer.subscription.created`, `customer.subscription.updated`,
-  `customer.subscription.deleted`, and `checkout.session.completed`.
+  to **`checkout.session.completed`** and **`charge.refunded`**.
+  `checkout.session.completed` grants the term. `charge.refunded` takes it back -
+  and with a fixed term there is nothing to cancel, so that event is the only
+  thing that revokes access when a payment is returned. Without it a refunded
+  parent keeps the access they were refunded for, and nothing else would notice.
 - Its signing secret into `STRIPE_WEBHOOK_SECRET`.
 
 The webhook route verifies the signature over the raw body with a five-minute
@@ -364,9 +405,12 @@ Two things must be updated, in this order, or a paying parent is stranded:
    endpoint means a second `whsec_`, and forgetting to copy it means payments
    that complete and grant nothing.
 
-`APP_ORIGIN` is used in exactly two places: the `billingReady()` gate, and
-building Stripe's `success_url`/`cancel_url`. So a stale value does not break the
-site — it sends a parent who has just paid to a page that does not exist. Check
+`APP_ORIGIN` is used in four places: the `billingReady()` gate, Stripe's
+`success_url`/`cancel_url`, the emailed password-reset link, and the emailed
+email-confirmation link. The first is a gate and the second sends a parent who has
+just paid to a page that does not exist; the other two matter more, because an
+unbuildable link is caught and logged while a parent waits for a message that can
+never be addressed. The same value has to serve all four, so check
 `/account?checkout=success` works after changing it.
 
 ---

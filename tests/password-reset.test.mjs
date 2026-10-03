@@ -841,20 +841,33 @@ test("the parent's own state is what ends, so the notice has to be the parent's"
     /<AccountSecurity\s+onSignedOut=\{endSession\}/,
     "the security component is not given the callback that signs the parent out",
   );
-  // Once, and after the signed-in branch - `<DeleteAccount />` is the last thing
-  // rendered on the card, so a notice below it is outside the branch that the
-  // sign-out removes. A notice inside the branch is a message a parent can only
+  // Once, and outside the signed-in branch, so it survives the sign-out that removes
+  // everything inside it. A notice inside the branch is a message a parent can only
   // read for as long as the thing it is describing.
+  //
+  // It used to also be required to sit *after* `<DeleteAccount />`, which was how it
+  // stayed outside the branch at the time - and which is why a parent returning from
+  // Stripe found "Payment received" about a thousand pixels down, below the password
+  // form and the delete section, with nothing scrolling them there and nothing moving
+  // focus. Being outside the branch does not require being last; it requires being
+  // outside. So the position is now at the top of the card, and this asserts the
+  // property rather than the workaround.
   const notice = account.indexOf("{notice &&");
   assert.equal(
     (account.match(/\{notice &&/g) ?? []).length,
     1,
     "the notice is rendered in more than one place, so one of them dies with the account card",
   );
+  const signedIn = account.indexOf(": user ? (");
   assert.ok(
-    notice > account.indexOf("<DeleteAccount />") &&
-      notice > account.indexOf(": user ? ("),
+    notice > -1 && signedIn > -1 && notice < signedIn,
     "the notice is rendered inside the signed-in branch, so it disappears when the parent is signed out",
+  );
+  // And above the delete section specifically, because that is the part of the card
+  // a parent should never scroll past to find out whether a payment worked.
+  assert.ok(
+    notice < account.indexOf("<DeleteAccount />"),
+    "the notice is below the delete section, so a parent who has just paid has to scroll past it to find out",
   );
 });
 

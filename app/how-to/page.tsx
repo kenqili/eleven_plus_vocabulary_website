@@ -131,9 +131,10 @@ export default function HowToPage() {
             <li>
               <Check size={18} />{" "}
               <span>
-                <strong>See progress build.</strong> Answering unhurried and without a
-                clue counts as a sure recall, and {describeRecallTargets()} master a
-                word. Right answers in a row master it too, as do {CUMULATIVE_FLOOR}
+                <strong>See progress build.</strong> Answering unhurried and
+                without a clue counts as a sure recall, and{" "}
+                {describeRecallTargets()} master a word. Right answers in a row
+                master it too, as do {CUMULATIVE_FLOOR}
                 right answers whenever they come. A clue, a mistake or a reveal
                 starts the count again, and there is no need to rush. This is a
                 practice milestone; keep exploring those words in reading and
@@ -201,7 +202,7 @@ export default function HowToPage() {
           <p>
             Membership keeps the full collection and revision exports available
             after your trial, with practice and progress in one place. If you
-            choose not to subscribe, you can continue with the free collection
+            choose not to buy access, you can continue with the free collection
             and your saved progress stays safe.
           </p>
           <Link className="primary-button" href="/account">

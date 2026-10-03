@@ -136,18 +136,16 @@ export default function WordSummaryPage() {
                     setPage(0);
                   }}
                 >
-                  <strong>
-                    {counts[level] ?? 0}
-                  </strong>
+                  <strong>{counts[level] ?? 0}</strong>
                   <span>{label}</span>
                 </button>
               ))}
             </div>
             <p className="muted word-level-help">
-              {describeRecallTargets()} master a word, as do {runTarget(0)}–{runTarget(5)}{" "}
-              right answers in a row or {CUMULATIVE_FLOOR} right answers whenever
-              they come. Needs practice highlights unmastered words with a mistake
-              or revealed answer.
+              {describeRecallTargets()} master a word, as do {runTarget(0)}–
+              {runTarget(5)} right answers in a row or {CUMULATIVE_FLOOR} right
+              answers whenever they come. Needs practice highlights unmastered
+              words with a mistake or revealed answer.
             </p>
             <section
               className="word-tools"
@@ -241,13 +239,30 @@ export default function WordSummaryPage() {
                 ))}
               </div>
               <div className="word-export-row">
-                {data.trial && (
+                {/*
+                  The same three-way split as the practice banner, for the same
+                  reason: this note used to say "n days left in your free trial"
+                  to anybody not on the free tier, which included a parent who
+                  had just paid for a year.
+                */}
+                {data.active &&
+                (data.daysRemaining ?? 0) <= 14 &&
+                data.daysRemaining !== undefined ? (
+                  <span className="trial-export-note" role="status">
+                    {(data.daysRemaining ?? 0) === 0
+                      ? "Your access ends today."
+                      : `${data.daysRemaining} ${
+                          data.daysRemaining === 1 ? "day" : "days"
+                        } left in your access.`}{" "}
+                    Full word exports are included.
+                  </span>
+                ) : data.trial ? (
                   <span className="trial-export-note" role="status">
                     {data.trialDaysRemaining}{" "}
                     {data.trialDaysRemaining === 1 ? "day" : "days"} left in
                     your free trial. Full word exports are included.
                   </span>
-                )}
+                ) : null}
                 <p role="status">
                   <strong>{total}</strong> of {data.collection} words
                   {filter === "mistakes" || filter === "revealed"
@@ -261,9 +276,7 @@ export default function WordSummaryPage() {
                       disabled={!total || exporting}
                       onClick={() => void download()}
                     >
-                      {exporting
-                        ? "Exporting…"
-                        : `Export CSV (${total})`}
+                      {exporting ? "Exporting…" : `Export CSV (${total})`}
                     </button>
                     {total > 0 && (
                       <>
@@ -275,10 +288,7 @@ export default function WordSummaryPage() {
                         >
                           Print list ({total}) ↗
                         </a>
-                        <Link
-                          className="secondary-button"
-                          href="/words/print"
-                        >
+                        <Link className="secondary-button" href="/words/print">
                           A4 word sheets ↗
                         </Link>
                       </>
@@ -287,7 +297,7 @@ export default function WordSummaryPage() {
                 ) : (
                   <p className="muted">
                     <Link className="text-button" href="/account">
-                      Get premium
+                      Get full access
                     </Link>{" "}
                     to export or print your revision sheet.
                   </p>
@@ -383,10 +393,17 @@ export default function WordSummaryPage() {
                           <td>
                             <label className="word-progress-label">
                               <span>
-                                {word.correct} correct{word.status === "mastered" ? " · mastered" : ""}
+                                {word.correct} correct
+                                {word.status === "mastered"
+                                  ? " · mastered"
+                                  : ""}
                               </span>
                               <progress
-                                value={word.status === "mastered" ? CUMULATIVE_FLOOR : word.correct}
+                                value={
+                                  word.status === "mastered"
+                                    ? CUMULATIVE_FLOOR
+                                    : word.correct
+                                }
                                 max={CUMULATIVE_FLOOR}
                                 aria-label={`${word.word}: ${word.correct} correct, ${LEARNING_STATUS[word.status]}`}
                               />

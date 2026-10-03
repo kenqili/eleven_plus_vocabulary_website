@@ -8,6 +8,13 @@
       "when": 1790791370065,
       "tag": "0000_baseline",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1790872350361,
+      "tag": "0001_admin_coupons",
+      "breakpoints": true
     }
   ]
 }

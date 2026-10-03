@@ -227,7 +227,7 @@ export default function AboutPage() {
               cannot.
             </p>
             <p className="playful-note">
-              Try a few short sessions together before deciding to subscribe.
+              Try a few short sessions together before deciding to buy access.
               Choose a pace that feels positive for your child, and take a break
               when they need one. Their wellbeing comes first.
             </p>

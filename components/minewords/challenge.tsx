@@ -35,6 +35,17 @@ import {
 import { usePlaySound } from "@/lib/theme/sound-provider";
 import { useAnswerSound } from "@/lib/theme/use-sounds";
 import { useChallenge } from "./use-challenge";
+/**
+ * How close to the end of a paid term a parent is told to renew.
+ *
+ * Two weeks: long enough that a banner shown on the first of the month does not
+ * feel like a warning about something that just happened, and short enough that
+ * a family who practises weekly has seen it twice before it runs out. A term is
+ * bought in days, so the alternative - a week - catches people a week before
+ * their child cannot practise, and a month is too late to be a warning.
+ */
+const RENEWAL_WARNING_DAYS = 14;
+
 const levelLabel = (difficulty: number) =>
   difficulty in DIFFICULTY_LEVELS
     ? DIFFICULTY_LEVELS[difficulty as Difficulty]
@@ -292,20 +303,71 @@ export default function Challenge() {
                 Optional. Every level is part of the same saved progress.
               </span>
             </div>
-            {!demo && study.trial && (
-              <div className="trial-banner" role="status">
-                <strong>
-                  {study.trialDaysRemaining}{" "}
-                  {study.trialDaysRemaining === 1 ? "day" : "days"} left in your
-                  free trial
-                </strong>
-                <span>
-                  Full access ends{" "}
-                  {new Date(study.trialEndsAt!).toLocaleDateString()}.
-                </span>
-                <Link href="/account">See membership →</Link>
-              </div>
-            )}
+            {/*
+              One banner, four states, because two of them used to be
+              conflated and a parent who had bought a year was still being told
+              how many days of *trial* they had left.
+
+              A paid term running short gets told to renew - two weeks is enough
+              to notice and still not alarming on the first day of a month. A
+              term that has run out is told it has ended, because the practice
+              page keeps working on the free collection and nothing else would
+              say so. A trial gets the countdown it always had. Anything else
+              says nothing at all: a family with months left does not need a
+              banner about it, and a banner they cannot act on is noise that
+              teaches them to ignore the one place it matters.
+
+              `active`, `trial` and "expired" are mutually exclusive, but all
+              three are checked rather than nested, so that one being added
+              later cannot silently fall into another's branch.
+            */}
+            {!demo &&
+              (study.active &&
+              (study.daysRemaining ?? 0) <= RENEWAL_WARNING_DAYS ? (
+                <div className="trial-banner" role="status">
+                  <strong>
+                    {(study.daysRemaining ?? 0) === 0
+                      ? "Your access ends today"
+                      : `${study.daysRemaining} ${
+                          study.daysRemaining === 1 ? "day" : "days"
+                        } left in your access`}
+                  </strong>
+                  <span>
+                    Full access ends{" "}
+                    {new Date(study.periodEnd!).toLocaleDateString()}.
+                  </span>
+                  <Link href="/account">Renew access →</Link>
+                </div>
+              ) : !study.active && study.periodEnd ? (
+                // Expired, rather than never bought. `periodEnd` is only set when
+                // a term has been paid for, so this cannot fire for a family who
+                // has never paid - it is exactly "you bought this and it ran
+                // out". Silence here would be wrong: the practice page still
+                // works on the free collection, so without this a parent has no
+                // reason to know their paid access ended at all.
+                <div className="trial-banner" role="status">
+                  <strong>Your access has ended</strong>
+                  <span>
+                    It ran until{" "}
+                    {new Date(study.periodEnd).toLocaleDateString()}. Your child
+                    can still practise with the free collection.
+                  </span>
+                  <Link href="/account">Buy access to continue →</Link>
+                </div>
+              ) : study.trial ? (
+                <div className="trial-banner" role="status">
+                  <strong>
+                    {study.trialDaysRemaining}{" "}
+                    {study.trialDaysRemaining === 1 ? "day" : "days"} left in
+                    your free trial
+                  </strong>
+                  <span>
+                    Full access ends{" "}
+                    {new Date(study.trialEndsAt!).toLocaleDateString()}.
+                  </span>
+                  <Link href="/account">See membership →</Link>
+                </div>
+              ) : null)}
             <div className="session-bar">
               <span>
                 {demo
@@ -583,9 +645,9 @@ export default function Challenge() {
                   </h2>
                   <p>
                     {study.gated
-                      ? "Your saved progress is safe. Subscribe to keep practising the full word collection, reviewing your progress and exporting revision sheets."
+                      ? "Your saved progress is safe. Buy access to keep practising the full word collection, reviewing your progress and exporting revision sheets."
                       : study.freeTier
-                        ? `You have mastered every word in your free collection of ${stats.total}. Subscribe to practise all ${stats.collection}.`
+                        ? `You have mastered every word in your free collection of ${stats.total}. Buy access to practise all ${stats.collection}.`
                         : demo
                           ? `Create a free account for ${study.trialDaysConfigured ?? 7} days of full access to every word and practice feature.`
                           : study.level !== null
@@ -596,7 +658,7 @@ export default function Challenge() {
                     <Link className="primary-button" href="/account">
                       {demo
                         ? "Create your free account →"
-                        : "Upgrade to unlock all words →"}
+                        : "Buy access to unlock all words →"}
                     </Link>
                   )}
                 </div>

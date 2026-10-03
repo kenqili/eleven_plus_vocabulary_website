@@ -28,9 +28,21 @@ export async function GET(request: Request) {
         // the whole collection, so access - active or trial - is the test.
         freeTier: !access.access,
         trialDaysRemaining: access.trialDaysRemaining,
+        // The server's own answer. The browser used to infer this from
+        // `freeTier`, which is true of every paying customer and so showed them
+        // a trial countdown they were not in.
+        trial: access.trial,
         trialExpired: access.trialExpired,
         trialEndsAt: access.trialEndsAt,
         trialDays: access.trialDays,
+        // Carried so the practice page can tell a paid family with little time
+        // left from a family still inside its trial, and say the right thing to
+        // each. Previously it showed the trial message to anyone not on the free
+        // tier, which meant a parent who had bought a year was still being told
+        // how many days of trial they had left.
+        active: access.active,
+        daysRemaining: access.daysRemaining,
+        periodEnd: access.periodEnd,
       }),
     );
   });

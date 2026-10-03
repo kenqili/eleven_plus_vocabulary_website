@@ -27,6 +27,19 @@ export const users = sqliteTable("users", {
    */
   expiryDate: integer("expiry_date"),
   /**
+   * Whether this account may issue coupons and see the admin page.
+   *
+   * Set once by hand, after the account exists:
+   *
+   *   UPDATE users SET is_admin=1 WHERE email='you@example.com';
+   *
+   * A column rather than an address compared in code, because a credential in
+   * the source is published, cannot be rotated without a deploy, and ties
+   * authority to an address a parent can change. `requireAdmin` in
+   * lib/server/admin.ts is the only thing that reads this.
+   */
+  isAdmin: integer("is_admin").notNull().default(0),
+  /**
    * The reporting day boundary, IANA. The app used to hardcode Europe/London
    * and compute a child's "today" from it, which put the mission and calendar
    * day boundary in the wrong place for anyone outside the UK.
@@ -77,6 +90,38 @@ export const purchases = sqliteTable(
   (t) => [
     uniqueIndex("purchase_confirmation").on(t.confirmation),
     index("purchases_user").on(t.userId, t.createdAt),
+  ],
+);
+
+/**
+ * A code that buys a parent access without a card.
+ *
+ * The second way `expiry_date` can be written, and the reason it is safe where a
+ * second Stripe price would not be: a coupon is claimed by a single conditional
+ * UPDATE, so it cannot be spent twice even if two parents submit it in the same
+ * second. See lib/server/coupon.ts.
+ */
+export const coupons = sqliteTable(
+  "coupons",
+  {
+    id: text("id").primaryKey(),
+    /** Upper case, unpunctuated, as the parent types it. */
+    code: text("code").notNull(),
+    /** How much access this buys, in days. Not months: see the migration. */
+    days: integer("days").notNull(),
+    /** 'unused' or 'redeemed'. Not a boolean - an unknown value must be visible. */
+    status: text("status").notNull().default("unused"),
+    /** Who spent it. Null until spent. */
+    userId: text("user_id").references(() => users.id, { onDelete: "set null" }),
+    /** Which generation produced it, so a batch can be listed or revoked. */
+    batch: text("batch").notNull(),
+    createdAt: integer("created_at").notNull(),
+    redeemedAt: integer("redeemed_at"),
+  },
+  (t) => [
+    uniqueIndex("coupon_code").on(t.code),
+    index("coupons_batch").on(t.batch),
+    index("coupons_unspent").on(t.status, t.code),
   ],
 );
 

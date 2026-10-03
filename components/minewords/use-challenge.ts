@@ -315,7 +315,16 @@ export function useChallenge() {
           demo: false,
           complete: !first,
           gated: account.gated,
-          trial: !account.freeTier,
+          // The server's own answer, not an inference. This used to be
+          // `!account.freeTier`, which reads as "anyone not on the free tier is
+          // in a trial" - so every paying customer was shown a trial countdown
+          // reading "0 days left", with the trial end date computed from when
+          // they registered. A parent who had bought a year was told their trial
+          // was over before it began.
+          trial: account.trial,
+          active: account.active,
+          daysRemaining: account.daysRemaining,
+          periodEnd: account.periodEnd,
           trialExpired: account.trialExpired,
           freeTier: account.freeTier,
           freeWordCount: account.freeWordCount,
@@ -367,6 +376,13 @@ export function useChallenge() {
           trial: result.trial,
           trialDaysRemaining: result.trialDaysRemaining,
           trialEndsAt: result.trialEndsAt,
+          // Carried through so the practice page can warn a parent whose paid
+          // term is nearly over. It is the same `membership()` answer the
+          // account page is showing, so the two cannot disagree about how long
+          // is left.
+          active: result.active,
+          daysRemaining: result.daysRemaining,
+          periodEnd: result.periodEnd,
           freeTier: result.freeTier,
           freeWordCount: result.freeWordCount,
         });

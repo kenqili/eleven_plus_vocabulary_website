@@ -54,8 +54,8 @@ export default function PrivacyPage() {
               are finished.
             </li>
             <li>
-              <strong>Time:</strong> total time spent practising, per day, so the
-              calendar can show a pattern.
+              <strong>Time:</strong> total time spent practising, per day, so
+              the calendar can show a pattern.
             </li>
             <li>
               <strong>Words you add:</strong> the word, its meaning and a sample
@@ -69,16 +69,22 @@ export default function PrivacyPage() {
 
           <h2>What is not done with it</h2>
           <ul>
-            <li>Not sold, rented or shared for advertising. There are no third-party trackers or analytics on this site.</li>
+            <li>
+              Not sold, rented or shared for advertising. There are no
+              third-party trackers or analytics on this site.
+            </li>
             <li>Not used to build a profile of a child for any purpose.</li>
-            <li>No email is sent about the child. The only message we send is a sign-in link or a receipt from the payment provider.</li>
+            <li>
+              No email is sent about the child. The only message we send is a
+              sign-in link or a receipt from the payment provider.
+            </li>
           </ul>
 
           <h2>Payments</h2>
           <p>
             Payments are handled by Stripe. Your card details go to them and
-            never touch our servers; we store only a reference to a subscription
-            and its status. Their own privacy policy governs what they keep.
+            never touch our servers; we store only a reference to each payment
+            you have made. Their own privacy policy governs what they keep.
           </p>
 
           <h2>How long it is kept</h2>

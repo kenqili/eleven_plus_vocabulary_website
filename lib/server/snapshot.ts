@@ -83,6 +83,21 @@ export type Snapshot = {
     freeTier: boolean;
     trialDaysRemaining: number;
     /**
+     * Whether this account is inside its free trial.
+     *
+     * Sent rather than inferred by the browser from `freeTier`, because "not on
+     * the free tier" is true of every paying customer - inferring trial from it
+     * showed a trial countdown reading "0 days left" to parents who had bought a
+     * year, with an end date computed from when they registered.
+     */
+    trial: boolean;
+    /** True when a paid term is running, rather than a trial or nothing. */
+    active: boolean;
+    /** Whole days left on that paid term; zero when there is not one. */
+    daysRemaining: number;
+    /** When the paid term ends, epoch ms. Null when nothing is paid for. */
+    periodEnd: number | null;
+    /**
      * Everything the practice page needs to explain itself, so the browser can
      * render a trial banner or an expired gate without asking again.
      *
@@ -152,9 +167,17 @@ export async function progressSnapshot(
   access: {
     freeTier: boolean;
     trialDaysRemaining: number;
+    /** Whether the account is inside its free trial, as opposed to paid or free. */
+    trial: boolean;
     trialExpired: boolean;
     trialEndsAt: number | null;
     trialDays: number;
+    /** True when a paid term is running, as opposed to a trial or nothing. */
+    active: boolean;
+    /** Whole days left on that paid term. Zero when there is not one. */
+    daysRemaining: number;
+    /** When the paid term ends, epoch ms. Null when nothing is paid for. */
+    periodEnd: number | null;
   },
 ): Promise<Snapshot> {
   // Ahead of the reads, for the same reason it is ahead of them in statsFor: the
@@ -235,6 +258,10 @@ export async function progressSnapshot(
       trialDays: access.trialDays,
       freeWordCount: access.freeTier ? freeCount : 0,
       trialDaysRemaining: access.trialDaysRemaining,
+      trial: access.trial,
+      active: access.active,
+      daysRemaining: access.daysRemaining,
+      periodEnd: access.periodEnd,
     },
     clock: {
       // Not the answered-only count: the review clock is the total number of

@@ -39,9 +39,14 @@ export default function AccountSecurity({
     setBusy(true);
     setError("");
     try {
+      // `api(path, data)` - the payload is the second argument and `api` sets the
+      // method and serialises the body itself. This one had it wrong: the server
+      // read `currentPassword` and `newPassword` from a payload that contained a
+      // `method` and a `body` instead, so a real password change was refused
+      // with "Enter your current password." for a parent who had entered it.
       const result = await api<{ signedOut: number }>("/api/auth/password", {
-        method: "POST",
-        body: JSON.stringify({ currentPassword: current, newPassword: next }),
+        currentPassword: current,
+        newPassword: next,
       });
       // The password has changed. Everything below is about leaving, and none
       // of it is allowed to look like the change failed.
@@ -93,10 +98,11 @@ export default function AccountSecurity({
     setBusy(true);
     setError("");
     try {
-      await api("/api/auth/signout-all", {
-        method: "POST",
-        body: "{}",
-      });
+      // `api(path, data)` - the payload is the second argument and `api` sets
+      // the method itself. Handing it `{method, body}` sends that object as the
+      // payload instead, which this route happens to ignore, so it worked by
+      // luck rather than by being right.
+      await api("/api/auth/signout-all", {});
       // One message whatever the server counted. That count is session rows
       // deleted, which already includes this device, and the only way it can
       // read zero is another request having got there first - in which case this

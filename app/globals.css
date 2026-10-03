@@ -5670,6 +5670,28 @@ hr {
 }
 
 /* ---------------------------------------------------------------------------
+   The three lengths a parent can buy.
+
+   A row rather than a stack, because the decision is a comparison: a parent is
+   looking for the annual plan next to the monthly one. Stacked, the third option
+   is below the fold on a laptop and the choice becomes monthly by default.
+
+   Wraps to one per line on a narrow screen, where the buttons are wide enough
+   that a row of three would either overflow or shrink the tap target below the
+   44px minimum the rest of the app holds to.
+   --------------------------------------------------------------------------- */
+.plan-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 16px 0;
+}
+.plan-options > button {
+  flex: 1 1 12rem;
+  min-height: 44px;
+}
+
+/* ---------------------------------------------------------------------------
    Fitting one question on a screen without scrolling.
 
    Measured on the practice page: the controls above the card came to 584px,
