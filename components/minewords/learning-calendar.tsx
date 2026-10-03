@@ -77,7 +77,7 @@ export default function LearningCalendar() {
     <>
       <Header />
       <main className="workspace calendar-workspace">
-        <Link className="text-button" href="/">
+        <Link className="text-button" href="/practice">
           ← Back to practice
         </Link>
         <div className="page-heading">
@@ -282,7 +282,7 @@ export default function LearningCalendar() {
                 selectedDay.stories === 0 ? (
                   <p className="muted">
                     No learning recorded on this day.{" "}
-                    <Link className="text-button" href="/">
+                    <Link className="text-button" href="/practice">
                       Start practising →
                     </Link>
                   </p>

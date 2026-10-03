@@ -87,7 +87,7 @@ export default function DailyMission({
         <>
           <div className="mission-steps">
             <Link
-              href="/"
+              href="/practice"
               aria-label={`${progress.questions} of ${DAILY_QUESTION_TARGET} questions done today. Go to practice.`}
             >
               {progress.questions === DAILY_QUESTION_TARGET ? "✓ " : ""}

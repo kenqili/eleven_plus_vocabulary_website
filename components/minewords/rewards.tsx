@@ -88,7 +88,7 @@ export default function Rewards() {
     <>
       <Header />
       <main className="workspace rewards-workspace">
-        <Link className="text-button" href="/">
+        <Link className="text-button" href="/practice">
           ← Back to practice
         </Link>
         <div className="page-heading">

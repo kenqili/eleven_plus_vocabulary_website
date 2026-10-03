@@ -398,7 +398,7 @@ export default function Account() {
     <>
       <Header />
       <main className="workspace">
-        <Link className="text-button" href="/">
+        <Link className="text-button" href="/practice">
           ← Back to the challenge
         </Link>
         <section className="account-card">
@@ -495,7 +495,7 @@ export default function Account() {
                       <p className="muted">{made.join(", ")}.</p>
                     ) : null;
                   })()}
-                  <Link className="primary-button" href="/">
+                  <Link className="primary-button" href="/practice">
                     Continue practising →
                   </Link>
                   {/*

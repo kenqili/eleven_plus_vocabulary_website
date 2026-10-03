@@ -104,7 +104,7 @@ export default function WordSummaryPage() {
       <WarmAudioIndex />
       <Header />
       <main className="workspace words-workspace">
-        <Link className="text-button" href="/">
+        <Link className="text-button" href="/practice">
           ← Back to practice
         </Link>
         <div className="page-heading">

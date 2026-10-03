@@ -1,4 +1,16 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+import { PAGE_METADATA } from "@/lib/seo";
+
+/**
+ * Per-page, so this page is found for what it is about rather than for the site's
+ * name. See lib/seo.ts.
+ */
+export const metadata: Metadata = {
+  title: PAGE_METADATA.about.title,
+  description: PAGE_METADATA.about.description,
+  alternates: { canonical: "/about" },
+};
 import {
   ArrowRight,
   BookOpen,
@@ -52,7 +64,7 @@ export default function AboutPage() {
               own children’s preparation for UK grammar school entrance exams,
               often called the 11+.
             </p>
-            <Link className="primary-button" href="/">
+            <Link className="primary-button" href="/practice">
               Try free practice <ArrowRight size={17} />
             </Link>
           </div>

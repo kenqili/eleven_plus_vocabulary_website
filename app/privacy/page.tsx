@@ -1,4 +1,6 @@
+import type { Metadata } from "next";
 import Header from "@/components/minewords/header";
+import { PAGE_METADATA } from "@/lib/seo";
 
 /**
  * The privacy notice, in one page and in plain English.
@@ -6,8 +8,16 @@ import Header from "@/components/minewords/header";
  * Two parents reviewing this asked where a child's data goes and how to get it
  * deleted, and neither answer was anywhere on the site. It is written to be read
  * rather than to be defensible, and it says what the schema actually does.
+ *
+ * Per-page metadata, because a parent who has been told to look for a privacy
+ * notice has to be able to find it - which is why this page is in the sitemap and
+ * allowed in the index at all. See lib/seo.ts.
  */
-export const metadata = { title: "Privacy · MineWords" };
+export const metadata: Metadata = {
+  title: PAGE_METADATA.privacy.title,
+  description: PAGE_METADATA.privacy.description,
+  alternates: { canonical: "/privacy" },
+};
 
 export default function PrivacyPage() {
   return (

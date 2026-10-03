@@ -183,7 +183,7 @@ export default function InfoPage() {
                 membership costs before you are asked for anything.
               </p>
               <div className="info-cta-links">
-                <Link className="primary-button" href="/">
+                <Link className="primary-button" href="/practice">
                   Start a free round
                 </Link>
                 <Link className="secondary-button" href="/account">

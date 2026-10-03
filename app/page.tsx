@@ -1,4 +1,4 @@
-import Challenge from "@/components/minewords/challenge";
+import Landing from "@/components/minewords/landing";
 export default function Home() {
-  return <Challenge />;
+  return <Landing />;
 }

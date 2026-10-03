@@ -184,10 +184,12 @@
   --radius: 0.75rem;
   --radius-sm: 0.5rem;
   --radius-lg: 1.25rem;
-  --font-body: ui-rounded, "SF Pro Rounded", "Nunito", system-ui, -apple-system,
+  --font-body:
+    ui-rounded, "SF Pro Rounded", "Nunito", system-ui, -apple-system,
     "Segoe UI", sans-serif;
-  --font-display: ui-rounded, "SF Pro Rounded", "Nunito", system-ui,
-    -apple-system, "Segoe UI", sans-serif;
+  --font-display:
+    ui-rounded, "SF Pro Rounded", "Nunito", system-ui, -apple-system,
+    "Segoe UI", sans-serif;
   --font-read: Georgia, "Iowan Old Style", "Times New Roman", serif;
   /* Text on the dark inset panel, which stays dark in every theme. */
   --ink-on-navy: #dce8f7;
@@ -388,10 +390,18 @@ h1 {
 .answers-entering .answer {
   animation: option-in 260ms cubic-bezier(0.2, 0.8, 0.3, 1) both;
 }
-.answers-entering .answer:nth-child(1) { animation-delay: 40ms; }
-.answers-entering .answer:nth-child(2) { animation-delay: 80ms; }
-.answers-entering .answer:nth-child(3) { animation-delay: 120ms; }
-.answers-entering .answer:nth-child(4) { animation-delay: 160ms; }
+.answers-entering .answer:nth-child(1) {
+  animation-delay: 40ms;
+}
+.answers-entering .answer:nth-child(2) {
+  animation-delay: 80ms;
+}
+.answers-entering .answer:nth-child(3) {
+  animation-delay: 120ms;
+}
+.answers-entering .answer:nth-child(4) {
+  animation-delay: 160ms;
+}
 @keyframes option-in {
   from {
     opacity: 0;
@@ -1090,7 +1100,11 @@ hr {
 .study-aside .reward-panel {
   order: -1;
   margin: 0;
-  background: linear-gradient(135deg, var(--surface-warn), var(--surface-warn-2));
+  background: linear-gradient(
+    135deg,
+    var(--surface-warn),
+    var(--surface-warn-2)
+  );
   border: 1px solid var(--line-gold);
 }
 .reward-heading,
@@ -1173,7 +1187,11 @@ hr {
   font-weight: 800;
 }
 .study-aside > .progress-panel:not(.reward-panel) {
-  background: linear-gradient(145deg, var(--surface-brand), var(--surface-page));
+  background: linear-gradient(
+    145deg,
+    var(--surface-brand),
+    var(--surface-page)
+  );
   color: var(--ink-brand-3);
   border: 1px solid var(--line-4);
 }
@@ -1196,7 +1214,11 @@ hr {
   height: 8px;
 }
 .study-aside .progress-panel [data-slot="progress-indicator"] {
-  background: linear-gradient(90deg, var(--surface-mint), var(--surface-periwinkle));
+  background: linear-gradient(
+    90deg,
+    var(--surface-mint),
+    var(--surface-periwinkle)
+  );
 }
 .study-aside .status-tabs {
   gap: 5px;
@@ -1986,7 +2008,11 @@ hr {
   border: 1px solid var(--line-4);
   border-radius: 28px;
   background:
-    radial-gradient(ellipse at 90% 12%, var(--surface-purple-2) 0, transparent 34%),
+    radial-gradient(
+      ellipse at 90% 12%,
+      var(--surface-purple-2) 0,
+      transparent 34%
+    ),
     linear-gradient(135deg, var(--surface-2), var(--surface-warn-3));
 }
 .about-hero-copy h1 {
@@ -2051,7 +2077,11 @@ hr {
   transform: rotate(-5deg);
   border: 1px solid var(--line-warn);
   border-radius: 12px 19px 19px 12px;
-  background: linear-gradient(145deg, var(--surface-gold), var(--surface-amber-2));
+  background: linear-gradient(
+    145deg,
+    var(--surface-gold),
+    var(--surface-amber-2)
+  );
   color: var(--ink-olive-7);
 }
 .book-front svg {
@@ -2282,11 +2312,19 @@ hr {
   background: var(--surface);
 }
 .tech-family {
-  background: linear-gradient(150deg, var(--surface-purple), var(--surface) 72%);
+  background: linear-gradient(
+    150deg,
+    var(--surface-purple),
+    var(--surface) 72%
+  );
   border-color: var(--line);
 }
 .access-family {
-  background: linear-gradient(150deg, var(--surface-success), var(--surface) 72%);
+  background: linear-gradient(
+    150deg,
+    var(--surface-success),
+    var(--surface) 72%
+  );
   border-color: var(--line);
 }
 .about-community-icon {
@@ -2415,7 +2453,12 @@ hr {
   padding: 42px 46px;
   border: 1px solid var(--line-4);
   border-radius: var(--radius-lg);
-  background: linear-gradient(125deg, var(--surface-brand), var(--surface-page) 62%, var(--surface-cream));
+  background: linear-gradient(
+    125deg,
+    var(--surface-brand),
+    var(--surface-page) 62%,
+    var(--surface-cream)
+  );
 }
 .howto-hero h1 {
   margin-top: 12px;
@@ -3482,7 +3525,12 @@ hr {
   padding: 42px 46px;
   border: 1px solid var(--line-4);
   border-radius: var(--radius-lg);
-  background: linear-gradient(125deg, var(--surface-brand), var(--surface-page) 62%, var(--surface-cream));
+  background: linear-gradient(
+    125deg,
+    var(--surface-brand),
+    var(--surface-page) 62%,
+    var(--surface-cream)
+  );
 }
 .page-hero h1 {
   margin-top: 12px;
@@ -4076,8 +4124,8 @@ hr {
   --radius-sm: 2px;
   --radius-lg: 3px;
   --font-body: "Trebuchet MS", "Segoe UI", system-ui, -apple-system, sans-serif;
-  --font-display: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas,
-    monospace;
+  --font-display:
+    ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
   --font-read: "Trebuchet MS", "Segoe UI", system-ui, -apple-system, sans-serif;
 }
 
@@ -4235,9 +4283,11 @@ hr {
   --radius: 1rem;
   --radius-sm: 0.75rem;
   --radius-lg: 1.75rem;
-  --font-body: "Nunito", "Quicksand", ui-rounded, "SF Pro Rounded", system-ui,
+  --font-body:
+    "Nunito", "Quicksand", ui-rounded, "SF Pro Rounded", system-ui,
     -apple-system, "Segoe UI", sans-serif;
-  --font-display: "Nunito", "Quicksand", ui-rounded, "SF Pro Rounded", system-ui,
+  --font-display:
+    "Nunito", "Quicksand", ui-rounded, "SF Pro Rounded", system-ui,
     -apple-system, "Segoe UI", sans-serif;
   --font-read: "Iowan Old Style", Georgia, "Times New Roman", serif;
 }
@@ -4398,10 +4448,12 @@ hr {
   --radius: 0.875rem;
   --radius-sm: 0.625rem;
   --radius-lg: 1.5rem;
-  --font-body: "Nunito", ui-rounded, "SF Pro Rounded", system-ui, -apple-system,
+  --font-body:
+    "Nunito", ui-rounded, "SF Pro Rounded", system-ui, -apple-system,
     "Segoe UI", sans-serif;
-  --font-display: "Nunito", ui-rounded, "SF Pro Rounded", system-ui,
-    -apple-system, "Segoe UI", sans-serif;
+  --font-display:
+    "Nunito", ui-rounded, "SF Pro Rounded", system-ui, -apple-system,
+    "Segoe UI", sans-serif;
   --font-read: "Iowan Old Style", Georgia, "Times New Roman", serif;
 }
 
@@ -4509,7 +4561,6 @@ hr {
     left: 0;
   }
 }
-
 
 /* What the question is asking, for the two types whose prompt is only a
    definition or a sentence with a gap. */
@@ -4883,7 +4934,9 @@ hr {
   font-size: 17px;
   color: var(--ink);
 }
-.privacy-summary h2:first-child { margin-top: 0; }
+.privacy-summary h2:first-child {
+  margin-top: 0;
+}
 .privacy-summary p {
   margin: 0;
   color: var(--ink-2);
@@ -4891,11 +4944,25 @@ hr {
   line-height: 1.7;
   max-width: 68ch;
 }
-.privacy-summary a { color: var(--ink-brand); font-weight: 700; }
-.prose-body ul { color: var(--ink-2); line-height: 1.7; padding-left: 22px; }
-.prose-body li { margin-bottom: 8px; }
-.prose-body a { color: var(--ink-brand); font-weight: 700; }
-.prose-body h2 { margin-top: 30px; }
+.privacy-summary a {
+  color: var(--ink-brand);
+  font-weight: 700;
+}
+.prose-body ul {
+  color: var(--ink-2);
+  line-height: 1.7;
+  padding-left: 22px;
+}
+.prose-body li {
+  margin-bottom: 8px;
+}
+.prose-body a {
+  color: var(--ink-brand);
+  font-weight: 700;
+}
+.prose-body h2 {
+  margin-top: 30px;
+}
 
 /* What the option a child actually chose means. A wrong answer is the moment
    they most want to know the word they did not pick, because they will meet it
@@ -5805,5 +5872,210 @@ hr {
   }
   .answer {
     min-height: 56px;
+  }
+}
+
+/* ---------------------------------------------------------------- the landing page
+ *
+ * A parent deciding whether to pay for something, on a phone, in a hurry. So:
+ * one column everywhere, a generous measure so the sentences are readable, and
+ * every section its own block with air around it rather than a wall of text.
+ *
+ * It reuses the about page's tokens deliberately. Two marketing pages that drift
+ * apart in colour or spacing read as two products.
+ */
+.landing-hero {
+  padding: 44px 40px;
+  border: 1px solid var(--line-4);
+  border-radius: 28px;
+  background:
+    radial-gradient(
+      ellipse at 88% 10%,
+      var(--surface-purple-2) 0,
+      transparent 36%
+    ),
+    linear-gradient(135deg, var(--surface-2), var(--surface-warn-3));
+}
+.landing-kicker {
+  margin: 0;
+  color: var(--ink-brand-4);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+.landing-hero h1 {
+  max-width: 20ch;
+  margin: 14px 0 0;
+  font-size: clamp(32px, 5.4vw, 52px);
+  line-height: 1.12;
+  text-wrap: balance;
+}
+.landing-lede {
+  max-width: 58ch;
+  margin: 20px 0 0;
+  color: var(--ink-brand-4);
+  font-size: 18px;
+  line-height: 1.7;
+}
+.landing-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 20px;
+  align-items: center;
+  margin-top: 26px;
+}
+.landing-actions .primary-button {
+  min-height: 50px;
+  border-radius: var(--radius);
+}
+.landing-actions .text-button {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+/* The line under the buttons. Says who can use this and what it costs to try,
+ * which is the objection a parent has not voiced yet. */
+.landing-fine {
+  max-width: 60ch;
+  margin: 16px 0 0;
+  color: var(--ink-brand-4);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.landing-section {
+  max-width: 70ch;
+  margin-top: 46px;
+}
+.landing-section h2 {
+  margin: 0 0 14px;
+  font-size: clamp(22px, 2.6vw, 30px);
+  line-height: 1.25;
+  text-wrap: balance;
+}
+.landing-section h3 {
+  margin: 10px 0 6px;
+  font-size: 17px;
+}
+.landing-section p {
+  margin: 0 0 14px;
+  line-height: 1.75;
+}
+.landing-list,
+.landing-sources {
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+}
+.landing-list li,
+.landing-sources li {
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line-2);
+  line-height: 1.6;
+}
+.landing-list li:last-child,
+.landing-sources li:last-child {
+  border-bottom: 0;
+}
+/* The six levels, as a shelf. Ordered because a parent reads it as a progression,
+ * and the example word beside each is what makes a level mean something. */
+.landing-levels {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+  counter-reset: level;
+}
+.landing-levels li {
+  padding: 13px 15px;
+  border: 1px solid var(--line-3);
+  border-radius: 14px;
+  background: var(--surface-page);
+  font-size: 15px;
+}
+.landing-level-name {
+  display: block;
+  font-weight: 700;
+}
+.landing-level-word {
+  font-style: italic;
+}
+/* Maths and NVR. Deliberately boxed rather than a line of text, because a parent
+ * skimming this page will read the headings and the boxes and nothing else - so
+ * this has to be impossible to skim past. */
+.landing-scope {
+  padding: 22px 24px;
+  border: 1px solid var(--line-3);
+  border-left: 4px solid var(--line-warn-2);
+  border-radius: 16px;
+  background: var(--surface-2);
+}
+.landing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+}
+.landing-card {
+  padding: 18px 20px;
+  border: 1px solid var(--line-3);
+  border-radius: 16px;
+  background: var(--surface-page);
+}
+.landing-card p {
+  margin: 0;
+  font-size: 15px;
+}
+/* Hardship. Warm rather than boxed, and not apologetic. A parent who cannot pay is
+ * reading this while feeling like a problem, and the tone here is doing as much
+ * work as the offer. */
+.landing-help {
+  max-width: 62ch;
+  padding: 26px 28px;
+  border: 1px solid var(--line-3);
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--surface-2), var(--surface-warn-3));
+}
+.landing-help h2 {
+  margin-top: 10px;
+}
+.landing-cta {
+  max-width: 70ch;
+  margin-top: 52px;
+  padding: 28px 30px;
+  border: 1px solid var(--line-4);
+  border-radius: 22px;
+  background: var(--surface-page);
+}
+.landing-cta h2 {
+  margin: 0 0 12px;
+  font-size: clamp(21px, 2.4vw, 28px);
+}
+.landing-cta p {
+  margin: 0 0 6px;
+  line-height: 1.7;
+}
+@media (max-width: 640px) {
+  .landing-hero {
+    padding: 30px 22px;
+    border-radius: 20px;
+  }
+  .landing-lede {
+    font-size: 17px;
+  }
+  .landing-section,
+  .landing-help,
+  .landing-cta {
+    margin-top: 34px;
+  }
+  .landing-help,
+  .landing-cta {
+    padding: 20px;
+  }
+  /* Full width on a phone: two buttons side by side is a mis-tap. */
+  .landing-actions .primary-button {
+    width: 100%;
+    justify-content: center;
   }
 }

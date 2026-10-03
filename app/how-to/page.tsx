@@ -1,4 +1,16 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+import { PAGE_METADATA } from "@/lib/seo";
+
+/**
+ * Per-page, so this page is found for what it is about rather than for the site's
+ * name. See lib/seo.ts.
+ */
+export const metadata: Metadata = {
+  title: PAGE_METADATA["how-to"].title,
+  description: PAGE_METADATA["how-to"].description,
+  alternates: { canonical: "/how-to" },
+};
 import {
   ArrowRight,
   BookOpenCheck,
@@ -48,7 +60,7 @@ export default function HowToPage() {
               tricky word and finish while your child still feels positive.
               Here’s how to get started with MineWords.
             </p>
-            <Link className="primary-button" href="/">
+            <Link className="primary-button" href="/practice">
               Try free practice <ArrowRight size={17} />
             </Link>
           </div>

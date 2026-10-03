@@ -129,7 +129,7 @@ export default function ResetPassword() {
                 to do. Your child&rsquo;s saved words and progress are exactly
                 as they were.
               </p>
-              <Link className="primary-button" href="/">
+              <Link className="primary-button" href="/practice">
                 Go and practise →
               </Link>
             </>
