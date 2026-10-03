@@ -333,6 +333,16 @@ export default function Account() {
       // The code is checked rather than the message, because a message is written
       // for people and can be reworded; the identifier cannot drift.
       const failure = e as Error & { code?: string };
+      // `checkout_in_progress` is also not a failure. The server found another
+      // request of this account's already setting a payment up and refused this one
+      // rather than risk sending a parent to Stripe twice. Nothing is wrong, the
+      // other attempt finishes in seconds, and the parent should wait rather than
+      // press again — which is exactly what a red error box invites.
+      if (failure.code === "checkout_in_progress") {
+        setNotice(failure.message);
+        setBusy(false);
+        return;
+      }
       if (failure.code === "membership_applied") {
         setNotice(failure.message);
         // Released before the refresh, not after it.

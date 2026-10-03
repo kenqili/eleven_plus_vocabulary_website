@@ -389,6 +389,29 @@ export async function revokePurchase(paymentIntentId: string): Promise<void> {
     .run();
 }
 
+/**
+ * How long one checkout attempt holds this account's row before another may take
+ * it over.
+ *
+ * This is the lock that stops a parent being sent to Stripe twice. It is a
+ * timestamp rather than a flag on purpose: there is no lock to release if a Worker
+ * is killed between writing the row and writing the session id, so nothing can be
+ * left held and no parent can be locked out of buying. A row older than this is
+ * simply not held by anyone, and the next request takes it.
+ *
+ * Sized against what it has to cover - the Stripe session creation plus the
+ * database writes after it - and against how long a parent will wait. The Stripe
+ * call is the slow part and the whole checkout is given `CHECKOUT_TIMEOUT_MS` on
+ * the client, so this is well inside that: a second request arriving seconds later
+ * is refused, and one arriving later than this has a real chance of being a first
+ * attempt whose predecessor died.
+ *
+ * Not a lock for the whole session lifetime. That is what the stored `session_id`
+ * is for - a session that exists is reused rather than replaced, which is the
+ * other half of the same problem and needs no window at all.
+ */
+const CHECKOUT_LOCK_SECONDS = 30;
+
 export async function checkoutSession(
   userId: string,
   customerId: string,
@@ -397,7 +420,7 @@ export async function checkoutSession(
 ): Promise<{ url: string }> {
   const db = database();
   const now = Math.floor(Date.now() / 1000);
-  await db
+  const insert = db
     .prepare(
       // Taken over rather than ignored when the row it finds has never been used.
       //
@@ -416,10 +439,37 @@ export async function checkoutSession(
       // idempotency key is derived from the token, so the new key is a new
       // session, and the old one is not a session. A row that *has* a session id is
       // left completely alone, which is what stops a double-click opening two.
-      "INSERT INTO checkout_requests (user_id,token,created_at) VALUES (?,?,?) ON CONFLICT(user_id) DO UPDATE SET token=excluded.token, created_at=excluded.created_at WHERE checkout_requests.session_id IS NULL",
+      //
+      // And it only takes over a row that is STALE as well as sessionless, which
+      // is what makes this row a lock rather than a slot. It used to replace
+      // `session_id IS NULL` with nothing else, so two overlapping requests both
+      // wrote a fresh token: the second overwrote the first, each request then read
+      // back a token that was not the one it had written, and they derived two
+      // different Stripe idempotency keys from two different tokens. Stripe has no
+      // rule about one open session per customer - this app has no subscription -
+      // so both keys were honoured and both sessions were live. Two tabs, two
+      // devices, or one retry after a slow first attempt, and a parent could be
+      // sent to the payment page twice and pay twice.
+      //
+      // With the staleness clause the row is claimed once and the second request
+      // changes nothing, so both read the *same* token and both derive the same key
+      // - which is Stripe answering the second with the first's session, one charge
+      // and no duplicate. The clause is what turns "last writer wins" into "first
+      // writer holds", and `changes` below is how the caller tells those apart.
+      //
+      // The window is short on purpose. Long enough to cover the Stripe call and
+      // the writes after it, short enough that a Worker killed mid-request costs a
+      // parent seconds rather than the half hour the old age guard did. There is no
+      // unlock to forget and no lock to leak, because the lock is a timestamp and a
+      // timestamp expires by being old.
+      "INSERT INTO checkout_requests (user_id,token,created_at) VALUES (?,?,?) ON CONFLICT(user_id) DO UPDATE SET token=excluded.token, created_at=excluded.created_at WHERE checkout_requests.session_id IS NULL AND checkout_requests.created_at < ?",
     )
-    .bind(userId, crypto.randomUUID(), now)
-    .run();
+    .bind(userId, crypto.randomUUID(), now, now - CHECKOUT_LOCK_SECONDS);
+  // Captured, because the change count is the only thing that distinguishes the
+  // request which took the row from the one that found it held. Read from this
+  // statement's own result rather than from a `changes()` query afterwards, which
+  // would be a second round trip reporting whatever ran last.
+  const claimed = await insert.run();
   const row = await db
     .prepare(
       "SELECT token,created_at,session_id FROM checkout_requests WHERE user_id=?",
@@ -428,6 +478,16 @@ export async function checkoutSession(
     .first<{ token: string; created_at: number; session_id: string | null }>();
   if (!row)
     throw new HttpError(503, "Unable to start checkout. Please try again.");
+  // Whether *this* request is the one holding the row, and it is the changes count
+  // that says so rather than the age. A fresh insert and a takeover of a stale row
+  // both report one change; an insert whose `DO UPDATE` did not fire because
+  // another request holds the row reports none.
+  //
+  // Without this distinction the lock refused the request that had just claimed it,
+  // because a row this request had written is by definition younger than the
+  // window. Reading the age alone cannot tell "I am the holder" from "someone else
+  // is", and only the first of those two is allowed to continue.
+  const holds = (claimed?.meta?.changes ?? 0) > 0;
   if (row.session_id) {
     let existing: {
       status: string;
@@ -614,6 +674,38 @@ export async function checkoutSession(
       .run();
     return checkoutSession(userId, customerId, origin, tier);
   }
+  // No session, and this row is younger than the lock window: another request is
+  // holding it right now. It got here first and is between writing this row and
+  // writing the session id onto it, and if this request claimed the row it would
+  // take that request's token, derive a different idempotency key, and leave two
+  // live Stripe sessions for one intention. So it is refused, and the message says
+  // what is actually true - a moment's wait, not a dead end.
+  //
+  // Checked *after* the session branch above, deliberately. A parent pressing the
+  // button twice while a session is already open is not a second charge and must
+  // not be told there is one in progress: the branch above answers that by handing
+  // back the session they already have, which is the correct answer and costs them
+  // nothing. This is only for the window where there is genuinely no session yet.
+  //
+  // Waiting rather than proceeding is what makes it safe. Both requests cannot be
+  // served from one token unless they also share an idempotency key, and the whole
+  // value of the row is that they do.
+  //
+  // `!holds` and not the age. A row this request has just written is younger than
+  // the window by definition, so testing the age alone refuses the request that
+  // legitimately took the lock - which is every first attempt, and the whole
+  // feature dead on arrival. Zero changes means the `DO UPDATE` did not fire,
+  // which is only possible when the row is held by someone else.
+  if (!holds)
+    throw new HttpError(
+      409,
+      `Another payment is already being set up for this account. Please wait a moment and try again — it takes a few seconds, and this one will not charge you twice.`,
+      // A stable identifier, so the interface can show this as a status rather than
+      // in the red error box. Same mechanism `membership_applied` uses, and for the
+      // same reason: this is a state the parent can act on, not something that went
+      // wrong.
+      "checkout_in_progress",
+    );
   // A row this old that never reached Stripe is replaced, and never refused.
   //
   // It used to refuse, for half an hour, with "An earlier checkout is being
