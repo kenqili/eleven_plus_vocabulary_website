@@ -170,6 +170,50 @@ comes back off and is marked refunded, while the second purchase is untouched.
 delivery should show `200`. A `400` means the signature check failed, which in
 practice means the signing secret is stale.
 
+### If a parent was charged twice
+
+The app looks for this itself and will not act on it. When one account pays twice
+for the **same length** within an hour, two things happen: the parent is emailed,
+and a line is logged.
+
+```
+Possible double charge: one account paid twice for the same length
+{"user":"…","email":"…","price":"price_…",
+ "duplicatePaymentIntent":"pi_…","originalPaymentIntent":"pi_…","minutesApart":3}
+```
+
+To refund, in this order:
+
+1. **Stripe → Payments**, find `duplicatePaymentIntent` and refund it in full. The
+   log names which of the two to refund: the **newer** one, because the earlier is
+   the purchase the parent believes they made. Getting this backwards refunds the
+   payment they meant to keep and leaves the duplicate in place.
+2. **Nothing in the app.** The access is already correct and needs no change — the
+   parent paid twice and received twice, so removing the second term would leave
+   them short. `revokePurchase` runs by itself when Stripe sends `charge.refunded`,
+   so the refund you issue in the dashboard takes the extra term back on its own.
+   That is the correct outcome here: the refund is what should shorten the access.
+
+**It reports, it does not refund, on purpose.** A refund moves money, and a
+duplicate is inferred from timing alone — a family who deliberately buys two terms
+to have a spare would be refunded for one without being asked. So it says what it
+noticed and offers the refund, and a person decides. The alternative, doing
+nothing, is what this replaces: a silent double charge is found by the parent in
+their bank statement, and the reasonable conclusion is that the site took the money
+and is not giving it back.
+
+**What will not trigger it,** all of which are tested: buying two _different_
+lengths (deliberate), buying the same length more than an hour apart (renewing
+early, which the account page invites), a refunded-then-rebought pair (the money
+came back), and the same payment delivered twice (Stripe redelivers for days, and
+the check is on payments rather than on rows).
+
+Two requests cannot open two payment pages at once — that is prevented rather
+than detected, by holding the account's `checkout_requests` row while a request is
+in it. See the commit on that. What this catches is the case a lock cannot help
+with: a parent completes a payment, does not see the confirmation, and starts
+again.
+
 ---
 
 ## Two things that are deliberate and will look wrong

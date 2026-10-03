@@ -1,5 +1,7 @@
 import { database, setting } from "./db";
 import { HttpError } from "./http";
+import { sendEmail } from "./email";
+import { CONTACT_EMAIL } from "@/lib/contact";
 import { words } from "@/lib/challenge/bank";
 import type { User } from "./auth";
 
@@ -327,7 +329,143 @@ export async function grantPurchase(
   // Already granted by an earlier delivery of this same event, so nothing above
   // changed anything.
   if (!(recorded?.meta?.changes ?? 0)) return false;
+  // A payment was taken, and this is the only place that knows it. So it is also
+  // the only place that can notice a second one.
+  await noticePossibleDoubleCharge(userId, priceId, paymentIntentId);
   return true;
+}
+
+/**
+ * How close together two of the same purchase have to be to be worth asking about.
+ *
+ * Two identical purchases minutes apart is one intention paid for twice. The same
+ * two purchases a fortnight apart is a family buying a second term, which is the
+ * normal way this product is used and must never be questioned.
+ *
+ * An hour rather than a few minutes, because the gap that matters is not the two
+ * clicks: it is a parent who completed a payment, did not see the confirmation,
+ * and started again. That takes as long as it takes to notice, and the lock on
+ * `checkout_requests` cannot help with it - by then the first session is a real,
+ * paid, completed purchase with its own payment intent, and nothing about the
+ * second is anomalous except that it is very like the first.
+ */
+const DOUBLE_CHARGE_WINDOW_MS = 60 * 60 * 1000;
+
+/**
+ * Notice when one account pays twice for the same thing, and tell the parent.
+ *
+ * Reporting rather than refunding, and that is the whole design. A refund moves
+ * money, so this cannot decide to do one: a duplicate is inferred from timing
+ * alone, and a family who deliberately bought two terms to have a spare would be
+ * refunded for one of them without being asked. So it says what it has noticed and
+ * offers the refund, and a person decides. The alternative - doing nothing - is
+ * what this exists to replace, because a silent double charge is found by the
+ * parent in their bank statement rather than by us, and the worst outcome is that
+ * they conclude the site took their money and never gave it back.
+ *
+ * Fired from `grantPurchase` rather than from the webhook, because
+ * `checkoutSession` is a second path to the same grant and a check that only
+ * watched one of them would miss whichever fired.
+ *
+ * Best effort throughout. It runs after the grant is committed and must never
+ * throw into it: the parent has paid, and a failure to send an email about it is
+ * not a reason to fail a payment that has already been applied. Everything it does
+ * is wrapped, and the log is the fallback.
+ */
+async function noticePossibleDoubleCharge(
+  userId: string,
+  priceId: string,
+  paymentIntentId: string,
+): Promise<void> {
+  try {
+    const db = database();
+    const since = Date.now() - DOUBLE_CHARGE_WINDOW_MS;
+    // The other purchase, not this one. Both rows are in the ledger by now - this
+    // grant's batch has committed - so the match is on an earlier `created_at`, and
+    // the newest other row is the one worth naming.
+    const earlier = await db
+      .prepare(
+        // `status <> 'refunded'` so a refunded-then-rebought pair is not asked
+        // about: the money for the first one came back, so there is nothing
+        // outstanding and nothing to ask.
+        //
+        // And the same `product_id`, because "the same length twice" is the
+        // signal. A family who buys a month and then a year has paid twice
+        // deliberately, and telling them we are not sure is insulting.
+        `SELECT confirmation, created_at FROM purchases
+          WHERE user_id = ? AND product_id = ? AND confirmation <> ?
+            AND status <> 'refunded' AND created_at >= ?
+          ORDER BY created_at DESC LIMIT 1`,
+      )
+      .bind(userId, priceId, paymentIntentId, since)
+      .first<{ confirmation: string; created_at: number }>();
+    if (!earlier) return;
+    const account = await db
+      .prepare("SELECT email FROM users WHERE id = ?")
+      .bind(userId)
+      .first<{ email: string }>();
+    const gapMinutes = Math.max(
+      1,
+      Math.round((Date.now() - earlier.created_at) / 60000),
+    );
+    // The log is the thing that is guaranteed to happen, so it carries everything
+    // needed to refund without opening the database: which two payments, for which
+    // account, and how far apart. A log line that says "possible double charge" and
+    // nothing else is a line somebody has to go and reconstruct.
+    console.error(
+      "Possible double charge: one account paid twice for the same length",
+      JSON.stringify({
+        user: userId,
+        email: account?.email ?? null,
+        price: priceId,
+        // The newer is the one to refund: the earlier is the purchase the parent
+        // believes they made.
+        duplicatePaymentIntent: paymentIntentId,
+        originalPaymentIntent: earlier.confirmation,
+        minutesApart: gapMinutes,
+      }),
+    );
+    if (!account?.email) return;
+    await sendDoubleChargeEmail(account.email);
+  } catch (error) {
+    // Logged, not thrown. The grant is committed and the parent has their access;
+    // failing the request here would tell Stripe the webhook failed, and Stripe
+    // would redeliver it for three days, re-running this on every attempt.
+    console.error(
+      "Could not report a possible double charge",
+      error instanceof Error ? error.message : "Unknown error",
+    );
+  }
+}
+
+/**
+ * What the parent is told.
+ *
+ * Says what was noticed, says plainly that they have not been charged twice for
+ * something they did not intend, and offers the refund without requiring them to
+ * chase it. Deliberately does not apologise for a fault that may not exist - two
+ * payments can be deliberate - and does not claim the refund is automatic, because
+ * it is not: somebody reads this and does it.
+ */
+async function sendDoubleChargeEmail(to: string): Promise<void> {
+  await sendEmail({
+    to,
+    subject: "Two payments on your MineWords account",
+    text: [
+      "We have noticed two payments on your account in a short space of time.",
+      "",
+      "This can happen when a payment page is opened twice, or when a payment",
+      "goes through and the confirmation is not seen. If you only meant to pay",
+      "once, reply to this message and we will refund the second payment in full.",
+      "",
+      "Your access is not affected either way, and you do not need to do anything",
+      "if you did intend to buy twice.",
+      "",
+      `If it is easier, write to ${CONTACT_EMAIL} with the subject above.`,
+      "",
+      "MineWords",
+    ].join("\n"),
+  });
 }
 
 /**
