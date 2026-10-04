@@ -306,12 +306,20 @@ export default function Challenge() {
               {/*
                 How far to 10,000, in automatic mode only: with an explicit
                 level choice the bands would describe a pool the child is not
-                practising. Refreshed on the mastered count, so bar and chart
-                move the moment a word is mastered rather than next visit.
-                Signed in only — the demo keeps nothing, so it has no history.
+                practising. The bar is live from the browser engine, so the
+                score chip on it moves the moment an answer is graded. Signed
+                in only — the demo keeps nothing, so it has nothing to show.
               */}
               {!demo && study.level === null && (
-                <LevelProgress refreshKey={stats?.mastered ?? 0} />
+                <LevelProgress
+                  refreshKey={stats?.mastered ?? 0}
+                  liveLevel={
+                    study.livePlacement?.level ?? question?.placement?.level ?? null
+                  }
+                  liveScore={
+                    study.livePlacement?.score ?? question?.placement?.score ?? null
+                  }
+                />
               )}
             </div>
             {/*
@@ -349,11 +357,18 @@ export default function Challenge() {
                   </span>
                   <Link href="/account">Renew access →</Link>
                 </div>
-              ) : !study.active && study.periodEnd ? (
+              ) : !study.active && !study.trial && study.periodEnd ? (
                 // Expired, rather than never bought. `periodEnd` is only set when
                 // a term has been paid for, so this cannot fire for a family who
                 // has never paid - it is exactly "you bought this and it ran
-                // out". Silence here would be wrong: the practice page still
+                // out". And `!study.trial` matters as much: a paid term can run
+                // out while the free trial is still live (a short test term, or
+                // a code redeemed early), and then full access still runs until
+                // the trial date - which is what the trial banner below says
+                // and what the account page says. Without the guard this branch
+                // told that parent their access had ended while both of those
+                // said it runs on, on the same day.
+                // Silence here would be wrong: the practice page still
                 // works on the free collection, so without this a parent has no
                 // reason to know their paid access ended at all.
                 <div className="trial-banner" role="status">

@@ -19,9 +19,12 @@ import { useEffect, useRef, useState } from "react";
 export function BumpingNumber({
   value,
   className,
+  format,
 }: {
   value: number;
   className?: string;
+  /** How to print the number; defaults to plain, so small counts read as before. */
+  format?: (n: number) => string;
 }) {
   const [bump, setBump] = useState(false);
   const was = useRef(value);
@@ -44,7 +47,7 @@ export function BumpingNumber({
 
   return (
     <strong className={`${className ?? ""}${bump ? " mastered-count-bump" : ""}`.trim()}>
-      {value}
+      {format ? format(value) : value}
     </strong>
   );
 }

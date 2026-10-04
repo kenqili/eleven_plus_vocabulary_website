@@ -949,46 +949,14 @@ hr {
   font-size: 16px;
 }
 /*
- * The score over time, under the level picker.
+ * How far to 10,000, under the level picker.
  *
- * Full width of the picker row it sits in, because a chart squeezed beside a
- * select is decoration rather than information. The line uses the brand ink so
- * it reads in every theme without a per-theme override; the grid is quiet on
- * purpose, since the dots are the data and the lines are only the scale.
- */
-.score-chart {
-  flex-basis: 100%;
-  margin: 6px 0 0;
-}
-.score-chart-svg {
-  width: 100%;
-  max-width: 560px;
-  height: auto;
-  display: block;
-}
-.score-chart-line {
-  stroke: var(--ink-brand);
-  stroke-width: 2.5;
-}
-.score-chart-dot {
-  fill: var(--ink-brand);
-}
-.score-chart-grid {
-  stroke: var(--line-2);
-  stroke-width: 1;
-}
-.score-chart-band,
-.score-chart-day {
-  fill: var(--ink-3);
-  font-size: 11px;
-}
-/*
- * How far to 10,000, above the chart.
- *
- * The fill blends green → yellow → red as it grows: at low scores only green
- * shows, yellow arrives around the middle, red near the top. Ticks mark where
- * each level starts (every sixth of the track). Full width of the picker row,
- * like the chart below it.
+ * The fill shows the first slice of the full 0–10,000 green → yellow → red
+ * run, scaled to the track: at low scores only green shows, yellow arrives
+ * around the middle, red near the top. Ticks mark where
+ * each level starts (every sixth of the track), numbered 0–5 underneath, and
+ * a chip riding the tip of the fill names the level the child is in right
+ * now. Full width of the picker row.
  */
 .level-progress {
   flex-basis: 100%;
@@ -1000,6 +968,16 @@ hr {
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 6px;
+  font-variant-numeric: tabular-nums;
+}
+/* The wrapper, because the track clips everything inside it and the chip
+   riding the tip must not be clipped with the fill. */
+.level-progress-bar {
+  position: relative;
+  /* Room for the chip, which is taller than the track and sits centred on it.
+     Without the padding it would overlap the score above. */
+  padding: 8px 0;
+  margin: -8px 0;
 }
 .level-progress-track {
   position: relative;
@@ -1020,6 +998,7 @@ hr {
     var(--surface-progress-4) 75%,
     var(--surface-progress-5) 100%
   );
+  background-repeat: no-repeat;
   transition: width 0.6s ease;
 }
 .level-progress-tick {
@@ -1029,6 +1008,33 @@ hr {
   width: 2px;
   background: var(--surface-slate);
   opacity: 0.55;
+}
+/*
+ * The score on the bar. A solid chip rather than text on the fill, because the
+ * fill is narrow at low scores and the digits have to read everywhere on it.
+ * It rides the tip of the fill, clamped inside the track, and slides with it
+ * as the score moves. Text never wraps: "10,000" is the widest it gets.
+ */
+.level-progress-marker {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--surface-brand-solid);
+  color: var(--ink-invert);
+  border: 2px solid var(--surface);
+  box-shadow: 0 1px 4px var(--shadow-3);
+  font-weight: 800;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: left 0.6s ease;
 }
 .practice-types {
   display: flex;

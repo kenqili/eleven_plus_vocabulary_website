@@ -203,6 +203,17 @@ export class ClientSession {
   }
 
   /**
+   * Where the child is right now, from the browser's own counters.
+   *
+   * Read live so the level bar moves the moment an answer is graded, rather
+   * than waiting for the next flush to reach the database that `/api/placement`
+   * reads. Same rows, same functions as the server — the engine owns both.
+   */
+  placement(): { level: number; score: number } {
+    return this.engine.placement();
+  }
+
+  /**
    * Grade an answer and remember it for the next flush.
    *
    * Nothing is sent here. That is the whole change: the child sees feedback

@@ -202,6 +202,17 @@ export function useChallenge() {
   ]);
   // null is mixed practice across every level, which keeps levels 1-5 unchanged.
   const [level, setLevel] = useState<Difficulty | null>(null);
+  /**
+   * Where the child is right now, from the browser's own counters.
+   *
+   * The server's `/api/placement` reads the database, which only learns about
+   * answers on flush (every five minutes). This is the engine's own number on
+   * this frame, so the level bar moves the moment an answer is graded.
+   */
+  const [livePlacement, setLivePlacement] = useState<{
+    level: number;
+    score: number;
+  } | null>(null);
   const demoProgress = useRef(new Map<string, number>());
   const demoMastery = useRef(new Map<string, MasteryState>());
   const assisted = useRef(false);
@@ -310,6 +321,7 @@ export function useChallenge() {
         bank.current = loaded.bank;
         const { account } = loaded.snapshot;
         const first = client.next();
+        setLivePlacement(client.placement());
         setState({
           question: first ? shownToQuestion(first) : null,
           stats: client.stats,
@@ -345,6 +357,7 @@ export function useChallenge() {
       session.current = null;
       bank.current = null;
       setUnsaved(0);
+      setLivePlacement(null);
       if (result.gated) {
         setState({
           question: null,
@@ -387,6 +400,7 @@ export function useChallenge() {
           freeTier: result.freeTier,
           freeWordCount: result.freeWordCount,
         });
+        setLivePlacement(next.question?.placement ?? null);
       }
       elapsed.current = 0;
       assisted.current = false;
@@ -531,6 +545,7 @@ export function useChallenge() {
         // the next word.
         const shown = session.current.next();
         const stats = session.current.stats;
+        setLivePlacement(session.current.placement());
         setState((latest) => ({
           ...latest,
           question: shown ? shownToQuestion(shown) : null,
@@ -552,6 +567,7 @@ export function useChallenge() {
           level: level ?? "all",
         });
         setState(nextState);
+        setLivePlacement(nextState.question?.placement ?? null);
         if (current.question && current.feedback)
           setHistory((items) =>
             [
@@ -703,6 +719,8 @@ export function useChallenge() {
           );
           // The session has already moved the panels, on this frame.
           setState((latest) => ({ ...latest, feedback, stats: client.stats }));
+          // The bar moves on this frame too, not on the next flush.
+          setLivePlacement(client.placement());
           return feedback;
         } else {
           const result = await api<ChallengeState>("/api/challenge", {
@@ -713,6 +731,9 @@ export function useChallenge() {
             assisted: assisted.current,
           });
           setState({ ...current, ...result });
+          setLivePlacement(
+            result.question?.placement ?? current.question?.placement ?? null,
+          );
           return result.feedback;
         }
       } catch (e) {
@@ -851,6 +872,8 @@ export function useChallenge() {
         setLevel(value);
       }
     },
+    /** Live level/score from the browser engine, for the bar above the chart. */
+    livePlacement,
     answer,
     /** How many answers are waiting to be written. Zero greys the Save button. */
     unsaved,
