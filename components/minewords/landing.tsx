@@ -226,6 +226,20 @@ export default function Landing({
             test. This teaches the vocabulary for the English and verbal
             reasoning papers, not past papers.
           </p>
+          {/*
+            Worldwide, not just the 11+. The site is built for UK Years 4 to 6
+            heading for the entrance test, but the words are ordinary English
+            vocabulary and the levels, stories and mistake lists work wherever
+            a 9 to 11 year old lives. Said in one paragraph, kept separate from
+            the school names so neither audience reads the other's copy as
+            theirs — and asserted by `tests/landing-page.test.mjs` alongside
+            the UK focus, because one must not quietly displace the other.
+          */}
+          <p className="landing-fine">
+            Not sitting the 11+? The same words suit any child aged 9 to 11
+            building their English vocabulary. The levels, the stories and the
+            mistake lists work wherever you live — no entrance test required.
+          </p>
         </section>
 
         {/*

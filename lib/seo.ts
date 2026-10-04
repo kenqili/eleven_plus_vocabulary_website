@@ -67,7 +67,7 @@ export const PAGE_METADATA: Record<
   "": {
     title: "11+ Vocabulary Practice | Free 7-Day Trial — MineWords",
     description:
-      "Free 11+ vocabulary practice for English and verbal reasoning. Thousands of words with meanings, synonyms and antonyms. Printable word sheets, free for 7 days.",
+      "Free English vocabulary practice for ages 9–11: 11+ English and verbal reasoning, thousands of words, funny stories and printable sheets. Free 7 days.",
   },
   about: {
     title: "About MineWords — 11+ Vocabulary Practice",

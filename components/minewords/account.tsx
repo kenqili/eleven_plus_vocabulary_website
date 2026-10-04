@@ -614,18 +614,21 @@ export default function Account() {
                 issued to a family finding the cost difficult, which is the only
                 reason the feature exists — and a heading that said "What you have
                 bought" above a row for one asked a parent who was already
-                struggling to reconcile a debt they do not owe.
+                struggling to reconcile a debt they do not owe. The heading used
+                to be "Everything that has extended your access", which was
+                accurate and unreadable; "Payments and codes" says the same thing
+                in the words a parent would use.
               */}
               {!!billing?.purchases.length && (
                 <section className="account-purchases">
-                  <h2>Everything that has extended your access</h2>
+                  <h2>Payments and codes</h2>
                   <div className="word-table-wrap">
                     <table className="word-table">
                       <thead>
                         <tr>
-                          <th scope="col">Length</th>
-                          <th scope="col">Added</th>
-                          <th scope="col">Access then ran until</th>
+                          <th scope="col">What</th>
+                          <th scope="col">When</th>
+                          <th scope="col">Access until</th>
                           <th scope="col">Status</th>
                         </tr>
                       </thead>

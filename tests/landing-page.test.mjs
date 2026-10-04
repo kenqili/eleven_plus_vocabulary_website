@@ -717,6 +717,33 @@ test("school names are preparation examples, never coverage or endorsement", () 
   }
 });
 
+test("the page welcomes ages 9–11 worldwide without losing its 11+ focus", () => {
+  // Built for UK Years 4 to 6 heading for the entrance test, but the words are
+  // ordinary English vocabulary — a 10-year-old anywhere can use the levels,
+  // stories and mistake lists. One paragraph says so, kept separate from the
+  // school names so neither audience reads the other's copy as theirs.
+  const flat = code.replace(/\s+/g, " ");
+  assert.match(
+    flat,
+    /Not sitting the 11\+\?/i,
+    "the page never speaks to families outside the 11+",
+  );
+  assert.match(
+    flat,
+    /aged 9 to 11/i,
+    "the page does not name the ages it suits worldwide",
+  );
+  assert.match(
+    flat,
+    /no entrance test required/i,
+    "the worldwide paragraph still sounds gated on the exam",
+  );
+  // And the UK focus must survive alongside it: the H1, the kicker and the
+  // school names stay exactly where they are.
+  assert.match(code, /11\+ words to practise/i);
+  assert.match(flat, /Preparing for a selective school/i);
+});
+
 test("the page says where the words come from, without naming a third party", () => {
   // It used to name four publications with a count for each. Every figure was right
   // about the source files and the claim was wrong about the site: the words are
