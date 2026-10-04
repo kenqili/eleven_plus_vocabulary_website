@@ -121,8 +121,8 @@ const FACTS = [
     body: "It is a website. Open it on a laptop, a tablet or a phone and it works — there is no app to download and nothing to update.",
   },
   {
-    title: "About twenty questions a sitting",
-    body: "Short enough that a tired child will finish it. Most families do one a day, and stopping for a week loses nothing.",
+    title: "About twenty questions per round",
+    body: "Short enough that a tired child will finish it. Many families do one a day, and stopping for a week loses nothing.",
   },
   {
     title: "One account is one child",
@@ -181,14 +181,14 @@ export default function Landing({
       <Header />
       <main className="workspace">
         <section className="landing-hero">
-          <p className="landing-kicker">11+ English and verbal reasoning</p>
-          <h1>
-            The words for the 11+, in one place your child will actually use.
-          </h1>
+          <p className="landing-kicker">
+            11+ English and verbal reasoning · for Years 4–5
+          </p>
+          <h1>11+ words to practise, level by level, until you know them.</h1>
           <p className="landing-lede">
-            {words} words, sorted by how hard they are, with synonyms, antonyms
-            and real sentences. Short rounds, plain English, and a record of
-            exactly which words your child keeps getting wrong.
+            {words} words, from everyday to rare, tested five ways, with many
+            met again in short stories. About 20 questions per round, and words
+            your child misses come back for extra practice.
           </p>
           <div className="landing-actions">
             <Link className="primary-button" href="/practice">
@@ -203,6 +203,28 @@ export default function Landing({
             your child keeps the {freeWords} easiest words; the rest, and
             printing, need a paid term. Nothing is deleted when the trial ends.
           </p>
+          {/*
+            Who it is for, with names. Five parent reviewers from British,
+            Russian, Indian and Chinese backgrounds all asked the same question:
+            is this pitched at my exam — a highly selective grammar, a Kent
+            grammar, an independent? Naming example schools answers it in one
+            line, and it is the honest kind of SEO: parents search for their
+            school plus "vocabulary".
+
+            Two rules keep it honest, both asserted by `tests/landing-page.test.mjs`.
+            "Preparing for" examples only: each school sets its own test and this
+            teaches the words behind the papers, not the papers. No exam-board
+            names, no endorsement, no syllabus claims — the same rule that bans
+            Bond/GL/CEM everywhere else.
+          */}
+          <p className="landing-fine">
+            Preparing for a selective school — for example Queen
+            Elizabeth&apos;s Barnet, Henrietta Barnett, Tiffin or
+            St&nbsp;Olave&apos;s, or an independent such as St&nbsp;Paul&apos;s,
+            Westminster, Habs or Merchant Taylors? Each school sets its own
+            test. This teaches the vocabulary for the English and verbal
+            reasoning papers, not past papers.
+          </p>
         </section>
 
         {/*
@@ -214,18 +236,17 @@ export default function Landing({
         <section className="landing-section">
           <h2>What the 11+ actually asks for</h2>
           <p>
-            English and verbal reasoning papers both turn on one thing: knowing
-            what words mean, and knowing which words are near-synonyms and which
-            are near-opposites. Pick the wrong one out of four and the question
+            English and verbal reasoning papers both depend on one thing:
+            knowing what words mean, and which words are close in meaning and
+            which are opposite. Pick the wrong one out of four and the question
             is lost, however well your child reads the rest of it.
           </p>
           <p>
-            So vocabulary is not an extra — it is a floor underneath the English
-            and verbal reasoning papers. It is not the whole score, and this
-            site will not pretend otherwise: the papers are deliberately built
-            so that having done the vocabulary does not hand you the paper. What
-            it does is stop a child losing marks they had already earned by
-            reading well.
+            So vocabulary is not an extra — it is one of the most important
+            parts of the English and verbal reasoning papers. It is not the
+            whole score, and this site will not pretend otherwise: no word list
+            gives you the exam questions. What it does is stop a child losing
+            marks they had already earned by reading well.
           </p>
         </section>
 
@@ -245,8 +266,8 @@ export default function Landing({
             ))}
           </ul>
           <p className="muted">
-            Four options each, so a child is choosing between words they half
-            know rather than producing one from nothing.
+            Four options each, so a child chooses from four answers instead of
+            writing their own.
           </p>
         </section>
 
@@ -270,9 +291,9 @@ export default function Landing({
           <h2>Where the words come from</h2>
           <p>
             We built the {words} words by collecting them the way our own sons
-            would: writing down every unfamiliar word they met in their reading
-            and their papers, working through UK education websites and free
-            revision resources, and adding the ones that kept coming up.
+            did: writing down every unfamiliar word they met in their reading
+            and their practice papers, working through UK education websites and
+            free revision resources, and adding the ones that kept coming up.
           </p>
           <p>
             Every one of them has a definition and a real example sentence. All
@@ -281,9 +302,9 @@ export default function Landing({
           </p>
           <p>
             They run from everyday words to rare ones that turn up once in a
-            passage, sorted into six levels. The 11+ papers are written to be
-            resistant to covering a syllabus, which is why this covers the words
-            themselves rather than the format.
+            passage, sorted into six levels. There is no official 11+ word list,
+            and every school makes a different test — so this teaches many words
+            instead of how one school asks its questions.
           </p>
         </section>
 
@@ -304,14 +325,15 @@ export default function Landing({
           <p>
             A word on a list is a word a child can recognise and not much more.
             A word they have read used, in a story they wanted to finish, is a
-            word they own. So we write the vocabulary into short stories —
-            properly funny ones, because a child who is laughing is a child who
-            is reading — and the word turns up in the middle of a sentence they
-            have to understand to follow.
+            word they are likelier to remember. So we write the vocabulary into
+            short stories — written to be funny, because a child who is laughing
+            is a child who is reading — and the word turns up in the middle of a
+            sentence they have to understand to follow.
           </p>
           <p>
             There are {stories} of them, across all six levels, and they cost
-            nothing to read. More are being added all the time.
+            nothing to read. These are words that keep turning up — in the exam,
+            and in secondary-school reading after it.
           </p>
           <div className="landing-actions">
             <Link className="text-button" href="/stories">
@@ -329,23 +351,24 @@ export default function Landing({
           <h2>From everyday to rare</h2>
           <p>
             Sorted into six levels, so a child starts where they are and moves
-            up rather than being drowned. A child who has never met a rare word
-            is not behind; they are at the start of level one.
+            up step by step instead of all at once. A child who has never met a
+            rare word is not behind; they are at the beginning, which is where
+            Everyday starts.
           </p>
           <ol className="landing-levels">
-            {LEVELS.map((level, index) => (
+            {LEVELS.map((level) => (
               <li key={level.name}>
                 <span className="landing-level-name">{level.name}</span>
                 <span className="landing-level-word muted">
                   {level.example}
                 </span>
-                <span className="muted"> level {index + 1}</span>
               </li>
             ))}
           </ol>
           <p className="muted">
             Practise one level, or choose exactly which words to work on — you
-            are not limited to the level the app thinks they are at.
+            are not limited to the level the app thinks they are at. The higher
+            levels are there for children aiming at highly selective schools.
           </p>
         </section>
 
@@ -356,7 +379,7 @@ export default function Landing({
           family who can print exactly what they need does not have to.
         */}
         <section className="landing-section">
-          <h2>Free to print while your access runs</h2>
+          <h2>Free to print while your trial or membership lasts</h2>
           <p>
             Any of the {words} words can be printed as a clean sheet — word
             only, word and meaning, or word with a sentence — laid out to fit
@@ -364,9 +387,8 @@ export default function Landing({
           </p>
           <p>
             And you can print exactly the words your child gets wrong. The app
-            keeps track of which ones slip up, and the print screen will pull
-            the list of those and nothing else. It is the fastest way to turn a
-            weak subject into a short list.
+            remembers which ones they answer wrong, and the print page shows
+            only those words. It turns a weak subject into a short list.
           </p>
           <div className="landing-actions">
             <Link className="text-button" href="/words/print">
@@ -377,10 +399,10 @@ export default function Landing({
             </Link>
           </div>
           <p className="landing-fine">
-            Printing is free while your access is running, including the 7-day
-            trial. After a free trial ends it needs a paid term — we would
-            rather your child learned the words than bought anything from us,
-            but we do have hosting to pay for.
+            Printing is free while your trial or membership is active, including
+            the 7-day trial. After a free trial ends it needs a paid term — we
+            would rather your child learned the words than bought anything from
+            us, but we do have hosting to pay for.
           </p>
         </section>
 
@@ -395,13 +417,12 @@ export default function Landing({
           <p>
             Vocabulary, and the English and verbal reasoning that depends on it.
             <strong> Maths and non-verbal reasoning are not covered</strong> —
-            they need different practice of a different kind, and a vocabulary
-            app that pretended otherwise would waste your time as well as your
-            money.
+            they need different practice, and a vocabulary app that pretended
+            otherwise would waste your time as well as your money.
           </p>
           <p className="muted">
             There are plenty of good resources for those. This one does the
-            words, properly.
+            words.
           </p>
         </section>
 
@@ -422,10 +443,10 @@ export default function Landing({
             </article>
             <article className="landing-card">
               <BookOpen size={20} />
-              <h3>Reading practice</h3>
+              <h3>Stories</h3>
               <p className="muted">
-                Short stories with the vocabulary in them, so a new word is met
-                in a sentence rather than on its own.
+                Short stories with the vocabulary in them, free to read, so a
+                new word is met in a sentence rather than on its own.
               </p>
             </article>
             <article className="landing-card">
@@ -489,8 +510,9 @@ export default function Landing({
               </ul>
               <p>
                 It is a one-off payment: it does not renew, there is nothing to
-                cancel, and we will not charge you again. Buying again adds to
-                the time your child has rather than replacing it.
+                cancel, and we will not charge you again. Buying again just adds
+                time. One account is one child, so two children need to pay
+                twice.
               </p>
             </>
           ) : (
@@ -607,7 +629,7 @@ export default function Landing({
           page a parent may want before paying rather than after.
         */}
         <footer className="site-footer">
-          <span>Small steps. Lasting knowledge.</span>
+          <span>Small steps, kept going.</span>
           <span>
             <Link href="/privacy">What we store, and how to delete it</Link> ·{" "}
             <a href="mailto:support@11pluswords.com">support@11pluswords.com</a>

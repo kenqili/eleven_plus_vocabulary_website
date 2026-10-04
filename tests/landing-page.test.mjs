@@ -552,7 +552,12 @@ test("print and the mistakes list are both offered", () => {
   // `/api/words/export` answers 402 to an account whose access has ended, so a lapsed
   // free account cannot print a single word. The claim is now the true one, and the
   // test pins the qualification so it cannot be dropped to make the sentence punchier.
-  assert.match(code, /free while your access is running/i);
+  //
+  // The qualification used to read "while your access is running", which reviewers
+  // flagged as jargon — "access runs" means nothing to a parent. It now names the
+  // two states plainly, and the pin follows the wording rather than the other way
+  // round.
+  assert.match(code, /free while your trial or membership is active/i);
   assert.doesNotMatch(
     code,
     /free on every account|free to print, and no restrictions/i,
@@ -649,6 +654,70 @@ test("what the page says about each word is what the word bank actually holds", 
   );
 });
 
+test("school names are preparation examples, never coverage or endorsement", () => {
+  // Five parent reviewers from British, Russian, Indian and Chinese backgrounds
+  // all asked the same question: is this pitched at my exam? Naming example
+  // schools answers it in one line, and it is the honest kind of SEO — parents
+  // search for their school plus "vocabulary".
+  //
+  // The line it must never cross: implying the site covers a school's syllabus,
+  // is endorsed by a school, or aligns with an exam board. There is no 11+
+  // vocabulary syllabus and the papers are deliberately syllabus-resistant, so
+  // any of those would be a claim about someone else's exam that nothing in
+  // this repository supports. "Preparing for" examples only.
+  const flat = code.replace(/\s+/g, " ");
+  assert.match(
+    flat,
+    /Preparing for a selective school/i,
+    "the page never says who it is for, so a parent cannot tell if it suits their exam",
+  );
+  for (const school of [
+    "Queen Elizabeth",
+    "Henrietta Barnett",
+    "Tiffin",
+    "Olave",
+    "St Paul",
+    "Westminster",
+    "Habs",
+    "Merchant Taylors",
+  ]) {
+    // Whitespace-tolerant: prettier reflows prose so a name can straddle a line
+    // break in source, and two names use `&nbsp;` to keep them on one line when
+    // rendered.
+    assert.match(
+      flat,
+      new RegExp(school.replace(/\s+/g, "(?:\\s|&nbsp;)+")),
+      `the page does not name ${school} as a preparation example`,
+    );
+  }
+  // The disclaimer that keeps the names honest.
+  assert.match(
+    flat,
+    /Each school sets its own test/i,
+    "school names appear without saying each school sets its own test",
+  );
+  assert.match(
+    flat,
+    /not past papers/i,
+    "the page names schools without saying it teaches words rather than papers",
+  );
+  // And the names must never harden into claims.
+  for (const claim of [
+    /covers .* syllabus/i,
+    /endorsed by/i,
+    /approved by/i,
+    /in partnership with/i,
+    /pass rate/i,
+    /guarantee/i,
+  ]) {
+    assert.doesNotMatch(
+      flat,
+      claim,
+      `the page makes a claim about schools (${claim}) that nothing supports`,
+    );
+  }
+});
+
 test("the page says where the words come from, without naming a third party", () => {
   // It used to name four publications with a count for each. Every figure was right
   // about the source files and the claim was wrong about the site: the words are
@@ -685,14 +754,15 @@ test("the stories are the way to learn the words, and said so", () => {
   assert.match(code, /Words are learned by meeting them/i);
   assert.match(code, /stories/i);
   assert.match(code, /funny/i, "the stories are not described as enjoyable");
-  // Whitespace-tolerant, and wording-agnostic: the sentence was reworded when the
-  // count went in ("More are being added" rather than "More stories are being
-  // added"), and the point of the assertion is that the page stays honest about
-  // there being more, not the exact phrasing.
-  assert.match(
+  // The section used to end "More are being added all the time." That promised a
+  // cadence nobody measures, so it was deleted: the count above ("There are {stories}
+  // of them") is the honest statement of what exists, and a growth promise with no
+  // cadence is exactly the kind of unverifiable line the second review round vetoed.
+  // Pinned as an absence so it cannot drift back in.
+  assert.doesNotMatch(
     code.replace(/\s+/g, " "),
     /More (stories )?are being added/i,
-    "the page does not say more are coming, which is honest about what exists now",
+    "the page promises more stories on a schedule nobody measures",
   );
   // And it must be reachable.
   assert.match(code, /href="\/stories"/);
