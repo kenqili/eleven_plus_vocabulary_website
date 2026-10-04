@@ -21,6 +21,15 @@
  */
 import { CHOICES_PER_PROBLEM, type Problem } from "./bank.ts";
 import { chooseWord, reviewDueAt, RECENT_WORD_WINDOW } from "./ordering.ts";
+import {
+  allocationFor,
+  currentLevel,
+  levelFractions,
+  levelScore,
+  narrowToBand,
+  type Placement,
+  type TrailingAnswer,
+} from "./placement.ts";
 import { awardFor, ELIGIBLE_ANSWERS, type Award } from "./credits.ts";
 import {
   advanceMastery,
@@ -92,6 +101,15 @@ export type EngineOptions = {
   allowedWordIds?: Set<string>;
   level: Difficulty | null;
   types: QuestionType[];
+  /**
+   * Recent graded answers, oldest first, capped at thirty by the caller.
+   *
+   * The server reads these from `learning_events`; the browser accumulates
+   * them from `grade()` below. Both describe the same thing — trailing
+   * accuracy per band — so both sides derive the same level from the same
+   * history, and the parity test hands both the same explicit list.
+   */
+  trailing?: TrailingAnswer[];
   random?: () => number;
   now?: () => number;
 };
@@ -184,6 +202,15 @@ export type ShownQuestion = {
   help: string;
   clue: string;
   difficulty: number;
+  /**
+   * Where the child is, computed for this question.
+   *
+   * Present only in automatic ("all levels") mode, where it drove the band
+   * draw above. With an explicit level choice there is nothing to estimate —
+   * the child said where they are — so this is null rather than a number that
+   * looks authoritative and is not.
+   */
+  placement: Placement | null;
   mastery: ReturnType<typeof masteryProgress>;
   correctCount: number;
   seen: number;
@@ -237,6 +264,15 @@ export class PracticeEngine {
   private eligibleCounts = new Map<string, number>();
   private streak = 0;
   private recent: string[];
+  /**
+   * Trailing graded answers for the level estimate, oldest first.
+   *
+   * Seeded from the caller (the server's `learning_events`, or fixtures) and
+   * extended by every `grade()` below, so the estimate sharpens as the session
+   * runs. Capped at thirty: older answers describe a child who knew less, and
+   * the down-track only reads the last thirty anyway.
+   */
+  private trailing: TrailingAnswer[] = [];
   private lastQuestion: ShownQuestion | null = null;
   private readonly options: Required<Pick<EngineOptions, "level" | "types">> & {
     allowed?: Set<string>;
@@ -278,6 +314,9 @@ export class PracticeEngine {
       this.typeCounts.set(wordId, byType);
     }
     this.attemptCount = options.attemptCount;
+    // The caller's trailing history, if any. The demo starts empty and the
+    // estimate builds purely in-session; the server seeds from learning_events.
+    this.trailing = [...(options.trailing ?? [])].slice(-30);
     // The streak the credit rules read is the account's, not a guess: a flush
     // reconciles it, and until then this is where the every-third bonus starts.
     this.streak = options.streak ?? 0;
@@ -337,6 +376,32 @@ export class PracticeEngine {
   }
 
   /**
+   * Where the child is, for the badge and the band draw.
+   *
+   * Derived from the counters every time, never stored: the same rows always
+   * give the same level, on both sides of the client/server split. Fractions
+   * cover the pool's bands; totals come from the pool itself so excluded words
+   * do not count against the child.
+   */
+  placement(): Placement {
+    const words = this.pool();
+    const totals = [0, 0, 0, 0, 0, 0];
+    for (const word of words) {
+      if (word.difficulty >= 0 && word.difficulty < 6)
+        totals[word.difficulty] += 1;
+    }
+    const fractions = levelFractions(
+      words.map((word) => ({
+        level: word.difficulty,
+        mastered: hasMastered(this.countersFor(word.id)),
+      })),
+      totals,
+    );
+    const level = currentLevel(fractions, this.trailing);
+    return { level, score: levelScore(level, fractions[level] ?? 0) };
+  }
+
+  /**
    * The next question, or null when there is nothing left to ask.
    *
    * Null is a real answer, not a failure: a child who has mastered every word they
@@ -347,8 +412,32 @@ export class PracticeEngine {
       (word) => !hasMastered(this.countersFor(word.id)),
     );
     if (!available.length) return null;
+    // Automatic placement, only when the child did not pick a band. Due
+    // mistake-reviews anywhere bypass the draw — the spaced-repetition clock
+    // outranks the band plan — otherwise a band is drawn from the allocation
+    // weights and the word is picked inside it. An explicit level choice keeps
+    // the old exact filter in pool().
+    let wordPool = available;
+    let placement: Placement | null = null;
+    if (this.options.level === null) {
+      placement = this.placement();
+      const owed = available.some((word) => {
+        const counters = this.countersFor(word.id);
+        return (
+          counters.retryAt !== null && counters.retryAt <= this.attemptCount
+        );
+      });
+      if (!owed) {
+        wordPool = narrowToBand(
+          available,
+          (word) => word.difficulty,
+          allocationFor(placement.level),
+          this.options.random,
+        ).words;
+      }
+    }
     const chosenId = chooseWord(
-      available.map((word) => {
+      wordPool.map((word) => {
         const counters = this.countersFor(word.id);
         return { id: word.id, seen: counters.seen, retryAt: counters.retryAt };
       }),
@@ -405,6 +494,7 @@ export class PracticeEngine {
       correctCount: counters.correct,
       seen: counters.seen,
       shownAt: this.options.now(),
+      placement,
     };
     this.lastQuestion = shown;
     return shown;
@@ -444,6 +534,16 @@ export class PracticeEngine {
       evidence,
       question.difficulty,
     );
+    // The trailing history for the level estimate. Unassisted correct only:
+    // assisted, revealed and skipped answers count as not-correct, the same
+    // way they do not count toward mastery.
+    this.trailing = [
+      ...this.trailing,
+      {
+        level: question.difficulty,
+        correct: correct && !skipped && !answer.assisted,
+      },
+    ].slice(-30);
     const day = new Date(this.options.now()).toISOString().slice(0, 10);
     this.counters.set(question.wordId, {
       // The advanced counters, not the ones this answer started from. Keeping

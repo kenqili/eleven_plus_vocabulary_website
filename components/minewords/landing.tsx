@@ -182,7 +182,8 @@ export default function Landing({
       <main className="workspace">
         <section className="landing-hero">
           <p className="landing-kicker">
-            11+ English and verbal reasoning · for Years 4–5
+            11+ English and verbal reasoning · for Years 4 to 6 preparing for
+            the entrance test
           </p>
           <h1>11+ words to practise, level by level, until you know them.</h1>
           <p className="landing-lede">

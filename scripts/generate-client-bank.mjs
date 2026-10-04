@@ -28,7 +28,6 @@
  * naming scheme is decided in one place. The sizes are printed because this
  * download is now on the critical path of a child's first question.
  */
-import { createHash } from "node:crypto";
 import {
   mkdirSync,
   readFileSync,
@@ -38,51 +37,15 @@ import {
 } from "node:fs";
 import { resolve } from "node:path";
 import { brotliCompressSync, constants } from "node:zlib";
+import {
+  buildClientBank,
+  contentHash,
+  freeIds,
+  fullIds,
+} from "./build-client-bank.mjs";
 
 const bank = JSON.parse(readFileSync("data/problem-bank.json", "utf8"));
 const OUT = resolve("public/bank");
-
-/** How many words a lapsed account may use. See lib/server/free-words.ts. */
-const FREE_WORD_COUNT = 224;
-
-const types = [...new Set(bank.problems.map((problem) => problem[1]))];
-const typeIndex = new Map(types.map((type, index) => [type, index]));
-
-/**
- * The word columns, minus the id.
- *
- * Order is fixed by `meta.wordColumns` in the bank. The id is dropped because it
- * equals the word for every row in the collection, which was checked rather than
- * assumed; if a row ever disagreed the client would silently address the wrong
- * word, so the check below throws instead.
- */
-const columns = bank.meta.wordColumns;
-const idColumn = columns.indexOf("id");
-const wordColumn = columns.indexOf("word");
-const shape = columns
-  .filter((name) => name !== "id")
-  .map((name) => columns.indexOf(name));
-
-const shapedWords = bank.words.map((row) => {
-  if (row[idColumn] !== row[wordColumn])
-    throw Error(
-      `the id and the word differ for "${row[wordColumn]}", so the id column cannot be dropped`,
-    );
-  return shape.map((column) => row[column]);
-});
-
-const freeOrder = bank.freeOrder.slice(0, FREE_WORD_COUNT);
-if (
-  freeOrder.length !== FREE_WORD_COUNT ||
-  new Set(freeOrder).size !== FREE_WORD_COUNT
-)
-  throw Error(
-    `the shipped free order does not hold ${FREE_WORD_COUNT} distinct words; the free slice would be wrong`,
-  );
-const idOf = (row) => row[idColumn];
-const allIds = bank.words.map(idOf);
-if (!freeOrder.every((id) => bank.words.some((row) => idOf(row) === id)))
-  throw Error("the free order names a word the bank does not contain");
 
 /**
  * Build one slice, in the order the ids are given.
@@ -95,27 +58,13 @@ if (!freeOrder.every((id) => bank.words.some((row) => idOf(row) === id)))
  *
  * Words are addressed by index within the slice, so the free slice's problems
  * point at its own numbering rather than at the full collection's.
+ *
+ * The shaping itself lives in `scripts/build-client-bank.mjs`, shared with the
+ * test suite so tests build the same payload from source instead of reading
+ * these hashed output files by name.
  */
 function build(ids) {
-  const byId = new Map();
-  bank.words.forEach((row, at) => byId.set(idOf(row), at));
-  const words = [];
-  const index = new Map();
-  for (const id of ids) {
-    index.set(id, words.length);
-    words.push(shapedWords[byId.get(id)]);
-  }
-  const problems = [];
-  for (const [wordId, type, prompt, answer, distractors] of bank.problems) {
-    const at = index.get(wordId);
-    if (at === undefined) continue;
-    // The distractors ship separately from the answer, which is what stops a
-    // question being built with its own answer already in the option list. The
-    // client recombines the two with the same pure `choicesForProblem` the
-    // server uses, so a question looks identical either side.
-    problems.push([at, typeIndex.get(type), prompt, answer, distractors]);
-  }
-  return { v: 1, choices: bank.meta.choicesPerProblem, types, words, problems };
+  return buildClientBank(bank, ids);
 }
 
 mkdirSync(OUT, { recursive: true });
@@ -126,11 +75,11 @@ for (const stale of readdirSync(OUT))
 
 const written = [];
 for (const [name, payload] of [
-  ["full", build(allIds)],
-  ["free", build(freeOrder)],
+  ["full", build(fullIds(bank))],
+  ["free", build(freeIds(bank))],
 ]) {
   const json = JSON.stringify(payload);
-  const hash = createHash("sha256").update(json).digest("hex").slice(0, 12);
+  const hash = contentHash(json);
   const file = `bank-${name}-${hash}.json`;
   writeFileSync(resolve(OUT, file), json);
   const raw = Buffer.byteLength(json);

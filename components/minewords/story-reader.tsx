@@ -343,6 +343,9 @@ export default function StoryReader({ id }: { id: string }) {
   const [story, setStory] = useState<StoryDetail | null>(null),
     [error, setError] = useState("");
   const [retry, setRetry] = useState(0);
+  // Same recommendation as the shelf: warn, never block. Signed in only, and
+  // absent on any failure — a story must open even when the estimate cannot.
+  const [placedLevel, setPlacedLevel] = useState<number | null>(null);
   useEffect(() => {
     let active = true;
     api<StoryDetail>(`/api/stories?id=${encodeURIComponent(id)}`)
@@ -359,6 +362,17 @@ export default function StoryReader({ id }: { id: string }) {
       active = false;
     };
   }, [id, retry]);
+  useEffect(() => {
+    let active = true;
+    void api<{ level: number }>("/api/placement")
+      .then((response) => {
+        if (active) setPlacedLevel(response.level);
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, []);
   return (
     <>
       <Header />
@@ -366,6 +380,15 @@ export default function StoryReader({ id }: { id: string }) {
         <Link className="text-button" href="/stories">
           ← All stories
         </Link>
+        {story?.id === id &&
+          placedLevel !== null &&
+          story.level > placedLevel + 1 && (
+            <p className="stories-warning" role="status">
+              This story is Level {story.level}, above your practice Level{" "}
+              {placedLevel} — expect rarer words. Tap any bold word for its
+              meaning.
+            </p>
+          )}
         {story?.id === id && <Reading key={id} story={story} />}
         {!story && !error && <p role="status">Opening your adventure…</p>}
         {error && (

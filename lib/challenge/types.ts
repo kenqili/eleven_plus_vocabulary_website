@@ -3,6 +3,8 @@ import type { QuestionType } from "./config";
 export type Question = {
   mastery?: import("./mastery").MasteryProgress;
   difficulty?: number;
+  /** Where the child is, in automatic mode. Null with an explicit level choice. */
+  placement?: { level: number; score: number } | null;
   clue: string;
   id: string;
   word: string;

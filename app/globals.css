@@ -935,6 +935,40 @@ hr {
   color: var(--ink-2);
   font-size: 16px;
 }
+/*
+ * The score over time, under the level picker.
+ *
+ * Full width of the picker row it sits in, because a chart squeezed beside a
+ * select is decoration rather than information. The line uses the brand ink so
+ * it reads in every theme without a per-theme override; the grid is quiet on
+ * purpose, since the dots are the data and the lines are only the scale.
+ */
+.score-chart {
+  flex-basis: 100%;
+  margin: 6px 0 0;
+}
+.score-chart-svg {
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+  display: block;
+}
+.score-chart-line {
+  stroke: var(--ink-brand);
+  stroke-width: 2.5;
+}
+.score-chart-dot {
+  fill: var(--ink-brand);
+}
+.score-chart-grid {
+  stroke: var(--line-2);
+  stroke-width: 1;
+}
+.score-chart-band,
+.score-chart-day {
+  fill: var(--ink-3);
+  font-size: 11px;
+}
 .practice-types {
   display: flex;
   flex-wrap: wrap;
@@ -2796,6 +2830,23 @@ hr {
   background: var(--surface-slate);
   border-color: var(--line-slate);
   color: var(--ink-invert);
+}
+/*
+ * The too-hard warning on the shelf and in the reader.
+ *
+ * A notice, not an error: the child is allowed to read above their level, so
+ * this must not look like something went wrong. Amber-tinted surface where the
+ * theme provides one, falling back to the default surface, with the same ink
+ * as body text so it stays readable everywhere.
+ */
+.stories-warning {
+  margin: 12px 0 0;
+  padding: 12px 16px;
+  border: 1px solid var(--line-brand);
+  border-radius: var(--radius-sm);
+  background: var(--surface-brand-2);
+  color: var(--ink-2);
+  line-height: 1.6;
 }
 .story-shelf-heading {
   display: flex;

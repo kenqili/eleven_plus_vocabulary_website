@@ -24,9 +24,11 @@ import {
 } from "../lib/challenge/credits.ts";
 import { CUMULATIVE_FLOOR } from "../lib/challenge/mastery.ts";
 import { QUESTION_TYPES } from "../lib/challenge/config.ts";
+import { testBank } from "./helpers/test-bank.mjs";
 
-const manifest = JSON.parse(readFileSync("data/client-bank.json", "utf8"));
-const bank = JSON.parse(readFileSync(`public${manifest.full.url}`, "utf8"));
+// Built from tracked source: `public/bank/` is gitignored and content-hashed,
+// so opening it by name failed on clean checkouts and in CI.
+const bank = testBank();
 
 function seeded(seed = 11) {
   let state = seed >>> 0;

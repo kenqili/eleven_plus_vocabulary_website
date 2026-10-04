@@ -25,6 +25,24 @@ export default function StoryLibrary() {
   const [level, setLevel] = useState<Difficulty>(0);
   const [bookmarks, setBookmarks] = useState<Record<string, Bookmark>>({});
   const [error, setError] = useState("");
+  /**
+   * Where practice says the child is, for the recommendation below. Signed in
+   * only: the placement endpoint needs an account, and a signed-out reader
+   * picks freely with no badge to compare against. Absent on any failure —
+   * the shelf works without it, so it stays a suggestion, never a gate.
+   */
+  const [placedLevel, setPlacedLevel] = useState<number | null>(null);
+  useEffect(() => {
+    let active = true;
+    void api<{ level: number }>("/api/placement")
+      .then((response) => {
+        if (active) setPlacedLevel(response.level);
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, []);
   const changingLevel = useRef(false);
   const [levelBusy, setLevelBusy] = useState(false);
   const [retry, setRetry] = useState(0);
@@ -165,6 +183,45 @@ export default function StoryLibrary() {
             </button>
           ))}
         </div>
+        {/*
+          Read at your level, warned above it. The recommendation follows the
+          practice estimate, not the picker: a child browsing Level 5 out of
+          curiosity is fine, but one who lives there while practising Level 2
+          should know the words will be rarer than their questions. Never a
+          block — curiosity is not an error path — and silent when the estimate
+          is missing or already matches.
+        */}
+        {placedLevel !== null && level > placedLevel + 1 && (
+          <p className="stories-warning" role="status">
+            These stories use rarer words than you are practising (Level {level}{" "}
+            stories, practice Level {placedLevel}). Brave choice — tap any bold
+            word for its meaning.{" "}
+            <button
+              type="button"
+              className="text-button"
+              disabled={levelBusy || !data}
+              onClick={() => void selectLevel(placedLevel as Difficulty)}
+            >
+              Read Level {placedLevel} instead →
+            </button>
+          </p>
+        )}
+        {placedLevel !== null &&
+          data?.signedIn &&
+          level !== placedLevel &&
+          level <= placedLevel + 1 && (
+            <p className="muted">
+              Practice says you are at Level {placedLevel}.{" "}
+              <button
+                type="button"
+                className="text-button"
+                disabled={levelBusy || !data}
+                onClick={() => void selectLevel(placedLevel as Difficulty)}
+              >
+                Read Level {placedLevel} stories →
+              </button>
+            </p>
+          )}
         <div className="story-shelf-heading">
           <h2>{DIFFICULTY_LEVELS[level]}</h2>
           {data && (

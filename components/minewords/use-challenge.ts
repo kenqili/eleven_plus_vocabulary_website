@@ -108,6 +108,7 @@ function shownToQuestion(shown: ShownQuestion): Question {
     seen: shown.seen,
     mastery: shown.mastery,
     difficulty: shown.difficulty,
+    placement: shown.placement,
     clue: shown.clue,
     word: shown.word,
     source: "flash_card_1",

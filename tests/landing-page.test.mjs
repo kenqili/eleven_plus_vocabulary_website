@@ -21,6 +21,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { words } from "../scripts/load-word-bank.mjs";
+import { testBank } from "./helpers/test-bank.mjs";
 
 /**
  * The story library, counted the same way the app counts it.
@@ -348,13 +349,11 @@ test("every difficulty example is a real word at the level claimed", () => {
   // whole value of this page is that it can be checked. So every example is read
   // out of the bank here and matched against the difficulty band it is listed
   // under — which is the assertion the copy had to pass and did not.
-  const bank = JSON.parse(
-    readFileSync(
-      "public/bank/" +
-        readdirSync("public/bank").find((f) => f.startsWith("bank-full")),
-      "utf8",
-    ),
-  );
+  //
+  // Built from tracked source rather than read from `public/bank/`, whose files
+  // are gitignored and content-hashed: opening them by name failed on clean
+  // checkouts and in CI while passing on machines that had once built.
+  const bank = testBank();
   // The bank stores each word as a positional array; index 0 is the word and
   // index 5 is its difficulty level.
   const LEVEL_NAMES = [

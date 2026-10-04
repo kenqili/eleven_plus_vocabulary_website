@@ -23,6 +23,7 @@ import { DIFFICULTY_LEVELS, type Difficulty } from "@/lib/challenge/difficulty";
 import Header from "./header";
 import ProgressPanel from "./progress-panel";
 import DailyMission from "./daily-mission";
+import ScoreChart from "./score-chart";
 import WordExplanation from "./word-explanation";
 import { CoachNote } from "./coach-note";
 import {
@@ -302,6 +303,16 @@ export default function Challenge() {
               <span className="muted">
                 Optional. Every level is part of the same saved progress.
               </span>
+              {/*
+                The score over time, in automatic mode only: with an explicit
+                level choice the chart's bands would describe a pool the child
+                is not practising. Refreshed on the mastered count, so the line
+                extends the moment a word is mastered rather than next visit.
+                Signed in only — the demo keeps nothing, so it has no history.
+              */}
+              {!demo && study.level === null && (
+                <ScoreChart refreshKey={stats?.mastered ?? 0} />
+              )}
             </div>
             {/*
               One banner, four states, because two of them used to be
@@ -399,6 +410,22 @@ export default function Challenge() {
                     <span className="question-badges">
                       {questionLevel && (
                         <span className="pill level-pill">{questionLevel}</span>
+                      )}
+                      {/*
+                        Where the child is, shown while they work. Only in
+                        automatic mode: with an explicit level choice the
+                        question carries no placement, because the child said
+                        where they are. The score is formatted for en-GB so
+                        4,150 reads as four thousand, not a decimal.
+                      */}
+                      {study.level === null && question.placement && (
+                        <span
+                          className="pill level-pill"
+                          title={`Level ${question.placement.level} of 0 to 5, score ${question.placement.score} out of 10,000`}
+                        >
+                          Level {question.placement.level} ·{" "}
+                          {question.placement.score.toLocaleString("en-GB")}
+                        </span>
                       )}
                       <span className="pill">
                         {question.seen <= 1

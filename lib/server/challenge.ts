@@ -18,6 +18,16 @@ import { storyMeaning, wordClue } from "@/lib/challenge/story-meanings";
 import { localDay } from "@/lib/challenge/rewards";
 import { chooseWord, reviewDueAt } from "@/lib/challenge/ordering";
 import {
+  allocationFor,
+  currentLevel,
+  levelFractions,
+  levelScore,
+  narrowToBand,
+  type Placement,
+  type TrailingAnswer,
+} from "@/lib/challenge/placement";
+import { trailingAnswers } from "./placement";
+import {
   choicesForProblem,
   levelOf,
   words,
@@ -200,6 +210,7 @@ function toQuestion(
   attempt: Attempt,
   pool: readonly Word[],
   progress?: WordProgress,
+  placement?: Placement | null,
 ): Question {
   const word = wordFor(attempt.word_id, pool);
   if (!word)
@@ -207,6 +218,10 @@ function toQuestion(
   return {
     id: attempt.id,
     difficulty: levelFor(word.id),
+    // Where the child is, when they did not choose a band. Null with an
+    // explicit choice: the child said where they are, so there is nothing to
+    // estimate and a number would look authoritative without being so.
+    placement: placement ?? null,
     mastery: masteryProgress(
       {
         correct: progress?.correct ?? 0,
@@ -286,6 +301,51 @@ export async function nextQuestion(
       .all<WordProgress>()
   ).results;
   const byId = new Map(rows.map((p) => [p.word_id, p]));
+  const eligible = allProblems.filter((problem) =>
+    types.includes(problem.type),
+  );
+  const eligibleWordIds = new Set(eligible.map((problem) => problem.wordId));
+  const available = pool.filter(
+    (w) =>
+      eligibleWordIds.has(w.id) &&
+      (level === null || levelFor(w.id) === level) &&
+      isAllowedWord(w.id, allowedWordIds) &&
+      // Absent means never practised, which is available. Present means the row
+      // itself decides: a word is retired either by the flag or by reaching the
+      // cumulative floor without it being set.
+      !hasMastered(byId.get(w.id) ?? initialMastery),
+  );
+  // Where the child is, when they did not choose a band. Read from
+  // `learning_events` via the shared reader — the question route, the score
+  // chart and the story library must share one definition of "recent", or the
+  // badge, the line and the recommendation will disagree about the same child.
+  // Skipped entirely with an explicit choice: with nothing to estimate, there
+  // is nothing to read and the placement stays null.
+  const trailing: TrailingAnswer[] =
+    level === null ? await trailingAnswers(userId) : [];
+  // Fractions run over the eligible pool rather than the starter-narrowed one,
+  // so the estimate describes the child's knowledge and not the fresh-account
+  // guard below. The browser engine derives the same number from the same rows,
+  // which is what keeps the two question paths in agreement.
+  const placementOf = (): Placement | null => {
+    if (level !== null) return null;
+    const totals = [0, 0, 0, 0, 0, 0];
+    const items: Array<{ level: number; mastered: boolean }> = [];
+    for (const word of pool) {
+      if (!eligibleWordIds.has(word.id)) continue;
+      if (!isAllowedWord(word.id, allowedWordIds)) continue;
+      const band = levelFor(word.id);
+      if (band < 0 || band > 5) continue;
+      totals[band] += 1;
+      items.push({
+        level: band,
+        mastered: hasMastered(byId.get(word.id) ?? initialMastery),
+      });
+    }
+    const fractions = levelFractions(items, totals);
+    const band = currentLevel(fractions, trailing);
+    return { level: band, score: levelScore(band, fractions[band] ?? 0) };
+  };
   const pending = await db
     .prepare(
       "SELECT * FROM attempts WHERE user_id = ? AND answered_at IS NULL ORDER BY created_at DESC LIMIT 1",
@@ -306,7 +366,12 @@ export async function nextQuestion(
       (pending.answer || currentWord.definition) === currentProblem.answer &&
       JSON.parse(pending.choices).includes(currentProblem.answer)
     )
-      return toQuestion(pending, pool, byId.get(pending.word_id));
+      return toQuestion(
+        pending,
+        pool,
+        byId.get(pending.word_id),
+        placementOf(),
+      );
     // Retire a pending question when its word was removed or its definition edited.
     await db
       .prepare(
@@ -315,20 +380,9 @@ export async function nextQuestion(
       .bind(Date.now(), pending.id, userId)
       .run();
   }
-  const eligible = allProblems.filter((problem) =>
-    types.includes(problem.type),
-  );
-  const eligibleWordIds = new Set(eligible.map((problem) => problem.wordId));
-  const available = pool.filter(
-    (w) =>
-      eligibleWordIds.has(w.id) &&
-      (level === null || levelFor(w.id) === level) &&
-      isAllowedWord(w.id, allowedWordIds) &&
-      // Absent means never practised, which is available. Present means the row
-      // itself decides: a word is retired either by the flag or by reaching the
-      // cumulative floor without it being set.
-      !hasMastered(byId.get(w.id) ?? initialMastery),
-  );
+  // `available`, `eligible` and `eligibleWordIds` are computed above, before
+  // the pending check, so the placement estimate can read them. The filter is
+  // pure and the rows have not changed since.
   if (!available.length) return null;
   // A child who has never answered anything starts on the easier bands rather
   // than being handed a uniformly random word out of 2,249, which is a
@@ -352,8 +406,30 @@ export async function nextQuestion(
       .bind(userId)
       .all<{ word_id: string }>()
   ).results;
+  // Automatic placement, only when the child did not pick a band. Due
+  // mistake-reviews anywhere bypass the draw — the spaced-repetition clock
+  // outranks the band plan — otherwise a band is drawn from the allocation
+  // weights and the word is picked inside it. An explicit level choice keeps
+  // the exact filter applied above, and a drawn band with nothing to ask
+  // leaves the starter set in place rather than returning nothing.
+  const placed = placementOf();
+  let bandWords = startable;
+  if (placed) {
+    const owed = startable.some((word) => {
+      const retryAt = byId.get(word.id)?.retry_at ?? null;
+      return retryAt !== null && retryAt <= count;
+    });
+    if (!owed) {
+      bandWords = narrowToBand(
+        startable,
+        (word) => levelFor(word.id),
+        allocationFor(placed.level),
+        Math.random,
+      ).words;
+    }
+  }
   const chosenId = chooseWord(
-    startable.map((word) => ({
+    bandWords.map((word) => ({
       id: word.id,
       seen: byId.get(word.id)?.seen || 0,
       retryAt: byId.get(word.id)?.retry_at ?? null,
@@ -425,7 +501,7 @@ export async function nextQuestion(
       .bind(userId)
       .first<Attempt>();
     if (existing && types.includes(existing.question_type))
-      return toQuestion(existing, pool, byId.get(existing.word_id));
+      return toQuestion(existing, pool, byId.get(existing.word_id), placed);
     if (existing)
       throw new HttpError(
         409,
@@ -434,16 +510,21 @@ export async function nextQuestion(
     throw error;
   }
   const prior = byId.get(word.id);
-  return toQuestion(attempt, pool, {
-    word_id: word.id,
-    correct: prior?.correct || 0,
-    mastered: prior?.mastered ?? 0,
-    run: prior?.run ?? 0,
-    recalls: prior?.recalls ?? 0,
-    seen: (prior?.seen || 0) + 1,
-    last_seen: localDay(Date.now()),
-    retry_at: null,
-  });
+  return toQuestion(
+    attempt,
+    pool,
+    {
+      word_id: word.id,
+      correct: prior?.correct || 0,
+      mastered: prior?.mastered ?? 0,
+      run: prior?.run ?? 0,
+      recalls: prior?.recalls ?? 0,
+      seen: (prior?.seen || 0) + 1,
+      last_seen: localDay(Date.now()),
+      retry_at: null,
+    },
+    placed,
+  );
 }
 export async function answerQuestion(
   userId: string,

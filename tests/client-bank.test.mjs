@@ -16,8 +16,7 @@
  */
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync, existsSync } from "node:fs";
-import { resolve } from "node:path";
+import { readFileSync } from "node:fs";
 import {
   words as serverWords,
   problems as serverProblems,
@@ -27,22 +26,20 @@ import {
 import { QUESTION_TYPES } from "../lib/challenge/config.ts";
 import { brotliCompressSync, constants } from "node:zlib";
 
-const OUT = "public/bank";
-/** The manifest carries public URLs, so paths resolve from `public/`. */
-const PUBLIC = "public";
+import { testBank } from "./helpers/test-bank.mjs";
+import { contentHash } from "../scripts/build-client-bank.mjs";
 
-function manifest() {
-  const file = `${OUT}/manifest.json`;
-  assert.ok(existsSync(file), "run `npm run bank:client` before this suite");
-  return JSON.parse(readFileSync(file, "utf8"));
-}
-
+/**
+ * The payload, built from tracked source.
+ *
+ * This opened `public/bank/bank-<tier>-<hash>.json` by name. That directory is
+ * gitignored and the names are content hashes, so the suite failed on clean
+ * checkouts and in CI — which runs no generation step — while passing on any
+ * machine that had once built. `testBank` builds the identical payload from
+ * `data/problem-bank.json` via the same function the generator calls.
+ */
 function payload(tier) {
-  const entry = manifest()[tier];
-  assert.ok(entry, `manifest has no ${tier} entry`);
-  return JSON.parse(
-    readFileSync(resolve(PUBLIC, entry.url.replace(/^\//, "")), "utf8"),
-  );
+  return testBank(tier);
 }
 
 /** The client's view of a problem, in the shape `choicesForProblem` expects. */
@@ -251,11 +248,10 @@ test("the free tier carries only free words, and all of them", () => {
 });
 
 test("the payload is small enough to put in front of a child", () => {
-  const entry = manifest();
+  // Sized from the built payload rather than from files on disk: the bytes are
+  // what matters, and the files do not exist on a clean checkout.
   const size = (tier) => {
-    const raw = readFileSync(
-      resolve(PUBLIC, entry[tier].url.replace(/^\//, "")),
-    );
+    const raw = Buffer.from(JSON.stringify(payload(tier)));
     return brotliCompressSync(raw, {
       params: { [constants.BROTLI_PARAM_QUALITY]: 11 },
     }).length;
@@ -275,27 +271,23 @@ test("the payload is small enough to put in front of a child", () => {
 });
 
 test("the generated files are content-hashed, so a stale one cannot be served", () => {
-  const files = readdirSync(OUT);
-  const manifestJson = JSON.parse(readFileSync(`${OUT}/manifest.json`, "utf8"));
-  const referenced = new Set(
-    Object.values(manifestJson).map((entry) =>
-      entry.url.replace(/^\/bank\//, ""),
-    ),
-  );
-  for (const tier of ["full", "free"]) {
-    const file = manifestJson[tier].url.replace(/^\/bank\//, "");
-    assert.ok(files.includes(file), `${file} is referenced but not present`);
+  // The naming rule lives in one exported function shared with the generator,
+  // so this tests the rule rather than the files: on a clean checkout there
+  // are no files, and a test that needs them can never run in CI.
+  const a = contentHash(JSON.stringify(payload("full")));
+  const b = contentHash(JSON.stringify(payload("free")));
+  for (const [name, hash] of [
+    ["full", a],
+    ["free", b],
+  ]) {
     assert.match(
-      file,
+      `bank-${name}-${hash}.json`,
       /^bank-(full|free)-[0-9a-f]{12}\.json$/,
-      `${file} must carry a content hash so it can be cached immutably`,
+      `the ${name} file must carry a content hash so it can be cached immutably`,
     );
   }
-  // Nothing else should be lying around: an old hash costs deploy size and can
-  // still be fetched by a client holding a stale manifest.
-  assert.deepEqual(
-    files.filter((f) => f !== "manifest.json").sort(),
-    [...referenced].sort(),
-    "there are generated bank files the manifest does not reference",
-  );
+  // Deterministic: the same bytes hash the same way, so a rebuild that changes
+  // nothing keeps its URLs and every client cache stays valid.
+  assert.equal(contentHash(JSON.stringify(payload("full"))), a);
+  assert.notEqual(a, b, "full and free payloads hash identically");
 });

@@ -15,12 +15,12 @@
  */
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import { PracticeEngine } from "../lib/challenge/engine.ts";
 import {
   choicesForProblem,
   problems as serverProblems,
   words as serverWords,
+  levelOf as serverLevels,
   CHOICES_PER_PROBLEM,
 } from "../lib/challenge/bank.ts";
 import {
@@ -36,12 +36,25 @@ import {
   masteryProgress,
 } from "../lib/challenge/mastery.ts";
 import { QUESTION_TYPES } from "../lib/challenge/config.ts";
+import { testBank } from "./helpers/test-bank.mjs";
+import {
+  allocationFor,
+  currentLevel,
+  levelFractions,
+  levelScore,
+  narrowToBand,
+} from "../lib/challenge/placement.ts";
 
-const manifest = JSON.parse(readFileSync("data/client-bank.json", "utf8"));
-
+/**
+ * The client bank, built from source.
+ *
+ * This opened `public/bank/bank-<tier>-<hash>.json` by name, which is gitignored
+ * and content-hashed: it exists only after `npm run bank:client`, so the suite
+ * failed on clean checkouts and in CI while passing on any machine that had
+ * once built. `testBank` builds the identical payload from tracked source.
+ */
 function loadBank(tier = "full") {
-  const entry = manifest[tier];
-  return JSON.parse(readFileSync(`public${entry.url}`, "utf8"));
+  return testBank(tier);
 }
 
 /** Deterministic, so a failure is reproducible rather than a bad roll. */
@@ -146,6 +159,81 @@ test("the engine and the server pick the same word from the same state", () => {
     assert.ok(
       shown.choices.includes(shown.answer),
       `round ${round}: the options omit the answer`,
+    );
+  }
+});
+
+test("automatic placement draws the same band and word on both sides", () => {
+  // The companion to the first test: that one has a due review, so both sides
+  // take the bypass path and the band draw is never exercised. Here nothing is
+  // due, so the engine must draw a band from the allocation weights and pick
+  // inside it — and the server's own computation, from the same rows, must
+  // agree on the band, the word and the placement attached to the question.
+  // Without this, the two-stage draw could drift and the child would be taught
+  // differently from what the server records, with nothing reporting it.
+  const bank = loadBank();
+  const progress = [
+    ["abandon", 6, 0, 0, 1, 9, "2026-09-01", null],
+    ["abate", 4, 4, 4, 0, 5, "2026-09-25", null],
+  ];
+  const recent = ["abandon", "abate"];
+  const attemptCount = 40;
+  for (let round = 0; round < 15; round++) {
+    const stream = seeded(100 + round);
+    const engine = new PracticeEngine({
+      bank,
+      ...fixture({
+        progress,
+        recent,
+        attemptCount,
+        random: seeded(100 + round),
+      }),
+    });
+    const shown = engine.next();
+    assert.ok(shown, "the engine must produce a question");
+    assert.ok(shown.placement, "an all-levels question carries its placement");
+
+    // The server's own computation, from the same rows and the same stream.
+    const byId = new Map(progress.map((row) => [row[0], row]));
+    const totals = [0, 0, 0, 0, 0, 0];
+    for (const row of bank.words) totals[Number(row[5])] += 1;
+    const items = bank.words.map((row) => ({
+      level: Number(row[5]),
+      mastered: hasMastered({
+        mastered: byId.get(String(row[0]))?.[4],
+        correct: byId.get(String(row[0]))?.[1] ?? 0,
+      }),
+    }));
+    const fractions = levelFractions(items, totals);
+    const level = currentLevel(fractions, []);
+    assert.deepEqual(
+      shown.placement,
+      { level, score: levelScore(level, fractions[level]) },
+      `round ${round}: the attached placement differs from the rows`,
+    );
+    // The same narrowing the engine performs, through the shared helper: this
+    // is what makes the comparison a parity check rather than a
+    // reimplementation. Note the bands come from unmastered words only — a
+    // fully-mastered band must yield before the draw, on both sides.
+    const unmastered = serverWords.filter(
+      (w) => !hasMastered(byId.get(w.id) ?? initialMastery),
+    );
+    const narrowed = narrowToBand(
+      unmastered,
+      (w) => serverLevels.get(w.id) ?? 1,
+      allocationFor(level),
+      stream,
+    );
+    const inBand = narrowed.words.map((w) => ({
+      id: w.id,
+      seen: byId.get(w.id)?.[5] ?? 0,
+      retryAt: byId.get(w.id)?.[7] ?? null,
+    }));
+    const chosenId = chooseWord(inBand, recent, attemptCount, stream);
+    assert.equal(
+      shown.wordId,
+      chosenId,
+      `round ${round}: the engine chose ${shown.wordId}, the server draw chose ${chosenId}`,
     );
   }
 });
