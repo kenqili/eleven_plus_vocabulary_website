@@ -12,23 +12,32 @@ type PlacementResponse = {
 /**
  * The child's score over time, as a line.
  *
- * One point per day a word was first mastered, drawn from `/api/placement`.
- * Horizontal lines mark where each level starts (each sixth of 10,000), so a
- * child can see both the climb within a level and the crossing into the next.
- * Refetches when `refreshKey` changes — the practice page passes the mastered
- * count, so the line extends the moment a word is mastered rather than on the
- * next visit.
+ * One point per day a word was first mastered. Horizontal lines mark where
+ * each level starts (each sixth of 10,000), so a child can see both the climb
+ * within a level and the crossing into the next.
+ *
+ * Data arrives two ways: `LevelProgress` above fetches once and hands it down
+ * (one request for bar and chart together), otherwise the chart fetches on its
+ * own `refreshKey` — the practice page passes the mastered count, so the line
+ * extends the moment a word is mastered rather than on the next visit.
  *
  * Rendered only with two or more points: a single dot is not a line, and the
  * badge on the question already says where the child is today.
  */
-export default function ScoreChart({ refreshKey }: { refreshKey: number }) {
-  const [data, setData] = useState<PlacementResponse | null>(null);
+export default function ScoreChart({
+  refreshKey,
+  data: provided,
+}: {
+  refreshKey: number;
+  data?: PlacementResponse | null;
+}) {
+  const [fetched, setFetched] = useState<PlacementResponse | null>(null);
   useEffect(() => {
+    if (provided !== undefined) return;
     let cancelled = false;
     void api<PlacementResponse>("/api/placement")
       .then((response) => {
-        if (!cancelled) setData(response);
+        if (!cancelled) setFetched(response);
       })
       .catch(() => {
         // A missing chart must never break practice: the badge on the question
@@ -37,7 +46,8 @@ export default function ScoreChart({ refreshKey }: { refreshKey: number }) {
     return () => {
       cancelled = true;
     };
-  }, [refreshKey]);
+  }, [refreshKey, provided]);
+  const data = provided ?? fetched;
 
   if (!data || data.history.length < 2) return null;
   const points = data.history;

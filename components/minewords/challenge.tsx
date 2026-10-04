@@ -23,7 +23,7 @@ import { DIFFICULTY_LEVELS, type Difficulty } from "@/lib/challenge/difficulty";
 import Header from "./header";
 import ProgressPanel from "./progress-panel";
 import DailyMission from "./daily-mission";
-import ScoreChart from "./score-chart";
+import LevelProgress from "./level-progress";
 import WordExplanation from "./word-explanation";
 import { CoachNote } from "./coach-note";
 import {
@@ -304,14 +304,14 @@ export default function Challenge() {
                 Optional. Every level is part of the same saved progress.
               </span>
               {/*
-                The score over time, in automatic mode only: with an explicit
-                level choice the chart's bands would describe a pool the child
-                is not practising. Refreshed on the mastered count, so the line
-                extends the moment a word is mastered rather than next visit.
+                How far to 10,000, in automatic mode only: with an explicit
+                level choice the bands would describe a pool the child is not
+                practising. Refreshed on the mastered count, so bar and chart
+                move the moment a word is mastered rather than next visit.
                 Signed in only — the demo keeps nothing, so it has no history.
               */}
               {!demo && study.level === null && (
-                <ScoreChart refreshKey={stats?.mastered ?? 0} />
+                <LevelProgress refreshKey={stats?.mastered ?? 0} />
               )}
             </div>
             {/*

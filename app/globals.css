@@ -125,6 +125,19 @@
   --surface-ice: #a4cbfa;
   --surface-sky-soft: #92b3ff;
 
+  /*
+   * The score progress bar, green → yellow → red as it fills.
+   *
+   * Fixed stops rather than theme-relative ones: this is a data-visualisation
+   * gradient, and a level bar that changes hue meaning per theme would teach
+   * the wrong lesson. Surface-family names because the fill is a background.
+   */
+  --surface-progress-1: #22c55e;
+  --surface-progress-2: #a3d426;
+  --surface-progress-3: #eab308;
+  --surface-progress-4: #f97316;
+  --surface-progress-5: #ef4444;
+
   /* Borders */
   --line: #dce3ef;
   --line-2: #e6ecf5;
@@ -968,6 +981,54 @@ hr {
 .score-chart-day {
   fill: var(--ink-3);
   font-size: 11px;
+}
+/*
+ * How far to 10,000, above the chart.
+ *
+ * The fill blends green → yellow → red as it grows: at low scores only green
+ * shows, yellow arrives around the middle, red near the top. Ticks mark where
+ * each level starts (every sixth of the track). Full width of the picker row,
+ * like the chart below it.
+ */
+.level-progress {
+  flex-basis: 100%;
+  margin: 6px 0 0;
+}
+.level-progress-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+.level-progress-track {
+  position: relative;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: 1px solid var(--line-2);
+  overflow: hidden;
+}
+.level-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    var(--surface-progress-1) 0%,
+    var(--surface-progress-2) 30%,
+    var(--surface-progress-3) 50%,
+    var(--surface-progress-4) 75%,
+    var(--surface-progress-5) 100%
+  );
+  transition: width 0.6s ease;
+}
+.level-progress-tick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--surface-slate);
+  opacity: 0.55;
 }
 .practice-types {
   display: flex;
