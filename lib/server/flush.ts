@@ -11,7 +11,7 @@ import { database } from "./db";
 import type { QuestionType } from "@/lib/challenge/config";
 
 /**
- * A flush: everything the browser worked out in the last five minutes, written
+ * A flush: everything the browser worked out in the last minute, written
  * in one go.
  *
  * The attempt rows go in **already answered**, and that is the whole trick. The

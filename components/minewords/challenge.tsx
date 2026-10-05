@@ -71,7 +71,7 @@ function revealRange(start: Element | null, end?: Element | null) {
   scrollTo({ top: Math.max(0, top - 12), behavior: still ? "auto" : "smooth" });
 }
 /**
- * The button that saves now, rather than in five minutes.
+ * The button that saves now, rather than in a minute.
  *
  * One item, not two. The row beside it used to carry a separate sentence saying
  * how many answers were waiting, which said the same thing as the button in
@@ -752,7 +752,7 @@ export default function Challenge() {
                         beside it. Whether anything is waiting right now is the
                         button's business; whether the work is safe is this
                         sentence's, and it is true in both states. */}
-                    <span className="muted">Saves every 5 minutes</span>
+                    <span className="muted">Saves every minute</span>
                   </>
                 )}
               </span>

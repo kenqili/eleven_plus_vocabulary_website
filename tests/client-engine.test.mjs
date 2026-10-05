@@ -510,8 +510,53 @@ test("evidence is measured from when the question was shown, not from now", () =
   );
 });
 
-test("the engine runs out rather than looping when every word is mastered", () => {
-  const bank = loadBank("free");
+test("local panels advance each period from its own prior", async () => {
+  // The browser moves the panels on the same frame an answer is graded. This
+  // used to advance the all-time period and write the result into today and
+  // week as well, so the Today tab read like all-time until the next flush
+  // replaced it with the server's figures.
+  const { ClientSession } = await import("../lib/client/session.ts");
+  const bank = loadBank();
+  const period = (questions, correct) => ({
+    stories: 0,
+    questions,
+    correct,
+    reveals: 0,
+    newWords: 0,
+    mastered: 0,
+    seconds: 0,
+    credits: 0,
+  });
+  const session = new ClientSession(
+    new PracticeEngine({ bank, ...fixture() }),
+    {
+      total: 0,
+      collection: 0,
+      mastered: 0,
+      correct: 60,
+      todaySeconds: 0,
+      totalSeconds: 0,
+      periods: {
+        today: period(5, 4),
+        week: period(40, 30),
+        all: period(70, 60),
+      },
+    },
+  );
+  const shown = session.next();
+  assert.ok(shown);
+  const result = session.answer(shown.choices.indexOf(shown.answer));
+  assert.ok(result);
+  const periods = session.stats.periods;
+  assert.equal(periods.today.questions, 6, "today counts this answer");
+  assert.equal(periods.today.correct, 5, "today counts this correct answer");
+  assert.equal(periods.week.questions, 41, "the week keeps its own total");
+  assert.equal(periods.all.questions, 71, "all-time keeps its own total");
+  assert.equal(periods.all.correct, 61, "all-time counts this correct answer");
+  session.stop();
+});
+
+test("the engine runs out rather than looping when every word is mastered", () => {  const bank = loadBank("free");
   const everything = bank.words.map((row) => [
     String(row[0]),
     9,

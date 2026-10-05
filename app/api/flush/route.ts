@@ -13,7 +13,7 @@ import { QUESTION_TYPES } from "@/lib/challenge/config";
 import type { QuestionType } from "@/lib/challenge/config";
 
 /**
- * Everything the browser worked out in the last five minutes, in one request.
+ * Everything the browser worked out in the last minute, in one request.
  *
  * A flush is either the timer, or the child pressing Save because they are done,
  * or the page going away. It is never on the critical path - the child has already
@@ -22,7 +22,7 @@ import type { QuestionType } from "@/lib/challenge/config";
  * reconcile whatever it worked out in the meantime.
  */
 
-/** A long sitting: the timer at five minutes, or a child who forgot to press Save. */
+/** A long sitting: the timer at one minute, or a child who forgot to press Save. */
 const MAX_ANSWERS = 400;
 const MAX_ELAPSED = 3600;
 

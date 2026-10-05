@@ -206,7 +206,7 @@ export function useChallenge() {
    * Where the child is right now, from the browser's own counters.
    *
    * The server's `/api/placement` reads the database, which only learns about
-   * answers on flush (every five minutes). This is the engine's own number on
+   * answers on flush (every minute, or past ten unsaved). This is the engine's own number on
    * this frame, so the level bar moves the moment an answer is graded.
    */
   const [livePlacement, setLivePlacement] = useState<{

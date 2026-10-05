@@ -3,8 +3,8 @@
  *
  * The child asks for a question and gets one without a round trip, and their
  * answer is graded without one. What the server is left with is a durable copy:
- * a flush every five minutes, on demand when the child presses Save, and when
- * the page goes away.
+ * a flush every minute, earlier when more than ten answers are waiting, on
+ * demand when the child presses Save, and when the page goes away.
  *
  * This is deliberately not React. It is the part with the interesting logic -
  * what is queued, when it is sent, what happens when sending fails, and what the
@@ -33,7 +33,15 @@ import type { Snapshot } from "../server/snapshot.ts";
 import type { FlushedAnswer } from "../server/flush.ts";
 
 /** How often the session saves itself. */
-export const FLUSH_INTERVAL_MS = 5 * 60 * 1000;
+export const FLUSH_INTERVAL_MS = 1 * 60 * 1000;
+/**
+ * How many unsaved answers trigger a flush before the minute is up.
+ *
+ * Bounds what a crash can lose: ten answers, not a whole sitting. Checked as
+ * "more than ten" at the point of answering, so the eleventh answer goes
+ * straight away.
+ */
+export const FLUSH_EARLY_AFTER = 10;
 
 export type SessionSnapshot = {
   /** The server's answer, kept whole so the page can render a trial banner. */
@@ -113,8 +121,10 @@ function advanceStats(
   },
   totals: { mastered: number; meetCount: number },
 ): Stats {
-  const prior = base.periods?.all || emptyPeriod();
-  const period = {
+  // Each period from its own prior. This used to advance the all-time period
+  // and write the result into today and week as well, so the Today tab read
+  // like all-time until the next flush replaced it with the server's figures.
+  const bump = (prior: ReturnType<typeof emptyPeriod>) => ({
     ...prior,
     questions: prior.questions + 1,
     correct: prior.correct + (answer.correct ? 1 : 0),
@@ -122,6 +132,11 @@ function advanceStats(
     newWords: prior.newWords + (answer.firstTime ? 1 : 0),
     mastered: prior.mastered + (answer.mastered ? 1 : 0),
     seconds: prior.seconds + answer.seconds,
+  });
+  const prior = base.periods ?? {
+    today: emptyPeriod(),
+    week: emptyPeriod(),
+    all: emptyPeriod(),
   };
   return {
     ...base,
@@ -130,7 +145,11 @@ function advanceStats(
     correct: base.correct + (answer.correct ? 1 : 0),
     todaySeconds: base.todaySeconds + answer.seconds,
     totalSeconds: base.totalSeconds + answer.seconds,
-    periods: { today: period, week: period, all: period },
+    periods: {
+      today: bump(prior.today),
+      week: bump(prior.week),
+      all: bump(prior.all),
+    },
     // The engine worked the award out from the same rules the trigger uses, so
     // the balance moves when the child answers. A flush replaces this with the
     // server's figure, which in practice is the same number.
@@ -264,6 +283,11 @@ export class ClientSession {
     this.revision++;
     this.onChange(this.queue.length);
     this.schedule();
+    // Bound what a crash can take: past ten unsaved answers the queue goes
+    // now instead of waiting for the minute timer. A flush already in flight
+    // is joined rather than duplicated, and a failed one keeps its queue for
+    // the next answer, Save press, or page exit to retry.
+    if (this.queue.length > FLUSH_EARLY_AFTER) void this.flush();
     return { feedback, question, attemptId };
   }
 
