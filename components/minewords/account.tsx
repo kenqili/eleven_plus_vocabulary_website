@@ -13,6 +13,8 @@ type Billing = {
   ready: boolean;
   status: string;
   periodEnd: number | null;
+  /** Whole days left on the paid term, 0 when there is none. */
+  daysRemaining: number;
   canManage: boolean;
   access: boolean;
   trial: boolean;
@@ -443,58 +445,30 @@ export default function Account() {
               <p className="muted">Signed in as {user.email}</p>
               <hr />
               <h2>MineWords membership</h2>
-              <p>
-                Full vocabulary practice, saved mastery and progress across your
-                devices.
-              </p>
+              {/*
+                The status, in three lines: pill plus one strong sentence, one
+                muted time/next-step line, then the action. A busy parent reads
+                line one and stops; a worried parent reads line two. The states
+                are active, then trial, then lapsed, then expired — trial beats
+                payment history, because an account whose paid term ran out
+                while its trial is still live can still practise, and "your
+                access has ended" would be false on the same day the practice
+                page works.
+              */}
               {billing?.active ? (
                 <>
-                  <span className="pill">Membership active</span>
-                  {/*
-                    The end date, stated as a day and a month rather than
-                    "Access through <date>". A parent who has just paid needs to
-                    be able to check it against the length they bought, and a
-                    bare date labelled as access does not say which term it is or
-                    whether a coupon and a purchase have been added together.
-                  */}
+                  <span className="pill">Full access</span>
                   <p>
-                    Access until{" "}
                     <strong>
-                      {/*
-                    No `* 1000` here. `expiry_date` is epoch milliseconds -
-                    written with Date.now() by both the grant and the webhook - so
-                    periodEnd is already milliseconds and multiplying again put the
-                    date in the year 58805. The purchase history below got this
-                    right, which is how the two disagreed on one screen.
-                  */}
-                      {date(billing.periodEnd!)}
+                      You have full access until {date(billing.periodEnd!)}.
                     </strong>
                   </p>
-                  {/* And what that date is made of, so it is never a mystery. */}
-                  {(() => {
-                    // Built before rendering, because this used to render a `<p>`
-                    // whose entire content was a full stop: a parent whose access
-                    // came from a code, or whose purchase had been refunded, is
-                    // shown the membership they have and then a lone "." beneath
-                    // it, which reads as a page that failed rather than as a
-                    // history with nothing paid in it.
-                    //
-                    // Codes are included, and named as codes. They were filtered
-                    // out because this line matched on `status === "paid"` and a
-                    // redemption is not paid - so the one grant that had not come
-                    // from this account was the one the sentence silently omitted,
-                    // while the table further down the same screen listed it.
-                    const made = billing.purchases
-                      .filter((p) => p.status !== "refunded")
-                      .map((p) =>
-                        p.viaCode
-                          ? `${p.label} added ${date(p.boughtAt)}`
-                          : `${p.label} bought ${date(p.boughtAt)}`,
-                      );
-                    return made.length ? (
-                      <p className="muted">{made.join(", ")}.</p>
-                    ) : null;
-                  })()}
+                  <p className="muted">
+                    {billing.daysRemaining === 1
+                      ? "1 day left."
+                      : `${billing.daysRemaining} days left.`}{" "}
+                    Buying again adds to this date rather than replacing it.
+                  </p>
                   <Link className="primary-button" href="/practice">
                     Continue practising →
                   </Link>
@@ -520,51 +494,64 @@ export default function Account() {
               ) : (
                 <>
                   {/*
-                    Which of the three states this is, and they are genuinely
-                    different.
-
-                    `trialExpired` is `!active && !trial`, which is true for a family
-                    whose *paid* year has run out as well as for one whose free trial
-                    has. So this branch was telling a parent who had paid for a year
-                    that their "full-access trial has ended" - which is not what
-                    happened to them, and it is the branch they land in at the worst
-                    possible moment. Their practice page was telling them the
-                    opposite, correctly, so the same parent was told two different
-                    stories on two screens on the same day.
-
-                    So the three are named separately, and a lapsed paid term gets
-                    the date it ran until - because that is the question they are
-                    actually asking, and the answer is already in the payload.
+                    Trial first, then history. `trial` means full access right
+                    now, whatever was paid before - a paid term can run out
+                    while the trial is still live, and "your access has ended"
+                    would be false on the same day the child can still
+                    practise. `everPaid` then separates a lapsed term (never
+                    called a trial) from a trial that simply ran out.
                   */}
                   {billing ? (
-                    <p className="muted">
-                      {billing.everPaid ? (
-                        <>
-                          Your access has ended. It ran until{" "}
+                    billing.trial ? (
+                      <>
+                        <span className="pill">Free trial</span>
+                        <p>
                           <strong>
-                            {billing.periodEnd
-                              ? date(billing.periodEnd)
-                              : "the end of your last term"}
-                          </strong>
-                          . Buy a length below and it will be added to that date
-                          — it does not replace it.
-                        </>
-                      ) : billing.trialExpired ? (
-                        `Your free trial has ended. Continue with the ${freeWordLimit}-word free collection, or buy a length below to unlock every word. Your saved progress is safe.`
-                      ) : (
-                        <>
-                          Your free account includes full access until{" "}
-                          <strong>
+                            You have full access free until{" "}
                             {billing.trialEndsAt
                               ? date(billing.trialEndsAt)
                               : `${billing.trialDays} days after sign-up`}
+                            .
                           </strong>
-                          . You do not need a card to try it, and you will not
-                          be charged unless you choose a length.
-                        </>
-                      )}
-                    </p>
-                  ) : (
+                        </p>
+                        <p className="muted">
+                          {billing.trialDaysRemaining === 1
+                            ? "1 day left."
+                            : `${billing.trialDaysRemaining} days left.`}{" "}
+                          No card needed — you only pay if you choose a length.
+                        </p>
+                      </>
+                    ) : billing.everPaid ? (
+                      <>
+                        <span className="pill">Free</span>
+                        <p>
+                          <strong>Your access has ended.</strong>
+                        </p>
+                        <p className="muted">
+                          It ran until{" "}
+                          {billing.periodEnd
+                            ? date(billing.periodEnd)
+                            : "the end of your last term"}
+                          . You now have the {freeWordLimit}-word free
+                          collection. Buy a length below and it will be added
+                          to that date — it does not replace it.
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <span className="pill">Free</span>
+                        <p>
+                          <strong>Your free trial has ended.</strong>
+                        </p>
+                        <p className="muted">
+                          Continue with the {freeWordLimit}-word free
+                          collection, or buy a length below to unlock every
+                          word. Your saved progress is safe.
+                        </p>
+                      </>
+                    )
+                  )
+                  : (
                     /*
                      * Deliberately says nothing about trials or prices. `billing` is
                      * null when the membership request failed, and this used to fall

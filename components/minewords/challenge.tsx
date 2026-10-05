@@ -357,7 +357,7 @@ export default function Challenge() {
                   </span>
                   <Link href="/account">Renew access →</Link>
                 </div>
-              ) : !study.active && !study.trial && study.periodEnd ? (
+              ) : !study.active && study.periodEnd && !study.trial ? (
                 // Expired, rather than never bought. `periodEnd` is only set when
                 // a term has been paid for, so this cannot fire for a family who
                 // has never paid - it is exactly "you bought this and it ran

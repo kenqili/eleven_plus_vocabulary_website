@@ -1027,7 +1027,6 @@ hr {
   border-radius: 999px;
   background: var(--surface-brand-solid);
   color: var(--ink-invert);
-  border: 2px solid var(--surface);
   box-shadow: 0 1px 4px var(--shadow-3);
   font-weight: 800;
   font-size: 13px;

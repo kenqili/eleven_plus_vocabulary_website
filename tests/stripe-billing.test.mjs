@@ -1392,8 +1392,10 @@ test("the lengths stay on offer to a parent who already has access", () => {
     /function planOptions\(\)/,
     "the plan buttons are not a single shared implementation",
   );
-  // Offered from inside the active branch, not only the inactive one.
-  const activeBranch = account.indexOf("Membership active");
+  // Offered from inside the active branch, not only the inactive one. The
+  // anchor is the pill, which reads "Full access" since the status summary
+  // redesign (it was "Membership active").
+  const activeBranch = account.indexOf("Full access");
   const addMore = account.indexOf("Add more access");
   const secondCall = account.indexOf("planOptions()", addMore);
   assert.ok(
