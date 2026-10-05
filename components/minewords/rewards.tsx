@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { Compass, Star, Trophy, type LucideIcon } from "lucide-react";
 import Header from "./header";
 import { api } from "@/lib/client/api";
 import {
@@ -24,6 +25,18 @@ const date = (value: number) =>
     dateStyle: "medium",
     timeStyle: "short",
   }).format(value);
+/**
+ * The trophy on each shelf, by badge id.
+ *
+ * Spark is the first light that goes on, the explorer's compass matches the
+ * rank name, and the champion lifts a cup. Presentation only: ids, names and
+ * costs stay exactly as `BADGES` defines them, which is what receipts record.
+ */
+const RANK_TROPHY: Record<string, { label: string; Icon: LucideIcon }> = {
+  spark: { label: "Spark", Icon: Star },
+  explorer: { label: "Explorer", Icon: Compass },
+  champion: { label: "Champion", Icon: Trophy },
+} as const;
 export default function Rewards() {
   const [data, setData] = useState<Data | null>(null),
     [error, setError] = useState(""),
@@ -144,37 +157,54 @@ export default function Rewards() {
                 : "You’ve collected every badge! You can collect your favourites again."}
             </div>
             <div className="badge-grid">
-              {BADGES.map((item) => (
-                <article
-                  className={`badge-card ${data.collection[item.id] ? "badge-collected" : "badge-uncollected"}`}
-                  key={item.id}
-                >
-                  <div className="badge-symbol" aria-hidden="true">
-                    {item.symbol}
-                  </div>
-                  <h2>{item.name}</h2>
-                  <p>
-                    {data.collection[item.id]
-                      ? `Collected ×${data.collection[item.id]}`
-                      : "Not collected yet"}
-                  </p>
-                  <p>{item.cost} credits</p>
-                  <button
-                    className="primary-button"
-                    disabled={busy || data.rewards.balance < item.cost}
-                    onClick={() => {
-                      setChosen(item.id);
-                      setError("");
-                    }}
+              {BADGES.map((item) => {
+                const count = data.collection[item.id] ?? 0;
+                // A badge id with no trophy degrades to one grey medallion,
+                // never a blank shelf: the map above is the only place that
+                // knows the three ranks, and catalogue ids come from data.
+                const { label, Icon } = RANK_TROPHY[item.id] ?? {
+                  label: item.id,
+                  Icon: Trophy,
+                };
+                return (
+                  <article
+                    className={`badge-card ${count ? "badge-collected" : "badge-uncollected"}`}
+                    data-rank={item.id}
+                    key={item.id}
                   >
-                    {data.rewards.balance < item.cost
-                      ? `${item.cost - data.rewards.balance} more to earn`
-                      : data.collection[item.id]
-                        ? "Collect again"
-                        : "Choose badge"}
-                  </button>
-                </article>
-              ))}
+                    {nextBadge?.id === item.id && (
+                      <p className="badge-next">Next up</p>
+                    )}
+                    <div className="badge-symbol" aria-hidden="true">
+                      <Icon size={40} strokeWidth={1.75} />
+                      {count > 1 && (
+                        <span className="badge-count">×{count}</span>
+                      )}
+                    </div>
+                    <p className="badge-rank">
+                      {label} · {item.cost} credits
+                    </p>
+                    <h2>{item.name}</h2>
+                    <p>
+                      {count ? `Collected ×${count}` : "Not collected yet"}
+                    </p>
+                    <button
+                      className="primary-button"
+                      disabled={busy || data.rewards.balance < item.cost}
+                      onClick={() => {
+                        setChosen(item.id);
+                        setError("");
+                      }}
+                    >
+                      {data.rewards.balance < item.cost
+                        ? `${item.cost - data.rewards.balance} more to earn`
+                        : count
+                          ? "Collect again"
+                          : "Choose badge"}
+                    </button>
+                  </article>
+                );
+              })}
             </div>
             {badge && (
               <section

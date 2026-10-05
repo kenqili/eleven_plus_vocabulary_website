@@ -1,7 +1,7 @@
 export const BADGES = [
-  { id: "spark", name: "Vocabulary Spark", cost: 20, symbol: "✦" },
-  { id: "explorer", name: "Word Explorer", cost: 50, symbol: "🧭" },
-  { id: "champion", name: "Vocabulary Champion", cost: 100, symbol: "🏆" },
+  { id: "spark", name: "Vocabulary Spark", cost: 20 },
+  { id: "explorer", name: "Word Explorer", cost: 50 },
+  { id: "champion", name: "Vocabulary Champion", cost: 100 },
 ] as const;
 export const REPORTING_ZONE = "Europe/London";
 /** Words in the whole collection, which the calendar counts distinctly itself. */

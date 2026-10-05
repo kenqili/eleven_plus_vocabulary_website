@@ -1485,7 +1485,8 @@ hr {
   margin: 28px 0;
 }
 .badge-card {
-  padding: 28px 20px;
+  position: relative;
+  padding: 28px 20px 30px;
   text-align: center;
   background: var(--surface-warn-3);
   border: 1px solid var(--line-sand);
@@ -1494,9 +1495,100 @@ hr {
 .badge-card h2 {
   font-size: 22px;
 }
+/*
+ * The shelf each trophy sits on: a plank under the card's contents, drawn
+ * with the card's own ::after so the grid needs no wrapper elements. The
+ * plank is surface-on-line like every other bar in the app, in amber so it
+ * reads as wood against the card.
+ */
+.badge-card::after {
+  content: "";
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(
+    180deg,
+    var(--surface-amber-2),
+    var(--surface-amber)
+  );
+  border: 1px solid var(--line-amber-2);
+}
+/*
+ * The medallion: one trophy per rank, coloured by the same triples the
+ * question types already use, so a child meets the same colours in practice.
+ * Uncollected slots keep their silhouette, greyed, so an empty shelf reads as
+ * waiting rather than broken.
+ */
 .badge-symbol {
-  font-size: 48px;
-  min-height: 70px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 88px;
+  height: 88px;
+  margin: 0 auto 4px;
+  border-radius: 50%;
+  border: 2px solid var(--line-strong);
+  background: var(--surface-4);
+  color: var(--ink-4);
+}
+.badge-card[data-rank="spark"].badge-collected .badge-symbol {
+  background: var(--surface-brand-3);
+  border-color: var(--line-brand-2);
+  color: var(--ink-brand-6);
+}
+.badge-card[data-rank="explorer"].badge-collected .badge-symbol {
+  background: var(--surface-ice);
+  border-color: var(--line-sky);
+  color: var(--ink-navy);
+}
+.badge-card[data-rank="champion"].badge-collected .badge-symbol {
+  background: var(--surface-gold);
+  border-color: var(--line-amber);
+  color: var(--ink-amber-5);
+}
+/* Repeats collapse: one trophy plus a ×n chip, never n trophies. A real
+   account holds dozens of one badge, and thirty-two icons would break the
+   page's narrowest widths. The exact count stays in words below. */
+.badge-count {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 7px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--surface-brand-solid);
+  color: var(--ink-invert);
+  font-size: 13px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.badge-rank {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: 0 0 4px;
+}
+/* The slot the goal line points at. Same success pairing the goal line and
+   correct answers already use. */
+.badge-next {
+  display: inline-block;
+  margin: 0 0 8px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line-success-2);
+  background: var(--surface-success);
+  color: var(--ink-success);
+  font-size: 13px;
+  font-weight: 800;
 }
 .badge-card button:disabled {
   opacity: 0.6;
@@ -3602,8 +3694,7 @@ hr {
   color: var(--ink-success);
 }
 .badge-uncollected .badge-symbol {
-  filter: grayscale(1);
-  opacity: 0.35;
+  opacity: 0.55;
 }
 .badge-collected {
   border-color: var(--line-sage);
