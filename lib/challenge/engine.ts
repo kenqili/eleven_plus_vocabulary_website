@@ -560,8 +560,14 @@ export class PracticeEngine {
       lastSeen: day,
       // A mistake is scheduled against the attempt count, which is a logical
       // clock and not a date. The count is the one this session has been
-      // advancing, and a flush reconciles it with the server's.
-      retryAt: correct ? previous.retryAt : reviewDueAt(this.attemptCount + 1),
+      // advancing, and a flush reconciles it with the server's. A correct
+      // answer clears the schedule instead of keeping it: the review has
+      // happened, so the word rejoins the normal rotation and other words get
+      // asked in between. Keeping the old value here pinned the word as due
+      // and every remaining question type for it came back-to-back. This
+      // matches the server, which clears retry_at on issue and writes null on
+      // a correct answer.
+      retryAt: correct ? null : reviewDueAt(this.attemptCount + 1),
     });
     // Eligibility, from the two counters the SQL uses: the running total of
     // correct answers for the word, and how many times it has actually paid. The

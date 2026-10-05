@@ -429,6 +429,49 @@ test("a mistake is scheduled against the attempt count, not a date", () => {
   assert.equal(pending.attemptCount, 101, "answering advances the clock");
 });
 
+test("a correct review clears the schedule instead of repeating the word", () => {
+  // A reviewed word used to keep its old retryAt after a correct answer, so it
+  // stayed due and every remaining question type for it came back-to-back.
+  // The review has happened, so the word rejoins the normal rotation.
+  const bank = loadBank();
+  const engine = new PracticeEngine({
+    bank,
+    ...fixture({ attemptCount: 100 }),
+  });
+  const shown = engine.next();
+  assert.ok(shown);
+  const wrong = shown.choices.findIndex((c) => c !== shown.answer);
+  const missed = engine.grade(wrong);
+  assert.ok(missed);
+  assert.equal(missed.correct, false);
+  // Answer through to the review: fourteen more questions bring the clock to
+  // the attempt the mistake was scheduled against.
+  for (let i = 0; i < MISTAKE_REVIEW_DISTANCE - 1; i++) {
+    const question = engine.next();
+    assert.ok(question);
+    engine.grade(question.choices.indexOf(question.answer));
+  }
+  const review = engine.next();
+  assert.ok(review);
+  assert.equal(review.wordId, shown.wordId, "the due mistake comes back");
+  const graded = engine.grade(review.choices.indexOf(review.answer));
+  assert.ok(graded?.correct);
+  assert.equal(
+    graded.newlyMastered,
+    false,
+    "one correct answer does not master the word",
+  );
+  const row = engine.pending().progress.find((r) => r[0] === shown.wordId);
+  assert.equal(row?.[7], null, "a correct review clears the schedule");
+  const following = engine.next();
+  assert.ok(following);
+  assert.notEqual(
+    following.wordId,
+    shown.wordId,
+    "other words come in between instead of the same word back-to-back",
+  );
+});
+
 test("a reveal counts as seen but not as a type asked", () => {
   const bank = loadBank();
   const engine = new PracticeEngine({ bank, ...fixture() });
