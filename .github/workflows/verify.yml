@@ -1,0 +1,47 @@
+# Verify on push and pull requests.
+#
+# Signal only: typecheck, lint, the unit suite, and the check that every
+# migration on disk is in the drizzle journal. There is deliberately no deploy
+# step here. Production deploys - build, `d1 migrations apply`, then `wrangler
+# deploy` - run from Cloudflare Workers Builds on push to main, using
+# `scripts/deploy.sh --no-build`. A second deployer in this file would race it,
+# and it already did: this workflow used to deploy too, and failed on missing
+# D1 secrets while Cloudflare shipped fine without it.
+name: Verify
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      # Fails the run rather than the deploy. The suite includes the check
+      # that every migration on disk is in the drizzle journal, which is the
+      # failure that let four migrations go unapplied with no warning
+      # anywhere.
+      - name: Verify
+        run: |
+          npm run typecheck
+          npm run lint
+          npm test
+          npm run check:deploy
