@@ -26,6 +26,22 @@ function audioFiles() {
 }
 
 /**
+ * Whether a pronunciation clip exists, so callers can skip dead buttons.
+ *
+ * Many synonym/antonym answers are real words with no recording (only the
+ * 2,249 bank words have clips). Showing the control for those would be a
+ * button that always answers "being prepared", so the answer line checks
+ * first. Reads the same cached manifest the control itself plays from, so
+ * this costs no extra request.
+ */
+export function hasPronunciation(id: string): Promise<boolean> {
+  return audioFiles().then(
+    (words) => Boolean(words[id]),
+    () => false,
+  );
+}
+
+/**
  * Warms the index once per page, not once per word.
  *
  * Every Listen control on a screen shares one fetch, so warming it from each
@@ -41,9 +57,16 @@ export function WarmAudioIndex() {
 export default function Pronunciation({
   word,
   id = word.toLowerCase(),
+  label,
 }: {
   word: string;
   id?: string;
+  /**
+   * What a screen reader calls the button. Defaults to the question-word
+   * wording; the answer line passes its own, so the two controls on one
+   * answered question never share a name.
+   */
+  label?: string;
 }) {
   const [notice, setNotice] = useState("");
   const [playing, setPlaying] = useState(false);
@@ -106,7 +129,7 @@ export default function Pronunciation({
       <button
         type="button"
         className="text-button pronunciation-button"
-        aria-label={`Hear ${word} pronounced in British English`}
+        aria-label={label ?? `Hear ${word} pronounced in British English`}
         onClick={() => void play()}
       >
         <Volume2 size={18} aria-hidden="true" />
@@ -114,5 +137,32 @@ export default function Pronunciation({
       </button>
       {notice && <span role="status">{notice}</span>}
     </span>
+  );
+}
+
+/**
+ * The answer, playable — but only when there is something to play.
+ *
+ * Rendered for single-word answers (a definition is a sentence, not a word).
+ * Answers that are real words without a recording render nothing at all
+ * rather than a button that can only apologise.
+ */
+export function AnswerAudio({ word }: { word: string }) {
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    let alive = true;
+    void hasPronunciation(word.toLowerCase()).then((ok) => {
+      if (alive) setReady(ok);
+    });
+    return () => {
+      alive = false;
+    };
+  }, [word]);
+  if (!ready) return null;
+  return (
+    <Pronunciation
+      word={word}
+      label={`Hear the answer ${word} pronounced in British English`}
+    />
   );
 }

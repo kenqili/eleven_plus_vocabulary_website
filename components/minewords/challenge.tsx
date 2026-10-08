@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, BookOpen, Lightbulb } from "lucide-react";
-import Pronunciation from "./pronunciation";
+import Pronunciation, { AnswerAudio } from "./pronunciation";
 import AnswerPacing from "./answer-pacing";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
@@ -566,6 +566,43 @@ export default function Challenge() {
                         </div>
                       )}
                       <WordExplanation word={feedback} />
+                      {/*
+                        The answer, playable when it is a single word with a
+                        recording. A definition is a sentence, not a word, and
+                        some synonym answers have no clip - those render
+                        nothing rather than a button that can only apologise.
+                      */}
+                      {(() => {
+                        const answer = feedback.answer.trim();
+                        return (
+                          answer &&
+                          !/\s/.test(answer) && (
+                            <p className="answer-sound">
+                              The answer is <strong>{feedback.answer}</strong>{" "}
+                              <AnswerAudio word={answer} />
+                            </p>
+                          )
+                        );
+                      })()}
+                      {/*
+                        Why a right answer sometimes moves nothing. Only
+                        counted correct answers advance the streak: a clue
+                        means it was not known unaided, and a word that has
+                        already paid its five stops paying. Without this a
+                        child gets three right, earns no bonus, and concludes
+                        the streak is broken.
+                      */}
+                      {feedback.award &&
+                        feedback.correct &&
+                        !feedback.skipped &&
+                        !feedback.award.base &&
+                        !feedback.award.mastery && (
+                          <small>
+                            {feedback.evidence === "assisted"
+                              ? "You used a clue, so this one does not move your streak — the next one answered without a clue will."
+                              : "This word has earned all its answer credits already, so this one does not move your streak — new words do."}
+                          </small>
+                        )}
                       {feedback.chosen ? (
                         <div className="chosen-explanation">
                           <strong>

@@ -692,6 +692,15 @@ h1 {
   background: var(--surface-brand);
   color: var(--ink-brand);
 }
+/* The answer, printed with its play button. A flex row so a long word wraps
+   onto its own line rather than pushing the button off the card. */
+.answer-sound {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0 0;
+}
 .answer.correct {
   background: var(--surface-success);
   border-color: var(--line-success-2);
