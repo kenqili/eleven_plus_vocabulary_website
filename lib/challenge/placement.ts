@@ -75,6 +75,12 @@ export function levelFractions(
  * and promoting out of 80%-of-116 after a day would move the level for the
  * wrong reason.
  *
+ * Then the readiness rule, when the caller passes it: a band whose every word
+ * has been answered right at least twice is firmed up, so the level steps up
+ * one (capped at 5) to move together with the practice allocation, which by
+ * then is already asking four-fifths above. Without this the bar could sit at
+ * Level 1 while four out of five questions came from Level 2.
+ *
  * Then at most one adjustment from the trailing answers at that band:
  * - collapse (<40% over ≥30) steps down one: a sustained failure, never one
  *   bad round, and mastery flags are untouched — falling back changes what is
@@ -90,22 +96,24 @@ export function levelFractions(
 export function currentLevel(
   fractions: ReadonlyArray<number>,
   trailing: ReadonlyArray<TrailingAnswer>,
+  readyForNext = false,
 ): number {
   let highest = -1;
   for (let band = 0; band < BAND_COUNT; band++) {
     if ((fractions[band] ?? 0) >= LEVEL_UP_FRACTION) highest = band;
   }
   const base = Math.max(1, Math.min(5, highest + 1));
-  const at = trailing.filter((answer) => answer.level === base);
+  const placed = readyForNext ? Math.min(5, base + 1) : base;
+  const at = trailing.filter((answer) => answer.level === placed);
   if (at.length >= SLOW_TRACK_MIN_ANSWERS) {
     const accuracy = at.filter((answer) => answer.correct).length / at.length;
-    if (accuracy < LEVEL_DOWN_FRACTION) return Math.max(0, base - 1);
+    if (accuracy < LEVEL_DOWN_FRACTION) return Math.max(0, placed - 1);
   }
   if (at.length >= FAST_TRACK_MIN_ANSWERS) {
     const accuracy = at.filter((answer) => answer.correct).length / at.length;
-    if (accuracy >= FAST_TRACK_ACCURACY) return Math.min(5, base + 1);
+    if (accuracy >= FAST_TRACK_ACCURACY) return Math.min(5, placed + 1);
   }
-  return base;
+  return placed;
 }
 
 /**

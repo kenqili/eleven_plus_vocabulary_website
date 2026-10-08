@@ -34,6 +34,17 @@ test("a brand-new child starts at Level 1, not Level 0", () => {
   assert.equal(currentLevel([0, 0, 0, 0, 0, 0], []), 1);
 });
 
+test("a firmed band moves the level with the allocation", () => {
+  // The badge follows the draw: when every word in the band has been answered
+  // right twice, the allocation is already asking four-fifths above, and the
+  // level steps up to meet it rather than sitting a band behind.
+  assert.equal(currentLevel([0, 0, 0, 0, 0, 0], [], true), 2);
+  // Capped at the top: readiness cannot promote past Level 5.
+  assert.equal(currentLevel([1, 1, 1, 1, 1, 1], [], true), 5);
+  // And without readiness nothing changes: an unfinished band still holds.
+  assert.equal(currentLevel([0, 0, 0, 0, 0, 0], []), 1);
+});
+
 test("the level follows mastered fractions upward", () => {
   const items = [
     ...mastered(0, 116),

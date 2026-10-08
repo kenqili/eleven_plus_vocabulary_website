@@ -7,6 +7,7 @@ import {
   currentLevel,
   levelFractions,
   levelScore,
+  stretchFraction,
   type TrailingAnswer,
 } from "@/lib/challenge/placement";
 import { hasMastered } from "@/lib/challenge/mastery";
@@ -43,7 +44,7 @@ const bandFor = (id: string): number =>
 
 type BandPool = {
   totals: number[];
-  items: Array<{ level: number; mastered: boolean }>;
+  items: Array<{ level: number; mastered: boolean; correct: number }>;
 };
 
 async function bandPool(userId: string): Promise<BandPool> {
@@ -73,6 +74,7 @@ async function bandPool(userId: string): Promise<BandPool> {
         mastered: row?.mastered,
         correct: row?.correct ?? 0,
       }),
+      correct: row?.correct ?? 0,
     });
   }
   // A parent's own words sit where the question route puts them: by length,
@@ -91,6 +93,7 @@ async function bandPool(userId: string): Promise<BandPool> {
         mastered: row?.mastered,
         correct: row?.correct ?? 0,
       }),
+      correct: row?.correct ?? 0,
     });
   }
   return { totals, items };
@@ -138,7 +141,12 @@ export async function accountPlacement(userId: string): Promise<{
     trailingAnswers(userId),
   ]);
   const fractions = levelFractions(items, totals);
-  const level = currentLevel(fractions, trailing);
+  const base = currentLevel(fractions, trailing);
+  const level = currentLevel(
+    fractions,
+    trailing,
+    stretchFraction(items, totals, base) >= 1,
+  );
   return { level, score: levelScore(level, fractions[level] ?? 0) };
 }
 

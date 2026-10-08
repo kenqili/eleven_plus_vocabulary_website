@@ -198,15 +198,26 @@ test("automatic placement draws the same band and word on both sides", () => {
     const byId = new Map(progress.map((row) => [row[0], row]));
     const totals = [0, 0, 0, 0, 0, 0];
     for (const row of bank.words) totals[Number(row[5])] += 1;
-    const items = bank.words.map((row) => ({
-      level: Number(row[5]),
-      mastered: hasMastered({
-        mastered: byId.get(String(row[0]))?.[4],
-        correct: byId.get(String(row[0]))?.[1] ?? 0,
-      }),
-    }));
+    const items = bank.words.map((row) => {
+      const saved = byId.get(String(row[0]));
+      return {
+        level: Number(row[5]),
+        mastered: hasMastered({
+          mastered: saved?.[4],
+          correct: saved?.[1] ?? 0,
+        }),
+        correct: saved?.[1] ?? 0,
+      };
+    });
     const fractions = levelFractions(items, totals);
-    const level = currentLevel(fractions, []);
+    // Readiness the same way the engine reads it, through the shared helper:
+    // the level under test already includes the step-up a firmed band earns.
+    const base = currentLevel(fractions, []);
+    const level = currentLevel(
+      fractions,
+      [],
+      stretchFraction(items, totals, base) >= 1,
+    );
     assert.deepEqual(
       shown.placement,
       { level, score: levelScore(level, fractions[level]) },
@@ -219,21 +230,12 @@ test("automatic placement draws the same band and word on both sides", () => {
     const unmastered = serverWords.filter(
       (w) => !hasMastered(byId.get(w.id) ?? initialMastery),
     );
-    // The stretch the engine derives from the same rows, through the shared
-    // helper: the fraction is an input both sides compute, not a number the
-    // test hands them, which is what keeps this a parity check.
-    const fracTotals = [0, 0, 0, 0, 0, 0];
-    const fracItems = serverWords.map((w) => {
-      const band = serverLevels.get(w.id) ?? 1;
-      fracTotals[band] += 1;
-      return { level: band, correct: byId.get(w.id)?.[1] ?? 0 };
-    });
     const narrowed = narrowToBand(
       unmastered,
       (w) => serverLevels.get(w.id) ?? 1,
       allocationFor(
         level,
-        stretchFraction(fracItems, fracTotals, level),
+        stretchFraction(items, totals, level),
       ),
       stream,
     );
@@ -343,6 +345,44 @@ test("a fresh level draws nothing above it", () => {
       `a fresh Level 1 round asked ${shown.wordId} from Level ${shown.difficulty}`,
     );
   }
+});
+
+test("a fully firmed band places a level up", () => {
+  // Every word in the band answered right twice: the draw is already
+  // four-fifths above, so the placement reads the next level instead of
+  // lagging it. Ten Level 1 words at two right answers each, with a few
+  // unseen words in every other band so the fractions still place the base
+  // at 1 (empty bands read complete, which would otherwise jump it to 5).
+  // Two right answers are short of mastery, so only the readiness moves it.
+  const bank = loadBank();
+  const ofBand = (band) =>
+    bank.words
+      .filter((row) => Number(row[5]) === band)
+      .slice(0, band === 1 ? 10 : 3)
+      .map((row) => String(row[0]));
+  const ready = ofBand(1);
+  assert.equal(ready.length, 10);
+  const ids = [
+    ...ready,
+    ...ofBand(0),
+    ...ofBand(2),
+    ...ofBand(3),
+    ...ofBand(4),
+    ...ofBand(5),
+  ];
+  const engine = new PracticeEngine({
+    bank,
+    ...fixture({
+      allowedWordIds: new Set(ids),
+      progress: ready.map((id) => [id, 2, 0, 0, 0, 1, null, null]),
+    }),
+  });
+  const placed = engine.placement();
+  assert.equal(
+    placed.level,
+    2,
+    "a band answered right twice throughout places one up",
+  );
 });
 
 test("question types cycle for a word before repeating", () => {

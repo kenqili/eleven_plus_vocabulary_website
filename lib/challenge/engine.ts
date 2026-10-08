@@ -399,7 +399,20 @@ export class PracticeEngine {
       })),
       totals,
     );
-    const level = currentLevel(fractions, this.trailing);
+    // The badge moves together with the practice allocation: a band whose
+    // every word has been answered right at least twice steps up, because by
+    // then the draw is already asking four-fifths above.
+    const base = currentLevel(fractions, this.trailing);
+    const ready =
+      stretchFraction(
+        words.map((word) => ({
+          level: word.difficulty,
+          correct: this.countersFor(word.id).correct,
+        })),
+        totals,
+        base,
+      ) >= 1;
+    const level = currentLevel(fractions, this.trailing, ready);
     return { level, score: levelScore(level, fractions[level] ?? 0) };
   }
 

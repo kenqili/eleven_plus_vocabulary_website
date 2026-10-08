@@ -331,7 +331,8 @@ export async function nextQuestion(
   const placementOf = (): Placement | null => {
     if (level !== null) return null;
     const totals = [0, 0, 0, 0, 0, 0];
-    const items: Array<{ level: number; mastered: boolean }> = [];
+    const items: Array<{ level: number; mastered: boolean; correct: number }> =
+      [];
     for (const word of pool) {
       if (!eligibleWordIds.has(word.id)) continue;
       if (!isAllowedWord(word.id, allowedWordIds)) continue;
@@ -341,11 +342,20 @@ export async function nextQuestion(
       items.push({
         level: band,
         mastered: hasMastered(byId.get(word.id) ?? initialMastery),
+        correct: byId.get(word.id)?.correct ?? 0,
       });
     }
     const fractions = levelFractions(items, totals);
-    const band = currentLevel(fractions, trailing);
-    return { level: band, score: levelScore(band, fractions[band] ?? 0) };
+    const base = currentLevel(fractions, trailing);
+    const placedLevel = currentLevel(
+      fractions,
+      trailing,
+      stretchFraction(items, totals, base) >= 1,
+    );
+    return {
+      level: placedLevel,
+      score: levelScore(placedLevel, fractions[placedLevel] ?? 0),
+    };
   };
   const pending = await db
     .prepare(

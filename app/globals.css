@@ -1720,6 +1720,72 @@ hr {
 .word-level-help {
   max-width: 820px;
 }
+/*
+ * The mastery map: one block per word per level, darker as it gets closer
+ * to mastered. Cells are fixed positions in collection order, so the map
+ * fills in rather than reshuffling as the child learns. Counts live in the
+ * row labels, never in the cells, so the blocks stay pure colour.
+ */
+.word-heatmap {
+  margin: 0 0 24px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.word-heatmap-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin: 0 0 4px;
+  font-size: 13px;
+  color: var(--ink-3);
+}
+.word-heatmap-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.word-heatmap-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-top: 10px;
+}
+.word-heatmap-level {
+  flex: 0 0 150px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+.word-heatmap-cells {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+.word-cell {
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+}
+.word-cell-mastered {
+  background: var(--surface-green);
+}
+.word-cell-learning {
+  background: var(--surface-amber);
+}
+.word-cell-new {
+  background: var(--surface-4);
+  border: 1px solid var(--line-2);
+}
+@media (max-width: 600px) {
+  .word-heatmap-row {
+    flex-wrap: wrap;
+  }
+  .word-heatmap-level {
+    flex-basis: 100%;
+  }
+}
 .word-tools {
   padding: 24px;
   border: 1px solid var(--line);
