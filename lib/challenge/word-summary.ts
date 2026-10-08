@@ -49,6 +49,15 @@ export type WordSummaryData = {
   total: number;
   /** Words per learning status, so the progress cards need no list to count. */
   counts: Record<string, number>;
+  /** The same tallies per difficulty band, for the per-level summary bar. */
+  levelCounts: Record<string, Record<string, number>>;
+  /**
+   * One character per word per band, in collection order: m for mastered, l
+   * for learning (including slipped), n for new. The heatmap renders cells
+   * from this instead of the browser holding all 2,249 entries - about two
+   * kilobytes for the whole collection.
+   */
+  heatmap: Record<string, string>;
 };
 export function learningStatus(progress: {
   mastered: boolean;

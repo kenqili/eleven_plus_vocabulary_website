@@ -27,6 +27,8 @@ import {
   levelFractions,
   levelScore,
   narrowToBand,
+  stretchFraction,
+  BAND_COUNT,
   type Placement,
   type TrailingAnswer,
 } from "./placement.ts";
@@ -402,6 +404,27 @@ export class PracticeEngine {
   }
 
   /**
+   * How much of the band above is open, 0 to 1.
+   *
+   * The share of the band's words answered right at least twice, counted over
+   * the same pool the level estimate reads. A fresh band reads 0, so nothing
+   * above the child's level is drawn until its words start firming up.
+   */
+  private bandReadiness(level: number): number {
+    const totals = [0, 0, 0, 0, 0, 0];
+    const items: Array<{ level: number; correct: number }> = [];
+    for (const word of this.pool()) {
+      if (word.difficulty < 0 || word.difficulty >= BAND_COUNT) continue;
+      totals[word.difficulty] += 1;
+      items.push({
+        level: word.difficulty,
+        correct: this.countersFor(word.id).correct,
+      });
+    }
+    return stretchFraction(items, totals, level);
+  }
+
+  /**
    * The next question, or null when there is nothing left to ask.
    *
    * Null is a real answer, not a failure: a child who has mastered every word they
@@ -431,7 +454,10 @@ export class PracticeEngine {
         wordPool = narrowToBand(
           available,
           (word) => word.difficulty,
-          allocationFor(placement.level),
+          allocationFor(
+            placement.level,
+            this.bandReadiness(placement.level),
+          ),
           this.options.random,
         ).words;
       }

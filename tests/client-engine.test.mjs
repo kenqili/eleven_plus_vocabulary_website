@@ -43,6 +43,7 @@ import {
   levelFractions,
   levelScore,
   narrowToBand,
+  stretchFraction,
 } from "../lib/challenge/placement.ts";
 
 /**
@@ -218,10 +219,22 @@ test("automatic placement draws the same band and word on both sides", () => {
     const unmastered = serverWords.filter(
       (w) => !hasMastered(byId.get(w.id) ?? initialMastery),
     );
+    // The stretch the engine derives from the same rows, through the shared
+    // helper: the fraction is an input both sides compute, not a number the
+    // test hands them, which is what keeps this a parity check.
+    const fracTotals = [0, 0, 0, 0, 0, 0];
+    const fracItems = serverWords.map((w) => {
+      const band = serverLevels.get(w.id) ?? 1;
+      fracTotals[band] += 1;
+      return { level: band, correct: byId.get(w.id)?.[1] ?? 0 };
+    });
     const narrowed = narrowToBand(
       unmastered,
       (w) => serverLevels.get(w.id) ?? 1,
-      allocationFor(level),
+      allocationFor(
+        level,
+        stretchFraction(fracItems, fracTotals, level),
+      ),
       stream,
     );
     const inBand = narrowed.words.map((w) => ({
@@ -265,12 +278,17 @@ test("a due mistake comes back before anything else", () => {
 test("a word is not asked again inside the exclusion window", () => {
   const bank = loadBank();
   // The window has to be decisive to be worth testing, so the pool is cut to
-  // thirty words and the twenty most recent are named. Out of a couple of
+  // forty words and the twenty most recent are named. Out of a couple of
   // thousand least-seen words, missing twenty specific ones is a matter of luck -
   // which is how the first version of this test passed with the window switched
-  // off entirely. With thirty candidates and twenty excluded, the answer can only
-  // come from the other ten.
-  const pool = bank.words.slice(0, 30).map((row) => String(row[0]));
+  // off entirely. With forty candidates and twenty excluded, the answer can only
+  // come from the other twenty.
+  //
+  // Forty, not thirty: a fresh level draws nothing above its own band, so the
+  // drawable words are the ones at or below it. The first thirty bank words
+  // hold only three of those outside the recent twenty - too few to tell
+  // "excluded" from "always the same word". Forty holds five.
+  const pool = bank.words.slice(0, 40).map((row) => String(row[0]));
   const recent = pool.slice(0, 20);
   const engine = new PracticeEngine({
     bank,
@@ -293,7 +311,8 @@ test("a word is not asked again inside the exclusion window", () => {
 
   // And the window relaxes rather than stalling when there is nothing left
   // outside it, which is what `chooseWord` does for a small pool. A child with
-  // twenty-five words is not left with no question to ask.
+  // forty words and twenty-five of them excluded is not left with no question
+  // to ask.
   const cramped = new PracticeEngine({
     bank,
     ...fixture({
@@ -306,6 +325,24 @@ test("a word is not asked again inside the exclusion window", () => {
     cramped.next(),
     "a child with almost every word excluded still gets a question",
   );
+});
+
+test("a fresh level draws nothing above it", () => {
+  // A child on their first morning used to meet a Level 2 word every fifth
+  // question: the stretch was a fixed fifth whatever they had learned. Now
+  // the band above opens only as its words are answered right twice, so with
+  // no history every draw stays at or below the level.
+  const bank = loadBank();
+  const engine = new PracticeEngine({ bank, ...fixture() });
+  assert.equal(engine.placement().level, 1);
+  for (let i = 0; i < 50; i++) {
+    const shown = engine.next();
+    assert.ok(shown, "the engine must keep producing questions");
+    assert.ok(
+      shown.difficulty <= 1,
+      `a fresh Level 1 round asked ${shown.wordId} from Level ${shown.difficulty}`,
+    );
+  }
 });
 
 test("question types cycle for a word before repeating", () => {

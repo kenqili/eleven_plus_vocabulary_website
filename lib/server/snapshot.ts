@@ -1,7 +1,9 @@
 import manifest from "../../data/client-bank.json" with { type: "json" };
 import { RECENT_WORD_WINDOW } from "@/lib/challenge/ordering";
+import type { TrailingAnswer } from "@/lib/challenge/placement";
 import { statsFor } from "./challenge";
 import { initializeRewards } from "./rewards";
+import { trailingAnswers } from "./placement";
 import { database } from "./db";
 import { freeWordIds } from "./free-words";
 import type { Stats } from "@/lib/challenge/types";
@@ -115,7 +117,8 @@ export type Snapshot = {
     freeWordCount: number;
   };
   /**
-   * The logical clock, and the words most recently attempted, newest first.
+   * The logical clock, the words most recently attempted, and the recent
+   * answers the level estimate reads.
    *
    * `recent` is bounded rather than complete. The server passes the whole
    * distinct history to `chooseWord`, which filters it to the words it can
@@ -123,8 +126,14 @@ export type Snapshot = {
    * change the answer, and sending fewer would if enough of the head were
    * excluded words. Forty leaves room for twenty exclusions, which is far more
    * than a parent realistically sets aside.
+   *
+   * `trailing` is the same last-thirty-answers the server's own placement
+   * reads, oldest first. Without it the browser started every visit with no
+   * recent accuracy, so a fast-track promotion earned in one sitting vanished
+   * on reload and the level fell back. Derived from learning_events, like
+   * everything else here - no stored level to drift.
    */
-  clock: { attemptCount: number; recent: string[] };
+  clock: { attemptCount: number; recent: string[]; trailing: TrailingAnswer[] };
   /**
    * How many times each question type has been asked of each word, as
    * `[wordId, type, count]`.
@@ -268,6 +277,7 @@ export async function progressSnapshot(
       // attempts, and that is the number `retry_at` was written against.
       attemptCount: count.results[0]?.count ?? 0,
       recent: recent.results.map((row) => row.word_id),
+      trailing: await trailingAnswers(userId),
     },
     // Mapped to tuples rather than passed through. A driver hands back an object
     // per row keyed by column name, and repeating those names for every word a

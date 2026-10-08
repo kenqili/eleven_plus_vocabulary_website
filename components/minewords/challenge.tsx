@@ -819,7 +819,10 @@ export default function Challenge() {
                   <p>
                     We favour words you have seen least, choosing randomly when
                     tied. The last 20 different words are kept out of the next
-                    selection; this gap shrinks when fewer words remain.
+                    selection; this gap shrinks when fewer words remain. Words
+                    from the next level join in as the words at your level firm
+                    up: the more of them answered right twice, the larger
+                    their share.
                   </p>
                   <p>
                     Missed or revealed words return on the 15th next question,

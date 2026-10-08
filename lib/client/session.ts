@@ -73,6 +73,10 @@ export async function loadSession(options?: {
       typeCounts: snapshot.typeCounts,
       attemptCount: snapshot.clock.attemptCount,
       recent: snapshot.clock.recent,
+      // The server's own last-thirty answers, so a fast-track promotion
+      // earned yesterday is still earned after a reload instead of falling
+      // back to the fractions-only level.
+      trailing: snapshot.clock.trailing ?? [],
       // Both of these come from the account, not from this session. The streak
       // decides when the every-third bonus lands and the counts hold the cap, so
       // starting either at zero would misprice credits for the whole sitting.

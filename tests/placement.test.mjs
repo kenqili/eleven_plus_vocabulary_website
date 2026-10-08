@@ -11,6 +11,7 @@ import {
   levelScore,
   MAX_SCORE,
   narrowToBand,
+  stretchFraction,
 } from "../lib/challenge/placement.ts";
 
 /** Six bands, 0–5, ~426 words each except L0's 116. */
@@ -126,23 +127,95 @@ test("the score fills each sixth of 10,000 monotonically", () => {
 
 test("allocation never reaches beyond one band away", () => {
   for (let level = 0; level < BAND_COUNT; level++) {
-    for (const band of allocationFor(level).keys()) {
+    for (const stretch of [0, 0.5, 1]) {
+      for (const band of allocationFor(level, stretch).keys()) {
+        assert.ok(
+          Math.abs(band - level) <= 1,
+          `L${level} allocates to L${band}: a Level 1 child must never draw Level 4 or 5`,
+        );
+      }
+      const total = [...allocationFor(level, stretch).values()].reduce(
+        (a, b) => a + b,
+        0,
+      );
       assert.ok(
-        Math.abs(band - level) <= 1,
-        `L${level} allocates to L${band}: a Level 1 child must never draw Level 4 or 5`,
+        Math.abs(total - 1) < 1e-9,
+        `L${level} weights sum to ${total}`,
       );
     }
-    const total = [...allocationFor(level).values()].reduce((a, b) => a + b, 0);
-    assert.ok(Math.abs(total - 1) < 1e-9, `L${level} weights sum to ${total}`);
   }
   // The top band revises downward instead of reaching for a band that does not
-  // exist; the bottom band leans on its small pool plus a look ahead.
-  assert.ok(!allocationFor(5).has(6));
-  assert.equal(allocationFor(0).get(0), 0.8);
+  // exist; the bottom band keeps everything at home until it opens upward.
+  assert.ok(!allocationFor(5, 1).has(6));
+  assert.equal(allocationFor(0, 0).get(0), 1);
+  assert.equal(allocationFor(0, 0).get(1), undefined);
+});
+
+test("the stretch above opens with twice-right answers, never before", () => {
+  // Fresh band: revision below, everything else at home, nothing above. This
+  // is the complaint that started it - a child on their first morning met a
+  // Level 2 word every fifth question.
+  assert.deepEqual(
+    [...allocationFor(1, 0)],
+    [
+      [0, 0.2],
+      [1, 0.8],
+    ],
+  );
+  // Half the band answered right twice: the next band holds a third of the
+  // round.
+  assert.deepEqual(
+    [...allocationFor(1, 0.5)],
+    [
+      [0, 0.2],
+      [1, 0.4],
+      [2, 0.4],
+    ],
+  );
+  // The whole band ready: the current band yields entirely, and the 80% the
+  // next band holds is what practising there looks like before the level
+  // itself moves.
+  assert.deepEqual(
+    [...allocationFor(1, 1)],
+    [
+      [0, 0.2],
+      [1, 0],
+      [2, 0.8],
+    ],
+  );
+  // The top band has nowhere to open into, whatever the fraction says.
+  assert.deepEqual(
+    [...allocationFor(5, 1)],
+    [
+      [4, 0.2],
+      [5, 0.8],
+    ],
+  );
+});
+
+test("readiness counts twice-right words in the band", () => {
+  const items = [
+    { level: 1, correct: 0 },
+    { level: 1, correct: 1 },
+    { level: 1, correct: 2 },
+    { level: 1, correct: 5 },
+    { level: 2, correct: 9 },
+  ];
+  // Two of four band-1 words are twice-right; band 2's words do not count
+  // towards band 1's opening, however right they are.
+  assert.equal(stretchFraction(items, [0, 4, 1, 0, 0, 0], 1), 0.5);
+  // One right answer is meeting, not firming: it opens nothing.
+  assert.equal(
+    stretchFraction([{ level: 1, correct: 1 }], [0, 1, 0, 0, 0, 0], 1),
+    0,
+  );
+  // An empty band reads complete: with nothing to learn there, there is
+  // nothing to wait for before looking ahead.
+  assert.equal(stretchFraction([], [0, 0, 0, 0, 0, 0], 3), 1);
 });
 
 test("an exhausted band yields to its neighbours", () => {
-  const weights = allocationFor(1); // 0: .1, 1: .7, 2: .2
+  const weights = allocationFor(1, 0.5); // 0: .2, 1: .4, 2: .4
   // Band 1 fully mastered: the draw renormalises over 0 and 2 rather than
   // returning nothing or repeating mastered words.
   const seen = new Set();

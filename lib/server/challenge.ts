@@ -23,6 +23,7 @@ import {
   levelFractions,
   levelScore,
   narrowToBand,
+  stretchFraction,
   type Placement,
   type TrailingAnswer,
 } from "@/lib/challenge/placement";
@@ -420,10 +421,28 @@ export async function nextQuestion(
       return retryAt !== null && retryAt <= count;
     });
     if (!owed) {
+      // The stretch follows the same readiness the browser derives from the
+      // same rows, which is what keeps the two question paths in agreement.
+      const fracTotals = [0, 0, 0, 0, 0, 0];
+      const fracItems: Array<{ level: number; correct: number }> = [];
+      for (const word of pool) {
+        if (!eligibleWordIds.has(word.id)) continue;
+        if (!isAllowedWord(word.id, allowedWordIds)) continue;
+        const band = levelFor(word.id);
+        if (band < 0 || band > 5) continue;
+        fracTotals[band] += 1;
+        fracItems.push({
+          level: band,
+          correct: byId.get(word.id)?.correct ?? 0,
+        });
+      }
       bandWords = narrowToBand(
         startable,
         (word) => levelFor(word.id),
-        allocationFor(placed.level),
+        allocationFor(
+          placed.level,
+          stretchFraction(fracItems, fracTotals, placed.level),
+        ),
         Math.random,
       ).words;
     }

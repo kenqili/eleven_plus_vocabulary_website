@@ -126,46 +126,71 @@ export function levelScore(level: number, fraction: number): number {
 /**
  * How questions split across bands at each level.
  *
- * Seventy percent the current band, fifteen each side: revision below, stretch
- * above. L0 is 80/20 because its 116-word pool would otherwise repeat against
- * the recent-word window; L5 is 85/15 with no band above. The ±1 window is
- * structural — a Level 1 child meets occasional Level 2, never Level 4 or 5 —
- * and bands with nothing to ask renormalise away at draw time rather than here.
+ * The split is constant in shape and adaptive in balance: the band below
+ * always keeps a fifth (revision), while the remaining four-fifths shift from
+ * the current band to the next one as its words firm up. The shift follows
+ * `stretchFraction` below - the share of the current band answered right at
+ * least twice - so a fresh child meets nothing above their level and a child
+ * who has nearly finished it is mostly asked what comes next. L0 has no band
+ * below, so its fifth stays home; L5 has no band above, so its four-fifths do.
+ *
+ * Seventy percent the current band, fifteen each side used to be the rule for
+ * every level: revision below, stretch above. A fixed fifth of stretch meant a
+ * child on their first morning met a Level 2 word every fifth question, which
+ * is what the adaptive balance fixes. The ±1 window itself is structural - a
+ * Level 1 child still never draws Level 4 or 5 - and bands with nothing to ask
+ * renormalise away at draw time rather than here.
  */
-const ALLOCATION: ReadonlyArray<ReadonlyMap<number, number>> = [
-  new Map([
-    [0, 0.8],
-    [1, 0.2],
-  ]),
-  new Map([
-    [0, 0.1],
-    [1, 0.7],
-    [2, 0.2],
-  ]),
-  new Map([
-    [1, 0.15],
-    [2, 0.7],
-    [3, 0.15],
-  ]),
-  new Map([
-    [2, 0.15],
-    [3, 0.7],
-    [4, 0.15],
-  ]),
-  new Map([
-    [3, 0.15],
-    [4, 0.7],
-    [5, 0.15],
-  ]),
-  new Map([
-    [4, 0.15],
-    [5, 0.85],
-  ]),
-];
+export const BELOW_BAND_SHARE = 0.2;
+/** The current band's weight plus the next band's weight, always. */
+export const CURRENT_NEXT_SHARE = 0.8;
+/**
+ * Right answers on one word that start opening the band above it.
+ *
+ * Two, not one: a single correct answer is evidence the child has met the
+ * word, and the second is the first sign it is sticking. Assisted answers
+ * never reach this count - the evidence rules do not credit them - so leaning
+ * on the clue cannot open harder bands early.
+ */
+export const STRETCH_CORRECT = 2;
 
-export function allocationFor(level: number): ReadonlyMap<number, number> {
+/**
+ * How much of the next band is open, 0 to 1.
+ *
+ * The share of the band's words answered right at least twice. A band with no
+ * words in the pool reads complete, like `levelFractions`: with nothing to
+ * learn there, there is nothing to wait for before looking ahead.
+ */
+export function stretchFraction(
+  items: ReadonlyArray<{ level: number; correct: number }>,
+  totals: ReadonlyArray<number>,
+  band: number,
+): number {
+  const total = totals[band] ?? 0;
+  if (total <= 0) return 1;
+  let ready = 0;
+  for (const item of items) {
+    if (item.level === band && (item.correct ?? 0) >= STRETCH_CORRECT)
+      ready += 1;
+  }
+  return Math.min(1, ready / total);
+}
+
+export function allocationFor(
+  level: number,
+  nextFraction = 0,
+): ReadonlyMap<number, number> {
   const clamped = Math.max(0, Math.min(5, level));
-  return ALLOCATION[clamped];
+  const frac = Math.max(0, Math.min(1, nextFraction));
+  const weights = new Map<number, number>();
+  // The revision fifth, folded home at the bottom where no band sits below.
+  const below = clamped > 0 ? BELOW_BAND_SHARE : 0;
+  if (below > 0) weights.set(clamped - 1, below);
+  // The stretch, folded home at the top where no band sits above.
+  const ahead = clamped < 5 ? CURRENT_NEXT_SHARE * frac : 0;
+  weights.set(clamped, 1 - below - ahead);
+  if (ahead > 0) weights.set(clamped + 1, ahead);
+  return weights;
 }
 
 /**

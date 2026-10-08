@@ -36,6 +36,10 @@ export default function WordSummaryPage() {
   const [total, setTotal] = useState(0);
   const premiumRef = useRef(false);
   const [counts, setCounts] = useState<Record<string, number>>({});
+  const [levelCounts, setLevelCounts] = useState<
+    Record<string, Record<string, number>>
+  >({});
+  const [heatmap, setHeatmap] = useState<Record<string, string>>({});
   const query = useMemo(
     () =>
       new URLSearchParams({
@@ -56,6 +60,8 @@ export default function WordSummaryPage() {
         setData(result);
         setTotal(result.total);
         setCounts(result.counts);
+        setLevelCounts(result.levelCounts ?? {});
+        setHeatmap(result.heatmap ?? {});
         setError("");
       })
       .catch((e: Error) => {
@@ -126,20 +132,31 @@ export default function WordSummaryPage() {
         {data && (
           <>
             <div className="word-levels" aria-label="Learning progress">
-              {Object.entries(LEARNING_STATUS).map(([level, label]) => (
-                <button
-                  key={level}
-                  className={`word-level-card level-${level}`}
-                  aria-pressed={filter === level}
-                  onClick={() => {
-                    setFilter(level as WordFilter);
-                    setPage(0);
-                  }}
-                >
-                  <strong>{counts[level] ?? 0}</strong>
-                  <span>{label}</span>
-                </button>
-              ))}
+              {(() => {
+                // The cards follow the level picker: whole-collection counts
+                // for "all levels", that level's counts otherwise. The search
+                // box does not narrow them, so typing cannot zero the cards.
+                const tally =
+                  difficulty === "all"
+                    ? counts
+                    : (levelCounts[String(difficulty)] ?? {});
+                return Object.entries(LEARNING_STATUS).map(
+                  ([level, label]) => (
+                    <button
+                      key={level}
+                      className={`word-level-card level-${level}`}
+                      aria-pressed={filter === level}
+                      onClick={() => {
+                        setFilter(level as WordFilter);
+                        setPage(0);
+                      }}
+                    >
+                      <strong>{tally[level] ?? 0}</strong>
+                      <span>{label}</span>
+                    </button>
+                  ),
+                );
+              })()}
             </div>
             <p className="muted word-level-help">
               {describeRecallTargets()} master a word, as do {runTarget(0)}–
@@ -147,6 +164,73 @@ export default function WordSummaryPage() {
               answers whenever they come. Needs practice highlights unmastered
               words with a mistake or revealed answer.
             </p>
+            {/*
+              The mastery map: one block per word per level, darker as it gets
+              closer to mastered. Cells are fixed positions in collection
+              order, so the map fills in rather than reshuffling. Counts come
+              from the tallies, not the cells, so the words never depend on
+              the rendering.
+            */}
+            <section
+              className="word-heatmap"
+              aria-label="Mastery map: darker blocks are closer to mastered"
+            >
+              <div className="word-heatmap-legend">
+                <span>
+                  <i
+                    className="word-cell word-cell-mastered"
+                    aria-hidden="true"
+                  />
+                  Mastered
+                </span>
+                <span>
+                  <i
+                    className="word-cell word-cell-learning"
+                    aria-hidden="true"
+                  />
+                  Learning
+                </span>
+                <span>
+                  <i className="word-cell word-cell-new" aria-hidden="true" />
+                  New
+                </span>
+              </div>
+              {[0, 1, 2, 3, 4, 5].map((band) => {
+                const cells = heatmap[String(band)] ?? "";
+                const tally = levelCounts[String(band)] ?? {};
+                const mastered = tally.mastered ?? 0;
+                const learning =
+                  (tally.learning ?? 0) + (tally.practice ?? 0);
+                const fresh = tally.new ?? 0;
+                const fmt = (n: number) => n.toLocaleString("en-GB");
+                return (
+                  <div
+                    key={band}
+                    className="word-heatmap-row"
+                    role="img"
+                    aria-label={`${DIFFICULTY_LEVELS[band as keyof typeof DIFFICULTY_LEVELS]}: ${fmt(mastered)} mastered, ${fmt(learning)} learning, ${fmt(fresh)} new`}
+                  >
+                    <span className="word-heatmap-level">
+                      {DIFFICULTY_LEVELS[band as keyof typeof DIFFICULTY_LEVELS]}
+                    </span>
+                    <div className="word-heatmap-cells" aria-hidden="true">
+                      {cells.split("").map((cell, index) => (
+                        <i
+                          key={index}
+                          className={`word-cell word-cell-${
+                            cell === "m"
+                              ? "mastered"
+                              : cell === "l"
+                                ? "learning"
+                                : "new"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </section>
             <section
               className="word-tools"
               aria-label="Filter and export words"
@@ -166,17 +250,21 @@ export default function WordSummaryPage() {
                   }}
                 >
                   <option value="all">All levels</option>
-                  {Object.entries(DIFFICULTY_LEVELS).map(([number, label]) => (
-                    <option key={number} value={number}>
-                      {label} (
-                      {
-                        data.words.filter(
-                          (word) => word.difficulty === Number(number),
-                        ).length
-                      }{" "}
-                      words)
-                    </option>
-                  ))}
+                  {Object.entries(DIFFICULTY_LEVELS).map(
+                    ([number, label]) => {
+                      // The level's size from the tallies, not from the forty
+                      // loaded rows: counting the page made every level read
+                      // as a share of forty.
+                      const size = Object.values(
+                        levelCounts[number] ?? {},
+                      ).reduce((a, b) => a + b, 0);
+                      return (
+                        <option key={number} value={number}>
+                          {label} ({size} words)
+                        </option>
+                      );
+                    },
+                  )}
                 </select>
                 <details className="difficulty-help">
                   <summary>How are levels assigned?</summary>

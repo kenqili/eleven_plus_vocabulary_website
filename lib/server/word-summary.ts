@@ -44,18 +44,37 @@ export async function wordSummaryPage(
   words: WordSummary[];
   total: number;
   counts: Record<string, number>;
+  /**
+   * Tallies per difficulty band, so the word list can summarise one level
+   * without the browser holding the collection. Same scope as `counts`:
+   * everything the account may see.
+   */
+  levelCounts: Record<string, Record<string, number>>;
+  /** One status character per word per band, for the heatmap. See the type. */
+  heatmap: Record<string, string>;
 }> {
   const all = await wordSummary(userId, options.wordIds);
   const { filter = "all", search = "", level = "all", offset = 0, limit = 40 } = options;
   // The tallies are over everything the account may see, so switching a filter
   // does not make the other cards read as zero.
   const counts: Record<string, number> = {};
-  for (const word of all) counts[word.status] = (counts[word.status] ?? 0) + 1;
+  const levelCounts: Record<string, Record<string, number>> = {};
+  const heatmap: Record<string, string> = {};
+  for (const word of all) {
+    counts[word.status] = (counts[word.status] ?? 0) + 1;
+    const band = (levelCounts[word.difficulty] ??= {});
+    band[word.status] = (band[word.status] ?? 0) + 1;
+    heatmap[word.difficulty] ??= "";
+    heatmap[word.difficulty] +=
+      word.status === "mastered" ? "m" : word.status === "new" ? "n" : "l";
+  }
   const matching = filterWords(all, filter, search, level);
   return {
     words: matching.slice(offset, offset + limit),
     total: matching.length,
     counts,
+    levelCounts,
+    heatmap,
   };
 }
 
