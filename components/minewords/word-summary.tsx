@@ -39,7 +39,6 @@ export default function WordSummaryPage() {
   const [levelCounts, setLevelCounts] = useState<
     Record<string, Record<string, number>>
   >({});
-  const [heatmap, setHeatmap] = useState<Record<string, string>>({});
   const query = useMemo(
     () =>
       new URLSearchParams({
@@ -61,7 +60,6 @@ export default function WordSummaryPage() {
         setTotal(result.total);
         setCounts(result.counts);
         setLevelCounts(result.levelCounts ?? {});
-        setHeatmap(result.heatmap ?? {});
         setError("");
       })
       .catch((e: Error) => {
@@ -162,75 +160,13 @@ export default function WordSummaryPage() {
               {describeRecallTargets()} master a word, as do {runTarget(0)}–
               {runTarget(5)} right answers in a row or {CUMULATIVE_FLOOR} right
               answers whenever they come. Needs practice highlights unmastered
-              words with a mistake or revealed answer.
+              words with a mistake or revealed answer. See every word as a
+              block on the{" "}
+              <Link className="text-button" href="/words/map">
+                mastery map →
+              </Link>
+              .
             </p>
-            {/*
-              The mastery map: one block per word per level, darker as it gets
-              closer to mastered. Cells are fixed positions in collection
-              order, so the map fills in rather than reshuffling. Counts come
-              from the tallies, not the cells, so the words never depend on
-              the rendering.
-            */}
-            <section
-              className="word-heatmap"
-              aria-label="Mastery map: darker blocks are closer to mastered"
-            >
-              <div className="word-heatmap-legend">
-                <span>
-                  <i
-                    className="word-cell word-cell-mastered"
-                    aria-hidden="true"
-                  />
-                  Mastered
-                </span>
-                <span>
-                  <i
-                    className="word-cell word-cell-learning"
-                    aria-hidden="true"
-                  />
-                  Learning
-                </span>
-                <span>
-                  <i className="word-cell word-cell-new" aria-hidden="true" />
-                  New
-                </span>
-              </div>
-              {[0, 1, 2, 3, 4, 5].map((band) => {
-                const cells = heatmap[String(band)] ?? "";
-                const tally = levelCounts[String(band)] ?? {};
-                const mastered = tally.mastered ?? 0;
-                const learning =
-                  (tally.learning ?? 0) + (tally.practice ?? 0);
-                const fresh = tally.new ?? 0;
-                const fmt = (n: number) => n.toLocaleString("en-GB");
-                return (
-                  <div
-                    key={band}
-                    className="word-heatmap-row"
-                    role="img"
-                    aria-label={`${DIFFICULTY_LEVELS[band as keyof typeof DIFFICULTY_LEVELS]}: ${fmt(mastered)} mastered, ${fmt(learning)} learning, ${fmt(fresh)} new`}
-                  >
-                    <span className="word-heatmap-level">
-                      {DIFFICULTY_LEVELS[band as keyof typeof DIFFICULTY_LEVELS]}
-                    </span>
-                    <div className="word-heatmap-cells" aria-hidden="true">
-                      {cells.split("").map((cell, index) => (
-                        <i
-                          key={index}
-                          className={`word-cell word-cell-${
-                            cell === "m"
-                              ? "mastered"
-                              : cell === "l"
-                                ? "learning"
-                                : "new"
-                          }`}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </section>
             <section
               className="word-tools"
               aria-label="Filter and export words"

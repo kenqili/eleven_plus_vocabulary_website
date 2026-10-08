@@ -90,6 +90,10 @@ const nextConfig: NextConfig = {
         headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
       },
       {
+        source: "/words/map",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+      {
         // `/stories/:id` and `/guides/:slug` are dynamic, so one parameter each.
         source: "/stories/:slug",
         headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
