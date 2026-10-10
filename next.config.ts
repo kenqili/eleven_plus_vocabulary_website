@@ -105,6 +105,12 @@ const nextConfig: NextConfig = {
         headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
       },
       {
+        // A utility page, not a destination: parents arrive from the header,
+        // not from a search.
+        source: "/contact",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+      {
         // `/stories/:id` and `/guides/:slug` are dynamic, so one parameter each.
         source: "/stories/:slug",
         headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],

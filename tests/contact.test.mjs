@@ -91,3 +91,59 @@ test("a payment that has not been applied tells the parent where to write", () =
     "the not-applied message no longer names an address, so a parent who has been charged has nowhere to go",
   );
 });
+
+test("the contact page shows the address and sends to it, nowhere else", () => {
+  // The form must print the address as visible text (copyable on a machine
+  // where mailto: does nothing) and post to the route; the route must send
+  // to the constant, never to an address from the request.
+  const page = read("app/contact/page.tsx").replace(
+    /\/\*[\s\S]*?\*\//g,
+    "",
+  );
+  assert.match(
+    page,
+    />\s*\{?CONTACT_EMAIL/,
+    "the contact page links the address but never prints it",
+  );
+  assert.match(
+    read("components/minewords/contact-form.tsx"),
+    /\/api\/contact/,
+    "the contact form posts nowhere the route can read",
+  );
+  const route = read("app/api/contact/route.ts");
+  assert.match(
+    route,
+    /to: CONTACT_EMAIL/,
+    "a contact message can be aimed somewhere other than support",
+  );
+  assert.doesNotMatch(
+    route,
+    /to:\s*input\.|to:\s*email[^R]/,
+    "the recipient comes from the request, which makes this a spam relay",
+  );
+  assert.match(route, /rateLimit\(/, "contact posts are not rate limited");
+  assert.match(
+    route,
+    /replyTo: email/,
+    "replies have nowhere to go",
+  );
+});
+
+test("the contact page is reachable from the header and stays out of results", () => {
+  // In the top row beside the account, not behind the grown-ups panel: a
+  // child with a problem must never have to find the panel first.
+  const header = read("components/minewords/header.tsx");
+  const contact = header.indexOf('href="/contact"');
+  const panel = header.indexOf("grown-ups-menu");
+  assert.ok(contact > 0, "the header links nowhere called contact");
+  assert.ok(
+    contact < panel,
+    "the contact link is inside the grown-ups panel",
+  );
+  const config = read("next.config.ts");
+  assert.match(
+    config,
+    /source: "\/contact",\s*\n?\s*headers:\s*\[\{\s*key: "X-Robots-Tag",\s*value: "noindex, nofollow"/,
+    "the contact page carries no robots directive",
+  );
+});

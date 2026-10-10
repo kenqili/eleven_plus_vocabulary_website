@@ -13,10 +13,18 @@ export async function sendEmail({
   to,
   subject,
   text,
+  replyTo,
 }: {
   to: string;
   subject: string;
   text: string;
+  /**
+   * Where replies go, rather than the sender. Used only by the contact form:
+   * the sender stays the configured address, and the parent's address rides
+   * along for the reply button. Everything else the app sends is to the
+   * parent about their own account, where a reply-to would make no sense.
+   */
+  replyTo?: string;
 }): Promise<void> {
   // Thrown rather than logged and ignored, because the caller has to decide
   // what a failed send means for the reply it gives the browser, and a silent
@@ -33,6 +41,7 @@ export async function sendEmail({
       to,
       subject,
       text,
+      ...(replyTo ? { reply_to: replyTo } : {}),
     }),
   });
   if (!response.ok) {

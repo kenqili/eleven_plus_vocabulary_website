@@ -732,6 +732,20 @@ h1 {
   border: 1px solid var(--line-steel);
   border-radius: var(--radius-sm);
 }
+.account-card textarea,
+.account-card select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--line-steel);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+}
+.account-card textarea {
+  min-height: 140px;
+  resize: vertical;
+}
 .account-card .primary-button {
   width: 100%;
   margin-top: 22px;

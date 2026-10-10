@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import {
   BookOpen,
   ChevronDown,
+  Mail,
   Menu,
   PencilLine,
   ShieldCheck,
@@ -109,6 +110,12 @@ export default function Header() {
         ))}
         <Link className="account-link" href="/account">
           <UserRound size={17} aria-hidden /> Your account
+        </Link>
+        {/* Beside the account rather than inside the grown-ups panel: writing
+            to us is something a child might need too, and it must never be
+            behind the thing that panel exists to hide. */}
+        <Link className="account-link" href="/contact">
+          <Mail size={17} aria-hidden /> Contact us
         </Link>
         <div
           className={`grown-ups${grownUpsOpen ? " is-open" : ""}`}
