@@ -412,6 +412,12 @@ export default function Landing({
             <Link className="text-button" href="/words">
               <ListChecks size={16} /> Word list and progress
             </Link>
+            <Link
+              className="text-button"
+              href="/free-11-plus-vocabulary-words"
+            >
+              <ListChecks size={16} /> Free 100-word starter list
+            </Link>
           </div>
           <p className="landing-fine">
             Printing is free while your trial or membership is active, including

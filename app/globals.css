@@ -3816,6 +3816,51 @@ hr {
   .story-audio {
     display: none;
   }
+  /* A printed page is the content, not the furniture. */
+  .topbar,
+  .site-footer,
+  .no-print {
+    display: none;
+  }
+  .workspace {
+    padding-top: 0;
+  }
+}
+
+/*
+ * The free starter list: words grouped by level, each with its meaning on
+ * the same row. A definition list, because that is what it is, and a
+ * two-column grid on wide screens so a hundred entries do not run to ten
+ * pages when printed.
+ */
+.free-word-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 28px;
+  margin: 14px 0 30px;
+}
+.free-word-list > div {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--line-2);
+}
+.free-word-list dt {
+  flex: 0 0 130px;
+  font-weight: 800;
+  color: var(--ink-brand-3);
+  overflow-wrap: anywhere;
+}
+.free-word-list dd {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 15px;
+}
+@media (max-width: 700px) {
+  .free-word-list {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* 11+ preparation guides */

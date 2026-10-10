@@ -62,7 +62,9 @@ const nextConfig: NextConfig = {
       // So the refusal is stated per path, and `tests/seo.test.mjs` asserts that
       // every route the app has is either in the indexable list or in this one.
       {
-        source: "/:path(about|how-to|info|privacy)",
+        // One line, not wrapped: tests/seo.test.mjs reads the rule with a
+        // regex that needs `source:` and its pattern adjacent.
+        source: "/:path(about|how-to|info|privacy|free-11-plus-vocabulary-words)",
         headers: [{ key: "X-Robots-Tag", value: "index, follow" }],
       },
       {

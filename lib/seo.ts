@@ -41,6 +41,8 @@ export function resolveOrigin(configured: string): string {
 export const INDEXABLE_PAGES = [
   /** The landing page. Highest priority because it is the one meant to be found. */
   "",
+  /** The free starter list: the page a searching parent lands on first. */
+  "free-11-plus-vocabulary-words",
   "about",
   "how-to",
   "info",
@@ -88,5 +90,10 @@ export const PAGE_METADATA: Record<
     title: "Privacy — What MineWords Stores",
     description:
       "One email address, one row per question answered. No advertising, no third-party sharing, and one button removes all of it.",
+  },
+  "free-11-plus-vocabulary-words": {
+    title: "Free 11+ Vocabulary Word List (Printable)",
+    description:
+      "100 free 11+ vocabulary words with meanings, across six levels. Print the list or practise them free for 7 days.",
   },
 };
