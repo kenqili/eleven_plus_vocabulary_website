@@ -203,7 +203,9 @@ export default function HowToPage() {
               After practice, choose one word to talk about or look for in your
               next reading session. Use MineWords alongside books, schoolwork
               and exam papers to give vocabulary a regular place in your wider
-              11+ preparation. Short sessions leave room for everything else.
+              11+ preparation. To see what the papers ask for, read{" "}
+              <Link href="/info">how the 11+ papers work</Link>. Short sessions
+              leave room for everything else.
             </p>
           </div>
         </section>

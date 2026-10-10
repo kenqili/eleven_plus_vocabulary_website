@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import Header from "@/components/minewords/header";
 import { PAGE_METADATA } from "@/lib/seo";
 
@@ -36,7 +37,8 @@ export default function PrivacyPage() {
             <p>
               MineWords is for children in the UK preparing for selective school
               entrance. That shapes everything below: there is as little here as
-              we could manage, and it is all removable by you.
+              we could manage, and it is all removable by you. Made by a
+              parent — read <Link href="/about">about MineWords</Link>.
             </p>
           </div>
         </section>

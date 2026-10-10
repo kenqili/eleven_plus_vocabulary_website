@@ -222,7 +222,10 @@ export default function InfoPage() {
                 day, on words they have not met, with the difficulty matched to
                 them and a record of what stuck. That is what this app does. It
                 is free to start, and the account page says plainly what
-                membership costs before you are asked for anything.
+                membership costs before you are asked for anything. MineWords is{" "}
+                <Link href="/about">made by a parent, for families</Link>. If
+                you have not tried it, start with{" "}
+                <Link href="/how-to">how to use this</Link>.
               </p>
               <div className="info-cta-links">
                 <Link className="primary-button" href="/practice">

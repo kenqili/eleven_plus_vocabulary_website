@@ -69,7 +69,7 @@ export default function AboutPage() {
               Help your child practise word meanings, revisit tricky words and
               see their progress in short sessions. Built by a parent during our
               own children’s preparation for UK grammar school entrance exams,
-              often called the 11+.
+              often called the <Link href="/info">11+</Link>.
             </p>
             <Link className="primary-button" href="/practice">
               Try free practice <ArrowRight size={17} />
@@ -127,7 +127,8 @@ export default function AboutPage() {
           <p className="about-method-intro">
             Spend less time organising revision. MineWords keeps the word
             collection, practice questions and review together, ready for your
-            next short session.
+            next short session. New here? Start with{" "}
+            <Link href="/how-to">how to use this</Link>.
           </p>
           <div className="about-steps">
             {steps.map(({ icon: Icon, number, title, description }) => (
