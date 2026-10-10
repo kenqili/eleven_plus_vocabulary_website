@@ -11,32 +11,41 @@ import type { NextConfig } from "next";
  */
 const nextConfig: NextConfig = {
   async headers() {
+    // One list: the matcher below does not treat `/` as matching `/:path*`
+    // (the front page arrived without these headers), so the same list is
+    // attached to both. Shared rather than written twice, because two copies
+    // of a security header is how one of them goes stale.
+    const securityHeaders = [
+      // Cloudflare terminates TLS, so this is really set at the edge for
+      // the apex and www host. Sending it here as well means the guarantee
+      // survives a different edge, and a browser ignores it over plain http,
+      // so local development is unaffected.
+      {
+        key: "Strict-Transport-Security",
+        value: "max-age=31536000; includeSubDomains",
+      },
+      { key: "X-Content-Type-Options", value: "nosniff" },
+      { key: "X-Frame-Options", value: "DENY" },
+      {
+        key: "Referrer-Policy",
+        value: "strict-origin-when-cross-origin",
+      },
+      {
+        key: "Permissions-Policy",
+        // This app needs no camera, microphone, location or payment prompt.
+        // Saying so means an injected script cannot ask for one.
+        value:
+          "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()",
+      },
+    ];
     return [
       {
         source: "/:path*",
-        headers: [
-          // Cloudflare terminates TLS, so this is really set at the edge for
-          // the apex and www host. Sending it here as well means the guarantee
-          // survives a different edge, and a browser ignores it over plain http,
-          // so local development is unaffected.
-          {
-            key: "Strict-Transport-Security",
-            value: "max-age=31536000; includeSubDomains",
-          },
-          { key: "X-Content-Type-Options", value: "nosniff" },
-          { key: "X-Frame-Options", value: "DENY" },
-          {
-            key: "Referrer-Policy",
-            value: "strict-origin-when-cross-origin",
-          },
-          {
-            key: "Permissions-Policy",
-            // This app needs no camera, microphone, location or payment prompt.
-            // Saying so means an injected script cannot ask for one.
-            value:
-              "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()",
-          },
-        ],
+        headers: securityHeaders,
+      },
+      {
+        source: "/",
+        headers: securityHeaders,
       },
       // The pages a search engine is allowed to read.
       //

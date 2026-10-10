@@ -25,6 +25,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: PAGE_METADATA.info.title,
     description: PAGE_METADATA.info.description,
+    url: "/info",
     images: ["/og-image.png"],
   },
 };

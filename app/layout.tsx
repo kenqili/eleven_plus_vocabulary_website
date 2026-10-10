@@ -32,6 +32,10 @@ export const metadata: Metadata = {
     description: PAGE_METADATA[""].description,
     type: "website",
     siteName: "MineWords",
+    // The front page's own address. Subpages override this with theirs: a
+    // shared link must name the page it points at, and an og:url inherited
+    // from here would tell every share it was the homepage.
+    url: "/",
     // The share card. A committed PNG rendered once from `public/og-image.svg`
     // (rsvg-convert -w 1200 -h 630), not generated per request: link previews
     // are fetched by crawlers that run no code. Relative, because
@@ -54,6 +58,9 @@ export const metadata: Metadata = {
   other: {
     "codex-preview": "development",
   },
+  // The browser chrome tint on mobile. Brand blue, so an added-to-homescreen
+  // launch and a shared link carry the same colour.
+  themeColor: "#2358d5",
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
@@ -77,7 +84,7 @@ export default async function RootLayout({
   // reads would only invite them to disagree.
   const origin = siteUrl();
   return (
-    <html lang="en" data-theme="classic" suppressHydrationWarning>
+    <html lang="en-GB" data-theme="classic" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: APPLY_SAVED_THEME }} />
         {/*

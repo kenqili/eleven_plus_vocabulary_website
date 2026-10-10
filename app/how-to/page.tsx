@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: PAGE_METADATA["how-to"].title,
     description: PAGE_METADATA["how-to"].description,
+    url: "/how-to",
     images: ["/og-image.png"],
   },
 };
@@ -59,7 +60,7 @@ export default function HowToPage() {
         <section className="howto-hero">
           <div>
             <div className="eyebrow">A FRIENDLY GUIDE FOR FAMILIES</div>
-            <h1>A simple start to daily vocabulary practice.</h1>
+            <h1>A simple start to daily 11+ vocabulary practice.</h1>
             <p>
               Try five minutes together: answer a few questions, talk about a
               tricky word and finish while your child still feels positive.

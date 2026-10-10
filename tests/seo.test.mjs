@@ -500,3 +500,21 @@ test("per-page titles and descriptions fit a search result", () => {
     }
   }
 });
+
+test("shared links name their own page, and the chrome matches", () => {
+  // Every indexable page carries its own og:url: without it, a share of
+  // /about previews as the homepage. The layout sets the front page's.
+  const layout = readFileSync("app/layout.tsx", "utf8");
+  assert.match(layout, /url: "\/"/);
+  assert.match(layout, /themeColor: "#2358d5"/);
+  assert.match(layout, /<html lang="en-GB"/);
+  for (const page of INDEXABLE_PAGES) {
+    if (!page) continue;
+    const source = readFileSync(`app/${page}/page.tsx`, "utf8");
+    assert.match(
+      source,
+      new RegExp(`url: "/${page}"`),
+      `/${page} shares without its own address`,
+    );
+  }
+});

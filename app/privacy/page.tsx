@@ -21,6 +21,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: PAGE_METADATA.privacy.title,
     description: PAGE_METADATA.privacy.description,
+    url: "/privacy",
     images: ["/og-image.png"],
   },
 };
