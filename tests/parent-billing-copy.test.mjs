@@ -223,3 +223,67 @@ test("being told to try again does not invite a second payment", () => {
     "a request on the account page has opted out of the safe-to-repeat wording",
   );
 });
+
+test("the launch offer reads as a future price, never a past one", () => {
+  // The crossed-out figure was never charged, so "was £4", "save 50%" and
+  // "half price" would each be a savings claim with no genuine reference
+  // price. The offer is only honest in the future tense, with a real end
+  // date, and with both figures computed rather than typed.
+  const pages = {
+    "components/minewords/landing.tsx": "landing",
+    "components/minewords/account.tsx": "account",
+    "app/free-11-plus-vocabulary-words/page.tsx": "free word list",
+  };
+  for (const [file, label] of Object.entries(pages)) {
+    const prose = read(file)
+      .replace(/\/\*[\s\S]*?\*\//g, "")
+      .replace(/^[ \t]*\/\/.*$/gm, "");
+    assert.match(
+      prose,
+      /Launch offer/,
+      `the ${label} page shows crossed-out prices with no launch framing`,
+    );
+    // The date itself may arrive as the shared constant (landing, free
+    // page) or through the billing payload (account) - either way it must be
+    // the real end date, not prose that never states one.
+    assert.match(
+      prose,
+      /1 February 2027|USUAL_PRICES_FROM_LABEL|billing\.offerEnds/,
+      `the ${label} page states no end date, so the offer reads as the real price`,
+    );
+    for (const claim of [/was £/i, /save \d/i, /-\d+%/i, /half price/i]) {
+      assert.doesNotMatch(
+        prose,
+        claim,
+        `the ${label} page makes a savings claim (${claim}) about a price never charged`,
+      );
+    }
+  }
+  // The doubling lives in one helper on the server, fed by the Stripe amount.
+  // A second `* 2` in a component would be a second source of truth for what
+  // "usual" means, the same bug as a typed-in price. And the end date the
+  // account page reads must be the same constant the lead sentences use.
+  const billing = read("lib/server/billing.ts");
+  assert.match(
+    billing,
+    /export function usualPriceLabel/,
+    "no single helper computes the usual price",
+  );
+  assert.match(
+    read("app/api/billing/[action]/route.ts"),
+    /offerEnds: USUAL_PRICES_FROM_LABEL/,
+    "the account page is not told when the offer ends",
+  );
+  for (const file of [
+    "components/minewords/landing.tsx",
+    "components/minewords/account.tsx",
+    "app/free-11-plus-vocabulary-words/page.tsx",
+    "app/api/billing/[action]/route.ts",
+  ]) {
+    assert.doesNotMatch(
+      read(file).replace(/\/\*[\s\S]*?\*\//g, ""),
+      /amount\s*\*\s*2/,
+      `${file} computes its own usual price instead of reading the helper's`,
+    );
+  }
+});

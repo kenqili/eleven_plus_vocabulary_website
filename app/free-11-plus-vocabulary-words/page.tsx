@@ -9,7 +9,7 @@ import {
 } from "@/lib/challenge/difficulty";
 import { PAGE_METADATA } from "@/lib/seo";
 import { bankSize } from "@/lib/server/free-words";
-import { publicPrices } from "@/lib/server/billing";
+import { publicPrices, USUAL_PRICES_FROM_LABEL } from "@/lib/server/billing";
 
 /**
  * A free starter list: 100 words drawn evenly from all six levels, with
@@ -124,12 +124,30 @@ export default async function FreeWordListPage() {
           </p>
           {shownPrices.length > 0 ? (
             <>
-              <p>After the free days, a fixed length, bought once:</p>
+              <p>
+                After the free days, a fixed length, bought once. Launch offer
+                — for new purchases made before {USUAL_PRICES_FROM_LABEL}, the
+                crossed-out price beside each length is the usual price it will
+                move to:
+              </p>
               <ul className="landing-prices">
                 {shownPrices.map((price) => (
                   <li key={price.tier}>
                     <strong>{price.formatted}</strong>
-                    <span className="muted"> for {price.label}</span>
+                    <span className="muted"> for {price.label}</span>{" "}
+                    {price.usual && (
+                      <>
+                        <s
+                          className="was-price"
+                          aria-hidden="true"
+                        >
+                          {price.usual}
+                        </s>
+                        <span className="sr-only">
+                          Usual price {price.usual}.
+                        </span>
+                      </>
+                    )}
                   </li>
                 ))}
               </ul>

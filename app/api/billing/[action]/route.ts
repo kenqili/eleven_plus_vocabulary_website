@@ -9,6 +9,8 @@ import {
   checkoutSession,
   configuredFreeWordLimit,
   configuredFreeTrialDays,
+  usualPriceLabel,
+  USUAL_PRICES_FROM_LABEL,
   TIERS,
 } from "@/lib/server/billing";
 import { boundary, body, HttpError, json, sameOrigin } from "@/lib/server/http";
@@ -185,6 +187,12 @@ export async function GET(request: Request) {
                 amount: price.unit_amount,
                 currency: price.currency,
                 recurring: Boolean(price.recurring),
+                // Display only, formatted where the charge is formatted: the
+                // button shows the usual beside the amount it will charge.
+                usual: usualPriceLabel(
+                  price.unit_amount,
+                  price.currency,
+                ),
               };
             } catch (error) {
               console.error(
@@ -194,7 +202,7 @@ export async function GET(request: Request) {
               );
               // `amount: null` is what the interface already renders as an
               // unpriced, disabled option, so this needs no new state.
-              return { ...base, amount: null };
+              return { ...base, amount: null, usual: null };
             }
           }),
         )
@@ -203,6 +211,10 @@ export async function GET(request: Request) {
     return json({
       ...(await membership(user)),
       ready,
+      // When launch pricing ends, in words. The account page states the scope
+      // of the offer beside the buttons; a dateless launch offer reads as the
+      // real price with a fictitious reference.
+      offerEnds: USUAL_PRICES_FROM_LABEL,
       freeWordLimit: configuredFreeWordLimit(),
       // The array rather than the single `price` this replaced. A parent choosing
       // between three lengths cannot be shown one of them and left to guess.

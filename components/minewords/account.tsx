@@ -42,7 +42,11 @@ type Billing = {
     currency: string;
     /** Stripe has this price set up as recurring, which this site does not use. */
     recurring: boolean;
+    /** The usual price, display only. Null when the charge is unreadable. */
+    usual: string | null;
   }[];
+  /** When launch pricing ends, in words. Null when nothing says it. */
+  offerEnds: string | null;
   /** What this parent has bought, and when the access from it runs out. */
   purchases: {
     label: string;
@@ -283,6 +287,23 @@ export default function Account() {
                   style: "currency",
                   currency: plan.currency,
                 }).format(plan.amount / 100)}
+                {/*
+                  The usual beside the charge, never instead of it. Struck
+                  through and hidden from the accessible name, which instead
+                  carries the word "usual" outright - a listener must never
+                  hear two bare prices and guess which one leaves the card.
+                  Shown only when priced: a usual without a charge is a
+                  reference price with no price.
+                */}
+                {plan.usual && (
+                  <>
+                    {" "}
+                    <s className="was-price" aria-hidden="true">
+                      {plan.usual}
+                    </s>
+                    <span className="sr-only">usual {plan.usual}</span>
+                  </>
+                )}
               </>
             )}
             {plan.recurring && <span className="muted"> — not available</span>}
@@ -486,6 +507,18 @@ export default function Account() {
                       <p className="muted">
                         Buying again adds to the access you have, rather than
                         replacing it.
+                        {/*
+                          Only when at least one button below can actually show
+                          the pair. A launch sentence above buttons that cannot
+                          price themselves promises crossed-out prices the
+                          screen does not keep.
+                        */}
+                        {billing.prices.some(
+                          (plan) =>
+                            plan.amount !== null && !plan.recurring,
+                        ) && billing.offerEnds
+                          ? ` Launch offer — for new purchases made before ${billing.offerEnds}, the crossed-out price beside each length is the usual price it will move to.`
+                          : ""}
                       </p>
                       {planOptions()}
                     </>
@@ -572,6 +605,22 @@ export default function Account() {
                     "choose a length below" on a deployment where `prices` is empty
                     and there is nothing below but "Purchases are not open yet".
                   */}
+                  {/*
+                    The launch framing, same gate as the active branch: any
+                    priced button below shows a crossed-out usual, so the
+                    sentence explaining it must be here too.
+                  */}
+                  {billing &&
+                    billing.prices.some(
+                      (plan) => plan.amount !== null && !plan.recurring,
+                    ) &&
+                    billing.offerEnds && (
+                      <p className="muted">
+                        Launch offer — for new purchases made before{" "}
+                        {billing.offerEnds}, the crossed-out price beside each
+                        length is the usual price it will move to.
+                      </p>
+                    )}
                   {planOptions()}
                   {/*
                     Replaced by the three length buttons above. Kept as the only

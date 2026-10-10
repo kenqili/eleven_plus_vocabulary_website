@@ -32,6 +32,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import Header from "./header";
+import { USUAL_PRICES_FROM_LABEL } from "@/lib/server/billing";
 
 /**
  * What the app covers, said to a parent.
@@ -155,6 +156,8 @@ export default function Landing({
     label: string;
     formatted: string | null;
     recurring: boolean;
+    /** The usual price, display only. Null when the charge is unreadable. */
+    usual: string | null;
   }[];
 }) {
   const words = totalWords.toLocaleString("en-GB");
@@ -513,7 +516,9 @@ export default function Landing({
             <>
               <p>
                 Seven days free, with no card needed. After that a fixed length,
-                bought once:
+                bought once. Launch offer — for new purchases made before{" "}
+                {USUAL_PRICES_FROM_LABEL}, the crossed-out price beside each
+                length is the usual price it will move to:
               </p>
               <ul className="landing-prices">
                 {shownPrices.map((price) => (
@@ -525,7 +530,20 @@ export default function Landing({
                       {price.recurring
                         ? " — this one renews, which we do not otherwise use"
                         : ""}
-                    </span>
+                    </span>{" "}
+                    {price.usual && (
+                      <>
+                        <s
+                          className="was-price"
+                          aria-hidden="true"
+                        >
+                          {price.usual}
+                        </s>
+                        <span className="sr-only">
+                          Usual price {price.usual}.
+                        </span>
+                      </>
+                    )}
                   </li>
                 ))}
               </ul>

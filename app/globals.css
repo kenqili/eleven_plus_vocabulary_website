@@ -6360,6 +6360,16 @@ hr {
 .landing-prices strong {
   font-size: 17px;
 }
+/*
+ * The usual price beside the charge: smaller, muted, struck through, never
+ * announced as a candidate price (the teller is the sr-only sentence beside
+ * it). De-emphasised on purpose - the figure that leaves the card stays the
+ * loudest thing in the row.
+ */
+.was-price {
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
 .landing-list li,
 .landing-sources li {
   padding: 9px 0;

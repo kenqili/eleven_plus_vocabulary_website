@@ -120,7 +120,26 @@ export type PublicPrice = {
   recurring: boolean;
   /** `£3.50`, or null when there is nothing to write. */
   formatted: string | null;
+  /**
+   * The usual price, `£7`, or null when there is nothing to write.
+   *
+   * Display only: always exactly twice the charged amount, formatted the same
+   * way, so no page can show a reference price that disagrees with the charge.
+   * Never sent to Stripe and never charged.
+   */
+  usual: string | null;
 };
+
+/**
+ * When launch pricing ends. New purchases from this date pay the usual
+ * prices; terms already granted are stored dates and cannot move.
+ *
+ * A fixed marketing date, not derived, because the honesty of the launch
+ * offer depends on stating a real end. When it passes, remove the offer
+ * display rather than extending it - a rolling "launch offer" is the real
+ * price with a fictitious reference.
+ */
+export const USUAL_PRICES_FROM_LABEL = "1 February 2027";
 
 /**
  * A price as a parent would read it, or null when there is no amount to write.
@@ -142,6 +161,21 @@ function formatPrice(amount: number | null, currency: string): string | null {
   } catch {
     return null;
   }
+}
+
+/**
+ * The usual price for a charged amount, or null when there is none.
+ *
+ * Exactly twice, through the same formatter as the charge, in the same place
+ * the charge is formatted. A second `* 2` anywhere else is a second source of
+ * truth for what "usual" means.
+ */
+export function usualPriceLabel(
+  amount: number | null,
+  currency: string,
+): string | null {
+  if (amount === null) return null;
+  return formatPrice(amount * 2, currency);
 }
 
 /**
@@ -182,12 +216,14 @@ export async function publicPrices(): Promise<PublicPrice[]> {
           recurring: unknown;
         }>(`prices/${encodeURIComponent(priceFor(tier.id))}`);
         const currency = price.currency || "gbp";
+        const amount = price.unit_amount ?? null;
         return {
           ...base,
-          amount: price.unit_amount ?? null,
+          amount,
           currency,
           recurring: Boolean(price.recurring),
-          formatted: formatPrice(price.unit_amount ?? null, currency),
+          formatted: formatPrice(amount, currency),
+          usual: usualPriceLabel(amount, currency),
         };
       } catch (error) {
         console.error(
@@ -197,7 +233,7 @@ export async function publicPrices(): Promise<PublicPrice[]> {
         );
         // `amount: null` is what the account page already renders as an unpriced,
         // disabled option, so this needs no new state on either side.
-        return { ...base, amount: null, formatted: null };
+        return { ...base, amount: null, formatted: null, usual: null };
       }
     }),
   );
