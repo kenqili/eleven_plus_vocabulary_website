@@ -17,13 +17,15 @@ import { siteUrl } from "@/lib/server/origin";
  * rather than being quietly unreachable.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const lastModified = new Date();
   // Read once rather than per entry, so every URL in the file comes from the same
   // value and a sitemap cannot end up describing two different sites.
   const origin = siteUrl();
+  // No `lastmod`: it used to be `new Date()` at request time, so every fetch
+  // claimed all five pages had changed seconds ago - which teaches a crawler
+  // to distrust the file. These pages change with deploys, not with requests,
+  // and a missing lastmod is valid where a lying one is not.
   return INDEXABLE_PAGES.map((path, index) => ({
     url: `${origin}/${path}`.replace(/\/$/, ""),
-    lastModified,
     changeFrequency: index === 0 ? "weekly" : "monthly",
     // The front page first and highest; the privacy notice last and lowest,
     // because nobody searches for it and it is here for a parent who has been told

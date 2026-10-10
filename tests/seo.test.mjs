@@ -416,3 +416,44 @@ test("the landing page is the one the sitemap leads with", () => {
     "the sitemap does not lead with the front page",
   );
 });
+
+test("the sitemap never claims pages changed just by being fetched", () => {
+  // `lastmod` used to be `new Date()` at request time, so every fetch told a
+  // crawler all five pages had changed seconds ago - which teaches it to
+  // distrust the file. A missing lastmod is valid; a lying one is not.
+  // Comments stripped first, so prose about the rule cannot fail it.
+  const sitemap = readFileSync("app/sitemap.ts", "utf8")
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/^[ \t]*\/\/.*$/gm, "");
+  assert.doesNotMatch(
+    sitemap,
+    /new Date\(\)/,
+    "the sitemap stamps the request time as the pages' modification date",
+  );
+});
+
+test("shared links carry a card image and structured site identity", () => {
+  // Without an image a pasted link previews as a bare URL, which does not get
+  // clicked. The PNG is rendered once from the committed SVG next to it, not
+  // generated per request: link-preview crawlers run no code.
+  const layout = readFileSync("app/layout.tsx", "utf8");
+  assert.match(layout, /og-image\.png/, "no share image is declared");
+  assert.match(
+    layout,
+    /summary_large_image/,
+    "shared links do not request the large-image card",
+  );
+  assert.ok(
+    existsSync("public/og-image.png"),
+    "the declared share image does not exist",
+  );
+  // Site-level identity for search engines, in the layout because it describes
+  // the site rather than any one page.
+  assert.match(
+    layout,
+    /application\/ld\+json/,
+    "no structured data names the site",
+  );
+  assert.match(layout, /"@type": "Organization"/);
+  assert.match(layout, /"@type": "WebSite"/);
+});

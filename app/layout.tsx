@@ -32,6 +32,24 @@ export const metadata: Metadata = {
     description: PAGE_METADATA[""].description,
     type: "website",
     siteName: "MineWords",
+    // The share card. A committed PNG rendered once from `public/og-image.svg`
+    // (rsvg-convert -w 1200 -h 630), not generated per request: link previews
+    // are fetched by crawlers that run no code. Relative, because
+    // `metadataBase` above resolves it against the canonical origin.
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "MineWords — 11+ words to practise, level by level, until you know them",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: PAGE_METADATA[""].title,
+    description: PAGE_METADATA[""].description,
+    images: ["/og-image.png"],
   },
   other: {
     "codex-preview": "development",
@@ -55,10 +73,44 @@ export default async function RootLayout({
       error instanceof Error ? error.message : "Storage unavailable",
     );
   });
+  // Read once: the structured data below names the origin four times, and four
+  // reads would only invite them to disagree.
+  const origin = siteUrl();
   return (
     <html lang="en" data-theme="classic" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: APPLY_SAVED_THEME }} />
+        {/*
+          Site identity for search engines. A data block, not a program: script
+          elements whose type is not JavaScript are never executed, so the
+          Content-Security-Policy needs no nonce or hash for this one the way
+          it does for the theme script above. Kept in the layout because it
+          describes the site, not any one page.
+        */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "Organization",
+                  "@id": `${origin}/#organization`,
+                  name: "MineWords",
+                  url: origin,
+                  logo: `${origin}/favicon.svg`,
+                  email: "support@11pluswords.com",
+                },
+                {
+                  "@type": "WebSite",
+                  url: origin,
+                  name: "MineWords",
+                  publisher: { "@id": `${origin}/#organization` },
+                },
+              ],
+            }),
+          }}
+        />
       </head>
       <body className="antialiased">
         <ThemeProvider>
