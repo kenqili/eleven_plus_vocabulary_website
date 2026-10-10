@@ -10,6 +10,11 @@ export const metadata: Metadata = {
   title: PAGE_METADATA["how-to"].title,
   description: PAGE_METADATA["how-to"].description,
   alternates: { canonical: "/how-to" },
+  openGraph: {
+    title: PAGE_METADATA["how-to"].title,
+    description: PAGE_METADATA["how-to"].description,
+    images: ["/og-image.png"],
+  },
 };
 import {
   ArrowRight,

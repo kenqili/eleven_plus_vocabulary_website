@@ -10,6 +10,13 @@ export const metadata: Metadata = {
   title: PAGE_METADATA.about.title,
   description: PAGE_METADATA.about.description,
   alternates: { canonical: "/about" },
+  // Page-level share tags, so a pasted link names this page rather than the
+  // homepage. The layout's siteName, type and base URL still apply.
+  openGraph: {
+    title: PAGE_METADATA.about.title,
+    description: PAGE_METADATA.about.description,
+    images: ["/og-image.png"],
+  },
 };
 import {
   ArrowRight,

@@ -17,6 +17,11 @@ export const metadata: Metadata = {
   title: PAGE_METADATA.privacy.title,
   description: PAGE_METADATA.privacy.description,
   alternates: { canonical: "/privacy" },
+  openGraph: {
+    title: PAGE_METADATA.privacy.title,
+    description: PAGE_METADATA.privacy.description,
+    images: ["/og-image.png"],
+  },
 };
 
 export default function PrivacyPage() {

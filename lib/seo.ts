@@ -80,9 +80,9 @@ export const PAGE_METADATA: Record<
       "A five-minute-a-day routine for 11+ vocabulary, how to read your child's progress, and how to print the words they keep getting wrong.",
   },
   info: {
-    title: "The 11+ Explained — English and Verbal Reasoning",
+    title: "11+ Papers, Schools and Timeline",
     description:
-      "What the 11+ English and verbal reasoning papers actually test, and why vocabulary decides so much of the score. Plain English, no jargon.",
+      "What the 11+ English and verbal reasoning papers test, when registration happens, and what the evidence says about preparing. With sources.",
   },
   privacy: {
     title: "Privacy — What MineWords Stores",

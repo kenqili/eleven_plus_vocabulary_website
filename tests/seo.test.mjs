@@ -488,5 +488,15 @@ test("per-page titles and descriptions fit a search result", () => {
       description && description.length <= 170,
       `/${page || ""} description runs to ${description?.length ?? 0} characters and will be cut mid-sentence`,
     );
+    // A pasted link must name the page it points at, not the homepage. The
+    // front page inherits the layout's card; every other indexable page
+    // declares its own title and description for sharing.
+    if (page) {
+      assert.match(
+        source,
+        /openGraph:\s*\{/,
+        `/${page} has no share tags, so links to it preview as the homepage`,
+      );
+    }
   }
 });

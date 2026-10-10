@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ExternalLink, List } from "lucide-react";
 import Header from "@/components/minewords/header";
 import { infoGroups, infoPage } from "@/lib/info/info";
+import { PAGE_METADATA } from "@/lib/seo";
 
 const page = infoPage();
 
@@ -11,15 +12,21 @@ export const metadata: Metadata = {
   // This used to carry its own "| 11+ Vocabulary Challenge", so the rendered title
   // read "... | 11+ Vocabulary Challenge | MineWords" — two brand names and a pipe in
   // a search result.
-  title: "11+ Papers, Schools and Timeline",
+  title: PAGE_METADATA.info.title,
   // Kept under 155 characters as a full sentence: the previous wording ran to
   // 208 and search results cut it off mid-word.
-  description:
-    "What the 11+ English and verbal reasoning papers test, when registration happens, and what the evidence says about preparing. With sources.",
+  description: PAGE_METADATA.info.description,
   // Without this the layout's `alternates.canonical: "/"` is inherited, which told a
   // search engine this page *was* the front page. Google would then have treated the
   // two as duplicates and kept one — most likely the front page, dropping this.
   alternates: { canonical: "/info" },
+  // Page-level share tags, so a pasted link names this page rather than the
+  // homepage. The layout's siteName, type and base URL still apply.
+  openGraph: {
+    title: PAGE_METADATA.info.title,
+    description: PAGE_METADATA.info.description,
+    images: ["/og-image.png"],
+  },
 };
 
 function dateLabel(iso: string) {
