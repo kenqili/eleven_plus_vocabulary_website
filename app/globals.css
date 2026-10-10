@@ -5190,6 +5190,16 @@ hr {
   font-size: 13px;
   line-height: 1.5;
 }
+/* The guides sit apart from the tool pages, under their own small heading,
+   so a parent scanning the menu reads two short lists rather than one long
+   undifferentiated one. */
+.grown-ups-menu p.grown-ups-guides-label {
+  margin: 8px 0 2px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
 .grown-ups-menu .account-link {
   padding: 9px 10px;
   min-height: 44px;

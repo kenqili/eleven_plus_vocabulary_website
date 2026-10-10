@@ -49,6 +49,20 @@ const FOR_GROWN_UPS = [
   { href: "/privacy", label: "What we store, and how to delete it" },
 ];
 
+/**
+ * The three parent guides that are articles in their own right. Listed here
+ * rather than left to search engines: a sitemap entry with no link pointing
+ * at it is reachable only by typing the address, which no parent does.
+ */
+const GUIDES = [
+  { href: "/guides/when-to-start-preparing", label: "When to start preparing" },
+  {
+    href: "/guides/how-to-practise-effectively",
+    label: "How to practise effectively",
+  },
+  { href: "/guides/managing-exam-pressure", label: "Handling exam pressure" },
+];
+
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [grownUpsOpen, setGrownUpsOpen] = useState(false);
@@ -116,6 +130,12 @@ export default function Header() {
                 talk about exam pressure.
               </p>
               {FOR_GROWN_UPS.map((link) => (
+                <Link key={link.href} className="account-link" href={link.href}>
+                  {link.label}
+                </Link>
+              ))}
+              <p className="grown-ups-guides-label">Parent guides</p>
+              {GUIDES.map((link) => (
                 <Link key={link.href} className="account-link" href={link.href}>
                   {link.label}
                 </Link>
