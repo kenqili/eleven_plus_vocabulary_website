@@ -63,11 +63,6 @@ export const metadata: Metadata = {
     shortcut: "/favicon.svg",
   },
 };
-  icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
-  },
-};
 
 export default async function RootLayout({
   children,
