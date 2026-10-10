@@ -75,7 +75,7 @@ export const PAGE_METADATA: Record<
       "Who made MineWords, what it covers, and what it does not: 11+ English and verbal reasoning vocabulary. Maths and non-verbal reasoning are out of scope.",
   },
   "how-to": {
-    title: "How to Use MineWords — 11+ Vocabulary for Your Child",
+    title: "How to Use MineWords — 11+ Vocabulary",
     description:
       "A five-minute-a-day routine for 11+ vocabulary, how to read your child's progress, and how to print the words they keep getting wrong.",
   },
@@ -85,7 +85,7 @@ export const PAGE_METADATA: Record<
       "What the 11+ English and verbal reasoning papers actually test, and why vocabulary decides so much of the score. Plain English, no jargon.",
   },
   privacy: {
-    title: "Privacy — What MineWords Stores, and How to Delete It",
+    title: "Privacy — What MineWords Stores",
     description:
       "One email address, one row per question answered. No advertising, no third-party sharing, and one button removes all of it.",
   },

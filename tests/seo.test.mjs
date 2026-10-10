@@ -457,3 +457,36 @@ test("shared links carry a card image and structured site identity", () => {
   assert.match(layout, /"@type": "Organization"/);
   assert.match(layout, /"@type": "WebSite"/);
 });
+
+test("per-page titles and descriptions fit a search result", () => {
+  // PAGE_METADATA lengths are asserted where they are defined; literals in
+  // page files were not, which is how a 208-character description and a
+  // 72-character title shipped. Both spellings get the same rule here.
+  for (const page of INDEXABLE_PAGES) {
+    const source = readFileSync(
+      page ? `app/${page}/page.tsx` : "app/page.tsx",
+      "utf8",
+    )
+      .replace(/\/\*[\s\S]*?\*\//g, "")
+      .replace(/^[ \t]*\/\/.*$/gm, "");
+    const title = /title:\s*(?:"([^"\n]+)"|'([^'\n]+)')/.exec(source);
+    // The front page uses the layout default as-is; every other page gets
+    // " | MineWords" appended by the template.
+    const rendered =
+      title?.[1] || title?.[2]
+        ? `${title[1] ?? title[2]}${page ? " | MineWords" : ""}`
+        : PAGE_METADATA[page]?.title
+          ? `${PAGE_METADATA[page].title}${page ? " | MineWords" : ""}`
+          : null;
+    assert.ok(
+      rendered && rendered.length <= 60,
+      `/${page || ""} renders "${rendered}", which truncates in a result`,
+    );
+    const literal = /description:\s*"([^"\n]+)"/.exec(source)?.[1];
+    const description = literal ?? PAGE_METADATA[page]?.description;
+    assert.ok(
+      description && description.length <= 170,
+      `/${page || ""} description runs to ${description?.length ?? 0} characters and will be cut mid-sentence`,
+    );
+  }
+});
