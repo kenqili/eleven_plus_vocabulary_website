@@ -46,6 +46,10 @@ export const INDEXABLE_PAGES = [
   "about",
   "how-to",
   "info",
+  /** Standalone parent guides. Only these slugs: the other guide URLs redirect. */
+  "guides/when-to-start-preparing",
+  "guides/how-to-practise-effectively",
+  "guides/managing-exam-pressure",
   "privacy",
 ] as const;
 

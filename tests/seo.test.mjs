@@ -29,6 +29,27 @@ function hasFrontPageMetadata() {
   );
 }
 
+/**
+ * An indexable page's words, whether it is a file or a guide article.
+ *
+ * Top-level pages carry their copy in `page.tsx`; guide articles carry it in
+ * `data/guides/<slug>.json` behind the shared `[slug]` route. Both spellings
+ * answer the same questions below, so every per-page assertion reads through
+ * this rather than assuming a file.
+ */
+function pageWords(page) {
+  if (!page.includes("/")) {
+    const file = page ? `app/${page}/page.tsx` : "app/page.tsx";
+    return { file, source: readFileSync(file, "utf8"), article: null };
+  }
+  const [first, slug] = page.split("/");
+  return {
+    file: `app/${first}/[slug]/page.tsx`,
+    source: readFileSync(`app/${first}/[slug]/page.tsx`, "utf8"),
+    article: JSON.parse(readFileSync(`data/guides/${slug}.json`, "utf8")),
+  };
+}
+
 test("every route is either indexable or explicitly not", () => {
   // The gap this catches is silent and total.
   //
@@ -42,11 +63,14 @@ test("every route is either indexable or explicitly not", () => {
   // So this walks the app directory and requires every route to be named in one list
   // or the other. A page added later is unclassified and fails here.
   const tagsFor = (re) =>
-    [...config.matchAll(/source:\s*"\/:path\(([^)]*)\)"/g)]
+    [...config.matchAll(/source:\s*"\/(:path\(([^)]*)\)|([a-z0-9-]+(?:\/[a-z0-9-]+)*))"/g)]
       // Each rule's value is the next `headers:` line, not everything after it —
       // scanning 200 characters would let one rule inherit the next one's value.
+      // Both spellings are read: `:path(a|b)` parameters and literal nested
+      // paths like `/guides/a-real-article`, so a literal can never slip past
+      // this classification.
       .map((m) => ({
-        paths: m[1].split("|"),
+        paths: (m[2] ?? m[3]).split("|"),
         value: /headers:\s*\[\{\s*key: "X-Robots-Tag",\s*value: "([^"]+)"/.exec(
           config.slice(m.index + m[0].length, m.index + m[0].length + 200),
         )?.[1],
@@ -76,8 +100,25 @@ test("every route is either indexable or explicitly not", () => {
       if (
         sub.isDirectory() &&
         existsSync(`app/${entry.name}/${sub.name}/page.tsx`)
-      )
-        routes.add(`${entry.name}/${sub.name}`);
+      ) {
+        // A dynamic segment stands for its generated slugs. Articles come
+        // from data, redirects from the MOVED map in the route: each concrete
+        // URL needs its own robots directive, because no parameter rule can
+        // say index for some slugs and noindex for the rest.
+        if (/^\[.+\]$/.test(sub.name) && entry.name === "guides") {
+          for (const file of readdirSync("data/guides")) {
+            if (file.endsWith(".json"))
+              routes.add(`guides/${file.slice(0, -".json".length)}`);
+          }
+          const route = readFileSync(`app/guides/[slug]/page.tsx`, "utf8");
+          const moved =
+            /const MOVED[^=]*=\s*\{([\s\S]*?)\n\};/.exec(route)?.[1] ?? "";
+          for (const m of moved.matchAll(/"([a-z0-9-]+)":/g))
+            routes.add(`guides/${m[1]}`);
+        } else {
+          routes.add(`${entry.name}/${sub.name}`);
+        }
+      }
     }
   }
 
@@ -193,6 +234,16 @@ test("the sitemap lists exactly the pages the header allows", () => {
   const allowed = [...config.matchAll(/source: "\/:path\(([^)]*)\)"/g)].flatMap(
     (m) => m[1].split("|"),
   );
+  // Nested pages are literal rules rather than parameters, so they need their
+  // own read: a literal followed by an index header within the same rule.
+  for (const m of config.matchAll(
+    /source: "\/([a-z0-9-]+(?:\/[a-z0-9-]+)*)"/g,
+  )) {
+    const value = /headers:\s*\[\{\s*key: "X-Robots-Tag",\s*value: "([^"]+)"/.exec(
+      config.slice(m.index + m[0].length, m.index + m[0].length + 200),
+    )?.[1];
+    if (value === "index, follow") allowed.push(m[1]);
+  }
   // The front page is its own rule.
   allowed.push("");
   assert.deepEqual(
@@ -204,7 +255,7 @@ test("the sitemap lists exactly the pages the header allows", () => {
 
 test("every indexable page exists and has its own title and description", () => {
   for (const page of INDEXABLE_PAGES) {
-    const file = page ? `app/${page}/page.tsx` : "app/page.tsx";
+    const { file, article } = pageWords(page);
     assert.ok(
       existsSync(file),
       `${page || "/"} is in the sitemap but ${file} does not exist`,
@@ -222,21 +273,24 @@ test("every indexable page exists and has its own title and description", () => 
       setsOwn || isLayoutDefault,
       `${page || "/"} has no metadata of its own and is not the layout's default, so it is indexed under the site name`,
     );
+    const title = article?.title ?? PAGE_METADATA[page]?.title;
+    const description = article?.description ?? PAGE_METADATA[page]?.description;
     // And the entry it points at exists, so a rename cannot leave it undefined.
-    const key = page || "";
+    // Guide articles keep theirs in data, next to the prose, rather than in a
+    // second copy inside PAGE_METADATA.
     assert.ok(
-      PAGE_METADATA[key],
-      `${page || "/"} has metadata but no entry in PAGE_METADATA`,
+      title,
+      `${page || "/"} has metadata but no words behind it`,
     );
-    assert.match(PAGE_METADATA[key].title, /MineWords|11\+/);
+    assert.match(title, /MineWords|11\+/);
     // Descriptions get cut at roughly 160 characters in a result, and one cut
     // mid-sentence reads worse than a shorter whole one.
     assert.ok(
-      PAGE_METADATA[key].description.length <= 170,
-      `${page || "/"} description is ${PAGE_METADATA[key].description.length} characters and will be cut mid-sentence`,
+      description.length <= 170,
+      `${page || "/"} description is ${description.length} characters and will be cut mid-sentence`,
     );
     assert.ok(
-      PAGE_METADATA[key].description.length > 60,
+      description.length > 60,
       `${page || "/"} description is too short to be a snippet`,
     );
   }
@@ -252,7 +306,7 @@ test("every indexable page has its own canonical URL", () => {
   // Nothing about that is visible from the outside. It does not fail a build and it
   // does not error; the page just quietly never ranks.
   for (const page of INDEXABLE_PAGES) {
-    const file = page ? `app/${page}/page.tsx` : "app/page.tsx";
+    const { file, article } = pageWords(page);
     const source = readFileSync(file, "utf8");
     const expected = `/${page}`;
     if (page === "") {
@@ -261,6 +315,16 @@ test("every indexable page has its own canonical URL", () => {
         readFileSync("app/layout.tsx", "utf8"),
         /alternates:\s*\{\s*canonical: "\/"/,
         "the layout has no canonical for the front page",
+      );
+      continue;
+    }
+    if (article) {
+      // Generated per slug rather than written per page: the template carries
+      // the route, so a renamed slug cannot leave a stale literal behind.
+      assert.match(
+        source,
+        /canonical: `\/guides\/\$\{slug\}`/,
+        `${expected} declares no canonical of its own, so it inherits "/" and a search engine will treat it as a duplicate of the front page`,
       );
       continue;
     }
@@ -280,13 +344,13 @@ test("no page's title carries its own site name as well as the template's", () =
   assert.match(layout, /template: "%s \| MineWords"/);
   for (const page of INDEXABLE_PAGES) {
     if (!page) continue;
-    const source = readFileSync(`app/${page}/page.tsx`, "utf8");
-    const title = /title:\s*(?:PAGE_METADATA[^\n]*|["'`]([^"'`]+))/.exec(
-      source,
-    );
-    if (!title?.[1]) continue;
+    const { source, article } = pageWords(page);
+    const title =
+      article?.title ??
+      /title:\s*(?:PAGE_METADATA[^\n]*|["'`]([^"'`]+))/.exec(source)?.[1];
+    if (!title && !article) continue;
     assert.doesNotMatch(
-      title[1],
+      title ?? "",
       /\|\s*(MineWords|11\+\s*Vocabulary\s*Challenge)\s*$/i,
       `/${page} ends its title with a site name, which the layout template then appends again`,
     );
@@ -463,18 +527,19 @@ test("per-page titles and descriptions fit a search result", () => {
   // page files were not, which is how a 208-character description and a
   // 72-character title shipped. Both spellings get the same rule here.
   for (const page of INDEXABLE_PAGES) {
-    const source = readFileSync(
-      page ? `app/${page}/page.tsx` : "app/page.tsx",
-      "utf8",
-    )
+    const { source, article } = pageWords(page);
+    const stripped = source
       .replace(/\/\*[\s\S]*?\*\//g, "")
       .replace(/^[ \t]*\/\/.*$/gm, "");
-    const title = /title:\s*(?:"([^"\n]+)"|'([^'\n]+)')/.exec(source);
+    const title =
+      article?.title ??
+      /title:\s*(?:"([^"\n]+)"|'([^'\n]+)')/.exec(stripped)?.slice(1)
+        .find(Boolean);
     // The front page uses the layout default as-is; every other page gets
     // " | MineWords" appended by the template.
     const rendered =
-      title?.[1] || title?.[2]
-        ? `${title[1] ?? title[2]}${page ? " | MineWords" : ""}`
+      title
+        ? `${title}${page ? " | MineWords" : ""}`
         : PAGE_METADATA[page]?.title
           ? `${PAGE_METADATA[page].title}${page ? " | MineWords" : ""}`
           : null;
@@ -482,8 +547,9 @@ test("per-page titles and descriptions fit a search result", () => {
       rendered && rendered.length <= 60,
       `/${page || ""} renders "${rendered}", which truncates in a result`,
     );
-    const literal = /description:\s*"([^"\n]+)"/.exec(source)?.[1];
-    const description = literal ?? PAGE_METADATA[page]?.description;
+    const literal = /description:\s*"([^"\n]+)"/.exec(stripped)?.[1];
+    const description =
+      article?.description ?? literal ?? PAGE_METADATA[page]?.description;
     assert.ok(
       description && description.length <= 170,
       `/${page || ""} description runs to ${description?.length ?? 0} characters and will be cut mid-sentence`,
@@ -492,11 +558,19 @@ test("per-page titles and descriptions fit a search result", () => {
     // front page inherits the layout's card; every other indexable page
     // declares its own title and description for sharing.
     if (page) {
-      assert.match(
-        source,
-        /openGraph:\s*\{/,
-        `/${page} has no share tags, so links to it preview as the homepage`,
-      );
+      if (article) {
+        assert.match(
+          source,
+          /url: `\/guides\/\$\{slug\}`/,
+          `/${page} shares without its own address`,
+        );
+      } else {
+        assert.match(
+          source,
+          /openGraph:\s*\{/,
+          `/${page} has no share tags, so links to it preview as the homepage`,
+        );
+      }
     }
   }
 });
@@ -510,11 +584,87 @@ test("shared links name their own page, and the chrome matches", () => {
   assert.match(layout, /<html lang="en-GB"/);
   for (const page of INDEXABLE_PAGES) {
     if (!page) continue;
-    const source = readFileSync(`app/${page}/page.tsx`, "utf8");
+    const { source } = pageWords(page);
+    if (page.includes("/")) {
+      // Generated per slug: the template carries the route.
+      assert.match(
+        source,
+        /url: `\/guides\/\$\{slug\}`/,
+        `/${page} shares without its own address`,
+      );
+      continue;
+    }
     assert.match(
       source,
       new RegExp(`url: "/${page}"`),
       `/${page} shares without its own address`,
     );
+  }
+});
+
+test("guide articles are complete, honest, and stay out of other claims", () => {
+  // Three slugs are articles; the other seven guide URLs redirect into /info.
+  // An article with no sections is a thin page that hurts more than it helps,
+  // and a claim about somebody else's exam in one is the advertising risk the
+  // landing tests already police on the front page.
+  const slugs = INDEXABLE_PAGES.filter((page) =>
+    page.startsWith("guides/"),
+  ).map((page) => page.split("/")[1]);
+  assert.deepEqual(
+    slugs.sort(),
+    [
+      "how-to-practise-effectively",
+      "managing-exam-pressure",
+      "when-to-start-preparing",
+    ].sort(),
+    "the indexed guides are not exactly the three evergreen articles",
+  );
+  for (const slug of slugs) {
+    const article = JSON.parse(readFileSync(`data/guides/${slug}.json`, "utf8"));
+    assert.equal(article.slug, slug, "article file does not match its slug");
+    assert.ok(
+      article.sections.length >= 3,
+      `${slug} is too thin to index`,
+    );
+    for (const section of article.sections) {
+      assert.ok(section.heading, `${slug} has an unnamed section`);
+      assert.ok(
+        section.paragraphs.length > 0,
+        `${slug} has an empty section`,
+      );
+    }
+    const prose = [
+      article.title,
+      article.description,
+      article.standfirst,
+      ...article.sections.flatMap((section) => [
+        section.heading,
+        ...section.paragraphs,
+      ]),
+    ].join("\n");
+    // Sources may cite publishers; the prose itself must never name an exam
+    // board, promise a syllabus, or guarantee an outcome.
+    for (const claim of [
+      /bond/i,
+      /gl assessment/i,
+      /\bcem\b/i,
+      /covers .* syllabus/i,
+      /endorsed by/i,
+      /guarantee/i,
+      /pass rate/i,
+    ]) {
+      assert.doesNotMatch(
+        prose,
+        claim,
+        `${slug} makes a claim about someone else's exam (${claim}) that nothing supports`,
+      );
+    }
+    for (const source of article.sources) {
+      assert.match(
+        source.url,
+        /^https:\/\//,
+        `${slug} cites a source without a secure address`,
+      );
+    }
   }
 });

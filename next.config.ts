@@ -110,8 +110,56 @@ const nextConfig: NextConfig = {
         headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
       },
       {
-        source: "/guides/:slug",
+        // The seven guide URLs that redirect into /info: enumerated because
+        // the parameter rule below cannot cover them without also covering
+        // the three that are articles, and a response carrying both
+        // directives reads as noindex. Verified live, not trusted from docs.
+        source: "/guides/which-11-plus-test",
         headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+      {
+        source: "/guides/vocabulary-for-the-11-plus",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+      {
+        source: "/guides/managing-exam-anxiety",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+      {
+        source: "/guides/understanding-english-papers",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+      {
+        source: "/guides/understanding-maths-papers",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+      {
+        source: "/guides/verbal-and-non-verbal-reasoning",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+      {
+        source: "/guides/tailoring-practice-to-your-child",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+      {
+        source: "/guides/printable-vocabulary-sheets",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+      {
+        // The three slugs that are articles, not redirects. The parameter
+        // rule that used to cover this whole directory is gone: it cannot
+        // say index here and noindex above, and a response carrying both
+        // would read as noindex.
+        source: "/guides/when-to-start-preparing",
+        headers: [{ key: "X-Robots-Tag", value: "index, follow" }],
+      },
+      {
+        source: "/guides/how-to-practise-effectively",
+        headers: [{ key: "X-Robots-Tag", value: "index, follow" }],
+      },
+      {
+        source: "/guides/managing-exam-pressure",
+        headers: [{ key: "X-Robots-Tag", value: "index, follow" }],
       },
     ];
   },

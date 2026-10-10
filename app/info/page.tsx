@@ -216,6 +216,33 @@ export default function InfoPage() {
               </ul>
             </section>
 
+            <section
+              className="info-group"
+              aria-label="Go deeper with three guides"
+            >
+              <h2 className="info-group-name">Go deeper</h2>
+              <ul>
+                <li>
+                  <Link href="/guides/when-to-start-preparing">
+                    When to start 11+ preparation
+                  </Link>{" "}
+                  — a calm timeline from Year 4.
+                </li>
+                <li>
+                  <Link href="/guides/how-to-practise-effectively">
+                    How to practise for the 11+
+                  </Link>{" "}
+                  — short sessions that stick.
+                </li>
+                <li>
+                  <Link href="/guides/managing-exam-pressure">
+                    Handling 11+ exam pressure
+                  </Link>{" "}
+                  — keeping nerves healthy.
+                </li>
+              </ul>
+            </section>
+
             <section className="info-cta" aria-label="Try the app">
               <h2>Reading about it is the easy part.</h2>
               <p>
