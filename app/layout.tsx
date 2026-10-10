@@ -58,9 +58,11 @@ export const metadata: Metadata = {
   other: {
     "codex-preview": "development",
   },
-  // The browser chrome tint on mobile. Brand blue, so an added-to-homescreen
-  // launch and a shared link carry the same colour.
-  themeColor: "#2358d5",
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+  },
+};
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
@@ -87,6 +89,13 @@ export default async function RootLayout({
     <html lang="en-GB" data-theme="classic" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: APPLY_SAVED_THEME }} />
+        {/*
+          The browser chrome tint on mobile. A plain tag because the
+          framework does not render the themeColor metadata field - verified
+          live: declared there, absent here. Brand blue, so an
+          added-to-homescreen launch and a shared link carry the same colour.
+        */}
+        <meta name="theme-color" content="#2358d5" />
         {/*
           Site identity for search engines. A data block, not a program: script
           elements whose type is not JavaScript are never executed, so the
