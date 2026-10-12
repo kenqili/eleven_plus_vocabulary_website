@@ -668,3 +668,21 @@ test("guide articles are complete, honest, and stay out of other claims", () => 
     }
   }
 });
+
+test("the starter PDF canonicalizes to its page", () => {
+  // The PDF holds the page's hundred words, so without a canonical the two
+  // read as duplicates and neither ranks. A binary cannot carry a link tag,
+  // so the rule lives in public/_headers - the file static responses actually
+  // read - and not in proxy.ts, whose middleware never runs for them.
+  const headers = readFileSync("public/_headers", "utf8");
+  assert.match(
+    headers,
+    /free-11-plus-vocabulary-words\.pdf[\s\S]*?rel="canonical"/,
+    "the PDF response carries no canonical",
+  );
+  assert.match(
+    headers,
+    /Link: <\/free-11-plus-vocabulary-words>; rel="canonical"/,
+    "the canonical names a host instead of the page path",
+  );
+});

@@ -46,3 +46,15 @@
 # and without this header the browser revalidates it on every visit.
 /bank/*.json
   Cache-Control: public, max-age=31536000, immutable
+
+# The downloadable starter list. Its hundred words are the page's hundred
+# words, so without a canonical the two read as duplicates and neither
+# ranks. A binary cannot carry a link tag, so the canonical travels as a
+# header naming the page instead. A relative path, so a staging host never
+# declares itself canonical over production.
+#
+# This lives here rather than in proxy.ts because static assets bypass the
+# middleware entirely - verified: no Content-Security-Policy on any served
+# file, so a Link set there would never reach a crawler either.
+/free-11-plus-vocabulary-words.pdf
+  Link: </free-11-plus-vocabulary-words>; rel="canonical"
