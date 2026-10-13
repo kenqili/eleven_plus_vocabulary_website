@@ -19,7 +19,7 @@
  * reimplemented, and `tests/client-engine.test.mjs` drives both this and the
  * server over identical fixtures and compares the questions they produce.
  */
-import { CHOICES_PER_PROBLEM, type Problem } from "./bank.ts";
+import { choicesForProblem, type Problem } from "./bank.ts";
 import { chooseWord, reviewDueAt, RECENT_WORD_WINDOW } from "./ordering.ts";
 import {
   allocationFor,
@@ -43,7 +43,7 @@ import {
   masteryProgress,
   type Evidence,
 } from "./mastery.ts";
-import { shuffle, type Word } from "./words.ts";
+import { type Word } from "./words.ts";
 import { wordClue } from "./story-meanings.ts";
 import type { QuestionType } from "./config.ts";
 import type { Difficulty } from "./difficulty.ts";
@@ -178,16 +178,8 @@ const problemOf = (
 };
 
 /** The four options, assembled the way the server assembles them. */
-const optionsFor = (problem: Problem, random: () => number): string[] => {
-  const wrong =
-    problem.choices ??
-    (problem.defPool ?? []).slice(0, CHOICES_PER_PROBLEM - 1);
-  if (wrong.length < CHOICES_PER_PROBLEM - 1)
-    throw Error(`a ${problem.id} question was generated with too few options.`);
-  // The answer is stored apart from the wrong options, so a question is never
-  // shown with the right answer missing from its own list.
-  return shuffle([...wrong, problem.answer], random);
-};
+const optionsFor = (problem: Problem, random: () => number): string[] =>
+  choicesForProblem(problem, random);
 
 export type ShownQuestion = {
   id: string;

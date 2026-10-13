@@ -159,29 +159,31 @@ export { DEF_POOL };
 /**
  * The four options for a question, ready to be shown.
  *
- * Only a definition question needs work here. Its wrong options are a pool of
- * six generated at build time, and three are taken from it and shuffled, so
- * asking the same word twice does not show the same three. The other four
- * types have their options fixed and are returned as they are, already shuffled
- * by the caller.
+ * A rotating window over the pool, not the first three: every problem carries
+ * six wrong options (definitions always did), and each asking starts at a
+ * random offset and takes three around the wrap. Repeats of the same word
+ * draw different wrong options, so a child cannot learn to eliminate the
+ * same three. Thin pools hold fewer than six and rotate over what they have;
+ * with exactly three the set is the same and only the order shuffles, which
+ * is all there is to vary.
  *
- * The whole point of the file is that this is the only question-building work
- * left at request time, and it is a shuffle of a six-element array.
+ * Shared by the server question route and the browser engine alike: both
+ * pass their own random source, and the client-bank test drives both over
+ * the same seeds and compares the options they produce.
  */
 export function choicesForProblem(
   problem: Pick<Problem, "choices" | "defPool" | "answer">,
   random: () => number = Math.random,
 ): string[] {
-  const wrong =
-    problem.choices ??
-    // A definition question keeps six and takes three, so a repeat of the same
-    // word can be shown differently. With exactly three every repeat would be
-    // the same question.
-    (problem.defPool ?? []).slice(0, CHOICES_PER_PROBLEM - 1);
-  if (wrong.length < CHOICES_PER_PROBLEM - 1)
+  const pool = problem.choices ?? problem.defPool ?? [];
+  if (pool.length < CHOICES_PER_PROBLEM - 1)
     throw new Error(
       `A ${problem.defPool ? "definition" : "multiple choice"} question was generated with too few options.`,
     );
+  const start = Math.floor(random() * pool.length);
+  const wrong = [0, 1, 2].map(
+    (offset) => pool[(start + offset) % pool.length],
+  );
   // The answer is stored apart from the wrong options, so a question is never
   // shown with the right answer missing from its own list.
   return shuffle([...wrong, problem.answer], random);

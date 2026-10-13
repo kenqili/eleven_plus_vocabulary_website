@@ -26,6 +26,66 @@ function hash(value: string) {
 }
 
 /**
+ * Reserve one pool slot for an antonym of the subject word, when it has one.
+ *
+ * A synonym question whose options never include an opposite lets a child
+ * through who never distinguished the two. With the given chance (0.8 in the
+ * bank build) one slot of a word, cloze or synonym pool goes to an antonym
+ * instead of another neutral word - never the answer, never outside one band
+ * of the subject, never duplicating what is already there. Antonym questions
+ * are excluded outright: another opposite beside the answer risks a second
+ * valid option, and definitions have no words to put in the slot. Deterministic
+ * on the key, like every other pick here.
+ */
+export function withAntonymSlot(
+  pool: string[],
+  key: string,
+  word: Word,
+  answer: string,
+  type: string,
+  context: DistractorContext,
+  chance = 0.8,
+): string[] {
+  if (type !== "word" && type !== "cloze" && type !== "syn") return pool;
+  if (!pool.length) return pool;
+  if (hash(`${key}:ant-roll`) % 100 >= chance * 100) return pool;
+  const terms = (value: string) =>
+    value
+      .split(";")
+      .map((x) => x.normalize("NFKC").trim().toLowerCase())
+      .filter((x) => x && !/^[—–-]$/.test(x));
+  const answerText = answer.toLowerCase();
+  const answerWord = context.byWord.get(answerText);
+  const answerTerms = answerWord
+    ? context.defTerms.get(answerWord.id)!
+    : new Set<string>();
+  const mine =
+    context.defTerms.get(word.id) ?? significantTerms(word.definition);
+  const subjectSyns = new Set(terms(word.syn));
+  const inPool = new Set(pool.map((c) => c.toLowerCase()));
+  const subjectBand = context.levelOf(word.id);
+  for (const term of terms(word.ant)) {
+    const other = context.byWord.get(term);
+    if (!other || other.id === word.id) continue;
+    if (other.word.toLowerCase() === answerText) continue;
+    if (inPool.has(other.word.toLowerCase())) continue;
+    // The tight band rule, not the widening one: an unfamiliar rare word as
+    // the odd option out is a giveaway, not a test.
+    if (Math.abs(context.levelOf(other.id) - subjectBand) > 1) continue;
+    // Contradictory data either way round would make the opposite defensible.
+    if (subjectSyns.has(other.word.toLowerCase())) continue;
+    if (terms(other.syn).includes(word.word.toLowerCase())) continue;
+    const otherTerms =
+      context.defTerms.get(other.id) ?? significantTerms(other.definition);
+    if (overlapRatio(mine, otherTerms)) continue;
+    if (overlapRatio(answerTerms, otherTerms)) continue;
+    const out = [...pool];
+    out[hash(`${key}:ant-slot`) % out.length] = other.word;
+    return out;
+  }
+  return pool;
+}
+/**
  * Irregular past participles, for the words in this collection whose past
  * tense is not built by rule. Without these, an example saying "fled" looked
  * as though it never used the word "flee", and no cloze could be built from it.
@@ -436,20 +496,25 @@ const bandsFor = (level: number, widest: number): number[] => {
 };
 
 /**
- * Picks three wrong options deterministically, avoiding the answer, anything
+ * Picks wrong options deterministically, avoiding the answer, anything
  * related to it, and anything whose definition reads too much like the
  * answer's - which is what stops a second valid option being offered, and so
  * keeps a synonym of the answer out of a cloze's choices.
  *
  * Rather than sorting the whole pool for every question, the seed picks a
- * starting point in a fixed order and the first three eligible words are taken
+ * starting point in a fixed order and the first eligible words are taken
  * from there. That is O(few) per question instead of O(bank log bank).
+ *
+ * `wanted` is how many to collect: three fills a question, six fills the pool
+ * a question rotates through, so repeats of the same word draw different
+ * wrong options instead of the same three.
  */
 export function pickDistractors(
   key: string,
   word: Word,
   answer: string,
   context: DistractorContext,
+  wanted: number = CHOICES_PER_PROBLEM - 1,
 ): string[] {
   const answerWord = context.byWord.get(answer.toLowerCase());
   const answerTerms = answerWord
@@ -480,13 +545,13 @@ export function pickDistractors(
       const start = hash(`${key}:${band}`) % pool.length;
       for (
         let step = 0;
-        step < pool.length && picked.length < CHOICES_PER_PROBLEM - 1;
+        step < pool.length && picked.length < wanted;
         step += 1
       ) {
         const candidate = pool[(start + step) % pool.length];
         if (eligible(candidate)) picked.push(candidate.word);
       }
-      if (picked.length === CHOICES_PER_PROBLEM - 1) return picked;
+      if (picked.length === wanted) return picked;
     }
   return picked;
 }

@@ -133,19 +133,41 @@ test("the engine and the server pick the same word from the same state", () => {
       `round ${round}: the engine chose ${shown.wordId}, the server would choose ${chosenId}`,
     );
     // And the options have to match too, or the child sees a different question
-    // even when the word is right.
+    // even when the word is right. Compared as takes from the same pool
+    // rather than as identical sets: each side rotates its own window over
+    // the pool, so two askings - including these two - legitimately draw
+    // different wrong options. What has to match is that both takes are
+    // valid: four unique options, the answer exactly once, every wrong one
+    // from the stored pool.
     const problem = eligible.find(
       (p) => p.id === `${shown.type}:${shown.wordId}`,
     );
     assert.ok(problem, `no server problem for ${shown.type}:${shown.wordId}`);
-    // The set, not the order: two independent random streams will not produce
-    // the same shuffle, and comparing order would be testing the seed rather than
-    // the logic. What has to match is which options, and that the answer is one.
-    assert.deepEqual(
-      [...shown.choices].sort(),
-      [...choicesForProblem(problem, seeded())].sort(),
-      `round ${round}: the options for ${shown.wordId} differ`,
-    );
+    const pool = [
+      ...(problem.choices ?? problem.defPool ?? []),
+      problem.answer,
+    ];
+    for (const [who, choices] of [
+      ["engine", shown.choices],
+      ["server", choicesForProblem(problem, seeded())],
+    ]) {
+      assert.equal(choices.length, CHOICES_PER_PROBLEM, `${who} ${chosenId}`);
+      assert.equal(
+        new Set(choices.map((c) => c.toLowerCase())).size,
+        CHOICES_PER_PROBLEM,
+        `${who} ${chosenId}: duplicate shown`,
+      );
+      assert.equal(
+        choices.filter((c) => c === problem.answer).length,
+        1,
+        `${who} ${chosenId}: answer missing or twice`,
+      );
+      for (const choice of choices)
+        assert.ok(
+          pool.some((c) => c.toLowerCase() === choice.toLowerCase()),
+          `${who} ${chosenId}: ${choice} is not in the stored pool`,
+        );
+    }
     assert.equal(
       shown.answer,
       problem.answer,
@@ -387,25 +409,29 @@ test("a fully firmed band places a level up", () => {
 
 test("question types cycle for a word before repeating", () => {
   const bank = loadBank();
-  // With no history, every type ties, so the choice is arbitrary - but it must
-  // not be the *same* type four times. The server cycles explicitly, by asking
-  // which type has been asked least, and that is the behaviour being moved.
+  // One word, answered wrong every time so it never masters out of the pool:
+  // the type counts advance with every asking, so the least-seen type is a
+  // new one each time the word comes back. Deterministic by construction -
+  // the old version drew forty unanswered questions from hundreds of words
+  // and needed luck for a repeat, which is why it passed or failed on the
+  // seed rather than on the cycling.
   const engine = new PracticeEngine({
     bank,
-    ...fixture({ level: 1, types: ["def", "word", "cloze", "syn", "ant"] }),
+    ...fixture({ allowedWordIds: new Set(["abandon"]) }),
   });
-  const seenFor = new Map();
-  for (let i = 0; i < 40; i++) {
+  const seen = new Set();
+  for (let i = 0; i < 6; i++) {
     const shown = engine.next();
-    assert.ok(shown);
-    const set = seenFor.get(shown.wordId) ?? new Set();
-    set.add(shown.type);
-    seenFor.set(shown.wordId, set);
+    assert.ok(shown, "the engine must keep producing questions");
+    assert.equal(shown.wordId, "abandon");
+    seen.add(shown.type);
+    const wrong = shown.choices.findIndex((c) => c !== shown.answer);
+    engine.grade(wrong);
   }
-  const repeated = [...seenFor.values()].filter((set) => set.size === 1);
-  assert.ok(
-    repeated.length < seenFor.size,
-    "a word was only ever asked one way; the type cycling is not happening",
+  assert.equal(
+    seen.size,
+    5,
+    `only asked ${[...seen]}; the type cycling is not happening`,
   );
 });
 

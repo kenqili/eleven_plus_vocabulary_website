@@ -7,14 +7,17 @@
 // held about 70 MB of objects resident in every isolate, for data that never
 // changes.
 //
-// Every question here is deterministic. The word, cloze, synonym and antonym
-// choices were already built by a seeded walk over a fixed order, so they have
-// always been the same for the same word. Only the definition question chose
-// its wrong options at request time, because the pool was keyed on the attempt
-// id so that two asks of the same word would differ.
+// Every question here is deterministic. Each problem keeps a pool of up to
+// six wrong options - definitions always did - and the request path takes
+// three from a rotating window over it, so two asks of the same word draw
+// different wrong options instead of the same three. Fixed trios taught
+// children to eliminate familiar wrong answers rather than to recall
+// anything, which is what a word is mastered on.
 //
 // That is a real requirement and this keeps it: each word gets a pool of
-// DEF_POOL definitions, and the request path shuffles that pool and takes three.
+// DEF_POOL definitions, and the request path takes three from a rotating
+// window over that pool, so repeats of the same word draw different wrong
+// options instead of the same three.
 // So the pool is now fixed and the variation comes from the shuffle, which
 // costs nothing.
 //
@@ -26,10 +29,12 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { mergeWordSources } from "../lib/challenge/words.ts";
 import {
   buildDistractorContext,
+  pickDistractors,
   pickDefinitionDistractors,
   parseProblemCsv,
   blankExample,
   hasWholeWord,
+  withAntonymSlot,
   CHOICES_PER_PROBLEM,
 } from "../lib/challenge/problems.ts";
 import levels from "../data/word-levels/levels.json" with { type: "json" };
@@ -84,8 +89,18 @@ const fromCsv = [
   ...parseProblemCsv(read("ant.csv"), "ant", words),
 ];
 
+/**
+ * How many wrong options each problem keeps.
+ *
+ * Six, like definitions always did: asking the same word twice draws a
+ * different three from the six instead of the same three. Thin pools keep
+ * fewer - three is the floor below which there is no question - and the
+ * request path rotates over whatever each pool holds.
+ */
+const DISTRACTOR_POOL = 6;
+
 /** Options for a question whose answer is the word, from the bank at large. */
-const wordDistractors = (word) => {
+const wordDistractors = (word, wanted = DISTRACTOR_POOL) => {
   // A cloze blanks the word out of a sentence, so a synonym of the answer among
   // the options would give it away. Those are already excluded from the
   // question's own context, and using the word's key here keeps a word question
@@ -99,14 +114,14 @@ const wordDistractors = (word) => {
   ]) {
     const pool = context.byLevel.get(band) ?? [];
     for (const candidate of pool) {
-      if (out.length >= WRONG_CHOICES) break;
+      if (out.length >= wanted) break;
       if (context.blocked.get(word.id)?.has(candidate.id)) continue;
       const key = candidate.word.toLowerCase();
       if (seen.has(key)) continue;
       seen.add(key);
       out.push(candidate.word);
     }
-    if (out.length >= WRONG_CHOICES) break;
+    if (out.length >= wanted) break;
   }
   return out;
 };
@@ -147,8 +162,15 @@ for (const word of words) {
   }
 
   if (!selfNaming.has(word.id)) {
-    const options = wordDistractors(word);
-    if (options.length === WRONG_CHOICES)
+    const options = withAntonymSlot(
+      wordDistractors(word),
+      `word:${word.id}`,
+      word,
+      word.word,
+      "word",
+      context,
+    );
+    if (options.length >= WRONG_CHOICES)
       rows.push([word.id, "word", word.definition, word.word, options]);
     else skipped.word += 1;
   } else {
@@ -158,8 +180,15 @@ for (const word of words) {
 
   const blanked = word.example ? blankExample(word.example, word.word) : null;
   if (blanked) {
-    const options = wordDistractors(word);
-    if (options.length === WRONG_CHOICES)
+    const options = withAntonymSlot(
+      wordDistractors(word),
+      `cloze:${word.id}`,
+      word,
+      word.word,
+      "cloze",
+      context,
+    );
+    if (options.length >= WRONG_CHOICES)
       rows.push([word.id, "cloze", blanked, word.word, options]);
     else skipped.cloze += 1;
   } else skipped.cloze += 1;
@@ -170,13 +199,46 @@ for (const word of words) {
 // the skipped counters for every problem added here, which reported 2,212
 // synonyms and 2,066 antonyms as "not generated" while the same run listed them
 // as generated. Only the derived types can be skipped.
+//
+// The CSV trio stays exactly as the author wrote it, and generated options go
+// behind it to fill the pool the request path rotates through. Same
+// eligibility rules as every generated option, plus a merge that drops
+// anything duplicating the trio or the answer - so a repeated synonym
+// question draws different wrong options instead of the same three.
+const byId = new Map(words.map((word) => [word.id, word]));
 for (const problem of fromCsv) {
+  const trio = problem.choices.filter((choice) => choice !== problem.answer);
+  const seen = new Set([
+    problem.answer.toLowerCase(),
+    ...trio.map((choice) => choice.toLowerCase()),
+  ]);
+  const extras = pickDistractors(
+    `extra:${problem.id}`,
+    byId.get(problem.wordId),
+    problem.answer,
+    context,
+    DISTRACTOR_POOL,
+  ).filter((choice) => !seen.has(choice.toLowerCase()));
+  // Antonym questions keep their curated trio exactly: another opposite
+  // beside the answer risks a second valid option. The other rows take the
+  // antonym slot like everything generated.
+  const pool =
+    problem.type === "syn"
+      ? withAntonymSlot(
+          [...trio, ...extras].slice(0, DISTRACTOR_POOL),
+          `synslot:${problem.id}`,
+          byId.get(problem.wordId),
+          problem.answer,
+          "syn",
+          context,
+        )
+      : [...trio, ...extras].slice(0, DISTRACTOR_POOL);
   rows.push([
     problem.wordId,
     problem.type,
     problem.prompt,
     problem.answer,
-    problem.choices.filter((choice) => choice !== problem.answer),
+    pool,
   ]);
 }
 

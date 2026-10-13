@@ -109,8 +109,11 @@ test("word questions never show the answer, and offer four distinct options", ()
       `${problem.id}: the prompt must not contain the answer`,
     );
     // The three wrong options are stored without the answer, and the answer is
-    // joined to them when the question is asked.
-    assert.equal(problem.choices.length, CHOICES_PER_PROBLEM - 1, problem.id);
+    // joined to a rotating three of the pool when the question is asked.
+    assert.ok(
+      problem.choices.length >= CHOICES_PER_PROBLEM - 1,
+      `${problem.id}: pool holds ${problem.choices.length}`,
+    );
     assert.ok(
       !problem.choices.includes(problem.answer),
       `${problem.id}: the answer is stored among the wrong options`,
@@ -140,8 +143,19 @@ test("cloze questions blank the word and never offer a related option", () => {
       !hasWholeWord(problem.prompt, word.word),
       `${problem.id}: the blanked sentence must not still contain the answer`,
     );
+    // An opposite among the options is the point, not a leak: it cannot fill
+    // a gap written for the word, which is exactly what makes it a test
+    // rather than a giveaway. Every other relation stays forbidden, because a
+    // synonym beside the gap might fit it too.
+    const antonyms = new Set(
+      word.ant
+        .split(";")
+        .map((term) => term.normalize("NFKC").trim().toLowerCase())
+        .filter((term) => term && !/^[—–-]$/.test(term)),
+    );
     for (const choice of choicesForProblem(problem, () => 0.5)) {
       if (choice.toLowerCase() === problem.answer.toLowerCase()) continue;
+      if (antonyms.has(choice.toLowerCase())) continue;
       assert.ok(
         !related.get(word.id).has(choice.toLowerCase()),
         `${problem.id}: option "${choice}" is a relation of "${problem.answer}"`,

@@ -67,19 +67,34 @@ test("Every word has one definition and at most one reviewed synonym/antonym pro
         `${type}:${word.id}`,
       );
     }
-  // The bank stores the three wrong options with the answer kept apart, and
-  // joins them when a question is asked. What a child is shown is what is
-  // checked, because that is the thing that has to be right.
+  // The bank stores a pool of wrong options with the answer kept apart, and
+  // joins three of them when a question is asked. What a child is shown is
+  // what is checked, because that is the thing that has to be right.
   for (const problem of problems.filter((p) => p.choices)) {
-    assert.equal(problem.choices.length, 3, problem.id);
+    assert.ok(
+      problem.choices.length >= 3,
+      `${problem.id}: pool holds ${problem.choices.length}`,
+    );
     assert.ok(
       !problem.choices.includes(problem.answer),
       `${problem.id}: the answer is stored among the wrong options`,
     );
-    const shown = choicesForProblem(problem, () => 0.5);
-    assert.equal(shown.length, 4, problem.id);
-    assert.equal(new Set(shown.map((x) => x.toLowerCase())).size, 4, problem.id);
-    assert.equal(shown.filter((x) => x === problem.answer).length, 1, problem.id);
+    // Every rotation window is a valid question: four unique options with
+    // the answer exactly once, wherever in the pool the window starts.
+    for (const seed of [0, 0.2, 0.5, 0.8]) {
+      const shown = choicesForProblem(problem, () => seed);
+      assert.equal(shown.length, 4, problem.id);
+      assert.equal(
+        new Set(shown.map((x) => x.toLowerCase())).size,
+        4,
+        problem.id,
+      );
+      assert.equal(
+        shown.filter((x) => x === problem.answer).length,
+        1,
+        problem.id,
+      );
+    }
   }
 });
 test("Malformed problem rows cannot enter the bank", () => {
