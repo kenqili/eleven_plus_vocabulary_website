@@ -12,8 +12,8 @@ export type PlacementData = {
  * How far to 10,000, as a horizontal bar with the score on it.
  *
  * The bar is live: `liveLevel`/`liveScore` come from the browser engine on the
- * same frame an answer is graded, so the number ticks the moment a word is
- * mastered. `/api/placement` is the fallback before the engine has answered,
+ * same frame an answer is graded, so the number ticks on every counted right
+ * answer. `/api/placement` is the fallback before the engine has answered,
  * and the refresh when `refreshKey` changes (the practice page passes the
  * mastered count).
  *

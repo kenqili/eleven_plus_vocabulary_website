@@ -3,6 +3,8 @@ import test from "node:test";
 import {
   allocationFor,
   BAND_COUNT,
+  correctCredit,
+  COUNTED_CORRECT,
   currentLevel,
   drawBand,
   FAST_TRACK_ACCURACY,
@@ -204,8 +206,7 @@ test("the stretch above opens with twice-right answers, never before", () => {
   );
 });
 
-test("readiness counts twice-right words in the band", () => {
-  const items = [
+test("readiness counts twice-right words in the band", () => {  const items = [
     { level: 1, correct: 0 },
     { level: 1, correct: 1 },
     { level: 1, correct: 2 },
@@ -302,4 +303,40 @@ test("fractions ignore out-of-range bands", () => {
     totals,
   );
   assert.equal(fractions[1], 1 / 427);
+});
+
+test("every counted right answer fills the sixth a little", () => {
+  // The score used to move only when a word was finished, so days of right
+  // answers left the number standing still. Now each countable right answer
+  // adds credit: two per word is the whole of a word's share.
+  const items = [
+    { level: 1, correct: 0 },
+    { level: 1, correct: 1 },
+    { level: 1, correct: 2 },
+    { level: 1, correct: 9 },
+    { level: 2, correct: 2 },
+  ];
+  // (0 + 1 + 2 + 2 capped) of (4 words × 2): the band-2 word counts nothing
+  // towards band 1, however right it is.
+  assert.equal(correctCredit(items, [0, 4, 1, 0, 0, 0], 1), 5 / 8);
+  // One more right answer anywhere in the band always adds the same.
+  const oneMore = items.map((item, index) =>
+    index === 0 ? { ...item, correct: 1 } : item,
+  );
+  assert.equal(correctCredit(oneMore, [0, 4, 1, 0, 0, 0], 1), 6 / 8);
+  // Past the cap, further right answers add nothing: repeating one easy word
+  // cannot fill a band on its own.
+  const farmed = items.map((item, index) =>
+    index === 2 ? { ...item, correct: 40 } : item,
+  );
+  assert.equal(correctCredit(farmed, [0, 4, 1, 0, 0, 0], 1), 5 / 8);
+  // Negative counts floor at zero rather than running the number backward:
+  // a wrong answer costs the run and the streak elsewhere, never the score.
+  const bent = items.map((item, index) =>
+    index === 1 ? { ...item, correct: -3 } : item,
+  );
+  assert.equal(correctCredit(bent, [0, 4, 1, 0, 0, 0], 1), 4 / 8);
+  // An empty band reads complete, like every other fraction here.
+  assert.equal(correctCredit([], [0, 0, 0, 0, 0, 0], 3), 1);
+  assert.equal(COUNTED_CORRECT, 2);
 });

@@ -39,6 +39,7 @@ import { QUESTION_TYPES } from "../lib/challenge/config.ts";
 import { testBank } from "./helpers/test-bank.mjs";
 import {
   allocationFor,
+  correctCredit,
   currentLevel,
   levelFractions,
   levelScore,
@@ -242,7 +243,10 @@ test("automatic placement draws the same band and word on both sides", () => {
     );
     assert.deepEqual(
       shown.placement,
-      { level, score: levelScore(level, fractions[level]) },
+      {
+        level,
+        score: levelScore(level, correctCredit(items, totals, level)),
+      },
       `round ${round}: the attached placement differs from the rows`,
     );
     // The same narrowing the engine performs, through the shared helper: this

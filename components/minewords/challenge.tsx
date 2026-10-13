@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, BookOpen, Lightbulb } from "lucide-react";
+import { ArrowRight, BookOpen, Lightbulb, Trophy } from "lucide-react";
 import Pronunciation, { AnswerAudio } from "./pronunciation";
 import AnswerPacing from "./answer-pacing";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -135,6 +135,26 @@ export default function Challenge() {
   const [clueQuestion, setClueQuestion] = useState<string | null>(null);
   const cardRef = useRef<HTMLElement>(null);
   const { question, feedback, stats, demo, busy, error } = study;
+  // The level the child just rose to, shown once on the first question that
+  // carries it. Level jumps otherwise arrive with no marking at all: the
+  // badge number changes and the bar leaps, which reads as a glitch rather
+  // than a promotion earned by the run behind it. Falls are left quiet on
+  // purpose - a demotion is information, not a celebration.
+  const [levelUp, setLevelUp] = useState<number | null>(null);
+  const lastQuestion = useRef<string | null>(null);
+  const lastLevel = useRef<number | null>(null);
+  useEffect(() => {
+    if (!question || study.historical) return;
+    if (lastQuestion.current === question.id) return;
+    lastQuestion.current = question.id;
+    const level = question.placement?.level ?? null;
+    setLevelUp(
+      level !== null && lastLevel.current !== null && level > lastLevel.current
+        ? level
+        : null,
+    );
+    if (level !== null) lastLevel.current = level;
+  }, [question, study.historical]);
   const mastery = feedback?.mastery ?? question?.mastery;
   // The run the child just extended, which is the one the coach names. Before
   // an answer there is nothing to say about a run that has not happened.
@@ -406,6 +426,19 @@ export default function Challenge() {
                 {question ? TYPE_LABELS[question.type] : "Mixed practice"}
               </span>
             </div>
+            {levelUp !== null && (
+              <div className="reward-notice" role="status">
+                <strong>
+                  <Trophy
+                    size={16}
+                    aria-hidden
+                    style={{ verticalAlign: "-3px" }}
+                  />{" "}
+                  Level {levelUp} — your strong run moved you up!
+                </strong>
+                <p>Harder words will come more often from here.</p>
+              </div>
+            )}
             <article
               className={`question-card question-${question?.type || "def"} ${feedback ? "question-answered" : ""} ${question ? "question-entering" : ""}`}
               // Keyed on the question, so the entrance plays once per question

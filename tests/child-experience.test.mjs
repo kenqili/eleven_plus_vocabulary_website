@@ -280,3 +280,24 @@ test("a clue is offered only where it cannot name the answer", () => {
   assert.deepEqual(askedForWord.slice(0, 5), [], `${askedForWord.length} word or cloze questions offered a clue`);
   assert.deepEqual(leaked.slice(0, 5), [], `${leaked.length} clues are wrong`);
 });
+
+test("a promotion arrives with a celebration, a demotion without one", () => {
+  // Levels move in 1,667-point jumps while the score creeps in fours, so an
+  // unmarked promotion reads as a glitch rather than as earned. The practice
+  // page names the new level once, on the first question carrying it, and
+  // stays quiet about falls.
+  const challenge = readFileSync(
+    new URL("../components/minewords/challenge.tsx", import.meta.url),
+    "utf8",
+  );
+  assert.match(
+    challenge,
+    /your strong run moved you up/,
+    "no celebration marks a level promotion",
+  );
+  assert.match(
+    challenge,
+    /level > lastLevel\.current/,
+    "the celebration is not gated on actually rising",
+  );
+});

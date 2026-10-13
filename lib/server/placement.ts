@@ -5,6 +5,7 @@ import {
 } from "@/lib/challenge/added-words";
 import {
   currentLevel,
+  correctCredit,
   levelFractions,
   levelScore,
   stretchFraction,
@@ -147,74 +148,8 @@ export async function accountPlacement(userId: string): Promise<{
     trailing,
     stretchFraction(items, totals, base) >= 1,
   );
-  return { level, score: levelScore(level, fractions[level] ?? 0) };
-}
-
-/**
- * The score over time, one point per day a word was first mastered.
- *
- * Reconstructed from `learning_events`: each word contributes from the first
- * day an event recorded its mastery. Words flagged mastered in `progress`
- * without such an event (older history, from before evidence was recorded)
- * fall back to their last-seen day — mastered by then at the latest, so the
- * line never claims earlier knowledge than the rows support.
- *
- * Levels along the line use fractions only, never trailing accuracy: history
- * cannot be re-graded, and a line that moved on evidence nobody can inspect
- * would not be checkable. The live badge may sit slightly above the line's end
- * after a fast-track promotion; the next mastered word reconciles them.
- */
-export async function scoreHistory(
-  userId: string,
-): Promise<Array<{ day: string; score: number }>> {
-  const db = database();
-  const masteredDays = (
-    await db
-      .prepare(
-        "SELECT word_id, MIN(day) AS day FROM learning_events WHERE user_id = ? AND mastered = 1 GROUP BY word_id",
-      )
-      .bind(userId)
-      .all<{ word_id: string; day: string }>()
-  ).results;
-  const flagged = (
-    await db
-      .prepare(
-        "SELECT word_id, last_seen FROM progress WHERE user_id = ? AND mastered = 1",
-      )
-      .bind(userId)
-      .all<{ word_id: string; last_seen: string | null }>()
-  ).results;
-  const dayOf = new Map(masteredDays.map((row) => [row.word_id, row.day]));
-  for (const row of flagged) {
-    if (!dayOf.has(row.word_id) && row.last_seen)
-      dayOf.set(row.word_id, row.last_seen);
-  }
-  if (!dayOf.size) return [];
-  const bandOf = new Map<string, number>();
-  for (const [id, band] of levelOf) bandOf.set(id, band);
-  const byDay = new Map<string, string[]>();
-  for (const [id, day] of dayOf) {
-    const list = byDay.get(day) ?? [];
-    list.push(id);
-    byDay.set(day, list);
-  }
-  // Totals are the bank's, matching accountPlacement minus own words: history
-  // predates neither, but a parent's added words have no stable band history
-  // and would move old points whenever one is added or removed.
-  const totals = [0, 0, 0, 0, 0, 0];
-  for (const band of levelOf.values()) totals[band] += 1;
-  const masteredCount = [0, 0, 0, 0, 0, 0];
-  const points: Array<{ day: string; score: number }> = [];
-  for (const day of [...byDay.keys()].sort()) {
-    for (const id of byDay.get(day)!) {
-      const band = bandOf.get(id);
-      if (band !== undefined) masteredCount[band] += 1;
-    }
-    const fractions = totals.map((total, band) =>
-      total <= 0 ? 1 : Math.min(1, masteredCount[band] / total),
-    );
-    const level = currentLevel(fractions, []);
-    points.push({ day, score: levelScore(level, fractions[level] ?? 0) });
-  }
-  return points;
+  return {
+    level,
+    score: levelScore(level, correctCredit(items, totals, level)),
+  };
 }

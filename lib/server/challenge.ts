@@ -19,6 +19,7 @@ import { localDay } from "@/lib/challenge/rewards";
 import { chooseWord, reviewDueAt } from "@/lib/challenge/ordering";
 import {
   allocationFor,
+  correctCredit,
   currentLevel,
   levelFractions,
   levelScore,
@@ -354,7 +355,10 @@ export async function nextQuestion(
     );
     return {
       level: placedLevel,
-      score: levelScore(placedLevel, fractions[placedLevel] ?? 0),
+      score: levelScore(
+        placedLevel,
+        correctCredit(items, totals, placedLevel),
+      ),
     };
   };
   const pending = await db

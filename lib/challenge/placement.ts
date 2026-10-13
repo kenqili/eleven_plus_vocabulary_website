@@ -117,13 +117,46 @@ export function currentLevel(
 }
 
 /**
+ * Countable right answers per word that move the score.
+ *
+ * Two: the first meeting plus one recall. It matches the readiness rule
+ * below on purpose - a band whose every word has two is both fully open
+ * above and worth a full sixth, so stepping up lands on a continuous number
+ * rather than a jump. Clue-assisted answers never reach any word's count
+ * (the evidence rules do not credit them), and neither do reveals or misses.
+ */
+export const COUNTED_CORRECT = 2;
+
+/**
+ * How full the band's sixth is, 0 to 1, from right answers rather than flags.
+ *
+ * Each word contributes its capped count, floored at zero: a wrong answer
+ * stalls the climb by clearing runs and streaks elsewhere, but it never
+ * subtracts here, so the displayed number cannot run backward. An empty band
+ * reads complete, like every other fraction here.
+ */
+export function correctCredit(
+  items: ReadonlyArray<{ level: number; correct: number }>,
+  totals: ReadonlyArray<number>,
+  band: number,
+): number {
+  const total = totals[band] ?? 0;
+  if (total <= 0) return 1;
+  let credit = 0;
+  for (const item of items) {
+    if (item.level !== band) continue;
+    credit += Math.max(0, Math.min(COUNTED_CORRECT, item.correct ?? 0));
+  }
+  return Math.min(1, credit / (total * COUNTED_CORRECT));
+}
+/**
  * The displayed score, 0–10,000.
  *
  * `(level + fraction) / 6 × 10000`: each band is worth a sixth, progress within
  * the band fills it. Monotonic by construction — the band dominates the
  * fraction, so the number never runs backward while the level stands still —
- * and every newly mastered word moves it by ~4 points in a 426-word band, so
- * the number is alive long before the level changes.
+ * and every counted right answer moves it by ~2 points in a 426-word band, so
+ * the number ticks on every correct answer long before the level changes.
  */
 export function levelScore(level: number, fraction: number): number {
   const clamped = Math.max(0, Math.min(5, level));

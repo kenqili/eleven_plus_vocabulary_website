@@ -23,6 +23,7 @@ import { choicesForProblem, type Problem } from "./bank.ts";
 import { chooseWord, reviewDueAt, RECENT_WORD_WINDOW } from "./ordering.ts";
 import {
   allocationFor,
+  correctCredit,
   currentLevel,
   levelFractions,
   levelScore,
@@ -395,17 +396,18 @@ export class PracticeEngine {
     // every word has been answered right at least twice steps up, because by
     // then the draw is already asking four-fifths above.
     const base = currentLevel(fractions, this.trailing);
-    const ready =
-      stretchFraction(
-        words.map((word) => ({
-          level: word.difficulty,
-          correct: this.countersFor(word.id).correct,
-        })),
-        totals,
-        base,
-      ) >= 1;
+    const correct = words.map((word) => ({
+      level: word.difficulty,
+      correct: this.countersFor(word.id).correct,
+    }));
+    const ready = stretchFraction(correct, totals, base) >= 1;
     const level = currentLevel(fractions, this.trailing, ready);
-    return { level, score: levelScore(level, fractions[level] ?? 0) };
+    // The number ticks on countable right answers, not only on finished
+    // words: same sixth, filled by credit rather than by flags.
+    return {
+      level,
+      score: levelScore(level, correctCredit(correct, totals, level)),
+    };
   }
 
   /**
