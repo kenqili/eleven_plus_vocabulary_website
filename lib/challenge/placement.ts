@@ -32,16 +32,14 @@ export const LEVEL_UP_FRACTION = 0.8;
 /** A sustained collapse that demotes, and what "sustained" means. */
 export const LEVEL_DOWN_FRACTION = 0.4;
 export const SLOW_TRACK_MIN_ANSWERS = 30;
-/** A fast run that promotes early, for a child placed too low. */
-export const FAST_TRACK_MIN_ANSWERS = 20;
-export const FAST_TRACK_ACCURACY = 0.9;
 /** The top of the displayed score. Each band is worth a sixth of it. */
 export const MAX_SCORE = 10000;
 
 /** One recent answer: which band it was asked at, and whether it was an
  * unassisted correct answer. Assisted (clue shown), revealed and skipped
  * answers count as not-correct here, the same way they do not count toward
- * mastery — a child leaning on the clue must not fast-track upward. */
+ * mastery — a child leaning on the clue must not look stronger than they
+ * are. */
 export type TrailingAnswer = {
   level: number;
   correct: boolean;
@@ -82,12 +80,11 @@ export function levelFractions(
  * Level 1 while four out of five questions came from Level 2.
  *
  * Then at most one adjustment from the trailing answers at that band:
- * - collapse (<40% over ≥30) steps down one: a sustained failure, never one
- *   bad round, and mastery flags are untouched — falling back changes what is
- *   asked, never what is already known;
- * - fast run (≥90% over ≥20) steps up one: a strong child placed too low must
- *   not grind hundreds of questions before the level moves. Ninety percent over
- *   twenty four-option questions cannot happen by guessing.
+ * collapse (<40% over ≥30) steps down one. A sustained failure, never one
+ * bad round, and mastery flags are untouched — falling back changes what is
+ * asked, never what is already known. There is deliberately no promotion on
+ * a fast run: levels move on firmed bands and finished words, both visible
+ * in the score, so a hot streak can never teleport the level.
  *
  * Recomputed per question. That is safe mid-round precisely because the
  * thresholds are wide: the level only moves on sustained evidence, and moving
@@ -108,10 +105,6 @@ export function currentLevel(
   if (at.length >= SLOW_TRACK_MIN_ANSWERS) {
     const accuracy = at.filter((answer) => answer.correct).length / at.length;
     if (accuracy < LEVEL_DOWN_FRACTION) return Math.max(0, placed - 1);
-  }
-  if (at.length >= FAST_TRACK_MIN_ANSWERS) {
-    const accuracy = at.filter((answer) => answer.correct).length / at.length;
-    if (accuracy >= FAST_TRACK_ACCURACY) return Math.min(5, placed + 1);
   }
   return placed;
 }

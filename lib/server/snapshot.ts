@@ -128,10 +128,10 @@ export type Snapshot = {
    * than a parent realistically sets aside.
    *
    * `trailing` is the same last-thirty-answers the server's own placement
-   * reads, oldest first. Without it the browser started every visit with no
-   * recent accuracy, so a fast-track promotion earned in one sitting vanished
-   * on reload and the level fell back. Derived from learning_events, like
-   * everything else here - no stored level to drift.
+   * reads, oldest first. It feeds only the collapse guard now: levels move
+   * up on firmed bands and finished words, never on a hot streak. Derived
+   * from learning_events, like everything else here - no stored level to
+   * drift.
    */
   clock: { attemptCount: number; recent: string[]; trailing: TrailingAnswer[] };
   /**

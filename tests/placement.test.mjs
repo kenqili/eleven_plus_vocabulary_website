@@ -7,7 +7,6 @@ import {
   COUNTED_CORRECT,
   currentLevel,
   drawBand,
-  FAST_TRACK_ACCURACY,
   LEVEL_UP_FRACTION,
   levelFractions,
   levelScore,
@@ -80,34 +79,34 @@ test("a sustained collapse demotes exactly one level", () => {
   assert.equal(currentLevel(early, wrong(1, 30)), 0);
 });
 
-test("a fast run promotes a misplaced child early", () => {
-  // Ninety percent over twenty four-option questions cannot happen by guessing,
-  // so a child answering at this rate is placed too low and waiting for 80% of
-  // ~426 words would waste weeks of their time.
+test("even a perfect run never promotes on streak alone", () => {
+  // Ninety percent over twenty used to step the level up on the spot, which
+  // is what teleported children between levels mid-session. Levels move on
+  // firmed bands and finished words now - both visible in the score - so a
+  // hot streak, however genuine, holds the level it earned the slow way.
   const items = [...mastered(1, 50)];
-  assert.equal(currentLevel(levelFractions(items, totals), correct(1, 20)), 2);
+  assert.equal(currentLevel(levelFractions(items, totals), correct(1, 20)), 1);
+  assert.equal(currentLevel(levelFractions(items, totals), correct(1, 30)), 1);
 });
 
 test("a fast run below the bar changes nothing", () => {
   const items = [...mastered(1, 50)];
   const trailing = [...correct(1, 17), ...wrong(1, 3)]; // 85%
-  assert.ok(
-    17 / 20 < FAST_TRACK_ACCURACY,
-    "the fixture does not test what it claims",
-  );
   assert.equal(currentLevel(levelFractions(items, totals), trailing), 1);
 });
 
-test("clue-assisted answers do not fast-track", () => {
+test("clue-assisted answers count as misses for the collapse guard", () => {
   // The TrailingAnswer contract counts assisted answers as not-correct, the
-  // same way they do not count toward mastery. A child leaning on the clue
-  // must not promote: this pins the contract from the caller's side.
-  const items = [...mastered(1, 50)];
-  const trailing = Array.from({ length: 20 }, () => ({
-    level: 1,
+  // same way they do not count toward mastery. Thirty assisted answers at a
+  // level is a sustained failure to answer unaided, so the guard steps down
+  // exactly as it would for wrong answers.
+  const items = [...mastered(0, 116), ...mastered(1, 342)];
+  const fractions = levelFractions(items, totals);
+  const trailing = Array.from({ length: 30 }, () => ({
+    level: 2,
     correct: false,
   }));
-  assert.equal(currentLevel(levelFractions(items, totals), trailing), 1);
+  assert.equal(currentLevel(fractions, trailing), 1);
 });
 
 test("the score fills each sixth of 10,000 monotonically", () => {
