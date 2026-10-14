@@ -122,17 +122,23 @@ function advanceStats(
     firstTime: boolean;
     mastered: boolean;
     credits: number;
+    /**
+     * Whether anything was answered. Marking a word known moves mastery
+     * without answering, so it must not inflate the answered counts.
+     */
+    answered?: boolean;
   },
   totals: { mastered: number; meetCount: number },
 ): Stats {
+  const asked = answer.answered ?? true;
   // Each period from its own prior. This used to advance the all-time period
   // and write the result into today and week as well, so the Today tab read
   // like all-time until the next flush replaced it with the server's figures.
   const bump = (prior: ReturnType<typeof emptyPeriod>) => ({
     ...prior,
-    questions: prior.questions + 1,
-    correct: prior.correct + (answer.correct ? 1 : 0),
-    reveals: prior.reveals + (answer.revealed ? 1 : 0),
+    questions: prior.questions + (asked ? 1 : 0),
+    correct: prior.correct + (asked && answer.correct ? 1 : 0),
+    reveals: prior.reveals + (asked && answer.revealed ? 1 : 0),
     newWords: prior.newWords + (answer.firstTime ? 1 : 0),
     mastered: prior.mastered + (answer.mastered ? 1 : 0),
     seconds: prior.seconds + answer.seconds,
@@ -146,7 +152,7 @@ function advanceStats(
     ...base,
     mastered: totals.mastered,
     meetCount: totals.meetCount,
-    correct: base.correct + (answer.correct ? 1 : 0),
+    correct: base.correct + (asked && answer.correct ? 1 : 0),
     todaySeconds: base.todaySeconds + answer.seconds,
     totalSeconds: base.totalSeconds + answer.seconds,
     periods: {
@@ -216,8 +222,15 @@ export class ClientSession {
 
   /** Whether a flush would send anything. Drives the Save button. */
   get dirty(): boolean {
-    return this.queue.length > 0;
+    return this.queue.length > 0 || this.stateDirty;
   }
+
+  /**
+   * Progress changed without an answer - currently only marking a word
+   * known. The answer queue stays empty, so without this flag a flush would
+   * conclude there is nothing to send and the marking would die with the tab.
+   */
+  private stateDirty = false;
 
   /** The next question, decided in the browser. */
   next(): ShownQuestion | null {
@@ -296,6 +309,45 @@ export class ClientSession {
   }
 
   /**
+   * Mark the shown word as known, so it leaves the rotation.
+   *
+   * Nothing is sent here, like an answer. Unlike an answer it joins no queue -
+   * there is no attempt row for a word that was never asked - so it raises
+   * the state flag instead, which is what gets a flush moving and what the
+   * flush sends. Panels, level and counts move on this frame; credits and
+   * streaks do not, because nothing was earned.
+   */
+  markKnown(wordId: string): string | null {
+    if (this.question?.wordId !== wordId) return null;
+    // Read before marking, because marking is what makes the word seen.
+    const seenBefore = this.seenFor(wordId);
+    const marked = this.engine.markKnown();
+    if (!marked || marked.wordId !== wordId) return null;
+    const counters = this.engine.pending().progress;
+    this.stats = advanceStats(
+      this.stats,
+      {
+        correct: false,
+        revealed: false,
+        seconds: 0,
+        firstTime: seenBefore === 0,
+        mastered: true,
+        credits: 0,
+        answered: false,
+      },
+      {
+        mastered: counters.filter((row) => row[4]).length,
+        meetCount: counters.length,
+      },
+    );
+    this.stateDirty = true;
+    this.revision++;
+    this.onChange(this.queue.length);
+    this.schedule();
+    return wordId;
+  }
+
+  /**
    * Credits earned locally and not yet confirmed by the server.
    *
    * The engine applies the same rules the database does, starting from the
@@ -328,7 +380,7 @@ export class ClientSession {
    */
   async flush(): Promise<void> {
     if (this.flushing) return this.flushing;
-    if (!this.queue.length) {
+    if (!this.queue.length && !this.stateDirty) {
       this.stop();
       return;
     }
@@ -348,6 +400,7 @@ export class ClientSession {
         this.stats = result.stats;
         // The server's balance is the truth, and it now includes these answers.
         this.unconfirmed = 0;
+        this.stateDirty = false;
         this.lastError = null;
         this.onChange(this.queue.length);
       } catch (error) {
@@ -360,7 +413,7 @@ export class ClientSession {
       }
     })();
     await this.flushing;
-    if (!this.queue.length) this.stop();
+    if (!this.queue.length && !this.stateDirty) this.stop();
   }
 
   /**
@@ -372,7 +425,7 @@ export class ClientSession {
    * server ignores the ids it has already seen.
    */
   async flushOnExit(): Promise<void> {
-    if (!this.queue.length) return;
+    if (!this.queue.length && !this.stateDirty) return;
     const batch = this.queue;
     try {
       await api(

@@ -230,6 +230,13 @@ export default function Challenge() {
       ) {
         event.preventDefault();
         void study.answer(-1);
+      } else if (key === "k") {
+        // Mark as known: removes the word from rotation without answering.
+        // Does not affect attempts, streaks, or credits.
+        if (question && !feedback && !busy && !study.historical) {
+          event.preventDefault();
+          void study.markKnown?.();
+        }
       }
     }
     window.addEventListener("keydown", onKeyDown);
@@ -557,6 +564,21 @@ export default function Challenge() {
                       </button>
                     ))}
                   </div>
+{!feedback && (
+  <button
+    className="text-button mark-known-button"
+    aria-keyshortcuts="k"
+    disabled={busy}
+    onClick={() => {
+      if (!busy && !feedback && !study.historical) {
+        void study.markKnown?.();
+      }
+    }}
+    aria-label="Mark this word as known (K)"
+  >
+    <Lightbulb size={15} aria-hidden /> Mark known
+  </button>
+)}
                   <p className="sr-only" role="status">
                     {asksForWord ? "" : `${question.word}. `}
                     {TYPE_INSTRUCTIONS[question.type]} {question.prompt}

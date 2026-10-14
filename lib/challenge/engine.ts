@@ -645,6 +645,35 @@ export class PracticeEngine {
     };
   }
 
+  /**
+   * Mark the shown word as known, so it leaves the rotation.
+   *
+   * For the child who already knows a word cold and wants it gone, rather
+   * than answering it five times to prove it. Sets only the mastered flag
+   * (plus seen, since it was just shown): counters, streaks and the attempt
+   * clock are untouched, because this was not an answer and must not move
+   * anything an answer moves. In particular the attempt count stays put, so
+   * the review clock keeps agreeing with the server, which counts attempts.
+   */
+  markKnown(): { wordId: string } | null {
+    const question = this.lastQuestion;
+    if (!question) return null;
+    const previous = this.countersFor(question.wordId);
+    if (hasMastered(previous)) return null;
+    const day = new Date(this.options.now()).toISOString().slice(0, 10);
+    this.counters.set(question.wordId, {
+      correct: previous.correct,
+      run: previous.run,
+      recalls: previous.recalls,
+      mastered: 1,
+      seen: previous.seen + 1,
+      lastSeen: day,
+      retryAt: previous.retryAt,
+    });
+    this.lastQuestion = null;
+    return { wordId: question.wordId };
+  }
+
   /** The state to hand a flush, so the server can apply exactly this difference. */
   /** The account's credit streak, so a new session starts where the last ended. */
   get creditStreak(): number {

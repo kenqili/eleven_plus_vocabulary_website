@@ -121,4 +121,6 @@ export type ChallengeState = {
   /** When the paid term ends, epoch ms. */
   periodEnd?: number | null;
   feedback?: Feedback;
+  /** Mark the shown word as known, removing it from rotation without answering. */
+  markKnown?: () => void;
 };
