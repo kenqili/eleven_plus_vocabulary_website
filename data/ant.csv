@@ -12,7 +12,6 @@ Choose the antonym for 'besieged'.,"[""liberated"",""facilitate"",""dingy"",""pa
 Choose the antonym for 'bewildered'.,"[""torment"",""coy"",""exhausted"",""certain""]",certain,ant,bewildered
 Choose the antonym for 'comrade'.,"[""innocuous"",""vain"",""hinder"",""enemy""]",enemy,ant,comrade
 Choose the antonym for 'contemporary' (describing modern art).,"[""favourable"",""contemplate"",""invigorated"",""ancient""]",ancient,ant,contemporary
-Choose the antonym for 'conventional'.,"[""wretched"",""conceited"",""unconventional"",""tactful""]",unconventional,ant,conventional
 Choose the antonym for 'covet'.,"[""vein"",""reject"",""volatile"",""imposing""]",reject,ant,covet
 Choose the antonym for 'coy'.,"[""polarity"",""bold"",""crooked"",""dishevelled""]",bold,ant,coy
 Choose the antonym for 'deceive'.,"[""facilitate"",""obliging"",""fracas"",""tell the truth""]",tell the truth,ant,deceive
@@ -34,16 +33,13 @@ Choose the antonym for 'fatigue'.,"[""piscine"",""energy"",""meld"",""criticism"
 Choose the antonym for 'feign'.,"[""immaterial"",""be genuine"",""absurd"",""stroll""]",be genuine,ant,feign
 Choose the antonym for 'flamboyant'.,"[""substantial"",""coax"",""dawdle"",""modest""]",modest,ant,flamboyant
 Choose the antonym for 'frivolous'.,"[""penetrate"",""serious"",""diluted"",""clamour""]",serious,ant,frivolous
-Choose the antonym for 'gratitude'.,"[""trickle"",""dais"",""notion"",""ingratitude""]",ingratitude,ant,gratitude
 Choose the antonym for 'gregarious'.,"[""besotted"",""vanity"",""solitary"",""devout""]",solitary,ant,gregarious
 Choose the antonym for 'grotesque'.,"[""disguise"",""mumble"",""poverty"",""beautiful""]",beautiful,ant,grotesque
 Choose the antonym for 'helix' (a shape).,"[""straight line"",""molten"",""cellar"",""malicious""]",straight line,ant,helix
-Choose the antonym for 'hygienic'.,"[""unhygienic"",""wary"",""prose"",""suppress""]",unhygienic,ant,hygienic
 Choose the antonym for 'idiosyncrasy'.,"[""riveting"",""radiant"",""replete"",""normality""]",normality,ant,idiosyncrasy
 Choose the antonym for 'immerse' (in liquid).,"[""lucid"",""hasty"",""emerge"",""impede""]",emerge,ant,immerse
 Choose the antonym for 'impudent'.,"[""respectful"",""stingy"",""sole"",""lout""]",respectful,ant,impudent
 Choose the antonym for 'inaugural'.,"[""final"",""criticism"",""stroll"",""sullen""]",final,ant,inaugural
-Choose the antonym for 'inconspicuous'.,"[""chortle"",""frivolous"",""conspicuous"",""perilous""]",conspicuous,ant,inconspicuous
 Choose the antonym for 'innocuous'.,"[""dextrous"",""harmful"",""deliberate"",""voluntary""]",harmful,ant,innocuous
 Choose the antonym for 'insolent'.,"[""respectful"",""irksome"",""substantial"",""authentic""]",respectful,ant,insolent
 Choose the antonym for 'lament'.,"[""unkempt"",""shack"",""dictate"",""rejoice""]",rejoice,ant,lament
@@ -151,13 +147,11 @@ Choose the antonym for 'perplexed'.,"[""assent"",""despise"",""succumb"",""certa
 Choose the antonym for 'plunder'.,"[""raucous"",""intentional"",""protect"",""wavy""]",protect,ant,plunder
 Choose the antonym for 'pretence'.,"[""truth"",""scripture"",""rupture"",""imperative""]",truth,ant,pretence
 Choose the antonym for 'proclaim'.,"[""calamity"",""conceal"",""adept"",""tempestuous""]",conceal,ant,proclaim
-Choose the antonym for 'relevant'.,"[""resort to"",""irrelevant"",""superficial"",""petite""]",irrelevant,ant,relevant
 Choose the antonym for 'repent'.,"[""remain unrepentant"",""diminish"",""revolve"",""flamboyant""]",remain unrepentant,ant,repent
 Choose the antonym for 'resort to'.,"[""despicable"",""endeavour"",""avoid"",""yield""]",avoid,ant,resort to
 Choose the antonym for 'retreat'.,"[""devout"",""filth"",""stroll"",""advance""]",advance,ant,retreat
 Choose the antonym for 'rowdy'.,"[""repent"",""tempestuous"",""unfathomable"",""quiet""]",quiet,ant,rowdy
 Choose the antonym for 'sanguine'.,"[""gloomy"",""jaded"",""covert"",""deliberate""]",gloomy,ant,sanguine
-Choose the antonym for 'sanitary'.,"[""rebuttal"",""empire"",""dwindle"",""unsanitary""]",unsanitary,ant,sanitary
 Choose the antonym for 'stationary' (a vehicle).,"[""scanty"",""shrewd"",""mobile"",""desist""]",mobile,ant,stationary
 Choose the antonym for 'sturdy'.,"[""diluted"",""grit"",""lupine"",""fragile""]",fragile,ant,sturdy
 Choose the antonym for 'subdued'.,"[""lively"",""cellar"",""vulpine"",""auspicious""]",lively,ant,subdued
@@ -223,22 +217,18 @@ Choose the antonym for 'cinch'.,"[""gravely"",""challenge"",""glut"",""serpentin
 Choose the antonym for 'intricate'.,"[""repulsive"",""intrigue"",""steadfast"",""simple""]",simple,ant,intricate
 Choose the antonym for 'prejudice'.,"[""taut"",""turbulent"",""repulsive"",""impartiality""]",impartiality,ant,prejudice
 Choose the antonym for 'bedlam'.,"[""eccentric"",""dismal"",""submissive"",""order""]",order,ant,bedlam
-Choose the antonym for 'favoured'.,"[""unfavoured"",""warp"",""procrastinate"",""hindrance""]",unfavoured,ant,favoured
 Choose the antonym for 'impediment'.,"[""flamboyant"",""aromatic"",""aid"",""club""]",aid,ant,impediment
 Choose the antonym for 'acrid'.,"[""criticism"",""salient"",""stationary"",""mild""]",mild,ant,acrid
 Choose the antonym for 'acid' (describing a substance).,"[""relish"",""alkaline"",""forthwith"",""bovine""]",alkaline,ant,acid
 Choose the antonym for 'arid'.,"[""viscous"",""dictate"",""moist"",""scruffy""]",moist,ant,arid
 Choose the antonym for 'pungent'.,"[""inaugural"",""bland"",""malign"",""complement""]",bland,ant,pungent
 Choose the antonym for 'toil'.,"[""rest"",""insignia"",""pretence"",""probate""]",rest,ant,toil
-"Choose the antonym for 'coil' (a rope, as a verb).","[""jubilant"",""affluence"",""imperious"",""uncoil""]",uncoil,ant,coil
 Choose the antonym for 'wholesome'.,"[""stationary"",""arduous"",""adhere"",""unhealthy""]",unhealthy,ant,wholesome
-Choose the antonym for 'pious'.,"[""impious"",""censure"",""dearth"",""acrid""]",impious,ant,pious
 Choose the antonym for 'mellow'.,"[""harsh"",""succumb"",""hygienic"",""antiquity""]",harsh,ant,mellow
 Choose the antonym for 'faux'.,"[""authentic"",""sweltering"",""tranquil"",""diplomatic""]",authentic,ant,faux
 Choose the antonym for 'platonic'.,"[""romantic"",""ambulatory"",""elude"",""arid""]",romantic,ant,platonic
 Choose the antonym for 'fluctuate'.,"[""relish"",""auspicious"",""settee"",""stabilise""]",stabilise,ant,fluctuate
 Choose the antonym for 'concur'.,"[""calamity"",""sanction"",""disagree"",""grieve""]",disagree,ant,concur
-Choose the antonym for 'auspicious'.,"[""summit"",""inauspicious"",""vex"",""purloin""]",inauspicious,ant,auspicious
 Choose the antonym for 'wander'.,"[""compulsory"",""stay"",""adverse"",""folly""]",stay,ant,wander
 Choose the antonym for 'ramble' (on foot).,"[""irate"",""hurry"",""valour"",""conscience""]",hurry,ant,ramble
 Choose the antonym for 'regal'.,"[""snicker"",""ordeal"",""intentional"",""common""]",common,ant,regal
@@ -289,7 +279,6 @@ Choose the antonym for 'imposing'.,"[""unimpressive"",""indulgent"",""fragrant""
 Choose the antonym for 'berate'.,"[""frugal"",""trickle"",""abode"",""praise""]",praise,ant,berate
 Choose the antonym for 'crave'.,"[""extinction"",""reject"",""inaugurate"",""legend""]",reject,ant,crave
 Choose the antonym for 'yearn'.,"[""impediment"",""reject"",""caulk"",""rebuke""]",reject,ant,yearn
-Choose the antonym for 'conspicuous'.,"[""acute"",""naive"",""detrimental"",""inconspicuous""]",inconspicuous,ant,conspicuous
 Choose the antonym for 'vile' (morally bad).,"[""facile"",""adept"",""virtuous"",""sated""]",virtuous,ant,vile
 Choose the antonym for 'gratifying'.,"[""merchant"",""extinction"",""disappointing"",""sway""]",disappointing,ant,gratifying
 Choose the antonym for 'despicable'.,"[""admirable"",""ravenous"",""abolish"",""besotted""]",admirable,ant,despicable
@@ -419,7 +408,6 @@ Choose the antonym for 'unravel'.,"[""harbour"",""tangle"",""demean"",""vent""]"
 "Choose the antonym for 'tangle' (threads, as a verb).","[""scalding"",""provoke"",""dread"",""unravel""]",unravel,ant,tangle
 Choose the antonym for 'despair'.,"[""hope"",""absolve"",""comrade"",""derelict""]",hope,ant,despair
 Choose the antonym for 'anguish'.,"[""dingy"",""comfort"",""sanitary"",""proxy""]",comfort,ant,anguish
-"Choose the antonym for 'twine' (threads, as a verb).","[""relevant"",""untwine"",""lupine"",""compulsory""]",untwine,ant,twine
 Choose the antonym for 'peripheral'.,"[""central"",""sanction"",""severe"",""forthwith""]",central,ant,peripheral
 Choose the antonym for 'ambulatory'.,"[""immobile"",""helix"",""favoured"",""savvy""]",immobile,ant,ambulatory
 Choose the antonym for 'stagnant' (water).,"[""flowing"",""criticism"",""kindle"",""acrid""]",flowing,ant,stagnant
@@ -558,7 +546,6 @@ Choose the antonym for 'negligible'.,"[""desire"",""arid"",""substantial"",""pun
 Choose the antonym for 'substantial'.,"[""negligible"",""distress"",""tepid"",""confront""]",negligible,ant,substantial
 Choose the antonym for 'salient'.,"[""minor"",""settee"",""economical"",""artefact""]",minor,ant,salient
 Choose the antonym for 'immaterial'.,"[""smother"",""concur"",""trickle"",""relevant""]",relevant,ant,immaterial
-Choose the antonym for 'insignificant'.,"[""controversy"",""confront"",""significant"",""conscience""]",significant,ant,insignificant
 Choose the antonym for 'discord'.,"[""harmony"",""probate"",""yearn"",""peckish""]",harmony,ant,discord
 Choose the antonym for 'bland' (in flavour).,"[""thrive"",""twine"",""empire"",""flavourful""]",flavourful,ant,bland
 Choose the antonym for 'insipid' (in flavour).,"[""flavourful"",""intrinsic"",""dazzling"",""regal""]",flavourful,ant,insipid
@@ -629,7 +616,6 @@ Choose the antonym for 'procrastinate'.,"[""deliberate"",""radiant"",""cordial""
 Choose the antonym for 'fringe' (of an area).,"[""austerity"",""glum"",""relevant"",""centre""]",centre,ant,fringe
 Choose the antonym for 'asinine'.,"[""strenuous"",""superfluous"",""dawdle"",""wise""]",wise,ant,asinine
 Choose the antonym for 'serpentine' (a road).,"[""chortle"",""substantial"",""scanty"",""straight""]",straight,ant,serpentine
-Choose the antonym for 'resolute'.,"[""equivocate"",""taciturn"",""grieve"",""irresolute""]",irresolute,ant,resolute
 Choose the antonym for 'taciturn'.,"[""talkative"",""achieve"",""gleeful"",""urge""]",talkative,ant,taciturn
 Choose the antonym for 'tenacious'.,"[""fortitude"",""quaint"",""sedate"",""irresolute""]",irresolute,ant,tenacious
 Choose the antonym for 'apprehensive'.,"[""confident"",""achieve"",""celestial"",""tone""]",confident,ant,apprehensive
@@ -658,7 +644,6 @@ Choose the antonym for 'absolute'.,"[""overt"",""partial"",""commence"",""magma"
 Choose the antonym for 'absorbed'.,"[""bored"",""hustle"",""advance"",""besieged""]",bored,ant,absorbed
 Choose the antonym for 'abstract'.,"[""unkempt"",""vanish"",""literal"",""dilemma""]",literal,ant,abstract
 Choose the antonym for 'abstruse'.,"[""abate"",""simple"",""fringe"",""acclaim""]",simple,ant,abstruse
-Choose the antonym for 'accessible'.,"[""embarrass"",""adamant"",""inaccessible"",""figurative""]",inaccessible,ant,accessible
 Choose the antonym for 'acclaim'.,"[""criticism"",""filth"",""accommodate"",""equipment""]",criticism,ant,acclaim
 Choose the antonym for 'accolade'.,"[""insipid"",""abstruse"",""reproach"",""impartial""]",reproach,ant,accolade
 Choose the antonym for 'accumulate'.,"[""rhyme"",""vanity"",""disperse"",""spurn""]",disperse,ant,accumulate
@@ -752,7 +737,6 @@ Choose the antonym for 'arouse'.,"[""combination"",""conceive"",""secretary"",""
 Choose the antonym for 'arrogance'.,"[""baleful"",""dingy"",""humility"",""dilemma""]",humility,ant,arrogance
 Choose the antonym for 'artful'.,"[""sincere"",""insolent"",""diligent"",""debut""]",sincere,ant,artful
 Choose the antonym for 'article'.,"[""repulsive"",""intentional"",""whole"",""conserve""]",whole,ant,article
-Choose the antonym for 'articulate'.,"[""inarticulate"",""callous"",""yacht"",""amend""]",inarticulate,ant,articulate
 Choose the antonym for 'artificial'.,"[""authentic"",""witty"",""confront"",""according""]",authentic,ant,artificial
 Choose the antonym for 'artisan'.,"[""ascetic"",""dishevelled"",""novice"",""atrocious""]",novice,ant,artisan
 Choose the antonym for 'ascendancy'.,"[""awe"",""submissiveness"",""nullify"",""inane""]",submissiveness,ant,ascendancy
@@ -771,7 +755,6 @@ Choose the antonym for 'astounding'.,"[""conceal"",""weary"",""ordinary"",""chas
 Choose the antonym for 'asunder'.,"[""drowsy"",""desperate"",""together"",""pungent""]",together,ant,asunder
 Choose the antonym for 'atrocious'.,"[""brazen"",""exorbitant"",""audition"",""excellent""]",excellent,ant,atrocious
 Choose the antonym for 'attempt'.,"[""intrepid"",""abandonment"",""aesthetic"",""omen""]",abandonment,ant,attempt
-Choose the antonym for 'attentive'.,"[""intricate"",""abominable"",""inattentive"",""sincerely""]",inattentive,ant,attentive
 Choose the antonym for 'attribute'.,"[""absolve"",""succumb"",""temperate"",""arrogance""]",absolve,ant,attribute
 Choose the antonym for 'audacity'.,"[""abundance"",""kindle"",""caution"",""impede""]",caution,ant,audacity
 Choose the antonym for 'audition'.,"[""dilate"",""commit"",""convenience"",""rejection""]",rejection,ant,audition
@@ -983,7 +966,6 @@ Choose the antonym for 'debunk'.,"[""elude"",""support"",""inflame"",""sporadica
 Choose the antonym for 'decadent'.,"[""aggressive"",""yearn"",""ascetic"",""perish""]",ascetic,ant,decadent
 Choose the antonym for 'decency'.,"[""privilege"",""apprehensive"",""clement"",""rudeness""]",rudeness,ant,decency
 Choose the antonym for 'decipher'.,"[""encode"",""devout"",""wretched"",""adept""]",encode,ant,decipher
-Choose the antonym for 'decisive'.,"[""forlorn"",""sway"",""indecisive"",""cork""]",indecisive,ant,decisive
 Choose the antonym for 'declare'.,"[""expense"",""companion"",""conceal"",""astonishment""]",conceal,ant,declare
 Choose the antonym for 'decline'.,"[""ascetic"",""disarray"",""increase"",""enthusiast""]",increase,ant,decline
 Choose the antonym for 'decorum'.,"[""affinity"",""dormant"",""glimpse"",""rudeness""]",rudeness,ant,decorum
@@ -1248,7 +1230,6 @@ Choose the antonym for 'frantic'.,"[""solitary"",""calm"",""consume"",""mischiev
 Choose the antonym for 'fraudulent'.,"[""honest"",""desire"",""diffident"",""convey""]",honest,ant,fraudulent
 Choose the antonym for 'frequent'.,"[""fortitude"",""rebuttal"",""rare"",""urban""]",rare,ant,frequent
 Choose the antonym for 'frightful'.,"[""allot"",""savvy"",""conscientious"",""delightful""]",delightful,ant,frightful
-Choose the antonym for 'fulfilled'.,"[""advice"",""femininity"",""guile"",""unfulfilled""]",unfulfilled,ant,fulfilled
 Choose the antonym for 'fund'.,"[""gratuitous"",""gauge"",""comparison"",""expense""]",expense,ant,fund
 Choose the antonym for 'furnish'.,"[""ramble"",""disseminate"",""lament"",""empty""]",empty,ant,furnish
 Choose the antonym for 'furtive'.,"[""biodiversity"",""limp"",""aloof"",""open""]",open,ant,furtive
@@ -1331,10 +1312,8 @@ Choose the antonym for 'idyllic'.,"[""harsh"",""diffident"",""token"",""labour""
 Choose the antonym for 'illicit'.,"[""snub"",""enmity"",""legal"",""impale""]",legal,ant,illicit
 Choose the antonym for 'illuminate'.,"[""inhabit"",""indifferent"",""dim"",""impale""]",dim,ant,illuminate
 Choose the antonym for 'illusory'.,"[""foundation"",""real"",""concise"",""heroic""]",real,ant,illusory
-Choose the antonym for 'imbalance'.,"[""acute"",""cantankerous"",""balance"",""pathetic""]",balance,ant,imbalance
 Choose the antonym for 'imbroglio'.,"[""calm"",""heinous"",""idiosyncrasy"",""poverty""]",calm,ant,imbroglio
 Choose the antonym for 'imminent'.,"[""hawk"",""yearn"",""just"",""distant""]",distant,ant,imminent
-Choose the antonym for 'immoral'.,"[""rowdy"",""moral"",""farce"",""conclusive""]",moral,ant,immoral
 Choose the antonym for 'immutable'.,"[""changeable"",""feign"",""ardour"",""clench""]",changeable,ant,immutable
 Choose the antonym for 'impassive'.,"[""compel"",""accompany"",""braggart"",""emotional""]",emotional,ant,impassive
 Choose the antonym for 'impeccable'.,"[""cryptic"",""insignia"",""conclude"",""flawed""]",flawed,ant,impeccable
@@ -1356,10 +1335,7 @@ Choose the antonym for 'impromptu'.,"[""mumble"",""ardour"",""certitude"",""deli
 Choose the antonym for 'improvisation'.,"[""impetuous"",""predilection"",""rehearsal"",""ominous""]",rehearsal,ant,improvisation
 Choose the antonym for 'imprudent'.,"[""yacht"",""conscientious"",""sensible"",""incense""]",sensible,ant,imprudent
 Choose the antonym for 'inaccurate'.,"[""inconsequential"",""correct"",""convict"",""mere""]",correct,ant,inaccurate
-Choose the antonym for 'inadequate'.,"[""calamity"",""adequate"",""aperture"",""proliferation""]",adequate,ant,inadequate
 Choose the antonym for 'inadvertently'.,"[""folly"",""deliberately"",""immoral"",""consideration""]",deliberately,ant,inadvertently
-Choose the antonym for 'inattentive'.,"[""assiduous"",""leisure"",""smirk"",""attentive""]",attentive,ant,inattentive
-Choose the antonym for 'inaudible'.,"[""obstinate"",""jeopardise"",""mollify"",""audible""]",audible,ant,inaudible
 Choose the antonym for 'incense'.,"[""paradigm"",""garrulous"",""equanimity"",""odour""]",odour,ant,incense
 Choose the antonym for 'incentive'.,"[""deranged"",""deterrent"",""eminent"",""guarantee""]",deterrent,ant,incentive
 Choose the antonym for 'incessant'.,"[""luminous"",""antiquated"",""intermittent"",""afflict""]",intermittent,ant,incessant
@@ -1368,7 +1344,6 @@ Choose the antonym for 'incisive'.,"[""yacht"",""endeavour"",""blunt"",""bequeat
 Choose the antonym for 'incite'.,"[""pacify"",""antidote"",""vile"",""mere""]",pacify,ant,incite
 Choose the antonym for 'incline'.,"[""errand"",""stern"",""deter"",""contrast""]",deter,ant,incline
 Choose the antonym for 'inclusive'.,"[""evolve"",""probation"",""exclusive"",""bland""]",exclusive,ant,inclusive
-Choose the antonym for 'incoherent'.,"[""precedent"",""coherent"",""extended"",""dread""]",coherent,ant,incoherent
 Choose the antonym for 'incongruous'.,"[""harmonious"",""infer"",""craving"",""officious""]",harmonious,ant,incongruous
 Choose the antonym for 'inconsolable'.,"[""appease"",""cheerful"",""degenerate"",""develop""]",cheerful,ant,inconsolable
 Choose the antonym for 'incontrovertible'.,"[""sturdy"",""protagonist"",""clandestine"",""doubtful""]",doubtful,ant,incontrovertible
@@ -1384,7 +1359,6 @@ Choose the antonym for 'indiscriminate'.,"[""condemn"",""jury"",""pitfall"",""se
 Choose the antonym for 'indomitable'.,"[""yielding"",""convenient"",""evaluate"",""reprimand""]",yielding,ant,indomitable
 Choose the antonym for 'induce'.,"[""deter"",""amphibian"",""perish"",""quaint""]",deter,ant,induce
 Choose the antonym for 'indulge'.,"[""restrain"",""nonchalant"",""impromptu"",""depot""]",restrain,ant,indulge
-Choose the antonym for 'inedible'.,"[""agnostic"",""alliteration"",""edible"",""insinuate""]",edible,ant,inedible
 Choose the antonym for 'ineffable'.,"[""endeavour"",""godsend"",""describable"",""forsake""]",describable,ant,ineffable
 Choose the antonym for 'ineffectual'.,"[""effective"",""obscene"",""garbled"",""devour""]",effective,ant,ineffectual
 Choose the antonym for 'ineptitude'.,"[""pessimist"",""skill"",""optimist"",""commendable""]",skill,ant,ineptitude
@@ -1392,7 +1366,6 @@ Choose the antonym for 'inequity'.,"[""justice"",""diverse"",""enchant"",""bewil
 Choose the antonym for 'inert'.,"[""active"",""bellicose"",""procrastinate"",""inconsequential""]",active,ant,inert
 Choose the antonym for 'inertia'.,"[""pious"",""hammock"",""energy"",""insignia""]",energy,ant,inertia
 Choose the antonym for 'inevitably'.,"[""absolute"",""avoidably"",""omen"",""insane""]",avoidably,ant,inevitably
-Choose the antonym for 'inexplicable'.,"[""hedonist"",""aggressive"",""explicable"",""perplexed""]",explicable,ant,inexplicable
 Choose the antonym for 'infamous'.,"[""context"",""apt"",""respected"",""lodge""]",respected,ant,infamous
 Choose the antonym for 'infatuate'.,"[""impermeable"",""limb"",""irrational"",""bore""]",bore,ant,infatuate
 Choose the antonym for 'infer'.,"[""assert"",""envisage"",""despicable"",""grime""]",assert,ant,infer
@@ -1542,7 +1515,6 @@ Choose the antonym for 'monotonous'.,"[""disappointed"",""varied"",""integral"",
 Choose the antonym for 'monumental'.,"[""tiny"",""precarious"",""fret"",""matte""]",tiny,ant,monumental
 Choose the antonym for 'moratorium'.,"[""overbearing"",""absence"",""device"",""resumption""]",resumption,ant,moratorium
 Choose the antonym for 'morose'.,"[""protagonist"",""picturesque"",""apt"",""amiable""]",amiable,ant,morose
-Choose the antonym for 'mortal'.,"[""integrity"",""immediately"",""novice"",""immortal""]",immortal,ant,mortal
 Choose the antonym for 'mournful'.,"[""dopey"",""inadvertently"",""jubilant"",""sacrifice""]",jubilant,ant,mournful
 Choose the antonym for 'mundane'.,"[""mediate"",""maverick"",""extraordinary"",""inhale""]",extraordinary,ant,mundane
 Choose the antonym for 'munificence'.,"[""stinginess"",""restaurant"",""droll"",""deprive""]",stinginess,ant,munificence
@@ -1821,7 +1793,6 @@ Choose the antonym for 'sacred'.,"[""profane"",""proficient"",""cuisine"",""blun
 Choose the antonym for 'sanctimonious'.,"[""falter"",""tolerance"",""modest"",""stagnate""]",modest,ant,sanctimonious
 Choose the antonym for 'sanctity'.,"[""modernise"",""archaic"",""acute"",""worldliness""]",worldliness,ant,sanctity
 Choose the antonym for 'sanctuary'.,"[""vice"",""scanty"",""danger"",""conserve""]",danger,ant,sanctuary
-Choose the antonym for 'sane'.,"[""altitude"",""insane"",""flawless"",""tumult""]",insane,ant,sane
 Choose the antonym for 'sarcastic'.,"[""dormant"",""sincere"",""intermittent"",""censorious""]",sincere,ant,sarcastic
 Choose the antonym for 'satin'.,"[""valour"",""jaunty"",""savour"",""coarse""]",coarse,ant,satin
 Choose the antonym for 'satisfying'.,"[""discern"",""equip"",""immediately"",""frustrating""]",frustrating,ant,satisfying
@@ -1958,7 +1929,6 @@ Choose the antonym for 'tyrant'.,"[""humane"",""leonine"",""corvine"",""chaos""]
 Choose the antonym for 'ubiquitous'.,"[""prompt"",""communicate"",""rare"",""jaded""]",rare,ant,ubiquitous
 Choose the antonym for 'ultimatum'.,"[""pining"",""naive"",""concession"",""nonchalant""]",concession,ant,ultimatum
 Choose the antonym for 'unanimous'.,"[""cork"",""leonine"",""disperse"",""divided""]",divided,ant,unanimous
-Choose the antonym for 'uncaring'.,"[""obliging"",""caring"",""disparage"",""frail""]",caring,ant,uncaring
 Choose the antonym for 'uncouth'.,"[""polite"",""mere"",""decisive"",""sage""]",polite,ant,uncouth
 Choose the antonym for 'underlying'.,"[""nobility"",""detrimental"",""unwitting"",""superficial""]",superficial,ant,underlying
 Choose the antonym for 'undermine'.,"[""interfere"",""bolster"",""intransigent"",""majestic""]",bolster,ant,undermine
@@ -1971,12 +1941,9 @@ Choose the antonym for 'unorthodox'.,"[""intimidate"",""picturesque"",""conventi
 Choose the antonym for 'unprecedented'.,"[""ordinary"",""contend"",""address"",""marvellous""]",ordinary,ant,unprecedented
 Choose the antonym for 'unpretentious'.,"[""uniform"",""showy"",""virtue"",""acrimonious""]",showy,ant,unpretentious
 Choose the antonym for 'unrequited'.,"[""wanted"",""taciturn"",""convey"",""hasty""]",wanted,ant,unrequited
-Choose the antonym for 'unrestricted'.,"[""unworthy"",""evolve"",""restricted"",""anguish""]",restricted,ant,unrestricted
 Choose the antonym for 'unscrupulous'.,"[""constraint"",""irresistible"",""honest"",""obstinate""]",honest,ant,unscrupulous
 Choose the antonym for 'untoward'.,"[""favourable"",""acquire"",""fraught"",""decisive""]",favourable,ant,untoward
-Choose the antonym for 'unwarranted'.,"[""component"",""warranted"",""allot"",""dishearten""]",warranted,ant,unwarranted
 Choose the antonym for 'unwitting'.,"[""figurative"",""deliberate"",""guarantee"",""tangle""]",deliberate,ant,unwitting
-Choose the antonym for 'unworthy'.,"[""worthy"",""wane"",""entreat"",""baleful""]",worthy,ant,unworthy
 Choose the antonym for 'urbanisation'.,"[""feasible"",""ruralisation"",""ramble"",""misanthrope""]",ruralisation,ant,urbanisation
 Choose the antonym for 'usurp'.,"[""assertive"",""yield"",""gauge"",""fathom""]",yield,ant,usurp
 Choose the antonym for 'utterance'.,"[""exhaustive"",""expel"",""darn"",""reserve""]",reserve,ant,utterance
@@ -2035,19 +2002,15 @@ Choose the antonym for 'achieve'.,"[""kneel"",""float"",""hatch"",""fail at""]",
 Choose the antonym for 'aggressive'.,"[""peaceful"",""striped"",""wooden"",""triangular""]",peaceful,ant,aggressive
 Choose the antonym for 'amateur'.,"[""ladder"",""professional"",""puddle"",""whistle""]",professional,ant,amateur
 Choose the antonym for 'attached'.,"[""detached"",""striped"",""wooden"",""triangular""]",detached,ant,attached
-Choose the antonym for 'available'.,"[""striped"",""wooden"",""triangular"",""unavailable""]",unavailable,ant,available
 Choose the antonym for 'awkward'.,"[""striped"",""wooden"",""triangular"",""manageable""]",manageable,ant,awkward
 Choose the antonym for 'bias'.,"[""ladder"",""impartiality"",""puddle"",""whistle""]",impartiality,ant,bias
-Choose the antonym for 'conscious'.,"[""striped"",""wooden"",""unconscious"",""triangular""]",unconscious,ant,conscious
 Choose the antonym for 'contrast'.,"[""ladder"",""puddle"",""similarity"",""whistle""]",similarity,ant,contrast
-Choose the antonym for 'convenience'.,"[""ladder"",""puddle"",""whistle"",""inconvenience""]",inconvenience,ant,convenience
 Choose the antonym for 'correspond'.,"[""kneel"",""differ"",""float"",""hatch""]",differ,ant,correspond
 Choose the antonym for 'criticise'.,"[""kneel"",""float"",""hatch"",""praise""]",praise,ant,criticise
 Choose the antonym for 'curiosity'.,"[""ladder"",""indifference"",""puddle"",""whistle""]",indifference,ant,curiosity
 Choose the antonym for 'definite'.,"[""uncertain"",""striped"",""wooden"",""triangular""]",uncertain,ant,definite
 Choose the antonym for 'determined'.,"[""striped"",""wooden"",""triangular"",""hesitant""]",hesitant,ant,determined
 Choose the antonym for 'excellent'.,"[""striped"",""wooden"",""poor"",""triangular""]",poor,ant,excellent
-Choose the antonym for 'familiar'.,"[""striped"",""wooden"",""triangular"",""unfamiliar""]",unfamiliar,ant,familiar
 Choose the antonym for 'figurative'.,"[""striped"",""wooden"",""literal"",""triangular""]",literal,ant,figurative
 Choose the antonym for 'foreign'.,"[""domestic"",""striped"",""wooden"",""triangular""]",domestic,ant,foreign
 Choose the antonym for 'frequently'.,"[""upstairs"",""rarely"",""yesterday"",""sideways""]",rarely,ant,frequently
@@ -2057,11 +2020,7 @@ Choose the antonym for 'immediately'.,"[""upstairs"",""yesterday"",""later"",""s
 Choose the antonym for 'literal'.,"[""striped"",""wooden"",""triangular"",""figurative""]",figurative,ant,literal
 Choose the antonym for 'marvellous'.,"[""striped"",""wooden"",""awful"",""triangular""]",awful,ant,marvellous
 Choose the antonym for 'mischievous'.,"[""striped"",""well-behaved"",""wooden"",""triangular""]",well-behaved,ant,mischievous
-Choose the antonym for 'necessary'.,"[""striped"",""wooden"",""triangular"",""unnecessary""]",unnecessary,ant,necessary
 Choose the antonym for 'occupy'.,"[""kneel"",""vacate"",""float"",""hatch""]",vacate,ant,occupy
 Choose the antonym for 'physical'.,"[""striped"",""mental"",""wooden"",""triangular""]",mental,ant,physical
 Choose the antonym for 'sacrifice'.,"[""kneel"",""keep"",""float"",""hatch""]",keep,ant,sacrifice
-Choose the antonym for 'sincere'.,"[""striped"",""wooden"",""triangular"",""insincere""]",insincere,ant,sincere
-Choose the antonym for 'sincerely'.,"[""insincerely"",""upstairs"",""yesterday"",""sideways""]",insincerely,ant,sincerely
-Choose the antonym for 'sufficient'.,"[""insufficient"",""striped"",""wooden"",""triangular""]",insufficient,ant,sufficient
 Choose the antonym for 'variety'.,"[""uniformity"",""ladder"",""puddle"",""whistle""]",uniformity,ant,variety

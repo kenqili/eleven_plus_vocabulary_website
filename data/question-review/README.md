@@ -63,6 +63,15 @@ Every retained row was verified unchanged against the previously reviewed CSV;
 `postReviewChanges` and records the resulting file hash. This removal is an
 editorial difficulty choice, not a claim that the pair is incorrect.
 
+On 2026-10-14, the user extended that rule to every negative prefix
+(`un-`, `in-`, `im-`, `il-`, `ir-`, `dis-`, `non-`, `mis-`) after
+`sane → insane` was found still in rotation. The generator now excludes
+these pairs in either direction. This removed 41 antonym questions,
+leaving 2025; the diff is 41 deleted lines and nothing else, and
+`review-report.json` records the removal under `postReviewChanges` the
+same way. Like the `dis-` removal, this is an editorial difficulty
+choice, not a claim that any pair is incorrect.
+
 On 2026-09-26, the Level 0 curriculum extension added 117 words, so the
 generator added 82 synonym and 35 antonym questions for them. Both files are
 additive against the reviewed versions: every earlier row is identical and in

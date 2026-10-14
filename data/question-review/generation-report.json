@@ -1089,6 +1089,211 @@
       "word": "vehicle",
       "type": "ant",
       "reason": "No supplied relation"
+    },
+    {
+      "word": "conventional",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "gratitude",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "hygienic",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "inconspicuous",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "relevant",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "sanitary",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "favoured",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "coil",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "pious",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "auspicious",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "conspicuous",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "twine",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "insignificant",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "resolute",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "accessible",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "articulate",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "attentive",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "decisive",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "fulfilled",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "imbalance",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "immoral",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "inadequate",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "inattentive",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "inaudible",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "incoherent",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "inedible",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "inexplicable",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "mortal",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "sane",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "uncaring",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "unrestricted",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "unwarranted",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "unworthy",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "available",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "conscious",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "convenience",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "familiar",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "necessary",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "sincere",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "sincerely",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
+    },
+    {
+      "word": "sufficient",
+      "type": "ant",
+      "reason": "Direct prefix-negation pair excluded from practice at user request."
     }
   ],
   "preferredLibraryAnswers": {

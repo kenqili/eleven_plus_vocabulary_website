@@ -9,6 +9,8 @@ const terms = (value) =>
     .map(normalize)
     .filter((x) => x && !/^[—–-]$/.test(x));
 const byId = new Map(words.map((word) => [word.id, word]));
+/** Negative prefixes whose addition/removal makes an antonym guessable. */
+const NEGATIVE_PREFIXES = ["un", "in", "im", "il", "ir", "dis", "non", "mis"];
 const overridesPath = "data/question-review/overrides.json";
 const overrides = existsSync(overridesPath)
   ? JSON.parse(readFileSync(overridesPath, "utf8"))
@@ -66,14 +68,24 @@ for (const type of ["syn", "ant"]) {
     }
     const answer =
       fix.answer || candidates.find((x) => byId.has(x)) || candidates[0];
-    if (
+    // Obvious morphological negations: the answer is the word with a negative
+    // prefix added (or the word is the answer with one stripped), so a child
+    // passes by spelling rather than by knowing the word. Excluded in either
+    // direction at user request; an editorial difficulty choice, not a claim
+    // the pair is incorrect.
+    const trivialNegation =
       type === "ant" &&
-      (normalize(answer) === `dis${word.id}` || word.id === `dis${normalize(answer)}`)
-    ) {
+      NEGATIVE_PREFIXES.some(
+        (prefix) =>
+          normalize(answer) === `${prefix}${word.id}` ||
+          word.id === `${prefix}${normalize(answer)}`,
+      );
+    if (trivialNegation) {
       report.excluded.push({
         word: word.word,
         type,
-        reason: "Direct dis- prefix pair excluded from practice at user request.",
+        reason:
+          "Direct prefix-negation pair excluded from practice at user request.",
       });
       continue;
     }

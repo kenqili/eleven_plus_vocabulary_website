@@ -70,7 +70,7 @@ function seeded(seed) {
 test("every shipped problem is addressable and complete", () => {
   const bank = payload("full");
   assert.equal(bank.words.length, 2247, "the full tier must carry every word");
-  assert.equal(bank.problems.length, 11015, "and every problem");
+  assert.equal(bank.problems.length, 10974, "and every problem");
   assert.deepEqual(
     bank.types,
     [...QUESTION_TYPES].sort(

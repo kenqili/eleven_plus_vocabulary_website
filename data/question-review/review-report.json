@@ -26,7 +26,7 @@
     },
     "ant": {
       "file": "data/ant.csv",
-      "sha256": "bd90038b8725a2ceef8d75e35c7fc718614721c5eaac3dcae93a262ec4808c14",
+      "sha256": "da95098416c9ae20bbb45219104f1f1fc9a724964af09b6d6168c4aa5072d8df",
       "rowsReviewed": 630,
       "unchangedFromInitialReview": 532,
       "changedRowsRechecked": 99,
@@ -36,10 +36,10 @@
       "noRemainingKnownAlternativeCorrectOptions": true,
       "removedAfterReview": 1,
       "rowsAddedAfterReview": 1437,
-      "currentRows": 2066,
-      "rowsRemovedAfterReview": 1,
-      "changeNote": "One row removed for the same reason.",
-      "changedAt": "2026-09-27"
+      "currentRows": 2025,
+      "rowsRemovedAfterReview": 42,
+      "changeNote": "One row removed as a bank duplicate, then 41 obvious direct prefix-negation pairs (un/in/im/il/ir/dis/non/mis) excluded from practice at user request.",
+      "changedAt": "2026-10-14"
     },
     "totalRows": 1360,
     "currentTotalRows": 1511
@@ -834,6 +834,182 @@
       "change": "Completed the 11+ word list: all 1385 previously missing words added to the vocabquest source, each with a definition, synonyms, antonyms, an example sentence, a help meaning and a clue, and their generated synonym and antonym questions.",
       "wordsAdded": 1385,
       "effect": "New vocabulary rows only. Every row reviewed before this change is byte-identical; no reviewed answer, distractor, option order, row type, target word, row order or removed row changed. The added rows were machine-generated from the bank synonyms and antonyms with the existing distractor exclusion rules and have not received the independent semantic review."
+    },
+    {
+      "date": "2026-10-14",
+      "reason": "User requested removal of all obvious direct prefix-negation antonym pairs (un/in/im/il/ir/dis/non/mis), extending the 2026-09-23 dis- rule after sane/insane was found still in rotation.",
+      "removedPairs": [
+        {
+          "word": "conventional",
+          "answer": "unconventional"
+        },
+        {
+          "word": "gratitude",
+          "answer": "ingratitude"
+        },
+        {
+          "word": "hygienic",
+          "answer": "unhygienic"
+        },
+        {
+          "word": "inconspicuous",
+          "answer": "conspicuous"
+        },
+        {
+          "word": "relevant",
+          "answer": "irrelevant"
+        },
+        {
+          "word": "sanitary",
+          "answer": "unsanitary"
+        },
+        {
+          "word": "favoured",
+          "answer": "unfavoured"
+        },
+        {
+          "word": "coil",
+          "answer": "uncoil"
+        },
+        {
+          "word": "pious",
+          "answer": "impious"
+        },
+        {
+          "word": "auspicious",
+          "answer": "inauspicious"
+        },
+        {
+          "word": "conspicuous",
+          "answer": "inconspicuous"
+        },
+        {
+          "word": "twine",
+          "answer": "untwine"
+        },
+        {
+          "word": "insignificant",
+          "answer": "significant"
+        },
+        {
+          "word": "resolute",
+          "answer": "irresolute"
+        },
+        {
+          "word": "accessible",
+          "answer": "inaccessible"
+        },
+        {
+          "word": "articulate",
+          "answer": "inarticulate"
+        },
+        {
+          "word": "attentive",
+          "answer": "inattentive"
+        },
+        {
+          "word": "decisive",
+          "answer": "indecisive"
+        },
+        {
+          "word": "fulfilled",
+          "answer": "unfulfilled"
+        },
+        {
+          "word": "imbalance",
+          "answer": "balance"
+        },
+        {
+          "word": "immoral",
+          "answer": "moral"
+        },
+        {
+          "word": "inadequate",
+          "answer": "adequate"
+        },
+        {
+          "word": "inattentive",
+          "answer": "attentive"
+        },
+        {
+          "word": "inaudible",
+          "answer": "audible"
+        },
+        {
+          "word": "incoherent",
+          "answer": "coherent"
+        },
+        {
+          "word": "inedible",
+          "answer": "edible"
+        },
+        {
+          "word": "inexplicable",
+          "answer": "explicable"
+        },
+        {
+          "word": "mortal",
+          "answer": "immortal"
+        },
+        {
+          "word": "sane",
+          "answer": "insane"
+        },
+        {
+          "word": "uncaring",
+          "answer": "caring"
+        },
+        {
+          "word": "unrestricted",
+          "answer": "restricted"
+        },
+        {
+          "word": "unwarranted",
+          "answer": "warranted"
+        },
+        {
+          "word": "unworthy",
+          "answer": "worthy"
+        },
+        {
+          "word": "available",
+          "answer": "unavailable"
+        },
+        {
+          "word": "conscious",
+          "answer": "unconscious"
+        },
+        {
+          "word": "convenience",
+          "answer": "inconvenience"
+        },
+        {
+          "word": "familiar",
+          "answer": "unfamiliar"
+        },
+        {
+          "word": "necessary",
+          "answer": "unnecessary"
+        },
+        {
+          "word": "sincere",
+          "answer": "insincere"
+        },
+        {
+          "word": "sincerely",
+          "answer": "insincerely"
+        },
+        {
+          "word": "sufficient",
+          "answer": "insufficient"
+        }
+      ],
+      "verification": "All remaining antonym rows are identical, in the same order, to the previously reviewed CSV: the diff is 41 deleted lines and nothing else. No answers or distractors were added or changed.",
+      "previousAntonymReview": {
+        "file": "data/ant.csv",
+        "sha256": "bd90038b8725a2ceef8d75e35c7fc718614721c5eaac3dcae93a262ec4808c14",
+        "rowsReviewed": 2066
+      }
     }
   ],
   "revisions": [
