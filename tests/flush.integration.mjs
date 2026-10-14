@@ -459,3 +459,42 @@ test(
     sql.close();
   },
 );
+
+test(
+  "a state-only flush persists a marked-known word",
+  { skip: !local },
+  async () => {
+    if (!local || !process.env.TEST_NODE_DB) return;
+    const sql = db();
+    sql.prepare("DELETE FROM rate_limits").run();
+    const userId = await register();
+    // "I know this" sets the mastered flag without queuing an attempt, so the
+    // flush carries state and no answers. This used to return before the state
+    // write, and the word came back after a reload.
+    const response = await post({
+      answers: [],
+      state: { progress: [["abandon", 0, 0, 0, 1, 1, "2026-09-29", null]] },
+    });
+    const body = await response.json();
+    assert.equal(response.status, 200, JSON.stringify(body));
+    assert.equal(body.saved, 0, "no answers were sent, so none are recorded");
+    const row = sql
+      .prepare(
+        "SELECT mastered,correct,seen FROM progress WHERE user_id=? AND word_id=?",
+      )
+      .get(userId, "abandon");
+    assert.ok(row, "the marked word has a progress row afterwards");
+    assert.equal(row.mastered, 1, "the mastered flag reached the database");
+    assert.equal(row.correct, 0, "no answer was given, so none was counted");
+    const attempts = sql
+      .prepare("SELECT COUNT(*) AS c FROM attempts WHERE user_id=?")
+      .get(userId).c;
+    assert.equal(attempts, 0, "marking known asks no question and answers none");
+    const events = sql
+      .prepare("SELECT COUNT(*) AS c FROM learning_events WHERE user_id=?")
+      .get(userId).c;
+    assert.equal(events, 0, "and it earns no award event either");
+    sql.prepare("DELETE FROM users WHERE id=?").run(userId);
+    sql.close();
+  },
+);

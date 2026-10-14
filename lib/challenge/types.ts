@@ -94,6 +94,13 @@ export type Feedback = {
   ant: string;
   selected: number;
   word: string;
+  /**
+   * This feedback came from "I know this", not from an answer. The word is
+   * mastered and leaves the rotation; nothing was earned and the run is
+   * untouched. The UI says so explicitly rather than leaving a right-looking
+   * answer with no explanation.
+   */
+  markedKnown?: boolean;
 };
 export type ChallengeState = {
   question: Question | null;
@@ -121,6 +128,10 @@ export type ChallengeState = {
   /** When the paid term ends, epoch ms. */
   periodEnd?: number | null;
   feedback?: Feedback;
-  /** Mark the shown word as known, removing it from rotation without answering. */
-  markKnown?: () => void;
+  /**
+   * Master the shown word without answering it, and show its answer with a
+   * "won't come up again" notice. Returns the feedback shown, or null when
+   * there was nothing to mark.
+   */
+  markKnown?: () => Feedback | null;
 };

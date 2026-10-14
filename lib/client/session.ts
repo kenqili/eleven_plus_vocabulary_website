@@ -317,7 +317,9 @@ export class ClientSession {
    * flush sends. Panels, level and counts move on this frame; credits and
    * streaks do not, because nothing was earned.
    */
-  markKnown(wordId: string): string | null {
+  markKnown(
+    wordId: string,
+  ): { wordId: string; question: ShownQuestion } | null {
     if (this.question?.wordId !== wordId) return null;
     // Read before marking, because marking is what makes the word seen.
     const seenBefore = this.seenFor(wordId);
@@ -344,7 +346,12 @@ export class ClientSession {
     this.revision++;
     this.onChange(this.queue.length);
     this.schedule();
-    return wordId;
+    return { wordId, question: marked.question };
+  }
+
+  /** The account's credit streak, for a zero-value award that keeps the run. */
+  get streak(): number {
+    return this.engine.creditStreak;
   }
 
   /**

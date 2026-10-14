@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, BookOpen, Lightbulb, Trophy } from "lucide-react";
+import { ArrowRight, BookOpen, Check, Lightbulb, Trophy } from "lucide-react";
 import Pronunciation, { AnswerAudio } from "./pronunciation";
 import AnswerPacing from "./answer-pacing";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -231,11 +231,11 @@ export default function Challenge() {
         event.preventDefault();
         void study.answer(-1);
       } else if (key === "k") {
-        // Mark as known: removes the word from rotation without answering.
-        // Does not affect attempts, streaks, or credits.
+        // "I know this": masters the word without answering it. No attempt,
+        // no credits, no streak movement - the word simply leaves the rotation.
         if (question && !feedback && !busy && !study.historical) {
           event.preventDefault();
-          void study.markKnown?.();
+          study.markKnown?.();
         }
       }
     }
@@ -571,12 +571,13 @@ export default function Challenge() {
     disabled={busy}
     onClick={() => {
       if (!busy && !feedback && !study.historical) {
-        void study.markKnown?.();
+        study.markKnown?.();
       }
     }}
-    aria-label="Mark this word as known (K)"
+    title="Already know this word? Mark it as known and it won't come up again."
+    aria-label="I know this word — mark as known and remove it from practice (K)"
   >
-    <Lightbulb size={15} aria-hidden /> Mark known
+    <Check size={15} aria-hidden /> I know this word
   </button>
 )}
                   <p className="sr-only" role="status">
@@ -585,6 +586,21 @@ export default function Challenge() {
                   </p>
                   {feedback && (
                     <div className="feedback" role="status">
+                      {/* "I know this" lands here too: the word is mastered and
+                          leaves the rotation, so the notice says so outright
+                          rather than leaving a celebration with no explanation. */}
+                      {feedback.markedKnown && (
+                        <div className="reward-notice" role="status">
+                          <strong>
+                            Marked as known — {question.word} won&apos;t come up
+                            again.
+                          </strong>
+                          <p>
+                            It is now mastered. The answer was{" "}
+                            <strong>{feedback.answer}</strong>.
+                          </p>
+                        </div>
+                      )}
                       {/* What the app says, built from this child's own record on
                           this word rather than from a fixed list of praise. */}
                       <CoachNote
@@ -762,7 +778,7 @@ export default function Challenge() {
                   <p className="keyboard-hint">
                     {feedback
                       ? "← previous · →, Enter or Space next"
-                      : "A–D or 1–4 to answer · Enter to reveal · ← previous"}
+                      : "A–D or 1–4 to answer · Enter to reveal · K I know this · ← previous"}
                   </p>
                 </>
               ) : study.complete ? (

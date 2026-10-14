@@ -752,6 +752,113 @@ export function useChallenge() {
     [load],
   );
   /**
+   * "I know this": master the shown word without answering it.
+   *
+   * For the child who already knows a word cold. It sets only the mastered
+   * flag - no attempt row, no credits, no streak movement - and then shows the
+   * answer with a "won't come up again" notice, exactly like an answered
+   * question shows its feedback. Without the feedback the press would appear
+   * to do nothing: the engine would have moved on while the screen still
+   * showed the same unanswered question.
+   */
+  const markKnown = useCallback(() => {
+    const current = stateRef.current;
+    if (
+      historyViewRef.current !== null ||
+      lock.current ||
+      !current.question ||
+      current.feedback
+    )
+      return null;
+    if (current.demo) {
+      const word = demoWords.current[demoIndex.current];
+      if (!word || word.wordId !== current.question.wordId) return null;
+      const prior = demoMastery.current.get(word.wordId) ?? initialMastery;
+      if (prior.mastered) return null;
+      const mastery = { ...prior, mastered: true };
+      demoMastery.current.set(word.wordId, mastery);
+      const seenBefore = demoSeen.current.has(word.wordId);
+      demoSeen.current.add(word.wordId);
+      const before = current.stats.periods?.all || emptyPeriod();
+      const period = {
+        ...before,
+        newWords: before.newWords + (seenBefore ? 0 : 1),
+        mastered: before.mastered + 1,
+      };
+      demoStats.current = {
+        ...current.stats,
+        mastered: [...demoMastery.current.values()].filter((m) => m.mastered)
+          .length,
+        meetCount: demoMastery.current.size,
+        periods: { today: period, week: period, all: period },
+      };
+      const feedback: Feedback = {
+        mastery: masteryProgress(mastery, word.difficulty ?? 1),
+        newlyMastered: !prior.mastered,
+        markedKnown: true,
+        attemptId: `known-demo-${demoIndex.current}-${demoAttempt.current++}`,
+        evidence: "uncertain",
+        help: word.help,
+        chosen: undefined,
+        type: word.type,
+        answer: word.answer,
+        correct: false,
+        skipped: false,
+        selected: -1,
+        word: word.word,
+        definition: word.definition,
+        example: word.example,
+        syn: word.syn,
+        ant: word.ant,
+      };
+      setState({ ...current, feedback, stats: demoStats.current });
+      return feedback;
+    }
+    const client = session.current;
+    if (!client) return null;
+    const marked = client.markKnown(current.question.wordId);
+    if (!marked) return null;
+    const shown = marked.question;
+    const row = client.progress.find((r) => r[0] === shown.wordId);
+    const feedback: Feedback = {
+      mastery: masteryProgress(
+        {
+          correct: row?.[1] ?? 0,
+          run: row?.[2] ?? 0,
+          recalls: row?.[3] ?? 0,
+          mastered: true,
+        },
+        shown.difficulty,
+      ),
+      newlyMastered: true,
+      markedKnown: true,
+      attemptId: `known-${shown.wordId}-${Date.now()}`,
+      evidence: "uncertain",
+      help: shown.help,
+      chosen: undefined,
+      type: shown.type,
+      answer: shown.answer,
+      correct: false,
+      skipped: false,
+      selected: -1,
+      word: shown.word,
+      definition: shown.definition,
+      example: shown.example,
+      syn: shown.syn,
+      ant: shown.ant,
+      award: {
+        base: 0,
+        streak: 0,
+        mastery: 0,
+        currentStreak: client.streak,
+        total: 0,
+      },
+    };
+    setState((latest) => ({ ...latest, feedback, stats: client.stats }));
+    setLivePlacement(client.placement());
+    return feedback;
+  }, []);
+  /**
    * Save now.
    *
    * Deliberately separate from the timer: a child who presses it wants to know
@@ -881,10 +988,7 @@ export function useChallenge() {
     markAssisted: () => {
       assisted.current = true;
     },
-    markKnown: () => {
-      var _a;
-      return (_a = session.current)?.markKnown(state.question?.wordId ?? "");
-    },
+    markKnown,
     next,
     goPrevious,
     historical: historyView !== null,

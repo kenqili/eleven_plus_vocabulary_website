@@ -129,139 +129,153 @@ export async function applyFlushed(
     }
     wanted.push(resolved);
   }
-  if (!wanted.length) return { saved: 0, skipped };
+  // A marking with no answers still carries state: "I know this" sets the
+  // mastered flag without queuing an attempt, so stopping here would drop it
+  // and the word would come back after a reload.
+  if (!wanted.length && !state.progress.length) return { saved: 0, skipped };
 
-  // One round trip for the whole set, which is the point: these are pure inserts
-  // and there is nothing to decide until they exist.
-  await db.batch(
-    wanted.flatMap((answer) => {
+  if (wanted.length) {
+    // One round trip for the whole set, which is the point: these are pure inserts
+    // and there is nothing to decide until they exist.
+    await db.batch(
+      wanted.flatMap((answer) => {
+        const correct =
+          answer.selected >= 0 &&
+          answer.choices[answer.selected] === answer.answer;
+        return [
+          db
+            .prepare(
+              `INSERT OR IGNORE INTO attempts
+                 (id,user_id,word_id,choices,created_at,question_type,answer,prompt,answered_at,selected,is_correct,elapsed)
+               VALUES(?,?,?,?,?,?,?,'',?,?,?,?)`,
+            )
+            .bind(
+              answer.id,
+              userId,
+              answer.wordId,
+              JSON.stringify(answer.choices),
+              answer.shownAt,
+              answer.type,
+              answer.answer,
+              // `shownAt` is the clock the evidence is measured from, so a
+              // question that sat in the queue is not read as a guess.
+              answer.shownAt,
+              answer.selected,
+              correct ? 1 : 0,
+              Math.round(answer.elapsed),
+            ),
+        ];
+      }),
+    );
+
+    // The words an answer touches must exist before the events can join to them.
+    await db.batch(
+      wanted.map((answer) =>
+        db.prepare(ENSURE_PROGRESS).bind(userId, answer.wordId),
+      ),
+    );
+
+    // Which answers finished their word.
+    //
+    // Decided here, from the database's own progress and the same `advanceMastery`
+    // the browser ran, rather than taken from the browser. The reason is specific:
+    // the per-question path this replaced bound the app's verdict, which was safe
+    // then because the app *was* the server. It is not safe now. A flush that
+    // believed a client saying "this answer finished the word" would pay ten
+    // credits a time for every word in the collection, and the only limit on it
+    // would be the child choosing to stop.
+    //
+    // The evidence is the browser's, and has to be: it is a record of how long a
+    // child spent on a question, which only the browser witnessed. It is recorded
+    // rather than trusted for money, and it is the same string the server would
+    // have derived from a stored attempt.
+    const touched = [...new Set(wanted.map((answer) => answer.wordId))];
+    const prior = new Map<string, MasteryState>();
+    {
+      // One read, for the words this flush touches. It is the only query the flush
+      // does beyond its writes, and it happens on a save rather than on the path a
+      // child is waiting on.
+      const placeholders = touched.map(() => "?").join(",");
+      const read = await db
+        .prepare(
+          `SELECT word_id,correct,run,recalls,mastered FROM progress
+           WHERE user_id=? AND word_id IN (${placeholders})`,
+        )
+        .bind(userId, ...touched)
+        .all<{
+          word_id: string;
+          correct: number;
+          run: number;
+          recalls: number;
+          mastered: number;
+        }>();
+      for (const row of read.results)
+        prior.set(row.word_id, {
+          correct: row.correct,
+          run: row.run,
+          recalls: row.recalls,
+          mastered: row.mastered === 1,
+        });
+    }
+    // Answers in the order they were given, which is the order the child met them,
+    // so a word answered twice in one sitting carries its evidence forward.
+    const finished = new Map<string, boolean>();
+    const states = new Map<string, MasteryState>(prior);
+    for (const answer of wanted) {
+      const before = states.get(answer.wordId) ?? {
+        correct: 0,
+        run: 0,
+        recalls: 0,
+        mastered: false,
+      };
       const correct =
-        answer.selected >= 0 &&
-        answer.choices[answer.selected] === answer.answer;
-      return [
+        answer.selected >= 0 && answer.choices[answer.selected] === answer.answer;
+      const next = advanceMastery(
+        before,
+        (answer.evidence as Evidence) ?? "uncertain",
+        levelOf.get(answer.wordId) ?? 1,
+      );
+      states.set(answer.wordId, next);
+      finished.set(
+        answer.id,
+        correct && next.newlyMastered && !hasMastered(before),
+      );
+    }
+
+    // The award chain: eligibility, mastery and the credits themselves, all decided
+    // in SQL and applied by the trigger that has always done it.
+    await db.batch(
+      wanted.map((answer) =>
         db
-          .prepare(
-            `INSERT OR IGNORE INTO attempts
-               (id,user_id,word_id,choices,created_at,question_type,answer,prompt,answered_at,selected,is_correct,elapsed)
-             VALUES(?,?,?,?,?,?,?,'',?,?,?,?)`,
-          )
+          .prepare(LEARNING_EVENT)
           .bind(
+            answer.shownAt,
+            localDay(answer.shownAt),
+            answer.revealed ? 1 : 0,
+            CUMULATIVE_FLOOR,
+            ELIGIBLE_ANSWERS,
+            finished.get(answer.id) ? 1 : 0,
+            answer.evidence,
             answer.id,
             userId,
-            answer.wordId,
-            JSON.stringify(answer.choices),
-            answer.shownAt,
-            answer.type,
-            answer.answer,
-            // `shownAt` is the clock the evidence is measured from, so a
-            // question that sat in the queue is not read as a guess.
-            answer.shownAt,
-            answer.selected,
-            correct ? 1 : 0,
-            Math.round(answer.elapsed),
           ),
-      ];
-    }),
-  );
-
-  // The words an answer touches must exist before the events can join to them.
-  await db.batch(
-    wanted.map((answer) =>
-      db.prepare(ENSURE_PROGRESS).bind(userId, answer.wordId),
-    ),
-  );
-
-  // Which answers finished their word.
-  //
-  // Decided here, from the database's own progress and the same `advanceMastery`
-  // the browser ran, rather than taken from the browser. The reason is specific:
-  // the per-question path this replaced bound the app's verdict, which was safe
-  // then because the app *was* the server. It is not safe now. A flush that
-  // believed a client saying "this answer finished the word" would pay ten
-  // credits a time for every word in the collection, and the only limit on it
-  // would be the child choosing to stop.
-  //
-  // The evidence is the browser's, and has to be: it is a record of how long a
-  // child spent on a question, which only the browser witnessed. It is recorded
-  // rather than trusted for money, and it is the same string the server would
-  // have derived from a stored attempt.
-  const touched = [...new Set(wanted.map((answer) => answer.wordId))];
-  const prior = new Map<string, MasteryState>();
-  {
-    // One read, for the words this flush touches. It is the only query the flush
-    // does beyond its writes, and it happens on a save rather than on the path a
-    // child is waiting on.
-    const placeholders = touched.map(() => "?").join(",");
-    const read = await db
-      .prepare(
-        `SELECT word_id,correct,run,recalls,mastered FROM progress
-         WHERE user_id=? AND word_id IN (${placeholders})`,
-      )
-      .bind(userId, ...touched)
-      .all<{
-        word_id: string;
-        correct: number;
-        run: number;
-        recalls: number;
-        mastered: number;
-      }>();
-    for (const row of read.results)
-      prior.set(row.word_id, {
-        correct: row.correct,
-        run: row.run,
-        recalls: row.recalls,
-        mastered: row.mastered === 1,
-      });
-  }
-  // Answers in the order they were given, which is the order the child met them,
-  // so a word answered twice in one sitting carries its evidence forward.
-  const finished = new Map<string, boolean>();
-  const states = new Map<string, MasteryState>(prior);
-  for (const answer of wanted) {
-    const before = states.get(answer.wordId) ?? {
-      correct: 0,
-      run: 0,
-      recalls: 0,
-      mastered: false,
-    };
-    const correct =
-      answer.selected >= 0 && answer.choices[answer.selected] === answer.answer;
-    const next = advanceMastery(
-      before,
-      (answer.evidence as Evidence) ?? "uncertain",
-      levelOf.get(answer.wordId) ?? 1,
-    );
-    states.set(answer.wordId, next);
-    finished.set(
-      answer.id,
-      correct && next.newlyMastered && !hasMastered(before),
+      ),
     );
   }
-
-  // The award chain: eligibility, mastery and the credits themselves, all decided
-  // in SQL and applied by the trigger that has always done it.
-  await db.batch(
-    wanted.map((answer) =>
-      db
-        .prepare(LEARNING_EVENT)
-        .bind(
-          answer.shownAt,
-          localDay(answer.shownAt),
-          answer.revealed ? 1 : 0,
-          CUMULATIVE_FLOOR,
-          ELIGIBLE_ANSWERS,
-          finished.get(answer.id) ? 1 : 0,
-          answer.evidence,
-          answer.id,
-          userId,
-        ),
-    ),
-  );
 
   // The browser's counters, which it has been advancing since the last flush. This
   // is the client's authority over its own state; everything a credit depends on
-  // was decided in the two steps above.
+  // was decided in the two steps above. It also runs for a state-only flush:
+  // "I know this" sets the mastered flag without queuing an attempt, and that
+  // flag still has to reach the database or the word comes back on reload.
   if (state.progress.length) {
+    // The marked word may never have been answered, so its progress row may not
+    // exist yet and an UPDATE alone would change nothing.
+    await db.batch(
+      [...new Set(state.progress.map(([wordId]) => wordId))].map((wordId) =>
+        db.prepare(ENSURE_PROGRESS).bind(userId, wordId),
+      ),
+    );
     await db.batch(
       state.progress.map(
         ([wordId, correct, run, recalls, mastered, seen, lastSeen, retryAt]) =>

@@ -655,7 +655,7 @@ export class PracticeEngine {
    * anything an answer moves. In particular the attempt count stays put, so
    * the review clock keeps agreeing with the server, which counts attempts.
    */
-  markKnown(): { wordId: string } | null {
+  markKnown(): { wordId: string; question: ShownQuestion } | null {
     const question = this.lastQuestion;
     if (!question) return null;
     const previous = this.countersFor(question.wordId);
@@ -671,7 +671,7 @@ export class PracticeEngine {
       retryAt: previous.retryAt,
     });
     this.lastQuestion = null;
-    return { wordId: question.wordId };
+    return { wordId: question.wordId, question };
   }
 
   /** The state to hand a flush, so the server can apply exactly this difference. */
