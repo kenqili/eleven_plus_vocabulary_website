@@ -881,6 +881,10 @@ export function useChallenge() {
     markAssisted: () => {
       assisted.current = true;
     },
+    markKnown: () => {
+      var _a;
+      return (_a = session.current)?.markKnown(state.question?.wordId ?? "");
+    },
     next,
     goPrevious,
     historical: historyView !== null,
