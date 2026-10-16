@@ -1600,7 +1600,9 @@ test("a completed checkout never falls through to the age guard", () => {
   );
   assert.match(
     branch,
-    /return checkoutSession\(userId, customerId, origin, tier\);[\s\S]*throw new HttpError\(\s*409/,
+    // The discount argument is optional: with or without a tutor code, every
+    // way out of the branch returns before the guard.
+    /return checkoutSession\(userId, customerId, origin, tier(,\s*discount)?\);[\s\S]*throw new HttpError\(\s*409/,
     "the completed branch is not terminal",
   );
 });

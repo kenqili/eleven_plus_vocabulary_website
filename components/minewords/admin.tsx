@@ -26,6 +26,20 @@ const LENGTHS = [
   { days: 365, label: "1 year" },
 ];
 
+type TutorCodeRow = {
+  id: string;
+  label: string;
+  tutorName: string;
+  contact: string | null;
+  tier: string;
+  percentOff: number;
+  maxRedemptions: number;
+  redeemed: number;
+  expiresAt: number;
+  status: string;
+  createdAt: number;
+};
+
 export default function AdminPage() {
   const [days, setDays] = useState(30);
   const [busy, setBusy] = useState(false);
@@ -40,7 +54,13 @@ export default function AdminPage() {
       issued: number;
       redeemed: number;
     }[];
+    tutorCodes: TutorCodeRow[];
   } | null>(null);
+  const [tutorName, setTutorName] = useState("");
+  const [tutorContact, setTutorContact] = useState("");
+  const [tutorBusy, setTutorBusy] = useState(false);
+  const [tutorError, setTutorError] = useState("");
+  const [issuedLabel, setIssuedLabel] = useState<string | null>(null);
 
   async function load() {
     try {
@@ -67,6 +87,41 @@ export default function AdminPage() {
       setError(cause instanceof Error ? cause.message : "Could not do that.");
     } finally {
       setBusy(false);
+    }
+  }
+
+  async function issueTutorCode() {
+    setTutorBusy(true);
+    setTutorError("");
+    setIssuedLabel(null);
+    try {
+      const result = await api<{ label: string }>("/api/admin", {
+        action: "issue-tutor-code",
+        tutorName,
+        contact: tutorContact,
+      });
+      setIssuedLabel(result.label);
+      setTutorName("");
+      setTutorContact("");
+      await load();
+    } catch (cause) {
+      setTutorError(
+        cause instanceof Error ? cause.message : "Could not do that.",
+      );
+    } finally {
+      setTutorBusy(false);
+    }
+  }
+
+  async function suspendTutorCode(codeId: string) {
+    setTutorError("");
+    try {
+      await api("/api/admin", { action: "suspend-tutor-code", codeId });
+      await load();
+    } catch (cause) {
+      setTutorError(
+        cause instanceof Error ? cause.message : "Could not do that.",
+      );
     }
   }
 
@@ -170,6 +225,110 @@ export default function AdminPage() {
                       <td>{row.days} days</td>
                       <td>{row.issued}</td>
                       <td>{row.redeemed}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
+
+        <section className="manage-panel">
+          <h2>Tutor discount codes</h2>
+          <p className="muted">
+            One code per tutor, taking 20% off the 1-year option for up to 100
+            students over 12 months. Hand the code to the tutor; students enter
+            it on their account page before paying. The count below is how many
+            have used it - that is the number the private split is worked out
+            from.
+          </p>
+          <div className="account-actions">
+            <label>
+              Tutor&apos;s name
+              <input
+                type="text"
+                value={tutorName}
+                onChange={(event) => setTutorName(event.target.value)}
+                placeholder="e.g. Sarah Chen"
+                autoComplete="off"
+              />
+            </label>
+            <label>
+              Contact (optional)
+              <input
+                type="text"
+                value={tutorContact}
+                onChange={(event) => setTutorContact(event.target.value)}
+                placeholder="Email or phone"
+                autoComplete="off"
+              />
+            </label>
+          </div>
+          {tutorError && (
+            <p className="form-error" role="alert">
+              {tutorError}
+            </p>
+          )}
+          <div className="account-actions">
+            <button
+              className="primary-button"
+              disabled={tutorBusy || !tutorName.trim()}
+              onClick={() => void issueTutorCode()}
+            >
+              Issue tutor code
+            </button>
+          </div>
+          {issuedLabel && (
+            <p role="status">
+              Issued <strong>{issuedLabel}</strong> - send it to the tutor.
+            </p>
+          )}
+        </section>
+
+        {stats && stats.tutorCodes.length > 0 && (
+          <section className="manage-panel">
+            <h2>Tutor codes so far</h2>
+            <div className="word-table-wrap">
+              <table className="word-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Tutor</th>
+                    <th scope="col">Code</th>
+                    <th scope="col">Used</th>
+                    <th scope="col">Expires</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">
+                      <span className="sr-only">Actions</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {stats.tutorCodes.map((row) => (
+                    <tr key={row.id}>
+                      <td>
+                        {row.tutorName}
+                        {row.contact && (
+                          <small className="muted"> {row.contact}</small>
+                        )}
+                      </td>
+                      <td>{row.label}</td>
+                      <td>
+                        {row.redeemed} of {row.maxRedemptions}
+                      </td>
+                      <td>
+                        {new Date(row.expiresAt).toLocaleDateString("en-GB")}
+                      </td>
+                      <td>{row.status}</td>
+                      <td>
+                        {row.status === "active" && (
+                          <button
+                            className="text-button"
+                            onClick={() => void suspendTutorCode(row.id)}
+                          >
+                            Suspend
+                          </button>
+                        )}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

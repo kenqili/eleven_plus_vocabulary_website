@@ -76,19 +76,25 @@ test("no caller passes a fetch-shaped options object as the payload", () => {
 });
 
 test("the billing route reads the tier from the payload, so a dropped call breaks it", () => {
-  // The reason this is worth a test rather than a convention: the tier is the
-  // only thing the checkout route takes from the body, so the call shape is the
-  // whole contract. A payload that arrives as `{method, body}` produces a 400
-  // with no server log entry and a message about choosing a length.
+  // The reason this is worth a test rather than a convention: the tier is what
+  // the checkout route takes from the body, so the call shape is the whole
+  // contract. A payload that arrives as `{method, body}` produces a 400 with
+  // no server log entry and a message about choosing a length. The tutor code
+  // rides alongside under its own name since the yearly button gained it.
   const route = client("app/api/billing/[action]/route.ts");
   assert.match(route, /const input = await body\(request\)/);
   assert.match(route, /input\.tier/);
-  // And the client sends it under that name.
+  // And the client sends them under those names.
   const account = client("components/minewords/account.tsx");
   assert.match(
     account,
-    /api<\{ url: string \}>\(\s*`\/api\/billing\/\$\{action\}`\s*,\s*tier \? \{ tier \} : \{\}/,
+    /api<\{ url: string \}>\(\s*`\/api\/billing\/\$\{action\}`\s*,[\s\S]{0,160}\btier \? \{ tier \} : \{\}/,
     "the checkout call does not send {tier} as its payload",
+  );
+  assert.match(
+    account,
+    /tutorCode \? \{ tutorCode \} : \{\}/,
+    "the tutor code does not travel under its own name",
   );
 });
 

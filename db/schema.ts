@@ -125,6 +125,75 @@ export const coupons = sqliteTable(
   ],
 );
 
+/**
+ * Who a tutor discount code belongs to.
+ *
+ * No commission columns: the split with each tutor is settled privately, so
+ * the system records redemptions, not money owed. See drizzle/0002_tutor_codes.sql.
+ */
+export const tutors = sqliteTable("tutors", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  contact: text("contact"),
+  /** 'active' or 'suspended'. Not a boolean - an unknown value must be visible. */
+  status: text("status").notNull().default("active"),
+  createdAt: integer("created_at").notNull(),
+});
+
+/**
+ * A tutor's discount code, taking percent_off off one tier.
+ *
+ * The money math lives in Stripe (a shared coupon, one promotion code per
+ * tutor); this row is the mapping plus the policy (tier, cap, expiry, status)
+ * that validation reads without a network call. Redemption counts are
+ * COUNT(*) over tutor_redemptions, never a cached number.
+ */
+export const tutorCodes = sqliteTable(
+  "tutor_codes",
+  {
+    id: text("id").primaryKey(),
+    tutorId: text("tutor_id")
+      .notNull()
+      .references(() => tutors.id, { onDelete: "cascade" }),
+    /** Upper case, hyphens kept, TUTOR- prefix enforced at issue. */
+    label: text("label").notNull(),
+    /** The only term this code discounts. 'yearly' for every code so far. */
+    tier: text("tier").notNull().default("yearly"),
+    stripeCouponId: text("stripe_coupon_id").notNull(),
+    stripePromotionCodeId: text("stripe_promotion_code_id").notNull(),
+    /** Whole percent off, so the account page needs no Stripe call to quote. */
+    percentOff: integer("percent_off").notNull(),
+    maxRedemptions: integer("max_redemptions").notNull(),
+    expiresAt: integer("expires_at").notNull(),
+    /** 'active' or 'suspended'. Suspended codes fail before Stripe is asked. */
+    status: text("status").notNull().default("active"),
+    createdAt: integer("created_at").notNull(),
+  },
+  (t) => [
+    uniqueIndex("tutor_code_label").on(t.label),
+    index("tutor_codes_tutor").on(t.tutorId),
+  ],
+);
+
+/** One row per paid referral, keyed on the payment intent. */
+export const tutorRedemptions = sqliteTable(
+  "tutor_redemptions",
+  {
+    id: text("id").primaryKey(),
+    tutorCodeId: text("tutor_code_id")
+      .notNull()
+      .references(() => tutorCodes.id, { onDelete: "cascade" }),
+    userId: text("user_id").references(() => users.id, { onDelete: "set null" }),
+    /** Unique per payment, so a redelivered webhook cannot count twice. */
+    paymentIntent: text("payment_intent").notNull(),
+    createdAt: integer("created_at").notNull(),
+  },
+  (t) => [
+    uniqueIndex("tutor_redemption_payment").on(t.paymentIntent),
+    index("tutor_redemptions_code").on(t.tutorCodeId),
+  ],
+);
+
 export const wallets = sqliteTable(
   "credit_wallets",
   {

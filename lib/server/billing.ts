@@ -1,5 +1,6 @@
 import { database, setting } from "./db";
 import { HttpError } from "./http";
+import { recordTutorRedemption } from "./tutor-codes";
 import { sendEmail } from "./email";
 import { CONTACT_EMAIL } from "@/lib/contact";
 import { words } from "@/lib/challenge/bank";
@@ -680,11 +681,24 @@ export async function revokePurchase(paymentIntentId: string): Promise<void> {
  */
 const CHECKOUT_LOCK_SECONDS = 30;
 
+/**
+ * A tutor discount to attach, validated before this is called.
+ *
+ * The label is what the parent typed (normalised); the promotion code id is
+ * the Stripe object that does the money math. Both travel in metadata so the
+ * webhook can count the redemption without another Stripe call.
+ */
+export type CheckoutDiscount = {
+  label: string;
+  promotionCodeId: string;
+};
+
 export async function checkoutSession(
   userId: string,
   customerId: string,
   origin: string,
   tier: Tier,
+  discount?: CheckoutDiscount | null,
 ): Promise<{ url: string }> {
   const db = database();
   const now = Math.floor(Date.now() / 1000);
@@ -783,21 +797,33 @@ export async function checkoutSession(
         .prepare("DELETE FROM checkout_requests WHERE user_id=? AND token=?")
         .bind(userId, row.token)
         .run();
-      return checkoutSession(userId, customerId, origin, tier);
+      return checkoutSession(userId, customerId, origin, tier, discount);
     }
     // Reused only for the tier it was opened for. Handing a parent who clicked
     // "1 month" the URL of an abandoned yearly session is not an error of money
     // - they pay the yearly price and get the yearly term - but it is not what
     // they clicked either, and it is surprising in a way that costs a support
     // message.
+    //
+    // And only for the discount it was opened with. A parent who entered a
+    // tutor code after opening a full-price session would otherwise pay full
+    // price while the screen promised 20% off; a parent who removed the code
+    // would get the discount they took off. Either mismatch deletes the row
+    // and starts over, the same way a tier mismatch does - Stripe sessions
+    // cannot gain a discount after creation, so there is nothing to update.
     if (existing.status === "open") {
       const openedFor = existing.metadata?.price_id;
-      if (!openedFor || openedFor === priceFor(tier)) return existing;
+      const openedWith = existing.metadata?.tutor_code || "";
+      if (
+        (!openedFor || openedFor === priceFor(tier)) &&
+        openedWith === (discount?.label || "")
+      )
+        return existing;
       await db
         .prepare("DELETE FROM checkout_requests WHERE user_id=? AND token=?")
         .bind(userId, row.token)
         .run();
-      return checkoutSession(userId, customerId, origin, tier);
+      return checkoutSession(userId, customerId, origin, tier, discount);
     }
     if (existing.status === "complete" && existing.payment_intent) {
       // The payment went through on a session this user came back to. Grant from
@@ -856,13 +882,34 @@ export async function checkoutSession(
           .prepare("DELETE FROM checkout_requests WHERE user_id=? AND token=?")
           .bind(userId, row.token)
           .run();
-        return checkoutSession(userId, customerId, origin, tier);
+        return checkoutSession(userId, customerId, origin, tier, discount);
       }
       const granted = await grantPurchase(
         existing.payment_intent,
         userId,
         priceId,
       );
+      // A discounted session granted here rather than by the webhook still
+      // counts for the tutor: the webhook may never arrive, which is why this
+      // branch exists at all. Failures are logged, not thrown - the parent has
+      // paid and been granted, so a 500 here would be about our counting, and
+      // the webhook's own delivery recovers the count anyway: the insert is
+      // keyed on the payment intent, so a later delivery completes it instead
+      // of doubling it.
+      if (granted && existing.metadata?.tutor_code) {
+        try {
+          await recordTutorRedemption({
+            paymentIntent: existing.payment_intent,
+            userId,
+            label: existing.metadata.tutor_code,
+          });
+        } catch (error) {
+          console.error(
+            "Tutor redemption could not be recorded",
+            error instanceof Error ? error.message : "Unknown error",
+          );
+        }
+      }
       // The row is cleared once the session is complete, because that session has
       // nothing left to protect against.
       //
@@ -899,7 +946,7 @@ export async function checkoutSession(
       // Already granted means they are here to make a NEW purchase, and the only
       // correct answer is to get on with it. This is what makes buying a second
       // term work on the first click rather than the second.
-      if (!granted) return checkoutSession(userId, customerId, origin, tier);
+      if (!granted) return checkoutSession(userId, customerId, origin, tier, discount);
       // Newly granted means we have just applied a payment that had not taken
       // effect. Not an error, and deliberately not worded as one: the parent
       // clicked "buy" and was sent back to the account page, so the message has
@@ -940,7 +987,7 @@ export async function checkoutSession(
       .prepare("DELETE FROM checkout_requests WHERE user_id=? AND token=?")
       .bind(userId, row.token)
       .run();
-    return checkoutSession(userId, customerId, origin, tier);
+    return checkoutSession(userId, customerId, origin, tier, discount);
   }
   // No session, and this row is younger than the lock window: another request is
   // holding it right now. It got here first and is between writing this row and
@@ -990,7 +1037,7 @@ export async function checkoutSession(
       .prepare("DELETE FROM checkout_requests WHERE user_id=? AND token=?")
       .bind(userId, row.token)
       .run();
-    return checkoutSession(userId, customerId, origin, tier);
+    return checkoutSession(userId, customerId, origin, tier, discount);
   }
   const session = await stripe<{ id: string; url: string }>(
     "checkout/sessions",
@@ -1024,6 +1071,19 @@ export async function checkoutSession(
       // that is not one of ours still grants nothing.
       "payment_intent_data[metadata][price_id]": priceFor(tier),
       "metadata[price_id]": priceFor(tier),
+      // A tutor discount, when the parent gave a code. The coupon does the money
+      // math at Stripe; the price id above is unchanged, which is why the grant
+      // needs no changes - it matches on the price, never the amount. The label
+      // rides along so the webhook can count the redemption without another
+      // Stripe call, and the payment intent copy covers event shapes that carry
+      // the intent rather than the session.
+      ...(discount
+        ? {
+            "discounts[0][promotion_code]": discount.promotionCodeId,
+            "metadata[tutor_code]": discount.label,
+            "payment_intent_data[metadata][tutor_code]": discount.label,
+          }
+        : {}),
       expires_at: String(row.created_at + 3600),
     },
     // The tier is in the key, not only the token. Two tabs open on this page can
@@ -1032,7 +1092,11 @@ export async function checkoutSession(
     // differs from the first. The parent who picked the year was then told "The
     // payment service is unavailable", which is what a genuine outage looks like,
     // for what was a choice between two buttons.
-    `checkout-${row.token}-${tier}`,
+    //
+    // The discount is in the key for the same reason: with and without a tutor
+    // code are different bodies, and sharing a key would hand one of them the
+    // other's session.
+    `checkout-${row.token}-${tier}-${discount?.label || "full"}`,
   );
   await db
     .prepare(

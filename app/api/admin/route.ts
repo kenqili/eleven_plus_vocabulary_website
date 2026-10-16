@@ -1,5 +1,10 @@
 /**
- * The administrator's own surface: issue coupons, and see what has been issued.
+ * The administrator's own surface: issue coupons and tutor discount codes,
+ * and see what has been issued.
+ *
+ * Tutor redemption counts are counts, not money: like the coupon batches they
+ * say how many codes went out and how many came back, never what was paid.
+ * The money stays in Stripe's dashboard, per the note below.
  *
  * Every route here is behind `requireAdmin`, which is the only check that exists.
  * There is no second gate in the client and no page-level guard - the client is
@@ -17,12 +22,21 @@
 import { rateLimit } from "@/lib/server/auth";
 import { requireAdmin } from "@/lib/server/admin";
 import { couponStats, issueCoupons } from "@/lib/server/coupon";
+import {
+  issueTutorCode,
+  suspendTutorCode,
+  tutorCodeStats,
+} from "@/lib/server/tutor-codes";
 import { body, boundary, HttpError, json, sameOrigin } from "@/lib/server/http";
 
 export async function GET(request: Request) {
   return boundary(async () => {
     await requireAdmin(request);
-    return json(await couponStats());
+    const [coupons, tutorCodes] = await Promise.all([
+      couponStats(),
+      tutorCodeStats(),
+    ]);
+    return json({ ...coupons, tutorCodes });
   });
 }
 
@@ -36,10 +50,38 @@ export async function POST(request: Request) {
     // codes, which is more than a school needs in a fortnight.
     await rateLimit(`coupon-issue:${admin.id}`, 10);
     const input = await body(request);
-    const days = Number(input.days);
-    const count = input.count === undefined ? undefined : Number(input.count);
-    if (!Number.isFinite(days)) throw new HttpError(400, "Choose a length.");
-    const batch = await issueCoupons(days, count);
-    return json({ ok: true, ...batch });
+    // Dispatched, with the hardship batch as the default: the admin page has
+    // posted `{days}` here since before actions existed, and renaming that
+    // call is churn with no benefit. New callers name what they want.
+    const action =
+      typeof input.action === "string" ? input.action : "issue-coupons";
+    if (action === "issue-coupons") {
+      const days = Number(input.days);
+      const count = input.count === undefined ? undefined : Number(input.count);
+      if (!Number.isFinite(days)) throw new HttpError(400, "Choose a length.");
+      const batch = await issueCoupons(days, count);
+      return json({ ok: true, ...batch });
+    }
+    if (action === "issue-tutor-code") {
+      const issued = await issueTutorCode({
+        tutorName: typeof input.tutorName === "string" ? input.tutorName : "",
+        contact: typeof input.contact === "string" ? input.contact : "",
+        maxRedemptions:
+          input.maxRedemptions === undefined
+            ? undefined
+            : Number(input.maxRedemptions),
+        monthsValid:
+          input.monthsValid === undefined ? undefined : Number(input.monthsValid),
+        label: typeof input.label === "string" ? input.label : "",
+      });
+      return json({ ok: true, ...issued });
+    }
+    if (action === "suspend-tutor-code") {
+      if (typeof input.codeId !== "string" || !input.codeId)
+        throw new HttpError(400, "Choose which code to suspend.");
+      await suspendTutorCode(input.codeId);
+      return json({ ok: true });
+    }
+    throw new HttpError(404, "Unknown action.");
   });
 }

@@ -15,6 +15,7 @@ import {
 } from "@/lib/server/billing";
 import { boundary, body, HttpError, json, sameOrigin } from "@/lib/server/http";
 import { COUPON_CONFIRMATION_PREFIX } from "@/lib/server/coupon";
+import { quoteTutorCode } from "@/lib/server/tutor-codes";
 
 /**
  * What this parent has bought, from the `purchases` rows the webhook writes.
@@ -328,7 +329,41 @@ export async function POST(
         503,
         `The ${tier.label} option is set up as a recurring price, which this site does not use. Please choose another option.`,
       );
-    const session = await checkoutSession(user.id, customerId, origin, tier.id);
+    // A tutor's code, discounting the yearly term by 20%. Validated here, not
+    // trusted from the client: the quote checks our ledger (known, active,
+    // unexpired, tutor in good standing, yearly only), and the grant needs no
+    // changes because the coupon leaves the price id untouched.
+    const rawCode =
+      typeof input.tutorCode === "string" ? input.tutorCode : "";
+    let discount: { label: string; promotionCodeId: string } | null = null;
+    if (rawCode.trim()) {
+      const quoted = await quoteTutorCode(rawCode, tier.id);
+      // Stripe-side backstop, best effort. Our checks pass, but the promotion
+      // code itself may have been exhausted or deactivated in the dashboard
+      // since. A working code costs one extra read per checkout; a failed read
+      // proceeds anyway and lets session creation speak, because an outage must
+      // read as an outage rather than as a bad code.
+      try {
+        const promo = await stripe<{ active?: boolean }>(
+          `promotion_codes/${encodeURIComponent(quoted.stripePromotionCodeId)}`,
+        );
+        if (promo?.active === false)
+          throw new HttpError(400, "That tutor code is not valid.");
+      } catch (error) {
+        if (error instanceof HttpError && error.status === 400) throw error;
+      }
+      discount = {
+        label: quoted.label,
+        promotionCodeId: quoted.stripePromotionCodeId,
+      };
+    }
+    const session = await checkoutSession(
+      user.id,
+      customerId,
+      origin,
+      tier.id,
+      discount,
+    );
     return json({ url: session.url });
   });
 }
