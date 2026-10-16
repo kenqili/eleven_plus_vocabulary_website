@@ -50,6 +50,8 @@ export const INDEXABLE_PAGES = [
   "guides/when-to-start-preparing",
   "guides/how-to-practise-effectively",
   "guides/managing-exam-pressure",
+  "guides/how-many-words-11-plus",
+  "guides/synonyms-antonyms-11-plus",
   "privacy",
 ] as const;
 

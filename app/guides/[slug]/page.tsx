@@ -5,6 +5,8 @@ import Header from "@/components/minewords/header";
 import whenToStart from "@/data/guides/when-to-start-preparing.json";
 import howToPractise from "@/data/guides/how-to-practise-effectively.json";
 import managingPressure from "@/data/guides/managing-exam-pressure.json";
+import howManyWords from "@/data/guides/how-many-words-11-plus.json";
+import synonymsAntonyms from "@/data/guides/synonyms-antonyms-11-plus.json";
 
 type GuideArticle = {
   slug: string;
@@ -26,6 +28,8 @@ const ARTICLES: Record<string, GuideArticle> = {
   "when-to-start-preparing": whenToStart,
   "how-to-practise-effectively": howToPractise,
   "managing-exam-pressure": managingPressure,
+  "how-many-words-11-plus": howManyWords,
+  "synonyms-antonyms-11-plus": synonymsAntonyms,
 };
 
 // The guides became one page rather than ten articles, because a parent

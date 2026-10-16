@@ -603,10 +603,11 @@ test("shared links name their own page, and the chrome matches", () => {
 });
 
 test("guide articles are complete, honest, and stay out of other claims", () => {
-  // Three slugs are articles; the other seven guide URLs redirect into /info.
-  // An article with no sections is a thin page that hurts more than it helps,
-  // and a claim about somebody else's exam in one is the advertising risk the
-  // landing tests already police on the front page.
+  // Five slugs are articles (three evergreen + two SEO guides added Oct 2026:
+  // substantive, sourced, 4+ sections each); the other guide URLs redirect
+  // into /info. An article with no sections is a thin page that hurts more
+  // than it helps, and a claim about somebody else's exam in one is the
+  // advertising risk the landing tests already police on the front page.
   const slugs = INDEXABLE_PAGES.filter((page) =>
     page.startsWith("guides/"),
   ).map((page) => page.split("/")[1]);
@@ -616,8 +617,10 @@ test("guide articles are complete, honest, and stay out of other claims", () => 
       "how-to-practise-effectively",
       "managing-exam-pressure",
       "when-to-start-preparing",
+      "how-many-words-11-plus",
+      "synonyms-antonyms-11-plus",
     ].sort(),
-    "the indexed guides are not exactly the three evergreen articles",
+    "the indexed guides are not exactly the five approved articles",
   );
   for (const slug of slugs) {
     const article = JSON.parse(readFileSync(`data/guides/${slug}.json`, "utf8"));

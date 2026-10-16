@@ -156,6 +156,9 @@ const nextConfig: NextConfig = {
         // rule that used to cover this whole directory is gone: it cannot
         // say index here and noindex above, and a response carrying both
         // would read as noindex.
+        //
+        // Two SEO articles joined in Oct 2026 (owner decision: substantive,
+        // sourced guides earn their place; thin ones stay redirects).
         source: "/guides/when-to-start-preparing",
         headers: [{ key: "X-Robots-Tag", value: "index, follow" }],
       },
@@ -165,6 +168,14 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/guides/managing-exam-pressure",
+        headers: [{ key: "X-Robots-Tag", value: "index, follow" }],
+      },
+      {
+        source: "/guides/how-many-words-11-plus",
+        headers: [{ key: "X-Robots-Tag", value: "index, follow" }],
+      },
+      {
+        source: "/guides/synonyms-antonyms-11-plus",
         headers: [{ key: "X-Robots-Tag", value: "index, follow" }],
       },
     ];
