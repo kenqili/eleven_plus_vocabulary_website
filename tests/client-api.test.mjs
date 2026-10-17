@@ -44,6 +44,7 @@ const CALLERS = [
   "components/minewords/manage-words.tsx",
   "components/minewords/reset-password.tsx",
   "components/minewords/story-reader.tsx",
+  "components/minewords/tutor-code.tsx",
 ];
 
 test("no caller passes a fetch-shaped options object as the payload", () => {

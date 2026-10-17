@@ -15,12 +15,17 @@ export type TutorQuote = {
 };
 
 /**
- * A tutor's code, entered before buying.
+ * A discount code, entered before buying.
+ *
+ * Called a discount code rather than a tutor code because the code need not come
+ * from a tutor - tutors hold the first of these, and the same form serves a
+ * school or a referral offer equally well. The server decides what a code may
+ * discount; this only shows the parent what they were quoted.
  *
  * Display only: applying it here changes what the 1-year button shows and what
  * it sends, but the discount itself is validated again at checkout and computed
- * by Stripe at payment. A code the tutor has since had suspended still shows
- * here until the parent presses buy, at which point checkout refuses it - the
+ * by Stripe at payment. A code that has since been suspended still shows here
+ * until the parent presses buy, at which point checkout refuses it - the
  * screen cannot promise what the payment then refuses, so the button carries
  * the code every time rather than the quote being trusted after the first one.
  */
@@ -57,7 +62,7 @@ export default function TutorCode({
   if (applied)
     return (
       <p role="status">
-        Tutor code <strong>{applied.label}</strong> applied —{" "}
+        Discount code <strong>{applied.label}</strong> applied —{" "}
         {applied.percentOff}% off the 1-year option.{" "}
         <button
           type="button"
@@ -71,20 +76,26 @@ export default function TutorCode({
     );
 
   return (
-    <form onSubmit={(event) => void apply(event)} className="tutor-code-form">
-      <label>
-        Tutor code, if your tutor gave you one
-        <input
-          type="text"
-          value={code}
-          onChange={(event) => setCode(event.target.value)}
-          placeholder="e.g. TUTOR-SARAH-20"
-          autoComplete="off"
-          disabled={busy}
-        />
-      </label>
-      <button type="submit" className="text-button" disabled={busy || !code.trim()}>
-        {busy ? "Checking…" : "Apply code"}
+    // `manage-form` rather than a class of its own: that is the styling every
+    // other code field on the account pages uses, so this one needs no CSS and
+    // cannot drift from them.
+    <form onSubmit={(event) => void apply(event)} className="manage-form">
+      <label htmlFor="discount-code">Discount code</label>
+      <input
+        id="discount-code"
+        type="text"
+        value={code}
+        onChange={(event) => setCode(event.target.value)}
+        placeholder="e.g. TUTOR-SARAH-20"
+        autoComplete="off"
+        disabled={busy}
+      />
+      <button
+        type="submit"
+        className="text-button"
+        disabled={busy || !code.trim()}
+      >
+        {busy ? "Checking…" : "Apply discount code"}
       </button>
       {error && (
         <p className="form-error" role="alert">

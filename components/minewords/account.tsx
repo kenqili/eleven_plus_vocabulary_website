@@ -274,72 +274,87 @@ export default function Account() {
   function planOptions() {
     if (!billing?.prices.length) return null;
     return (
-      <div className="plan-options">
-        {billing.prices.map((plan) => {
-          // A tutor code discounts the 1-year option only, and only while the
-          // quote is on screen: removing it returns the button to full price,
-          // and checkout re-validates the code rather than trusting this.
-          const quote =
-            plan.tier === "yearly" && tutorQuote?.tier === "yearly"
-              ? tutorQuote
-              : null;
-          return (
-            <button
-              key={plan.tier}
-              className="primary-button"
-              disabled={busy || plan.amount === null || plan.recurring}
-              onClick={() =>
-                void pay("checkout", plan.tier, quote?.label ?? undefined)
-              }
-            >
-              {busy ? "Please wait…" : plan.label}
-              {plan.amount !== null && !plan.recurring && (
-                <>
-                  {" — "}
-                  {new Intl.NumberFormat(undefined, {
-                    style: "currency",
-                    currency: plan.currency,
-                  }).format((quote?.discounted ?? plan.amount) / 100)}
-                  {quote ? (
-                    <>
-                      {" "}
-                      <s className="was-price" aria-hidden="true">
-                        {new Intl.NumberFormat(undefined, {
-                          style: "currency",
-                          currency: plan.currency,
-                        }).format(plan.amount / 100)}
-                      </s>
-                      <span className="sr-only">
-                        with tutor code {quote.label}, {quote.percentOff}{" "}
-                        percent off
-                      </span>
-                    </>
-                  ) : (
-                    /*
-                      The usual beside the charge, never instead of it. Struck
-                      through and hidden from the accessible name, which instead
-                      carries the word "usual" outright - a listener must never
-                      hear two bare prices and guess which one leaves the card.
-                      Shown only when priced: a usual without a charge is a
-                      reference price with no price.
-                    */
-                    plan.usual && (
+      // The discount code sits with the prices it discounts, not in the pile at
+      // the foot of the page: a code that changes what a button charges is part
+      // of choosing that button, and a parent who reaches the bottom after the
+      // buttons have failed them has given up on it. Rendered from here rather
+      // than beside each button so one field serves both the "add more access"
+      // and "your access has ended" branches - the only two that call this.
+      <>
+        <TutorCode
+          applied={tutorQuote}
+          onApplied={(quote) => setTutorQuote(quote)}
+          onClear={() => setTutorQuote(null)}
+        />
+        <div className="plan-options">
+          {billing.prices.map((plan) => {
+            // A discount code takes the 1-year option only, and only while the
+            // quote is on screen: removing it returns the button to full price,
+            // and checkout re-validates the code rather than trusting this.
+            const quote =
+              plan.tier === "yearly" && tutorQuote?.tier === "yearly"
+                ? tutorQuote
+                : null;
+            return (
+              <button
+                key={plan.tier}
+                className="primary-button"
+                disabled={busy || plan.amount === null || plan.recurring}
+                onClick={() =>
+                  void pay("checkout", plan.tier, quote?.label ?? undefined)
+                }
+              >
+                {busy ? "Please wait…" : plan.label}
+                {plan.amount !== null && !plan.recurring && (
+                  <>
+                    {" — "}
+                    {new Intl.NumberFormat(undefined, {
+                      style: "currency",
+                      currency: plan.currency,
+                    }).format((quote?.discounted ?? plan.amount) / 100)}
+                    {quote ? (
                       <>
                         {" "}
                         <s className="was-price" aria-hidden="true">
-                          {plan.usual}
+                          {new Intl.NumberFormat(undefined, {
+                            style: "currency",
+                            currency: plan.currency,
+                          }).format(plan.amount / 100)}
                         </s>
-                        <span className="sr-only">usual {plan.usual}</span>
+                        <span className="sr-only">
+                          with discount code {quote.label}, {quote.percentOff}{" "}
+                          percent off
+                        </span>
                       </>
-                    )
-                  )}
-                </>
-              )}
-              {plan.recurring && <span className="muted"> — not available</span>}
-            </button>
-          );
-        })}
-      </div>
+                    ) : (
+                      /*
+                        The usual beside the charge, never instead of it. Struck
+                        through and hidden from the accessible name, which instead
+                        carries the word "usual" outright - a listener must never
+                        hear two bare prices and guess which one leaves the card.
+                        Shown only when priced: a usual without a charge is a
+                        reference price with no price.
+                      */
+                      plan.usual && (
+                        <>
+                          {" "}
+                          <s className="was-price" aria-hidden="true">
+                            {plan.usual}
+                          </s>
+                          <span className="sr-only">usual {plan.usual}</span>
+                        </>
+                      )
+                    )}
+                  </>
+                )}
+                {plan.recurring && (
+                  <span className="muted"> — not available</span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </>
     );
   }
 
@@ -758,11 +773,8 @@ export default function Account() {
                   await refresh();
                 }}
               />
-              <TutorCode
-                applied={tutorQuote}
-                onApplied={(quote) => setTutorQuote(quote)}
-                onClear={() => setTutorQuote(null)}
-              />
+              {/* The discount code is not here: it renders with the price
+                  buttons in `planOptions`, where the price it changes is. */}
               <nav className="account-links" aria-label="Your account pages">
                 <Link href="/words">Word list</Link>
                 <Link href="/words/manage">Choose which words to practise</Link>

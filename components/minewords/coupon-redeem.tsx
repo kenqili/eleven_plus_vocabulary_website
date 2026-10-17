@@ -47,13 +47,19 @@ export default function CouponRedeem({
 
   return (
     <form className="manage-form" onSubmit={submit}>
-      <h2>Have a code?</h2>
+      <h2>Redeem a gift card</h2>
+      {/* Framed as a gift card rather than as hardship support, because leading
+          with "if the cost is a problem" labels the family as struggling at the
+          moment they arrive at the screen to keep their child practising.
+          Deliberately still says nothing about who funded it: the copy must not
+          name a payer or imply that money changed hands, which is both untrue
+          for these codes and the thing tests/coupon.test.mjs refuses on purpose.
+          What it does say is true - the code covers a term. */}
       <p className="muted">
-        If the cost is a problem, we may have sent you a code to keep your
-        access going. Enter it here and your child&apos;s access will be
-        extended.
+        If you have been sent a gift card or a code to cover a term, enter it
+        here and your child&apos;s access will be extended straight away.
       </p>
-      <label htmlFor="coupon-code">Your code</label>
+      <label htmlFor="coupon-code">Gift card code</label>
       <input
         id="coupon-code"
         value={code}
@@ -75,7 +81,7 @@ export default function CouponRedeem({
         </p>
       )}
       <button className="primary-button" disabled={busy}>
-        {busy ? "Checking…" : "Add this code"}
+        {busy ? "Checking…" : "Redeem code"}
       </button>
     </form>
   );
