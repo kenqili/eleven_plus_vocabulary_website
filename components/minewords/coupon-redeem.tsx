@@ -48,16 +48,18 @@ export default function CouponRedeem({
   return (
     <form className="manage-form" onSubmit={submit}>
       <h2>Redeem a gift card</h2>
-      {/* Framed as a gift card rather than as hardship support, because leading
-          with "if the cost is a problem" labels the family as struggling at the
-          moment they arrive at the screen to keep their child practising.
-          Deliberately still says nothing about who funded it: the copy must not
-          name a payer or imply that money changed hands, which is both untrue
-          for these codes and the thing tests/coupon.test.mjs refuses on purpose.
-          What it does say is true - the code covers a term. */}
+      {/* Framed as a gift card rather than as hardship support: leading with
+          "if the cost is a problem" puts a label on the family at the moment
+          they arrive to keep their child practising, and a code is simply
+          access somebody arranged. Still no claim about who arranged it or
+          whether money changed hands - a relative, a school, a tutor and a
+          hardship grant all use this one field, and the parent already knows
+          which. Guessing would be wrong for most readers and awkward for the
+          rest. */}
       <p className="muted">
-        If you have been sent a gift card or a code to cover a term, enter it
-        here and your child&apos;s access will be extended straight away.
+        If you have been given a code or a gift card — from a tutor, a school,
+        somebody who knows your child, or us — enter it here and their access
+        will be extended straight away.
       </p>
       <label htmlFor="coupon-code">Gift card code</label>
       <input

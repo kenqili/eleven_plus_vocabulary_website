@@ -423,11 +423,11 @@ test("the audit row answers where the new expiry came from", () => {
 
 test("a code is never presented to the parent as something they paid for", () => {
   // The one that is about money rather than about access. A code is paid for by
-  // somebody else - a school, a grandparent, a sponsor - which is the only reason
-  // it exists, and `purchases` is the table that accounts for what this account
-  // has spent. So a redemption appearing in it as "Paid" tells a parent they
-  // have been charged for something they were given, and there is no way for
-  // them to tell from the screen that they were not.
+  // somebody else - a school, a tutor, a relative - or given by us, and
+  // `purchases` is the table that accounts for what this account has spent. So a
+  // redemption appearing in it as "Paid" tells a parent they have been charged
+  // for something they were given, and there is no way for them to tell from the
+  // screen that they were not.
   //
   // It got there two ways at once, and both had to be closed. The server labelled
   // every row whose `product_id` was not a configured price id as the bare word
@@ -510,43 +510,21 @@ test("a code is never presented to the parent as something they paid for", () =>
     /What you have bought/,
     "a table containing codes is still captioned as purchases",
   );
-  // A code is hardship support - issued by us to a family who is finding the cost
-  // difficult - so it is never "paid for by someone else" either. That phrasing
-  // implies a third party bought a gift, which is not what a code is: nobody spent
-  // anything, and a parent who is struggling should never be shown a payer.
-  for (const [file, label] of [
-    ["components/minewords/account.tsx", "the account history table"],
-    ["components/minewords/coupon-redeem.tsx", "the code entry form"],
-    ["components/minewords/landing.tsx", "the landing page"],
-  ]) {
-    assert.doesNotMatch(
-      code(file),
-      /paid for by someone else|being paid for by someone else/i,
-      `${label} still describes a code as paid for by a third party, which is not what a hardship code is`,
-    );
-  }
-  assert.doesNotMatch(
-    code("components/minewords/coupon-redeem.tsx"),
-    /grandparent|sponsor/i,
-    "the code form still describes a code as a gift from a grandparent or sponsor",
-  );
+  // Nothing is asserted about who a code came from, and that is deliberate.
+  // These codes were once described everywhere as hardship support issued by us,
+  // and rules here enforced that framing - no payer named, no gift implied, and
+  // the admin screen required to say what a code was for. It was removed as a
+  // rule because it is not what a code is: a code is access somebody arranged,
+  // and the parent reading the screen already knows who that was. Removing it is
+  // a decision, so it is recorded here rather than left as an absence for
+  // somebody to helpfully restore.
+  //
+  // What remains is the money rule this test is named for, and it is unaffected:
+  // whoever arranged the code, this account is never told it paid.
   assert.match(
     code("components/minewords/account.tsx"),
     /at no charge/,
     "a redeemed code is not marked as free",
-  );
-  // The admin screen says what a code is for, and it is the screen where that
-  // matters most - this is the page somebody reads before deciding whether to
-  // issue one.
-  assert.match(
-    code("components/minewords/admin.tsx"),
-    /hardship|who has told you the cost is a problem/i,
-    "the admin screen does not say that codes are hardship support",
-  );
-  assert.doesNotMatch(
-    code("components/minewords/admin.tsx"),
-    /grandparent|sponsor|whoever is paying/i,
-    "the admin screen still describes codes as gifts from a third party",
   );
   // And the summary sentence and the table must agree about which rows exist -
   // they disagreed, because the sentence filtered on `status === "paid"` and so

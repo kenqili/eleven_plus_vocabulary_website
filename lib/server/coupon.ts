@@ -35,7 +35,7 @@ import { randomBytes } from "node:crypto";
  * tell a code from a payment and this is the only thing in the row that says
  * which it was. It was a literal on each side, which is two places to keep in
  * step and one place to be wrong in - and being wrong in that direction puts a
- * hardship code in front of a parent as something they paid for.
+ * code in front of a parent as something they paid for.
  *
  * It carries the coupon's **id**, not its code, so the row does not republish a
  * bearer token into a table the account page reads back.

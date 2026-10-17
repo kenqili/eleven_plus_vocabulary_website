@@ -136,10 +136,12 @@ export default function AdminPage() {
         <section className="manage-panel">
           <h2>Issue coupon codes</h2>
           <p className="muted">
-            Thirty-two codes at a time, each worth the same length. These are
-            hardship codes: issue one to a family who has told you the cost is a
-            problem, and they enter it on their account page to keep their
-            child&apos;s access going. A code works once.
+            Thirty-two codes at a time, each worth the same length. A code
+            grants that much access with nothing to pay: the family enters it on
+            their account page and it extends their child&apos;s access from
+            whatever date they already have. Issue one to a family who needs it
+            - because the cost is a problem, or because somebody has arranged to
+            cover it for them. A code works once.
           </p>
           <div className="account-actions">
             {LENGTHS.map((length) => (

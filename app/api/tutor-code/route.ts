@@ -26,7 +26,7 @@ export async function POST(request: Request) {
   return boundary(async () => {
     sameOrigin(request);
     const user = await requireUser(request);
-    // Counted per account and per address, like the hardship-code redemption:
+    // Counted per account and per address, like the coupon redemption:
     // a script working through codes it has been sent is bounded either way.
     await rateLimit(`tutor-code:${user.id}`, 20);
     await rateLimit(

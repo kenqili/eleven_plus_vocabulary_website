@@ -691,14 +691,12 @@ export default function Account() {
                 reads as a page that failed to load.
 
                 Titled and headed by what happened rather than by who paid, because
-                a code is in here too. This account did not pay for it — a code is
-                issued to a family finding the cost difficult, which is the only
-                reason the feature exists — and a heading that said "What you have
-                bought" above a row for one asked a parent who was already
-                struggling to reconcile a debt they do not owe. The heading used
-                to be "Everything that has extended your access", which was
-                accurate and unreadable; "Payments and codes" says the same thing
-                in the words a parent would use.
+                a code is in here too. This account did not pay for it, and a
+                heading that said "What you have bought" above a row for one was
+                a false claim about their money rather than an insensitive one.
+                The heading used to be "Everything that has extended your
+                access", which was accurate and unreadable; "Payments and codes"
+                says the same thing in the words a parent would use.
               */}
               {!!billing?.purchases.length && (
                 <section className="account-purchases">
@@ -730,10 +728,10 @@ export default function Account() {
                             <td>
                               {/*
                                 Three states, not two. This read "Paid" for
-                                anything that was not a refund, so a code a
-                                grandparent-funded or hardship-issued was shown to the parent as a
-                                purchase they had paid for - in the one table whose
-                                job is to account for their money.
+                                anything that was not a refund, so a code given
+                                to the account was shown to the parent as a
+                                purchase they had paid for - in the one table
+                                whose job is to account for their money.
 
                                 The day count is not rendered when it is zero,
                                 which is what a code row looks like after the code

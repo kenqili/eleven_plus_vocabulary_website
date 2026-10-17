@@ -50,7 +50,7 @@ export async function POST(request: Request) {
     // codes, which is more than a school needs in a fortnight.
     await rateLimit(`coupon-issue:${admin.id}`, 10);
     const input = await body(request);
-    // Dispatched, with the hardship batch as the default: the admin page has
+    // Dispatched, with the coupon batch as the default: the admin page has
     // posted `{days}` here since before actions existed, and renaming that
     // call is churn with no benefit. New callers name what they want.
     const action =
