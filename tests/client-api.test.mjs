@@ -44,7 +44,7 @@ const CALLERS = [
   "components/minewords/manage-words.tsx",
   "components/minewords/reset-password.tsx",
   "components/minewords/story-reader.tsx",
-  "components/minewords/tutor-code.tsx",
+  "components/minewords/discount-code.tsx",
 ];
 
 test("no caller passes a fetch-shaped options object as the payload", () => {
@@ -80,8 +80,8 @@ test("the billing route reads the tier from the payload, so a dropped call break
   // The reason this is worth a test rather than a convention: the tier is what
   // the checkout route takes from the body, so the call shape is the whole
   // contract. A payload that arrives as `{method, body}` produces a 400 with
-  // no server log entry and a message about choosing a length. The tutor code
-  // rides alongside under its own name since the yearly button gained it.
+  // no server log entry and a message about choosing a length. The discount
+  // code rides alongside under its own name since the yearly button gained it.
   const route = client("app/api/billing/[action]/route.ts");
   assert.match(route, /const input = await body\(request\)/);
   assert.match(route, /input\.tier/);
@@ -94,8 +94,8 @@ test("the billing route reads the tier from the payload, so a dropped call break
   );
   assert.match(
     account,
-    /tutorCode \? \{ tutorCode \} : \{\}/,
-    "the tutor code does not travel under its own name",
+    /discountCode \? \{ discountCode \} : \{\}/,
+    "the discount code does not travel under its own name",
   );
 });
 

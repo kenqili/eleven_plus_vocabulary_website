@@ -4,9 +4,9 @@
  *
  * A tutor gets a code (TUTOR-SARAH-20) to hand to their students and a rebate
  * for each one who uses it. We issue ourselves vouchers (SUMMER-50) that differ
- * in one thing: they belong to nobody. Both are rows in `tutor_codes`, both are
- * one Stripe coupon plus one promotion code, and both are counted the same way,
- * because from the parent's side they are the same offer.
+ * in one thing: they belong to nobody. Both are rows in `discount_codes`, both
+ * are one Stripe coupon plus one promotion code, and both are counted the same
+ * way, because from the parent's side they are the same offer.
  *
  * The money math lives in Stripe - a coupon per percent, one promotion code per
  * code - and this module holds the mapping plus the policy (yearly only,
@@ -19,7 +19,7 @@
  * access. A coupon leaves the price id untouched, so the entire grant and
  * webhook path works with no changes.
  *
- * Why the count is COUNT(*) over `tutor_redemptions` and never a cached
+ * Why the count is COUNT(*) over `discount_redemptions` and never a cached
  * number: a cached count and the rows can disagree, and the rows are the
  * audit. The UNIQUE index on `payment_intent` is what makes a redelivered
  * webhook recover a lost count instead of doubling one.
@@ -31,11 +31,11 @@ import { stripe } from "./billing";
 /** The discount tutors give, as whole percent. Ours may differ per voucher. */
 export const TUTOR_PERCENT_OFF = 20;
 /** The only term any code discounts. A code on any other tier is refused. */
-export const TUTOR_TIER = "yearly";
+export const DISCOUNT_TIER = "yearly";
 /** How many families may use one code before Stripe refuses it. */
-export const TUTOR_MAX_REDEMPTIONS = 100;
+export const DEFAULT_MAX_REDEMPTIONS = 100;
 /** How long an issued code lasts, in months. */
-export const TUTOR_CODE_MONTHS = 12;
+export const DEFAULT_CODE_MONTHS = 12;
 /**
  * The Stripe coupon for a percent: one per percent, shared by every code worth
  * it.
@@ -53,7 +53,7 @@ export function voucherCouponId(percentOff: number): string {
 const LABEL_PREFIX = "TUTOR-";
 const LABEL_SUFFIX = `-${TUTOR_PERCENT_OFF}`;
 
-export type TutorCode = {
+export type DiscountCode = {
   id: string;
   label: string;
   /** Null when the code is ours rather than a tutor's. */
@@ -76,7 +76,7 @@ export type TutorCode = {
  * because the lookup is by value and an unbounded input is a log line, not a
  * code.
  */
-export function normaliseTutorCode(input: string): string {
+export function normaliseCode(input: string): string {
   return input
     .trim()
     .toUpperCase()
@@ -92,7 +92,10 @@ export function normaliseTutorCode(input: string): string {
  * reading TUTOR-SARAH-20 off a whiteboard cannot misstate the discount.
  * Collisions (two Sarahs) get -2, -3, counted from the rows already stored.
  */
-export function tutorCodeLabel(name: string, taken: ReadonlySet<string>): string {
+export function tutorCodeLabel(
+  name: string,
+  taken: ReadonlySet<string>,
+): string {
   const stem =
     name
       .toUpperCase()
@@ -134,7 +137,9 @@ export function houseVoucherLabel(
       400,
       "TUTOR- is for tutor codes. Name the voucher after the promotion.",
     );
-  const named = stem.endsWith(`-${percentOff}`) ? stem : `${stem}-${percentOff}`;
+  const named = stem.endsWith(`-${percentOff}`)
+    ? stem
+    : `${stem}-${percentOff}`;
   let full = named;
   for (let n = 2; taken.has(full); n += 1) full = `${named}-${n}`;
   return full;
@@ -180,7 +185,7 @@ async function ensureCoupon(percentOff: number): Promise<string> {
 /** Every label already stored, for the collision rules to count from. */
 async function takenLabels(): Promise<Set<string>> {
   const rows = await database()
-    .prepare("SELECT label FROM tutor_codes")
+    .prepare("SELECT label FROM discount_codes")
     .all<{ label: string }>();
   return new Set(rows.results.map((row) => row.label));
 }
@@ -229,7 +234,7 @@ async function issueCode(input: {
   const codeId = crypto.randomUUID();
   await db
     .prepare(
-      `INSERT INTO tutor_codes
+      `INSERT INTO discount_codes
          (id,tutor_id,label,tier,stripe_coupon_id,stripe_promotion_code_id,percent_off,max_redemptions,expires_at,status,created_at)
        VALUES (?,?,?,?,'','',?,?,?,'active',?)`,
     )
@@ -237,7 +242,7 @@ async function issueCode(input: {
       codeId,
       input.tutorId,
       input.label,
-      TUTOR_TIER,
+      DISCOUNT_TIER,
       input.percentOff,
       input.maxRedemptions,
       expiresAt,
@@ -261,7 +266,7 @@ async function issueCode(input: {
   // reads as suspended, so the issued code would never work.
   await db
     .prepare(
-      "UPDATE tutor_codes SET stripe_coupon_id=?, stripe_promotion_code_id=? WHERE id=?",
+      "UPDATE discount_codes SET stripe_coupon_id=?, stripe_promotion_code_id=? WHERE id=?",
     )
     .bind(couponId, promo.id, codeId)
     .run();
@@ -280,13 +285,13 @@ export async function issueTutorCode(input: {
 }): Promise<{ label: string; tutorId: string; codeId: string }> {
   const name = (input.tutorName ?? "").trim().slice(0, 80);
   if (!name) throw new HttpError(400, "Name the tutor the code is for.");
-  const maxRedemptions = input.maxRedemptions ?? TUTOR_MAX_REDEMPTIONS;
+  const maxRedemptions = input.maxRedemptions ?? DEFAULT_MAX_REDEMPTIONS;
   checkCap(maxRedemptions);
-  const monthsValid = input.monthsValid ?? TUTOR_CODE_MONTHS;
+  const monthsValid = input.monthsValid ?? DEFAULT_CODE_MONTHS;
   checkMonths(monthsValid);
   const db = database();
   const taken = await takenLabels();
-  const wanted = input.label ? normaliseTutorCode(input.label) : "";
+  const wanted = input.label ? normaliseCode(input.label) : "";
   const label = wanted || tutorCodeLabel(name, taken);
   // The shape, not just the affixes: the collision suffix (-2, -3) rides after
   // the percent, so an endsWith check would refuse the very labels the
@@ -309,7 +314,12 @@ export async function issueTutorCode(input: {
     .prepare(
       "INSERT INTO tutors (id,name,contact,status,created_at) VALUES (?,?,?,'active',?)",
     )
-    .bind(tutorId, name, (input.contact ?? "").trim().slice(0, 160) || null, now)
+    .bind(
+      tutorId,
+      name,
+      (input.contact ?? "").trim().slice(0, 160) || null,
+      now,
+    )
     .run();
   const codeId = await issueCode({
     label,
@@ -343,15 +353,11 @@ export async function issueHouseVoucher(input: {
   // create a Stripe promotion code no payment can use.
   if (!Number.isInteger(percentOff) || percentOff < 1 || percentOff > 90)
     throw new HttpError(400, "Pick a whole percent between 1 and 90.");
-  const maxRedemptions = input.maxRedemptions ?? TUTOR_MAX_REDEMPTIONS;
+  const maxRedemptions = input.maxRedemptions ?? DEFAULT_MAX_REDEMPTIONS;
   checkCap(maxRedemptions);
-  const monthsValid = input.monthsValid ?? TUTOR_CODE_MONTHS;
+  const monthsValid = input.monthsValid ?? DEFAULT_CODE_MONTHS;
   checkMonths(monthsValid);
-  const label = houseVoucherLabel(
-    input.label,
-    percentOff,
-    await takenLabels(),
-  );
+  const label = houseVoucherLabel(input.label, percentOff, await takenLabels());
   const codeId = await issueCode({
     label,
     percentOff,
@@ -372,11 +378,11 @@ export async function issueHouseVoucher(input: {
  * Redemption counts are NOT checked here: Stripe enforces the cap at payment
  * time, and a count read here would race the payment anyway.
  */
-export async function quoteTutorCode(
+export async function quoteDiscountCode(
   rawLabel: string,
   tier: string,
-): Promise<TutorCode> {
-  const label = normaliseTutorCode(rawLabel);
+): Promise<DiscountCode> {
+  const label = normaliseCode(rawLabel);
   if (!label) throw new HttpError(400, "Enter your code.");
   // LEFT JOIN, because our own vouchers have no tutor. A plain JOIN would drop
   // them silently, and the parent would be told their code was invalid - the
@@ -389,11 +395,11 @@ export async function quoteTutorCode(
               c.stripe_promotion_code_id AS stripePromotionCodeId,
               c.percent_off AS percentOff, c.max_redemptions AS maxRedemptions,
               c.expires_at AS expiresAt, c.status
-         FROM tutor_codes c LEFT JOIN tutors t ON t.id = c.tutor_id
+         FROM discount_codes c LEFT JOIN tutors t ON t.id = c.tutor_id
         WHERE c.label = ?`,
     )
     .bind(label)
-    .first<TutorCode & { tutorStatus?: string | null }>();
+    .first<DiscountCode & { tutorStatus?: string | null }>();
   const usable =
     row &&
     row.status === "active" &&
@@ -432,19 +438,19 @@ export function discountedAmount(amount: number, percentOff: number): number {
  * a lost count (the grant already happened, so a grant-gated write would skip
  * it) instead of doubling one.
  */
-export async function recordTutorRedemption(input: {
+export async function recordRedemption(input: {
   paymentIntent: string;
   userId: string;
   label: string;
 }): Promise<boolean> {
-  const label = normaliseTutorCode(input.label);
+  const label = normaliseCode(input.label);
   if (!label || !input.paymentIntent) return false;
   const now = Date.now();
   const result = await database()
     .prepare(
-      `INSERT INTO tutor_redemptions (id,tutor_code_id,user_id,payment_intent,created_at)
+      `INSERT INTO discount_redemptions (id,discount_code_id,user_id,payment_intent,created_at)
        SELECT ?, c.id, ?, ?, ?
-         FROM tutor_codes c
+         FROM discount_codes c
         WHERE c.label = ?
           AND EXISTS (SELECT 1 FROM purchases WHERE confirmation = ?)
         ON CONFLICT(payment_intent) DO NOTHING`,
@@ -462,7 +468,7 @@ export async function recordTutorRedemption(input: {
 }
 
 /** Per-code redemption counts, for the admin page and the private splits. */
-export async function tutorCodeStats(): Promise<
+export async function discountCodeStats(): Promise<
   Array<{
     id: string;
     label: string;
@@ -487,9 +493,9 @@ export async function tutorCodeStats(): Promise<
         `SELECT c.id, c.label, c.tutor_id AS tutorId, t.name AS tutorName,
                 t.contact, c.tier,
                 c.percent_off AS percentOff, c.max_redemptions AS maxRedemptions,
-                (SELECT COUNT(*) FROM tutor_redemptions r WHERE r.tutor_code_id = c.id) AS redeemed,
+                (SELECT COUNT(*) FROM discount_redemptions r WHERE r.discount_code_id = c.id) AS redeemed,
                 c.expires_at AS expiresAt, c.status, c.created_at AS createdAt
-           FROM tutor_codes c LEFT JOIN tutors t ON t.id = c.tutor_id
+           FROM discount_codes c LEFT JOIN tutors t ON t.id = c.tutor_id
           ORDER BY c.created_at DESC
           LIMIT 100`,
       )
@@ -520,10 +526,10 @@ export async function tutorCodeStats(): Promise<
  * longer work with, or a promotion we have called off; expiry and the
  * redemption cap are the normal endings and need no action.
  */
-export async function suspendTutorCode(codeId: string): Promise<void> {
+export async function suspendDiscountCode(codeId: string): Promise<void> {
   const db = database();
   const row = await db
-    .prepare("SELECT stripe_promotion_code_id FROM tutor_codes WHERE id = ?")
+    .prepare("SELECT stripe_promotion_code_id FROM discount_codes WHERE id = ?")
     .bind(codeId)
     .first<{ stripe_promotion_code_id: string }>();
   if (!row) throw new HttpError(404, "No such code.");
@@ -541,7 +547,7 @@ export async function suspendTutorCode(codeId: string): Promise<void> {
     }
   }
   await db
-    .prepare("UPDATE tutor_codes SET status='suspended' WHERE id = ?")
+    .prepare("UPDATE discount_codes SET status='suspended' WHERE id = ?")
     .bind(codeId)
     .run();
 }

@@ -26,7 +26,7 @@ const LENGTHS = [
   { days: 365, label: "1 year" },
 ];
 
-type TutorCodeRow = {
+type DiscountCodeRow = {
   id: string;
   label: string;
   /** Null when the code is ours rather than a tutor's. */
@@ -56,7 +56,7 @@ export default function AdminPage() {
       issued: number;
       redeemed: number;
     }[];
-    tutorCodes: TutorCodeRow[];
+    discountCodes: DiscountCodeRow[];
   } | null>(null);
   const [tutorName, setTutorName] = useState("");
   const [tutorContact, setTutorContact] = useState("");
@@ -142,10 +142,10 @@ export default function AdminPage() {
     }
   }
 
-  async function suspendTutorCode(codeId: string) {
+  async function suspendDiscountCode(codeId: string) {
     setTutorError("");
     try {
-      await api("/api/admin", { action: "suspend-tutor-code", codeId });
+      await api("/api/admin", { action: "suspend-discount-code", codeId });
       await load();
     } catch (cause) {
       setTutorError(
@@ -371,7 +371,7 @@ export default function AdminPage() {
           )}
         </section>
 
-        {stats && stats.tutorCodes.length > 0 && (
+        {stats && stats.discountCodes.length > 0 && (
           <section className="manage-panel">
             <h2>Codes so far</h2>
             <div className="word-table-wrap">
@@ -390,7 +390,7 @@ export default function AdminPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {stats.tutorCodes.map((row) => (
+                  {stats.discountCodes.map((row) => (
                     <tr key={row.id}>
                       <td>
                         {row.tutorName ?? "Us"}
@@ -411,7 +411,7 @@ export default function AdminPage() {
                         {row.status === "active" && (
                           <button
                             className="text-button"
-                            onClick={() => void suspendTutorCode(row.id)}
+                            onClick={() => void suspendDiscountCode(row.id)}
                           >
                             Suspend
                           </button>

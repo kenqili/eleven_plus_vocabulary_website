@@ -1,6 +1,6 @@
 import { setting } from "@/lib/server/db";
 import { grantPurchase, revokePurchase } from "@/lib/server/billing";
-import { recordTutorRedemption } from "@/lib/server/tutor-codes";
+import { recordRedemption } from "@/lib/server/discount-codes";
 import { verifyStripeSignature } from "@/lib/server/webhook";
 import { boundary, HttpError, json } from "@/lib/server/http";
 
@@ -85,23 +85,26 @@ export async function POST(request: Request) {
         );
       } else {
         await grantPurchase(paymentIntentId, userId, priceId);
-        // A tutor's code on this purchase counts for them, exactly once. Read
-        // from the same metadata the price comes from - written at checkout,
-        // echoed verbatim, no extra Stripe call. Attempted whether or not the
-        // grant above was new: on a redelivery the grant collides and reports
-        // nothing, but the purchases row exists, which is the only condition
-        // the insert needs - so a redelivery recovers a lost count instead of
-        // the count depending on which delivery wrote it. Thrown, like the
-        // grant: the insert is idempotent on the payment intent, so redelivery
-        // completes a count it missed rather than doubling one, and a swallowed
-        // failure here would undercount a tutor in silence.
-        const tutorCode =
-          expanded?.metadata?.tutor_code || object.metadata?.tutor_code || "";
-        if (typeof tutorCode === "string" && tutorCode) {
-          await recordTutorRedemption({
+        // A code on this purchase counts once - for the tutor who handed it
+        // out, or, when it is one of ours, as how many families the promotion
+        // reached. Read from the same metadata the price comes from - written
+        // at checkout, echoed verbatim, no extra Stripe call. Attempted whether
+        // or not the grant above was new: on a redelivery the grant collides
+        // and reports nothing, but the purchases row exists, which is the only
+        // condition the insert needs - so a redelivery recovers a lost count
+        // instead of the count depending on which delivery wrote it. Thrown,
+        // like the grant: the insert is idempotent on the payment intent, so
+        // redelivery completes a count it missed rather than doubling one, and
+        // a swallowed failure here would undercount in silence.
+        const discountCode =
+          expanded?.metadata?.discount_code ||
+          object.metadata?.discount_code ||
+          "";
+        if (typeof discountCode === "string" && discountCode) {
+          await recordRedemption({
             paymentIntent: paymentIntentId,
             userId,
-            label: tutorCode,
+            label: discountCode,
           });
         }
       }

@@ -8,9 +8,9 @@ import {
 } from "@/lib/server/billing";
 import {
   discountedAmount,
-  quoteTutorCode,
-  TUTOR_TIER,
-} from "@/lib/server/tutor-codes";
+  quoteDiscountCode,
+  DISCOUNT_TIER,
+} from "@/lib/server/discount-codes";
 import { body, boundary, HttpError, json, sameOrigin } from "@/lib/server/http";
 
 /**
@@ -31,21 +31,22 @@ export async function POST(request: Request) {
     const user = await requireUser(request);
     // Counted per account and per address, like the coupon redemption:
     // a script working through codes it has been sent is bounded either way.
-    await rateLimit(`tutor-code:${user.id}`, 20);
+    await rateLimit(`discount-code:${user.id}`, 20);
     await rateLimit(
-      `tutor-code-ip:${request.headers.get("cf-connecting-ip") || "local"}`,
+      `discount-code-ip:${request.headers.get("cf-connecting-ip") || "local"}`,
       30,
     );
     if (!billingReady())
       throw new HttpError(503, "Membership payments are not available yet.");
     const input = await body(request);
     const code = typeof input.code === "string" ? input.code : "";
-    const tier = availableTiers().find((t) => t.id === TUTOR_TIER);
+    const tier = availableTiers().find((t) => t.id === DISCOUNT_TIER);
     if (!tier) throw new HttpError(503, "The 1-year option is not available.");
-    const quoted = await quoteTutorCode(code, tier.id);
-    const price = await stripe<{ unit_amount: number | null; currency: string }>(
-      `prices/${encodeURIComponent(priceFor(tier.id))}`,
-    );
+    const quoted = await quoteDiscountCode(code, tier.id);
+    const price = await stripe<{
+      unit_amount: number | null;
+      currency: string;
+    }>(`prices/${encodeURIComponent(priceFor(tier.id))}`);
     if (price.unit_amount === null)
       throw new HttpError(503, "The 1-year price could not be read.");
     const amount = price.unit_amount;

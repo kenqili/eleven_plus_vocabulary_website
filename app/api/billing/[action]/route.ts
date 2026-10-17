@@ -15,7 +15,7 @@ import {
 } from "@/lib/server/billing";
 import { boundary, body, HttpError, json, sameOrigin } from "@/lib/server/http";
 import { COUPON_CONFIRMATION_PREFIX } from "@/lib/server/coupon";
-import { quoteTutorCode } from "@/lib/server/tutor-codes";
+import { quoteDiscountCode } from "@/lib/server/discount-codes";
 
 /**
  * What this parent has bought, from the `purchases` rows the webhook writes.
@@ -329,15 +329,16 @@ export async function POST(
         503,
         `The ${tier.label} option is set up as a recurring price, which this site does not use. Please choose another option.`,
       );
-    // A tutor's code, discounting the yearly term by 20%. Validated here, not
-    // trusted from the client: the quote checks our ledger (known, active,
-    // unexpired, tutor in good standing, yearly only), and the grant needs no
-    // changes because the coupon leaves the price id untouched.
+    // A discount code - a tutor's or one of our own vouchers - taking its
+    // percent off the yearly term. Validated here, not trusted from the client:
+    // the quote checks our ledger (known, active, unexpired, tutor in good
+    // standing where there is one, yearly only), and the grant needs no changes
+    // because the coupon leaves the price id untouched.
     const rawCode =
-      typeof input.tutorCode === "string" ? input.tutorCode : "";
+      typeof input.discountCode === "string" ? input.discountCode : "";
     let discount: { label: string; promotionCodeId: string } | null = null;
     if (rawCode.trim()) {
-      const quoted = await quoteTutorCode(rawCode, tier.id);
+      const quoted = await quoteDiscountCode(rawCode, tier.id);
       // Stripe-side backstop, best effort. Our checks pass, but the promotion
       // code itself may have been exhausted or deactivated in the dashboard
       // since. A working code costs one extra read per checkout; a failed read

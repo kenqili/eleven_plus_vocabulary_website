@@ -29,6 +29,13 @@
       "when": 1792229439778,
       "tag": "0003_house_vouchers",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1792253871812,
+      "tag": "0004_discount_code_tables",
+      "breakpoints": true
     }
   ]
 }

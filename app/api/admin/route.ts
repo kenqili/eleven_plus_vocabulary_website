@@ -25,19 +25,19 @@ import { couponStats, issueCoupons } from "@/lib/server/coupon";
 import {
   issueHouseVoucher,
   issueTutorCode,
-  suspendTutorCode,
-  tutorCodeStats,
-} from "@/lib/server/tutor-codes";
+  suspendDiscountCode,
+  discountCodeStats,
+} from "@/lib/server/discount-codes";
 import { body, boundary, HttpError, json, sameOrigin } from "@/lib/server/http";
 
 export async function GET(request: Request) {
   return boundary(async () => {
     await requireAdmin(request);
-    const [coupons, tutorCodes] = await Promise.all([
+    const [coupons, discountCodes] = await Promise.all([
       couponStats(),
-      tutorCodeStats(),
+      discountCodeStats(),
     ]);
-    return json({ ...coupons, tutorCodes });
+    return json({ ...coupons, discountCodes });
   });
 }
 
@@ -84,10 +84,10 @@ export async function POST(request: Request) {
       });
       return json({ ok: true, ...issued });
     }
-    if (action === "suspend-tutor-code") {
+    if (action === "suspend-discount-code") {
       if (typeof input.codeId !== "string" || !input.codeId)
         throw new HttpError(400, "Choose which code to suspend.");
-      await suspendTutorCode(input.codeId);
+      await suspendDiscountCode(input.codeId);
       return json({ ok: true });
     }
     throw new HttpError(404, "Unknown action.");

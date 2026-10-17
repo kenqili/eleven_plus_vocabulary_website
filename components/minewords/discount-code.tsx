@@ -2,10 +2,15 @@
 import { useState, type FormEvent } from "react";
 import { api } from "@/lib/client/api";
 
-/** What the server says a tutor code is worth, before anyone pays. */
-export type TutorQuote = {
+/** What the server says a discount code is worth, before anyone pays. */
+export type DiscountQuote = {
   label: string;
-  tutorName: string;
+  /**
+   * The tutor the code belongs to, or null when it is one of ours. The label is
+   * what the parent sees; this is what the accounts side would need to know
+   * whose code was used.
+   */
+  tutorName: string | null;
   percentOff: number;
   tier: string;
   currency: string;
@@ -17,10 +22,10 @@ export type TutorQuote = {
 /**
  * A discount code, entered before buying.
  *
- * Called a discount code rather than a tutor code because the code need not come
- * from a tutor - tutors hold the first of these, and the same form serves a
- * school or a referral offer equally well. The server decides what a code may
- * discount; this only shows the parent what they were quoted.
+ * One field for both kinds: a tutor's code and one of our own vouchers differ in
+ * who they belong to and in the percent, not in how they are typed in or what
+ * happens next. The server decides what a code may discount; this only shows the
+ * parent what they were quoted.
  *
  * Display only: applying it here changes what the 1-year button shows and what
  * it sends, but the discount itself is validated again at checkout and computed
@@ -29,13 +34,13 @@ export type TutorQuote = {
  * screen cannot promise what the payment then refuses, so the button carries
  * the code every time rather than the quote being trusted after the first one.
  */
-export default function TutorCode({
+export default function DiscountCode({
   applied,
   onApplied,
   onClear,
 }: {
-  applied: TutorQuote | null;
-  onApplied: (quote: TutorQuote) => void;
+  applied: DiscountQuote | null;
+  onApplied: (quote: DiscountQuote) => void;
   onClear: () => void;
 }) {
   const [code, setCode] = useState("");
@@ -48,7 +53,7 @@ export default function TutorCode({
     setBusy(true);
     setError("");
     try {
-      onApplied(await api<TutorQuote>("/api/tutor-code", { code }));
+      onApplied(await api<DiscountQuote>("/api/discount-code", { code }));
       setCode("");
     } catch (cause) {
       setError(

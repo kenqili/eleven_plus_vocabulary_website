@@ -1,6 +1,6 @@
 import { database, setting } from "./db";
 import { HttpError } from "./http";
-import { recordTutorRedemption } from "./tutor-codes";
+import { recordRedemption } from "./discount-codes";
 import { sendEmail } from "./email";
 import { CONTACT_EMAIL } from "@/lib/contact";
 import { words } from "@/lib/challenge/bank";
@@ -813,7 +813,7 @@ export async function checkoutSession(
     // cannot gain a discount after creation, so there is nothing to update.
     if (existing.status === "open") {
       const openedFor = existing.metadata?.price_id;
-      const openedWith = existing.metadata?.tutor_code || "";
+      const openedWith = existing.metadata?.discount_code || "";
       if (
         (!openedFor || openedFor === priceFor(tier)) &&
         openedWith === (discount?.label || "")
@@ -896,12 +896,12 @@ export async function checkoutSession(
       // the webhook's own delivery recovers the count anyway: the insert is
       // keyed on the payment intent, so a later delivery completes it instead
       // of doubling it.
-      if (granted && existing.metadata?.tutor_code) {
+      if (granted && existing.metadata?.discount_code) {
         try {
-          await recordTutorRedemption({
+          await recordRedemption({
             paymentIntent: existing.payment_intent,
             userId,
-            label: existing.metadata.tutor_code,
+            label: existing.metadata.discount_code,
           });
         } catch (error) {
           console.error(
@@ -1080,8 +1080,8 @@ export async function checkoutSession(
       ...(discount
         ? {
             "discounts[0][promotion_code]": discount.promotionCodeId,
-            "metadata[tutor_code]": discount.label,
-            "payment_intent_data[metadata][tutor_code]": discount.label,
+            "metadata[discount_code]": discount.label,
+            "payment_intent_data[metadata][discount_code]": discount.label,
           }
         : {}),
       expires_at: String(row.created_at + 3600),

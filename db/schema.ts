@@ -126,10 +126,12 @@ export const coupons = sqliteTable(
 );
 
 /**
- * Who a tutor discount code belongs to.
+ * Who a tutor's code belongs to.
  *
- * No commission columns: the split with each tutor is settled privately, so
- * the system records redemptions, not money owed. See drizzle/0002_tutor_codes.sql.
+ * Only tutors: one of our own vouchers belongs to nobody and has no row here.
+ * No commission columns either: the split with each tutor is settled privately,
+ * so the system records redemptions, not money owed. See
+ * drizzle/0002_tutor_codes.sql.
  */
 export const tutors = sqliteTable("tutors", {
   id: text("id").primaryKey(),
@@ -146,14 +148,14 @@ export const tutors = sqliteTable("tutors", {
  * The money math lives in Stripe (a coupon per percent, one promotion code per
  * code); this row is the mapping plus the policy (tier, cap, expiry, status)
  * that validation reads without a network call. Redemption counts are
- * COUNT(*) over tutor_redemptions, never a cached number.
+ * COUNT(*) over discount_redemptions, never a cached number.
  *
  * `tutorId` null means the code is ours - a voucher for a promotion - and it is
  * the only difference in the row: everything downstream treats the two alike,
  * because from the parent's side they are the same thing.
  */
-export const tutorCodes = sqliteTable(
-  "tutor_codes",
+export const discountCodes = sqliteTable(
+  "discount_codes",
   {
     id: text("id").primaryKey(),
     tutorId: text("tutor_id").references(() => tutors.id, {
@@ -174,27 +176,27 @@ export const tutorCodes = sqliteTable(
     createdAt: integer("created_at").notNull(),
   },
   (t) => [
-    uniqueIndex("tutor_code_label").on(t.label),
-    index("tutor_codes_tutor").on(t.tutorId),
+    uniqueIndex("discount_code_label").on(t.label),
+    index("discount_codes_tutor").on(t.tutorId),
   ],
 );
 
-/** One row per paid referral, keyed on the payment intent. */
-export const tutorRedemptions = sqliteTable(
-  "tutor_redemptions",
+/** One redemption, keyed on the payment intent: one paid family, counted once. */
+export const discountRedemptions = sqliteTable(
+  "discount_redemptions",
   {
     id: text("id").primaryKey(),
-    tutorCodeId: text("tutor_code_id")
+    discountCodeId: text("discount_code_id")
       .notNull()
-      .references(() => tutorCodes.id, { onDelete: "cascade" }),
+      .references(() => discountCodes.id, { onDelete: "cascade" }),
     userId: text("user_id").references(() => users.id, { onDelete: "set null" }),
     /** Unique per payment, so a redelivered webhook cannot count twice. */
     paymentIntent: text("payment_intent").notNull(),
     createdAt: integer("created_at").notNull(),
   },
   (t) => [
-    uniqueIndex("tutor_redemption_payment").on(t.paymentIntent),
-    index("tutor_redemptions_code").on(t.tutorCodeId),
+    uniqueIndex("discount_redemption_payment").on(t.paymentIntent),
+    index("discount_redemptions_code").on(t.discountCodeId),
   ],
 );
 

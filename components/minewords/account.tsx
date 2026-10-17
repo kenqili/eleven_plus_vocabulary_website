@@ -6,7 +6,7 @@ import { api } from "@/lib/client/api";
 import { CONTACT_EMAIL } from "@/lib/contact";
 import AccountSecurity from "./account-security";
 import CouponRedeem from "./coupon-redeem";
-import TutorCode, { type TutorQuote } from "./tutor-code";
+import DiscountCode, { type DiscountQuote } from "./discount-code";
 import DeleteAccount from "./delete-account";
 type User = { id: string; email: string };
 type Billing = {
@@ -108,7 +108,7 @@ export default function Account() {
   const [resetting, setResetting] = useState(false),
     [resetEmail, setResetEmail] = useState("");
   /** A tutor code the parent applied: discount on the 1-year button only. */
-  const [tutorQuote, setTutorQuote] = useState<TutorQuote | null>(null);
+  const [discountQuote, setDiscountQuote] = useState<DiscountQuote | null>(null);
   /**
    * The parent is waiting for a confirmation, rather than for the form to work.
    *
@@ -281,10 +281,10 @@ export default function Account() {
       // than beside each button so one field serves both the "add more access"
       // and "your access has ended" branches - the only two that call this.
       <>
-        <TutorCode
-          applied={tutorQuote}
-          onApplied={(quote) => setTutorQuote(quote)}
-          onClear={() => setTutorQuote(null)}
+        <DiscountCode
+          applied={discountQuote}
+          onApplied={(quote) => setDiscountQuote(quote)}
+          onClear={() => setDiscountQuote(null)}
         />
         <div className="plan-options">
           {billing.prices.map((plan) => {
@@ -292,8 +292,8 @@ export default function Account() {
             // quote is on screen: removing it returns the button to full price,
             // and checkout re-validates the code rather than trusting this.
             const quote =
-              plan.tier === "yearly" && tutorQuote?.tier === "yearly"
-                ? tutorQuote
+              plan.tier === "yearly" && discountQuote?.tier === "yearly"
+                ? discountQuote
                 : null;
             return (
               <button
@@ -376,7 +376,7 @@ export default function Account() {
    * under way. A timeout here does not stop the purchase; it only stops the parent
    * from being able to see it happen.
    */
-  async function pay(action: string, tier?: string, tutorCode?: string) {
+  async function pay(action: string, tier?: string, discountCode?: string) {
     setBusy(true);
     setError("");
     try {
@@ -387,7 +387,7 @@ export default function Account() {
       // useful in the log.
       const result = await api<{ url: string }>(
         `/api/billing/${action}`,
-        { ...(tier ? { tier } : {}), ...(tutorCode ? { tutorCode } : {}) },
+        { ...(tier ? { tier } : {}), ...(discountCode ? { discountCode } : {}) },
         { timeoutMs: CHECKOUT_TIMEOUT_MS, safeToRetry: false },
       );
       window.location.assign(result.url);
