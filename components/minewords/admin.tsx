@@ -29,7 +29,9 @@ const LENGTHS = [
 type TutorCodeRow = {
   id: string;
   label: string;
-  tutorName: string;
+  /** Null when the code is ours rather than a tutor's. */
+  tutorId: string | null;
+  tutorName: string | null;
   contact: string | null;
   tier: string;
   percentOff: number;
@@ -61,6 +63,11 @@ export default function AdminPage() {
   const [tutorBusy, setTutorBusy] = useState(false);
   const [tutorError, setTutorError] = useState("");
   const [issuedLabel, setIssuedLabel] = useState<string | null>(null);
+  const [voucherName, setVoucherName] = useState("");
+  const [voucherPercent, setVoucherPercent] = useState(20);
+  const [voucherBusy, setVoucherBusy] = useState(false);
+  const [voucherError, setVoucherError] = useState("");
+  const [voucherLabel, setVoucherLabel] = useState<string | null>(null);
 
   async function load() {
     try {
@@ -110,6 +117,28 @@ export default function AdminPage() {
       );
     } finally {
       setTutorBusy(false);
+    }
+  }
+
+  async function issueVoucher() {
+    setVoucherBusy(true);
+    setVoucherError("");
+    setVoucherLabel(null);
+    try {
+      const result = await api<{ label: string }>("/api/admin", {
+        action: "issue-house-voucher",
+        label: voucherName,
+        percentOff: voucherPercent,
+      });
+      setVoucherLabel(result.label);
+      setVoucherName("");
+      await load();
+    } catch (cause) {
+      setVoucherError(
+        cause instanceof Error ? cause.message : "Could not do that.",
+      );
+    } finally {
+      setVoucherBusy(false);
     }
   }
 
@@ -287,15 +316,71 @@ export default function AdminPage() {
           )}
         </section>
 
+        <section className="manage-panel">
+          <h2>Our own vouchers</h2>
+          <p className="muted">
+            A voucher for a promotion, not attached to a tutor: name it after
+            the promotion and pick the discount. It works the same way on the
+            account page, counts the same way, and is suspended the same way.
+            The percent rides on the end of the label, so SUMMER-50 is 50% off.
+          </p>
+          <div className="account-actions">
+            <label>
+              Promotion name
+              <input
+                type="text"
+                value={voucherName}
+                onChange={(event) => setVoucherName(event.target.value)}
+                placeholder="e.g. Summer sale"
+                autoComplete="off"
+              />
+            </label>
+            <label>
+              Percent off the 1-year option
+              <input
+                type="number"
+                min={1}
+                max={90}
+                step={1}
+                value={voucherPercent}
+                onChange={(event) =>
+                  setVoucherPercent(Number(event.target.value))
+                }
+              />
+            </label>
+          </div>
+          {voucherError && (
+            <p className="form-error" role="alert">
+              {voucherError}
+            </p>
+          )}
+          <div className="account-actions">
+            <button
+              className="primary-button"
+              disabled={voucherBusy || !voucherName.trim()}
+              onClick={() => void issueVoucher()}
+            >
+              Issue voucher
+            </button>
+          </div>
+          {voucherLabel && (
+            <p role="status">
+              Issued <strong>{voucherLabel}</strong> - share it however you
+              like.
+            </p>
+          )}
+        </section>
+
         {stats && stats.tutorCodes.length > 0 && (
           <section className="manage-panel">
-            <h2>Tutor codes so far</h2>
+            <h2>Codes so far</h2>
             <div className="word-table-wrap">
               <table className="word-table">
                 <thead>
                   <tr>
-                    <th scope="col">Tutor</th>
+                    <th scope="col">Belongs to</th>
                     <th scope="col">Code</th>
+                    <th scope="col">Discount</th>
                     <th scope="col">Used</th>
                     <th scope="col">Expires</th>
                     <th scope="col">Status</th>
@@ -308,12 +393,13 @@ export default function AdminPage() {
                   {stats.tutorCodes.map((row) => (
                     <tr key={row.id}>
                       <td>
-                        {row.tutorName}
+                        {row.tutorName ?? "Us"}
                         {row.contact && (
                           <small className="muted"> {row.contact}</small>
                         )}
                       </td>
                       <td>{row.label}</td>
+                      <td>{row.percentOff}% off 1 year</td>
                       <td>
                         {row.redeemed} of {row.maxRedemptions}
                       </td>

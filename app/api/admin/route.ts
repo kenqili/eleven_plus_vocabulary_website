@@ -1,10 +1,10 @@
 /**
- * The administrator's own surface: issue coupons and tutor discount codes,
- * and see what has been issued.
+ * The administrator's own surface: issue coupons, tutor codes and our own
+ * vouchers, and see what has been issued.
  *
- * Tutor redemption counts are counts, not money: like the coupon batches they
- * say how many codes went out and how many came back, never what was paid.
- * The money stays in Stripe's dashboard, per the note below.
+ * Redemption counts are counts, not money: like the coupon batches they say how
+ * many codes went out and how many came back, never what was paid. The money
+ * stays in Stripe's dashboard, per the note below.
  *
  * Every route here is behind `requireAdmin`, which is the only check that exists.
  * There is no second gate in the client and no page-level guard - the client is
@@ -23,6 +23,7 @@ import { rateLimit } from "@/lib/server/auth";
 import { requireAdmin } from "@/lib/server/admin";
 import { couponStats, issueCoupons } from "@/lib/server/coupon";
 import {
+  issueHouseVoucher,
   issueTutorCode,
   suspendTutorCode,
   tutorCodeStats,
@@ -73,6 +74,13 @@ export async function POST(request: Request) {
         monthsValid:
           input.monthsValid === undefined ? undefined : Number(input.monthsValid),
         label: typeof input.label === "string" ? input.label : "",
+      });
+      return json({ ok: true, ...issued });
+    }
+    if (action === "issue-house-voucher") {
+      const issued = await issueHouseVoucher({
+        label: typeof input.label === "string" ? input.label : "",
+        percentOff: Number(input.percentOff),
       });
       return json({ ok: true, ...issued });
     }

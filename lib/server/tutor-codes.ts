@@ -1,9 +1,15 @@
 /**
- * Tutor discount codes: 20% off the yearly term, one code per tutor.
+ * Discount codes: 20% off the yearly term for a tutor's students, and our own
+ * vouchers for a promotion, with any percent.
  *
- * A tutor gets a code (TUTOR-SARAH-20) to hand to their students. The money
- * math lives in Stripe - one shared 20%-off coupon, one promotion code per
- * tutor - and this module holds the mapping plus the policy (yearly only,
+ * A tutor gets a code (TUTOR-SARAH-20) to hand to their students and a rebate
+ * for each one who uses it. We issue ourselves vouchers (SUMMER-50) that differ
+ * in one thing: they belong to nobody. Both are rows in `tutor_codes`, both are
+ * one Stripe coupon plus one promotion code, and both are counted the same way,
+ * because from the parent's side they are the same offer.
+ *
+ * The money math lives in Stripe - a coupon per percent, one promotion code per
+ * code - and this module holds the mapping plus the policy (yearly only,
  * redemption cap, expiry, suspension) that validation reads without a network
  * call, and the redemption count the private split is worked out from.
  *
@@ -22,22 +28,26 @@ import { database } from "./db";
 import { HttpError } from "./http";
 import { stripe } from "./billing";
 
-/** The only discount tutors give, as whole percent. */
+/** The discount tutors give, as whole percent. Ours may differ per voucher. */
 export const TUTOR_PERCENT_OFF = 20;
-/** The only term a tutor code discounts. A code on any other tier is refused. */
+/** The only term any code discounts. A code on any other tier is refused. */
 export const TUTOR_TIER = "yearly";
-/** How many students may use one code before Stripe refuses it. */
+/** How many families may use one code before Stripe refuses it. */
 export const TUTOR_MAX_REDEMPTIONS = 100;
 /** How long an issued code lasts, in months. */
 export const TUTOR_CODE_MONTHS = 12;
 /**
- * The shared Stripe coupon every tutor promotion code points at.
+ * The Stripe coupon for a percent: one per percent, shared by every code worth
+ * it.
  *
- * One coupon, many promotion codes: the percent lives in exactly one place,
- * and issuing a code never mints money rules. Created on first issue if it is
- * not there yet, looked up by this fixed id.
+ * One coupon per percent and many promotion codes per coupon, because the
+ * percent is a money rule and there should be one place it lives: issuing ten
+ * 20% codes must not create ten ways for the discount to be edited. The id is
+ * derived, so the coupon can be found in the dashboard from the percent alone.
  */
-export const TUTOR_COUPON_ID = "tutor-20-yearly";
+export function voucherCouponId(percentOff: number): string {
+  return `voucher-${percentOff}-yearly`;
+}
 
 /** What a code looks like: TUTOR-SARAH-20. Prefix enforced, never optional. */
 const LABEL_PREFIX = "TUTOR-";
@@ -46,8 +56,9 @@ const LABEL_SUFFIX = `-${TUTOR_PERCENT_OFF}`;
 export type TutorCode = {
   id: string;
   label: string;
-  tutorId: string;
-  tutorName: string;
+  /** Null when the code is ours rather than a tutor's. */
+  tutorId: string | null;
+  tutorName: string | null;
   tier: string;
   stripeCouponId: string;
   stripePromotionCodeId: string;
@@ -95,44 +106,170 @@ export function tutorCodeLabel(name: string, taken: ReadonlySet<string>): string
 }
 
 /**
- * The shared 20%-off coupon, created once.
+ * The label for one of our own vouchers, from what we want to call it.
  *
- * Tried first, confirmed after: creating with a fixed id collides when the
- * coupon already exists, and a blind create-then-ignore would also ignore the
- * coupon existing with a different percent - which would discount every tutor
- * code wrongly from then on. So a failed create is followed by a read, and the
- * read must show 20 or this throws rather than issuing against a coupon nobody
- * checked.
+ * Named after the promotion rather than after us - SUMMER-SALE-50 - because the
+ * label is the one thing a parent reads back to us when something goes wrong,
+ * and "VOUCHER" tells them nothing about which offer they took. The percent
+ * rides on the end for the reason it does on a tutor's code: a label read off a
+ * screen or a flyer says what it is worth.
+ *
+ * TUTOR- is refused rather than sanitised. It is the prefix that marks a code as
+ * a tutor's, and one of ours wearing it would file our promotion under somebody
+ * else's rebate.
  */
-async function ensureSharedCoupon(): Promise<string> {
-  try {
-    await stripe<Record<string, unknown>>("coupons", {
-      id: TUTOR_COUPON_ID,
-      percent_off: String(TUTOR_PERCENT_OFF),
-      duration: "once",
-    });
-    return TUTOR_COUPON_ID;
-  } catch {
-    const existing = await stripe<{ percent_off?: number }>(
-      `coupons/${encodeURIComponent(TUTOR_COUPON_ID)}`,
+export function houseVoucherLabel(
+  label: string,
+  percentOff: number,
+  taken: ReadonlySet<string>,
+): string {
+  const stem = (label ?? "")
+    .toUpperCase()
+    .replace(/[^A-Z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 40);
+  if (!stem) throw new HttpError(400, "Name the voucher.");
+  if (stem.startsWith(LABEL_PREFIX))
+    throw new HttpError(
+      400,
+      "TUTOR- is for tutor codes. Name the voucher after the promotion.",
     );
-    if (existing?.percent_off !== TUTOR_PERCENT_OFF)
-      throw new HttpError(
-        503,
-        "The tutor discount is misconfigured. No code was issued.",
-      );
-    return TUTOR_COUPON_ID;
-  }
+  const named = stem.endsWith(`-${percentOff}`) ? stem : `${stem}-${percentOff}`;
+  let full = named;
+  for (let n = 2; taken.has(full); n += 1) full = `${named}-${n}`;
+  return full;
 }
 
 /**
- * Issue a code to a tutor: our rows plus the Stripe promotion code, in that
- * order.
+ * The coupon for a percent, created once.
  *
- * Our rows first, because a Stripe object with no row behind it is a code that
+ * One coupon per percent rather than one per code: the percent is a money rule,
+ * and a rule edited in one place is a rule that cannot come to mean two things.
+ * The id is derived from the percent, so the object can be found in the
+ * dashboard without a lookup here.
+ *
+ * Tried first, confirmed after: creating with a fixed id collides when the
+ * coupon already exists, and a blind create-then-ignore would also ignore the
+ * coupon existing with a different percent - which would discount every code
+ * worth that percent wrongly from then on. So a failed create is followed by a
+ * read, and the read must show the percent asked for, or this throws rather
+ * than issuing against a coupon nobody checked.
+ */
+async function ensureCoupon(percentOff: number): Promise<string> {
+  const id = voucherCouponId(percentOff);
+  try {
+    await stripe<Record<string, unknown>>("coupons", {
+      id,
+      percent_off: String(percentOff),
+      duration: "once",
+    });
+    return id;
+  } catch {
+    const existing = await stripe<{ percent_off?: number }>(
+      `coupons/${encodeURIComponent(id)}`,
+    );
+    if (existing?.percent_off !== percentOff)
+      throw new HttpError(
+        503,
+        "The discount is misconfigured. No code was issued.",
+      );
+    return id;
+  }
+}
+
+/** Every label already stored, for the collision rules to count from. */
+async function takenLabels(): Promise<Set<string>> {
+  const rows = await database()
+    .prepare("SELECT label FROM tutor_codes")
+    .all<{ label: string }>();
+  return new Set(rows.results.map((row) => row.label));
+}
+
+/** Shared by both issuers: the cap is a policy, not a per-issuer opinion. */
+function checkCap(maxRedemptions: number): void {
+  if (
+    !Number.isInteger(maxRedemptions) ||
+    maxRedemptions < 1 ||
+    maxRedemptions > 1000
+  )
+    throw new HttpError(400, "Cap redemptions between 1 and 1000.");
+}
+
+/** As above, for expiry. Stripe is told the same date, in seconds. */
+function checkMonths(monthsValid: number): void {
+  if (!Number.isInteger(monthsValid) || monthsValid < 1 || monthsValid > 36)
+    throw new HttpError(400, "Set validity between 1 and 36 months.");
+}
+
+/**
+ * The row, the Stripe objects, and the ids written back - one code, either
+ * kind.
+ *
+ * Our row first, because a Stripe object with no row behind it is a code that
  * works and that nobody can see, count or suspend - money out with no ledger.
- * The failure the other way round (rows without a Stripe code) fails safe, as
- * the note at the Stripe step explains.
+ * The failure the other way round (a row with no Stripe code) fails safe: an
+ * empty promotion code id reads as suspended, so the code refuses at checkout
+ * rather than working unseen, and re-issuing collides onto -2 and leaves the
+ * dead row in front of the administrator.
+ *
+ * The two steps cannot be made one. Stripe is a network call and D1 is a
+ * database, so there is a window either way; this is the order whose window
+ * fails towards refusing money rather than towards taking it.
+ */
+async function issueCode(input: {
+  label: string;
+  percentOff: number;
+  tutorId: string | null;
+  maxRedemptions: number;
+  monthsValid: number;
+}): Promise<string> {
+  const db = database();
+  const now = Date.now();
+  const expiresAt = now + input.monthsValid * 30 * 86_400_000;
+  const codeId = crypto.randomUUID();
+  await db
+    .prepare(
+      `INSERT INTO tutor_codes
+         (id,tutor_id,label,tier,stripe_coupon_id,stripe_promotion_code_id,percent_off,max_redemptions,expires_at,status,created_at)
+       VALUES (?,?,?,?,'','',?,?,?,'active',?)`,
+    )
+    .bind(
+      codeId,
+      input.tutorId,
+      input.label,
+      TUTOR_TIER,
+      input.percentOff,
+      input.maxRedemptions,
+      expiresAt,
+      now,
+    )
+    .run();
+  const couponId = await ensureCoupon(input.percentOff);
+  // Stripe counts expiry in seconds; the database in milliseconds. Converted
+  // here, once, because a seconds value stored as milliseconds would read as
+  // January 1970 and a milliseconds value sent to Stripe would run for 30,000
+  // years.
+  const promo = await stripe<{ id: string }>("promotion_codes", {
+    code: input.label,
+    coupon: couponId,
+    active: "true",
+    max_redemptions: String(input.maxRedemptions),
+    expires_at: String(Math.floor(expiresAt / 1000)),
+  });
+  // `.run()` is the statement: without it this is a prepared query that changes
+  // nothing, and the row keeps its empty promotion code id - which validation
+  // reads as suspended, so the issued code would never work.
+  await db
+    .prepare(
+      "UPDATE tutor_codes SET stripe_coupon_id=?, stripe_promotion_code_id=? WHERE id=?",
+    )
+    .bind(couponId, promo.id, codeId)
+    .run();
+  return codeId;
+}
+
+/**
+ * Issue a code to a tutor: 20% off, one per tutor, for their students.
  */
 export async function issueTutorCode(input: {
   tutorName: string;
@@ -144,23 +281,11 @@ export async function issueTutorCode(input: {
   const name = (input.tutorName ?? "").trim().slice(0, 80);
   if (!name) throw new HttpError(400, "Name the tutor the code is for.");
   const maxRedemptions = input.maxRedemptions ?? TUTOR_MAX_REDEMPTIONS;
-  if (
-    !Number.isInteger(maxRedemptions) ||
-    maxRedemptions < 1 ||
-    maxRedemptions > 1000
-  )
-    throw new HttpError(400, "Cap redemptions between 1 and 1000.");
+  checkCap(maxRedemptions);
   const monthsValid = input.monthsValid ?? TUTOR_CODE_MONTHS;
-  if (!Number.isInteger(monthsValid) || monthsValid < 1 || monthsValid > 36)
-    throw new HttpError(400, "Set validity between 1 and 36 months.");
+  checkMonths(monthsValid);
   const db = database();
-  const taken = new Set(
-    (
-      await db
-        .prepare("SELECT label FROM tutor_codes")
-        .all<{ label: string }>()
-    ).results.map((row) => row.label),
-  );
+  const taken = await takenLabels();
   const wanted = input.label ? normaliseTutorCode(input.label) : "";
   const label = wanted || tutorCodeLabel(name, taken);
   // The shape, not just the affixes: the collision suffix (-2, -3) rides after
@@ -176,62 +301,65 @@ export async function issueTutorCode(input: {
       `Labels look like TUTOR-NAME-${TUTOR_PERCENT_OFF} and must be unused.`,
     );
   const now = Date.now();
-  const expiresAt = now + monthsValid * 30 * 86_400_000;
   const tutorId = crypto.randomUUID();
-  const codeId = crypto.randomUUID();
-  await db.batch([
-    db
-      .prepare(
-        "INSERT INTO tutors (id,name,contact,status,created_at) VALUES (?,?,?,'active',?)",
-      )
-      .bind(tutorId, name, (input.contact ?? "").trim().slice(0, 160) || null, now),
-    // The Stripe promotion code id follows: an empty string validates as
-    // suspended, so a failure between here and the Stripe create leaves a row
-    // that refuses rather than a code that works unseen. See above.
-    db
-      .prepare(
-        `INSERT INTO tutor_codes
-           (id,tutor_id,label,tier,stripe_coupon_id,stripe_promotion_code_id,percent_off,max_redemptions,expires_at,status,created_at)
-         VALUES (?,?,?,?,'','',?,?,?,'active',?)`,
-      )
-      .bind(
-        codeId,
-        tutorId,
-        label,
-        TUTOR_TIER,
-        TUTOR_PERCENT_OFF,
-        maxRedemptions,
-        expiresAt,
-        now,
-      ),
-  ]);
-  // Our insert and the Stripe create are separate steps, and a failure between
-  // them leaves a row whose promotion code id is empty, which validation
-  // refuses like a suspended code. Re-issuing then collides onto -2, and the
-  // dead row stays visible rather than silently working. A row that cannot
-  // validate cannot take money, which is the safe direction to fail in.
-  const couponId = await ensureSharedCoupon();
-  // Stripe counts expiry in seconds; the database in milliseconds. Converted
-  // here, once, because a seconds value stored as milliseconds would read as
-  // January 1970 and a milliseconds value sent to Stripe would run for 30,000
-  // years.
-  const promo = await stripe<{ id: string }>("promotion_codes", {
-    code: label,
-    coupon: couponId,
-    active: "true",
-    max_redemptions: String(maxRedemptions),
-    expires_at: String(Math.floor(expiresAt / 1000)),
-  });
-  // `.run()` is the statement: without it this is a prepared query that
-  // changes nothing, and the row keeps its empty promotion code id - which
-  // validation reads as suspended, so the issued code would never work.
+  // The tutor row and their code are one batch: a tutor with no code is a name
+  // the administrator typed and cannot see again, and a code with no tutor is
+  // ours, which is a different thing. `issueCode` owns the code itself.
   await db
     .prepare(
-      "UPDATE tutor_codes SET stripe_coupon_id=?, stripe_promotion_code_id=? WHERE id=?",
+      "INSERT INTO tutors (id,name,contact,status,created_at) VALUES (?,?,?,'active',?)",
     )
-    .bind(couponId, promo.id, codeId)
+    .bind(tutorId, name, (input.contact ?? "").trim().slice(0, 160) || null, now)
     .run();
+  const codeId = await issueCode({
+    label,
+    percentOff: TUTOR_PERCENT_OFF,
+    tutorId,
+    maxRedemptions,
+    monthsValid,
+  });
   return { label, tutorId, codeId };
+}
+
+/**
+ * Issue one of our own vouchers: any percent, named after the promotion, not
+ * attached to anybody.
+ *
+ * No `tutors` row is created. A house voucher has no issuer to record, and
+ * inventing a tutor row called "us" would put a name in the rebate list that
+ * nobody is owed anything against - so `tutor_id` stays NULL, which is exactly
+ * what that column means.
+ */
+export async function issueHouseVoucher(input: {
+  label: string;
+  percentOff: number;
+  maxRedemptions?: number;
+  monthsValid?: number;
+}): Promise<{ label: string; codeId: string }> {
+  const percentOff = Number(input.percentOff);
+  // Whole percent, and never 100: a voucher that makes the yearly term free is
+  // the coupon feature, which grants access without a payment and therefore
+  // without a price to discount. Reaching for this one to do that job would
+  // create a Stripe promotion code no payment can use.
+  if (!Number.isInteger(percentOff) || percentOff < 1 || percentOff > 90)
+    throw new HttpError(400, "Pick a whole percent between 1 and 90.");
+  const maxRedemptions = input.maxRedemptions ?? TUTOR_MAX_REDEMPTIONS;
+  checkCap(maxRedemptions);
+  const monthsValid = input.monthsValid ?? TUTOR_CODE_MONTHS;
+  checkMonths(monthsValid);
+  const label = houseVoucherLabel(
+    input.label,
+    percentOff,
+    await takenLabels(),
+  );
+  const codeId = await issueCode({
+    label,
+    percentOff,
+    tutorId: null,
+    maxRedemptions,
+    monthsValid,
+  });
+  return { label, codeId };
 }
 
 /**
@@ -249,19 +377,23 @@ export async function quoteTutorCode(
   tier: string,
 ): Promise<TutorCode> {
   const label = normaliseTutorCode(rawLabel);
-  if (!label) throw new HttpError(400, "Enter your tutor's code.");
+  if (!label) throw new HttpError(400, "Enter your code.");
+  // LEFT JOIN, because our own vouchers have no tutor. A plain JOIN would drop
+  // them silently, and the parent would be told their code was invalid - the
+  // one failure mode where a working code is refused and nobody can see why.
   const row = await database()
     .prepare(
-      `SELECT c.id, c.label, c.tutor_id AS tutorId, t.name AS tutorName, c.tier,
+      `SELECT c.id, c.label, c.tutor_id AS tutorId, t.name AS tutorName,
+              t.status AS tutorStatus, c.tier,
               c.stripe_coupon_id AS stripeCouponId,
               c.stripe_promotion_code_id AS stripePromotionCodeId,
               c.percent_off AS percentOff, c.max_redemptions AS maxRedemptions,
               c.expires_at AS expiresAt, c.status
-         FROM tutor_codes c JOIN tutors t ON t.id = c.tutor_id
+         FROM tutor_codes c LEFT JOIN tutors t ON t.id = c.tutor_id
         WHERE c.label = ?`,
     )
     .bind(label)
-    .first<TutorCode & { status: string } & { tutorStatus?: never }>();
+    .first<TutorCode & { tutorStatus?: string | null }>();
   const usable =
     row &&
     row.status === "active" &&
@@ -269,17 +401,12 @@ export async function quoteTutorCode(
     row.stripePromotionCodeId !== "";
   // Suspended tutors invalidate their codes: a tutor who is no longer someone
   // we work with must not keep discounting, and the code is theirs, not the
-  // student's, so there is nothing grandfathered.
-  const tutorActive =
-    usable &&
-    (await database()
-      .prepare("SELECT status FROM tutors WHERE id = ?")
-      .bind(row.tutorId)
-      .first<{ status: string }>())?.status === "active";
-  if (!usable || !tutorActive)
-    throw new HttpError(400, "That tutor code is not valid.");
+  // student's, so there is nothing grandfathered. A code with no tutor has no
+  // one to suspend - it is ours, and suspending it is what `status` is for.
+  if (!usable || (row.tutorId !== null && row.tutorStatus !== "active"))
+    throw new HttpError(400, "That code is not valid.");
   if (tier !== row.tier)
-    throw new HttpError(400, "Tutor codes work on the 1-year option.");
+    throw new HttpError(400, "This code works on the 1-year option.");
   return row;
 }
 
@@ -339,7 +466,8 @@ export async function tutorCodeStats(): Promise<
   Array<{
     id: string;
     label: string;
-    tutorName: string;
+    tutorId: string | null;
+    tutorName: string | null;
     contact: string | null;
     tier: string;
     percentOff: number;
@@ -353,18 +481,23 @@ export async function tutorCodeStats(): Promise<
   const rows = (
     await database()
       .prepare(
-        `SELECT c.id, c.label, t.name AS tutorName, t.contact, c.tier,
+        // LEFT JOIN, so our own vouchers are listed rather than dropped: the
+        // page that issues them is the page that counts them, and a voucher
+        // missing from the list is one nobody can suspend.
+        `SELECT c.id, c.label, c.tutor_id AS tutorId, t.name AS tutorName,
+                t.contact, c.tier,
                 c.percent_off AS percentOff, c.max_redemptions AS maxRedemptions,
                 (SELECT COUNT(*) FROM tutor_redemptions r WHERE r.tutor_code_id = c.id) AS redeemed,
                 c.expires_at AS expiresAt, c.status, c.created_at AS createdAt
-           FROM tutor_codes c JOIN tutors t ON t.id = c.tutor_id
+           FROM tutor_codes c LEFT JOIN tutors t ON t.id = c.tutor_id
           ORDER BY c.created_at DESC
           LIMIT 100`,
       )
       .all<{
         id: string;
         label: string;
-        tutorName: string;
+        tutorId: string | null;
+        tutorName: string | null;
         contact: string | null;
         tier: string;
         percentOff: number;
@@ -383,9 +516,9 @@ export async function tutorCodeStats(): Promise<
  *
  * Both, because either alone leaves a working code: ours alone still
  * discounts at Stripe, Stripe's alone still validates here and is then
- * refused at payment with a worse message. Suspension is for tutors who are
- * no longer someone we work with; expiry and the redemption cap are the
- * normal endings and need no action.
+ * refused at payment with a worse message. Suspension is for a tutor we no
+ * longer work with, or a promotion we have called off; expiry and the
+ * redemption cap are the normal endings and need no action.
  */
 export async function suspendTutorCode(codeId: string): Promise<void> {
   const db = database();
@@ -393,7 +526,7 @@ export async function suspendTutorCode(codeId: string): Promise<void> {
     .prepare("SELECT stripe_promotion_code_id FROM tutor_codes WHERE id = ?")
     .bind(codeId)
     .first<{ stripe_promotion_code_id: string }>();
-  if (!row) throw new HttpError(404, "No such tutor code.");
+  if (!row) throw new HttpError(404, "No such code.");
   if (row.stripe_promotion_code_id) {
     try {
       await stripe(
@@ -402,7 +535,7 @@ export async function suspendTutorCode(codeId: string): Promise<void> {
       );
     } catch (error) {
       console.error(
-        "Tutor promotion code could not be deactivated at Stripe",
+        "Promotion code could not be deactivated at Stripe",
         error instanceof Error ? error.message : "Unknown error",
       );
     }

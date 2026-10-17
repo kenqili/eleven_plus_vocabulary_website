@@ -348,7 +348,7 @@ export async function POST(
           `promotion_codes/${encodeURIComponent(quoted.stripePromotionCodeId)}`,
         );
         if (promo?.active === false)
-          throw new HttpError(400, "That tutor code is not valid.");
+          throw new HttpError(400, "That code is not valid.");
       } catch (error) {
         if (error instanceof HttpError && error.status === 400) throw error;
       }

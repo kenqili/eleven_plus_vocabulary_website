@@ -14,7 +14,10 @@ import {
 import { body, boundary, HttpError, json, sameOrigin } from "@/lib/server/http";
 
 /**
- * What a tutor code is worth, before anyone pays.
+ * What a code is worth, before anyone pays.
+ *
+ * A tutor's code or one of our own vouchers - the same field takes either, and
+ * the only difference the parent sees is the label and the percent.
  *
  * Display only: the quote names the percent and both figures so the button
  * can show them, but Stripe does the final computation at payment. A code the

@@ -141,20 +141,24 @@ export const tutors = sqliteTable("tutors", {
 });
 
 /**
- * A tutor's discount code, taking percent_off off one tier.
+ * A discount code: a tutor's, or one of ours.
  *
- * The money math lives in Stripe (a shared coupon, one promotion code per
- * tutor); this row is the mapping plus the policy (tier, cap, expiry, status)
+ * The money math lives in Stripe (a coupon per percent, one promotion code per
+ * code); this row is the mapping plus the policy (tier, cap, expiry, status)
  * that validation reads without a network call. Redemption counts are
  * COUNT(*) over tutor_redemptions, never a cached number.
+ *
+ * `tutorId` null means the code is ours - a voucher for a promotion - and it is
+ * the only difference in the row: everything downstream treats the two alike,
+ * because from the parent's side they are the same thing.
  */
 export const tutorCodes = sqliteTable(
   "tutor_codes",
   {
     id: text("id").primaryKey(),
-    tutorId: text("tutor_id")
-      .notNull()
-      .references(() => tutors.id, { onDelete: "cascade" }),
+    tutorId: text("tutor_id").references(() => tutors.id, {
+      onDelete: "cascade",
+    }),
     /** Upper case, hyphens kept, TUTOR- prefix enforced at issue. */
     label: text("label").notNull(),
     /** The only term this code discounts. 'yearly' for every code so far. */

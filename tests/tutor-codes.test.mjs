@@ -148,7 +148,7 @@ async function seedCode(db, overrides = {}) {
       "tutor-1",
       "TUTOR-SARAH-CHEN-20",
       "yearly",
-      "tutor-20-yearly",
+      "voucher-20-yearly",
       "promo_test_1",
       20,
       100,
@@ -196,10 +196,163 @@ test("labels name the tutor and the discount, and survive collisions", async () 
   });
 });
 
+test("our own vouchers are named after the promotion and carry their percent", async () => {
+  await withDatabase(async (_db, mod) => {
+    assert.equal(
+      mod.houseVoucherLabel("Summer sale", 50, new Set()),
+      "SUMMER-SALE-50",
+    );
+    // Typing the percent into the name is not punished with a second one.
+    assert.equal(
+      mod.houseVoucherLabel("Summer sale-50", 50, new Set()),
+      "SUMMER-SALE-50",
+    );
+    // Two promotions called the same thing get -2, counted from the rows.
+    assert.equal(
+      mod.houseVoucherLabel("Summer sale", 50, new Set(["SUMMER-SALE-50"])),
+      "SUMMER-SALE-50-2",
+    );
+    assert.equal(mod.voucherCouponId(50), "voucher-50-yearly");
+    // TUTOR- is refused rather than sanitised: it is the prefix that files a
+    // code under a tutor's rebate, and this one is not a tutor's.
+    assert.throws(() => mod.houseVoucherLabel("TUTOR-SARAH-20", 50, new Set()), {
+      message: "TUTOR- is for tutor codes. Name the voucher after the promotion.",
+    });
+    assert.throws(() => mod.houseVoucherLabel("   ", 50, new Set()), {
+      message: "Name the voucher.",
+    });
+  });
+});
+
+test("a voucher's percent is whole and never a hundred", async () => {
+  await withDatabase(async (_db, mod) => {
+    for (const percentOff of [0, 91, 12.5, Number.NaN]) {
+      await assert.rejects(
+        mod.issueHouseVoucher({ label: "Test", percentOff }),
+        { message: "Pick a whole percent between 1 and 90." },
+        `accepted ${percentOff}`,
+      );
+    }
+  });
+});
+
+test("issuing a voucher creates its own coupon and no tutor row", async () => {
+  await withDatabase(async (db, mod) => {
+    const stripe = stubStripe(({ method, path }) => {
+      if (method === "POST" && path === "coupons")
+        return { body: { id: "voucher-50-yearly", percent_off: 50 } };
+      if (method === "POST" && path === "promotion_codes")
+        return { body: { id: "promo_house_1" } };
+      return undefined;
+    });
+    try {
+      const issued = await mod.issueHouseVoucher({
+        label: "Summer sale",
+        percentOff: 50,
+      });
+      assert.equal(issued.label, "SUMMER-SALE-50");
+      // A coupon of its own, at its own percent: the 20% every tutor code
+      // points at is not reusable for a 50% promotion.
+      const coupon = stripe.calls.find(
+        (c) => c.method === "POST" && c.path === "coupons",
+      );
+      assert.ok(coupon, "a Stripe coupon is created");
+      assert.equal(coupon.params.id, "voucher-50-yearly");
+      assert.equal(coupon.params.percent_off, "50");
+      const promo = stripe.calls.find(
+        (c) => c.method === "POST" && c.path === "promotion_codes",
+      );
+      assert.equal(promo.params.code, "SUMMER-SALE-50");
+      assert.equal(promo.params.coupon, "voucher-50-yearly");
+      const row = await db
+        .prepare("SELECT * FROM tutor_codes WHERE label=?")
+        .bind("SUMMER-SALE-50")
+        .first();
+      assert.equal(row.tutor_id, null, "a voucher belongs to nobody");
+      assert.equal(row.percent_off, 50);
+      assert.equal(row.stripe_promotion_code_id, "promo_house_1");
+      // No tutor row: a name in the rebate list that nobody is owed against is
+      // exactly what tutor_id NULL avoids.
+      const tutors = await db
+        .prepare("SELECT COUNT(*) AS c FROM tutors")
+        .first();
+      assert.equal(tutors.c, 0, "issuing a voucher invented a tutor");
+    } finally {
+      stripe.restore();
+    }
+  });
+});
+
+test("a voucher is quoted, counted and suspended like any other code", async () => {
+  await withDatabase(async (db, mod) => {
+    const now = Date.now();
+    db.prepare(
+      `INSERT INTO tutor_codes
+         (id,tutor_id,label,tier,stripe_coupon_id,stripe_promotion_code_id,percent_off,max_redemptions,expires_at,status,created_at)
+       VALUES (?,NULL,?,?,?,?,?,?,?,?,?)`,
+    )
+      .bind(
+        "code-house",
+        "SUMMER-SALE-50",
+        "yearly",
+        "voucher-50-yearly",
+        "promo_house_1",
+        50,
+        100,
+        now + 365 * 86_400_000,
+        "active",
+        now,
+      )
+      .run();
+    // The parent types it in any case; the lookup is by the stored form.
+    const quoted = await mod.quoteTutorCode("summer-sale-50", "yearly");
+    assert.equal(quoted.label, "SUMMER-SALE-50");
+    assert.equal(quoted.percentOff, 50);
+    assert.equal(quoted.tutorName, null);
+    assert.equal(mod.discountedAmount(3000, 50), 1500);
+    await assert.rejects(mod.quoteTutorCode("SUMMER-SALE-50", "monthly"), {
+      message: "This code works on the 1-year option.",
+    });
+    // Counted by the same rows: a promotion reached this many families.
+    db.prepare(
+      "INSERT INTO purchases (id,user_id,product_id,confirmation,original_expiry,new_expiry,status,created_at) VALUES (?,?,?,?,?,?,?,?)",
+    )
+      .bind("p-house", USER, YEARLY, "pi_house", 0, 365 * 86_400_000, "paid", 1)
+      .run();
+    assert.equal(
+      await mod.recordTutorRedemption({
+        paymentIntent: "pi_house",
+        userId: USER,
+        label: "SUMMER-SALE-50",
+      }),
+      true,
+    );
+    const stats = await mod.tutorCodeStats();
+    const row = stats.find((r) => r.label === "SUMMER-SALE-50");
+    assert.equal(row.redeemed, 1);
+    assert.equal(row.tutorId, null);
+    assert.equal(row.tutorName, null);
+    // And suspending it works with no tutor in the picture at all.
+    const stripe = stubStripe(({ method, path }) =>
+      method === "POST" && path === "promotion_codes/promo_house_1"
+        ? { body: { id: "promo_house_1", active: false } }
+        : undefined,
+    );
+    try {
+      await mod.suspendTutorCode("code-house");
+    } finally {
+      stripe.restore();
+    }
+    await assert.rejects(mod.quoteTutorCode("SUMMER-SALE-50", "yearly"), {
+      message: "That code is not valid.",
+    });
+  });
+});
+
 test("unknown, suspended and expired codes are refused identically", async () => {
   await withDatabase(async (db, mod) => {
     await seedCode(db);
-    const message = "That tutor code is not valid.";
+    const message = "That code is not valid.";
     await assert.rejects(mod.quoteTutorCode("TUTOR-NOBODY-20", "yearly"), {
       message,
     });
@@ -233,7 +386,7 @@ test("a code discounts the yearly term and no other", async () => {
     assert.equal(quoted.label, "TUTOR-SARAH-CHEN-20");
     assert.equal(quoted.percentOff, 20);
     await assert.rejects(mod.quoteTutorCode("TUTOR-SARAH-CHEN-20", "monthly"), {
-      message: "Tutor codes work on the 1-year option.",
+      message: "This code works on the 1-year option.",
     });
   });
 });
@@ -299,7 +452,7 @@ test("issuing creates the Stripe objects and the rows behind them", async () => 
   await withDatabase(async (db, mod) => {
     const stripe = stubStripe(({ method, path }) => {
       if (method === "POST" && path === "coupons")
-        return { body: { id: "tutor-20-yearly", percent_off: 20 } };
+        return { body: { id: "voucher-20-yearly", percent_off: 20 } };
       if (method === "POST" && path === "promotion_codes")
         return { body: { id: "promo_issued_1" } };
       return undefined;
@@ -315,7 +468,7 @@ test("issuing creates the Stripe objects and the rows behind them", async () => 
       );
       assert.ok(promoCall, "a Stripe promotion code is created");
       assert.equal(promoCall.params.code, "TUTOR-SARAH-CHEN-20");
-      assert.equal(promoCall.params.coupon, "tutor-20-yearly");
+      assert.equal(promoCall.params.coupon, "voucher-20-yearly");
       assert.equal(promoCall.params.max_redemptions, "100");
       const expiresInDays =
         (Number(promoCall.params.expires_at) * 1000 - Date.now()) / 86_400_000;
@@ -342,15 +495,15 @@ test("issuing reuses the shared coupon, and refuses a tampered one", async () =>
     const broken = stubStripe(({ method, path }) => {
       if (method === "POST" && path === "coupons")
         return { ok: false, status: 400, body: { error: "exists" } };
-      if (method === "GET" && path === "coupons/tutor-20-yearly")
-        return { body: { id: "tutor-20-yearly", percent_off: 10 } };
+      if (method === "GET" && path === "coupons/voucher-20-yearly")
+        return { body: { id: "voucher-20-yearly", percent_off: 10 } };
       if (method === "POST" && path === "promotion_codes")
         return { body: { id: "promo_x" } };
       return undefined;
     });
     try {
       await assert.rejects(mod.issueTutorCode({ tutorName: "Tamper Test" }), {
-        message: "The tutor discount is misconfigured. No code was issued.",
+        message: "The discount is misconfigured. No code was issued.",
       });
     } finally {
       broken.restore();
@@ -418,7 +571,7 @@ test("suspending stops validation here and deactivates at Stripe", async () => {
       assert.equal(deactivate.params.active, "false");
       await assert.rejects(
         mod.quoteTutorCode("TUTOR-SARAH-CHEN-20", "yearly"),
-        { message: "That tutor code is not valid." },
+        { message: "That code is not valid." },
       );
     } finally {
       stripe.restore();
