@@ -309,19 +309,22 @@ export class ClientSession {
   }
 
   /**
-   * Mark the shown word as known, so it leaves the rotation.
+   * Mark the word just answered as known, so it leaves the rotation.
    *
    * Nothing is sent here, like an answer. Unlike an answer it joins no queue -
-   * there is no attempt row for a word that was never asked - so it raises
-   * the state flag instead, which is what gets a flush moving and what the
-   * flush sends. Panels, level and counts move on this frame; credits and
-   * streaks do not, because nothing was earned.
+   * the press has no attempt row, because there is nothing more to answer: the
+   * answer that earned it is already queued. So it raises the state flag
+   * instead, which is what gets a flush moving and what the flush sends. Panels,
+   * level and counts move on this frame; credits and streaks do not, because the
+   * press earned nothing.
    */
   markKnown(
     wordId: string,
   ): { wordId: string; question: ShownQuestion } | null {
     if (this.question?.wordId !== wordId) return null;
-    // Read before marking, because marking is what makes the word seen.
+    // Read before marking: the answer already counted this showing, so this is
+    // at least one on the normal path and the word is not announced as new a
+    // second time.
     const seenBefore = this.seenFor(wordId);
     const marked = this.engine.markKnown();
     if (!marked || marked.wordId !== wordId) return null;

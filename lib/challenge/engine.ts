@@ -269,6 +269,16 @@ export class PracticeEngine {
    */
   private trailing: TrailingAnswer[] = [];
   private lastQuestion: ShownQuestion | null = null;
+  /**
+   * The question just answered, while it is still the one on screen.
+   *
+   * `lastQuestion` is cleared by `grade()` so a question cannot be graded twice;
+   * the screen does not move on until the next question is drawn, though, and
+   * "I know this word" is a claim about the word that is still there. Its
+   * correctness is kept because the claim is only allowed on a right answer.
+   */
+  private answeredQuestion: { question: ShownQuestion; correct: boolean } | null =
+    null;
   private readonly options: Required<Pick<EngineOptions, "level" | "types">> & {
     allowed?: Set<string>;
     added: EngineWord[];
@@ -438,6 +448,9 @@ export class PracticeEngine {
    * are allowed has finished, and the caller shows them that rather than looping.
    */
   next(): ShownQuestion | null {
+    // Whatever was on screen is gone the moment the next draw starts, even when
+    // there is no next word: "I know this" can only act on the word still shown.
+    this.answeredQuestion = null;
     const available = this.pool().filter(
       (word) => !hasMastered(this.countersFor(word.id)),
     );
@@ -632,6 +645,11 @@ export class PracticeEngine {
       RECENT_WORD_WINDOW * 2,
     );
     this.lastQuestion = null;
+    // Remembered for "I know this word", which can only be said about the word
+    // just answered. The correctness travels with it: the claim is allowed on a
+    // right answer and refused on a wrong one, and this is the only place that
+    // knows which it was.
+    this.answeredQuestion = { question, correct };
     return {
       correct,
       skipped,
@@ -646,18 +664,24 @@ export class PracticeEngine {
   }
 
   /**
-   * Mark the shown word as known, so it leaves the rotation.
+   * Mark the word just answered as known, so it leaves the rotation.
    *
-   * For the child who already knows a word cold and wants it gone, rather
-   * than answering it five times to prove it. Sets only the mastered flag
-   * (plus seen, since it was just shown): counters, streaks and the attempt
-   * clock are untouched, because this was not an answer and must not move
-   * anything an answer moves. In particular the attempt count stays put, so
-   * the review clock keeps agreeing with the server, which counts attempts.
+   * For the child who answers a word right and knows it was not a guess: the
+   * word is retired there and then, rather than being asked again until it
+   * proves itself twice. Only a right answer to the question still on screen
+   * qualifies - before an answer this would be a way past the question, and
+   * after a wrong one it would be a way past the practice.
+   *
+   * It sets only the mastered flag. Seen is untouched because the answer already
+   * counted this showing, and correct, the run and the recalls are the answer's
+   * record of what happened and stay as they are. The attempt count is untouched
+   * too, so the review clock keeps agreeing with the server, which counts
+   * attempts.
    */
   markKnown(): { wordId: string; question: ShownQuestion } | null {
-    const question = this.lastQuestion;
-    if (!question) return null;
+    const answered = this.answeredQuestion;
+    if (!answered || !answered.correct) return null;
+    const question = answered.question;
     const previous = this.countersFor(question.wordId);
     if (hasMastered(previous)) return null;
     const day = new Date(this.options.now()).toISOString().slice(0, 10);
@@ -666,11 +690,11 @@ export class PracticeEngine {
       run: previous.run,
       recalls: previous.recalls,
       mastered: 1,
-      seen: previous.seen + 1,
+      seen: previous.seen,
       lastSeen: day,
       retryAt: previous.retryAt,
     });
-    this.lastQuestion = null;
+    this.answeredQuestion = null;
     return { wordId: question.wordId, question };
   }
 

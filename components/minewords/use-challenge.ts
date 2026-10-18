@@ -752,14 +752,18 @@ export function useChallenge() {
     [load],
   );
   /**
-   * "I know this": master the shown word without answering it.
+   * "I know this": retire the word that was just answered right.
    *
-   * For the child who already knows a word cold. It sets only the mastered
-   * flag - no attempt row, no credits, no streak movement - and then shows the
-   * answer with a "won't come up again" notice, exactly like an answered
-   * question shows its feedback. Without the feedback the press would appear
-   * to do nothing: the engine would have moved on while the screen still
-   * showed the same unanswered question.
+   * For the child who answers a word correctly and knows it was not a guess. It
+   * sets only the mastered flag - the attempt is the answer's, and the press
+   * earns no credits and moves no streak - then shows the answer with a "won't
+   * come up again" notice in place of the answer's feedback. Without that the
+   * press would appear to do nothing: the word would be gone from the queue
+   * while the screen still showed the question as answered.
+   *
+   * Refused unless this frame's answer was correct and is still the one on
+   * screen. The engine refuses it too; this guard is what keeps the demo path -
+   * which does not go through the engine - obeying the same rule.
    */
   const markKnown = useCallback(() => {
     const current = stateRef.current;
@@ -767,7 +771,8 @@ export function useChallenge() {
       historyViewRef.current !== null ||
       lock.current ||
       !current.question ||
-      current.feedback
+      !current.feedback?.correct ||
+      current.feedback.markedKnown
     )
       return null;
     if (current.demo) {

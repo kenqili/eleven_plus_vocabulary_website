@@ -1460,6 +1460,16 @@ hr {
   margin-top: 13px;
   padding-top: 12px;
 }
+/* Offered after every answer, usable only after a right one. Without a greyed
+   state the disabled button reads as broken rather than as not yet earned, and
+   the title explaining why is no use to the child who does not hover. */
+.mark-known-button {
+  margin-top: 8px;
+}
+.mark-known-button:disabled {
+  color: var(--ink-4);
+  cursor: not-allowed;
+}
 .keyboard-hint {
   margin: 10px 0 0;
   color: var(--ink-4);

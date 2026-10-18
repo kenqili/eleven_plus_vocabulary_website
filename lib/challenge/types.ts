@@ -95,10 +95,11 @@ export type Feedback = {
   selected: number;
   word: string;
   /**
-   * This feedback came from "I know this", not from an answer. The word is
-   * mastered and leaves the rotation; nothing was earned and the run is
-   * untouched. The UI says so explicitly rather than leaving a right-looking
-   * answer with no explanation.
+   * This feedback came from "I know this", pressed after a right answer: the
+   * word is mastered and leaves the rotation. The press itself earned nothing
+   * and moved no run - the answer before it stands, with its own attempt and
+   * credits - so the screen says what happened to the word rather than reading
+   * as a second answer.
    */
   markedKnown?: boolean;
 };

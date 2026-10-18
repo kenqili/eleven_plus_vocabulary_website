@@ -161,6 +161,21 @@ export default function Challenge() {
   const streak = feedback?.award?.currentStreak ?? 0;
   const questionLevel =
     question?.difficulty !== undefined ? levelLabel(question.difficulty) : "";
+  // "I know this word" is a claim about a word just answered right: before the
+  // answer it would be a way past the question, and after a wrong one a way past
+  // the practice. Hidden once the word is mastered, because there is nothing
+  // left to remove, and while a previous word is on screen from the history.
+  const canMarkKnown = Boolean(
+    feedback &&
+      feedback.correct &&
+      !feedback.markedKnown &&
+      !mastery?.mastered &&
+      !busy &&
+      !study.historical,
+  );
+  const showMarkKnown = Boolean(
+    feedback && !feedback.markedKnown && !mastery?.mastered && !study.historical,
+  );
   // The answer sound depends on more than right and wrong: revealing is not a
   // failure, and mastering a word is a bigger moment than getting one right.
   // The clue gets its own sound, which rises and then falls back so it can
@@ -230,18 +245,17 @@ export default function Challenge() {
       ) {
         event.preventDefault();
         void study.answer(-1);
-      } else if (key === "k") {
-        // "I know this": masters the word without answering it. No attempt,
-        // no credits, no streak movement - the word simply leaves the rotation.
-        if (question && !feedback && !busy && !study.historical) {
-          event.preventDefault();
-          study.markKnown?.();
-        }
+      } else if (key === "k" && canMarkKnown) {
+        // "I know this": retires the word just answered right. The press has no
+        // attempt of its own, earns no credits and moves no streak - the word
+        // simply leaves the rotation.
+        event.preventDefault();
+        study.markKnown?.();
       }
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [study, question, feedback, busy]);
+  }, [study, question, feedback, busy, canMarkKnown]);
   // A word or cloze question asks the child to produce the word, so the card
   // must not print it or play it above the options.
   const asksForWord = question ? typeAsksForTheWord(question.type) : false;
@@ -564,31 +578,17 @@ export default function Challenge() {
                       </button>
                     ))}
                   </div>
-{!feedback && (
-  <button
-    className="text-button mark-known-button"
-    aria-keyshortcuts="k"
-    disabled={busy}
-    onClick={() => {
-      if (!busy && !feedback && !study.historical) {
-        study.markKnown?.();
-      }
-    }}
-    title="Already know this word? Mark it as known and it won't come up again."
-    aria-label="I know this word — mark as known and remove it from practice (K)"
-  >
-    <Check size={15} aria-hidden /> I know this word
-  </button>
-)}
                   <p className="sr-only" role="status">
                     {asksForWord ? "" : `${question.word}. `}
                     {TYPE_INSTRUCTIONS[question.type]} {question.prompt}
                   </p>
                   {feedback && (
                     <div className="feedback" role="status">
-                      {/* "I know this" lands here too: the word is mastered and
-                          leaves the rotation, so the notice says so outright
-                          rather than leaving a celebration with no explanation. */}
+                      {/* The pressing screen: the word is mastered and leaves
+                          the rotation, so the notice says so outright rather
+                          than leaving a celebration with no explanation. It
+                          replaces the answer's feedback rather than stacking
+                          under it. */}
                       {feedback.markedKnown && (
                         <div className="reward-notice" role="status">
                           <strong>
@@ -685,19 +685,41 @@ export default function Challenge() {
                           ) : null}
                         </div>
                       ) : null}
-                      {!demo && !feedback.correct && (
+                      {!demo && !feedback.correct && !feedback.markedKnown && (
                         <small>
                           Your run of right answers starts again with your next
                           one. The credits you have already earned are safe.
                         </small>
                       )}
-                      {!demo && !feedback.correct && (
+                      {!demo && !feedback.correct && !feedback.markedKnown && (
                         <small>
                           This word will come back later, so it has a chance to
                           stick.
                         </small>
                       )}
                     </div>
+                  )}
+                  {/* The claim sits after the answer, where it can be backed by
+                      one: disabled until this answer was right, and gone once
+                      the word is mastered either way. Outside the feedback box
+                      because it is an action, not part of what the app says. */}
+                  {showMarkKnown && (
+                    <button
+                      className="text-button mark-known-button"
+                      aria-keyshortcuts="k"
+                      disabled={!canMarkKnown}
+                      onClick={() => {
+                        if (canMarkKnown) study.markKnown?.();
+                      }}
+                      title={
+                        feedback?.correct
+                          ? "Already know this word? Mark it as known and it won't come up again."
+                          : "Answer it correctly first, then you can mark it as known."
+                      }
+                      aria-label="I know this word — mark as known and remove it from practice (K)"
+                    >
+                      <Check size={15} aria-hidden /> I know this word
+                    </button>
                   )}
                   <div className="question-footer">
                     <div className="mastery-mini">
@@ -763,22 +785,32 @@ export default function Challenge() {
                       key={`${question.id}:${study.autoNext}`}
                       id={question.id}
                       delay={study.autoNext}
+                      // Marking a word known leaves the screen showing the
+                      // mastered notice, and that screen is paced like the
+                      // answer's own: it is the one the child is reading now.
+                      //
                       // The daily target does not switch this off. It used to,
                       // so a setting the child had chosen stopped working the
                       // moment the day's count was reached, with nothing said.
                       eligible={Boolean(
-                        feedback.correct &&
+                        (feedback.correct || feedback.markedKnown) &&
                           !busy &&
                           !error &&
                           !study.historical,
                       )}
+                      // A fresh countdown for the notice. It replaced feedback
+                      // the child had already been reading, so it gets the whole
+                      // delay rather than whatever was left of the answer's.
+                      restart={feedback.markedKnown ? "known" : "answered"}
                       next={study.next}
                     />
                   )}
                   <p className="keyboard-hint">
                     {feedback
-                      ? "← previous · →, Enter or Space next"
-                      : "A–D or 1–4 to answer · Enter to reveal · K I know this · ← previous"}
+                      ? canMarkKnown
+                        ? "← previous · →, Enter or Space next · K I know this"
+                        : "← previous · →, Enter or Space next"
+                      : "A–D or 1–4 to answer · Enter to reveal · ← previous"}
                   </p>
                 </>
               ) : study.complete ? (
@@ -911,6 +943,13 @@ export default function Challenge() {
                     whenever they come. A clue, a mistake or a reveal starts the
                     count again. Take your time: speed is a bonus, never a
                     requirement.
+                  </p>
+                  <p>
+                    <strong>Already know a word?</strong> Answer it right, then
+                    press <strong>I know this word</strong> (or K): the word is
+                    mastered there and then instead of being asked again. The
+                    button waits for a right answer — saying you know a word is
+                    a claim, and the answer is what backs it.
                   </p>
                   <p>
                     Reloading resumes your unanswered question. Changing types
