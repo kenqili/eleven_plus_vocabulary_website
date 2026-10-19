@@ -27,6 +27,7 @@ import {
   STREAK_BONUS,
 } from "../lib/challenge/credits.ts";
 import { recallTarget } from "../lib/challenge/mastery.ts";
+import { localDay } from "../lib/challenge/rewards.ts";
 import { levelOf } from "../lib/challenge/bank.ts";
 
 const origin = process.env.TEST_ORIGIN || "http://127.0.0.1:5173";
@@ -432,6 +433,15 @@ test(
     }
     const response = await post({
       answers,
+      // A real flush carries the browser's counters as well as the answers. The
+      // state here claims the word is mastered, which it is: the answer finished
+      // it. That mastery is already in daily_stats from the answer's event, so
+      // the state write must not count it a second time.
+      state: {
+        progress: [
+          ["abandon", 5, 5, 5, 1, target + 1, "2026-10-19", null],
+        ],
+      },
     });
     const body = await response.json();
     assert.equal(response.status, 200, JSON.stringify(body));
@@ -444,6 +454,14 @@ test(
       mastered,
       1,
       `a word answered ${target + 1} times with genuine recalls has been finished; got ${mastered} mastery awards`,
+    );
+    const dailyMastered = sql
+      .prepare("SELECT mastered FROM daily_stats WHERE user_id=? AND day=?")
+      .get(userId, localDay(Date.now()))?.mastered;
+    assert.equal(
+      dailyMastered,
+      1,
+      "the answer's mastery is counted once, not again by the state write",
     );
     const wallet = sql
       .prepare("SELECT balance FROM credit_wallets WHERE user_id=?")
@@ -486,6 +504,31 @@ test(
     assert.ok(row, "the marked word has a progress row afterwards");
     assert.equal(row.mastered, 1, "the mastered flag reached the database");
     assert.equal(row.correct, 0, "no answer was given, so none was counted");
+    // The panel and the calendar read their totals from daily_stats, which only
+    // the answer trigger used to feed. A marking has to move the same counter.
+    const counted = () =>
+      sql
+        .prepare(
+          "SELECT mastered FROM daily_stats WHERE user_id=? AND day=?",
+        )
+        .get(userId, localDay(Date.now()))?.mastered ?? 0;
+    assert.equal(
+      counted(),
+      1,
+      "the marking moves the running mastered total",
+    );
+    // A browser that retries a flush it never saw the answer to must not master
+    // the word a second time.
+    const replay = await post({
+      answers: [],
+      state: { progress: [["abandon", 0, 0, 0, 1, 1, "2026-09-29", null]] },
+    });
+    assert.equal(replay.status, 200);
+    assert.equal(
+      counted(),
+      1,
+      "a repeated flush does not count the same marking twice",
+    );
     const attempts = sql
       .prepare("SELECT COUNT(*) AS c FROM attempts WHERE user_id=?")
       .get(userId).c;

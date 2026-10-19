@@ -36,6 +36,13 @@
       "when": 1792253871812,
       "tag": "0004_discount_code_tables",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1792380034943,
+      "tag": "0005_marked_known_mastery",
+      "breakpoints": true
     }
   ]
 }

@@ -276,27 +276,70 @@ export async function applyFlushed(
         db.prepare(ENSURE_PROGRESS).bind(userId, wordId),
       ),
     );
-    await db.batch(
-      state.progress.map(
-        ([wordId, correct, run, recalls, mastered, seen, lastSeen, retryAt]) =>
-          db
-            .prepare(
-              `UPDATE progress SET correct=?,run=?,recalls=?,mastered=?,seen=?,last_seen=?,retry_at=?
-             WHERE user_id=? AND word_id=?`,
-            )
-            .bind(
-              correct,
-              run,
-              recalls,
-              mastered,
-              seen,
-              lastSeen,
-              retryAt,
-              userId,
-              wordId,
-            ),
+    // A word the child marked known is mastered without an answer, so no
+    // learning event fires and the trigger-maintained daily_stats never sees it.
+    // The word is retired all the same, and both the panel's "words you know"
+    // and the calendar read their totals from daily_stats, so the marking has to
+    // move that counter too.
+    //
+    // This runs before the updates in the same batch and looks at the rows as
+    // they stand: `mastered=0` makes a retried flush a no-op, and the event
+    // check keeps a word an answer already mastered from being counted twice.
+    // One batch is one transaction, so the count and the flag land together or
+    // not at all.
+    const marked = [
+      ...new Set(
+        state.progress
+          .filter(([, correct, , , mastered]) =>
+            hasMastered({ correct, mastered }),
+          )
+          .map(([wordId]) => wordId),
       ),
+    ];
+    const writes = state.progress.map(
+      ([wordId, correct, run, recalls, mastered, seen, lastSeen, retryAt]) =>
+        db
+          .prepare(
+            `UPDATE progress SET correct=?,run=?,recalls=?,mastered=?,seen=?,last_seen=?,retry_at=?
+             WHERE user_id=? AND word_id=?`,
+          )
+          .bind(
+            correct,
+            run,
+            recalls,
+            mastered,
+            seen,
+            lastSeen,
+            retryAt,
+            userId,
+            wordId,
+          ),
     );
+    if (marked.length) {
+      writes.unshift(
+        db
+          .prepare(
+            `INSERT INTO daily_stats(user_id,day,mastered)
+             SELECT ?,?,COUNT(*)
+             FROM progress p
+             WHERE p.user_id=? AND p.word_id IN (${marked.map(() => "?").join(",")})
+               AND p.mastered=0 AND p.correct<?
+               AND NOT EXISTS(
+                 SELECT 1 FROM learning_events e
+                 WHERE e.user_id=p.user_id AND e.word_id=p.word_id AND e.mastered=1)
+             HAVING COUNT(*)>0
+             ON CONFLICT(user_id,day) DO UPDATE SET mastered=mastered+excluded.mastered`,
+          )
+          .bind(
+            userId,
+            localDay(Date.now()),
+            userId,
+            ...marked,
+            CUMULATIVE_FLOOR,
+          ),
+      );
+    }
+    await db.batch(writes);
   }
 
   return { saved: wanted.length, skipped };
