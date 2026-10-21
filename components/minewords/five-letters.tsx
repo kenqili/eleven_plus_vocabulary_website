@@ -6,7 +6,6 @@ import {
   useMemo,
   useRef,
   useState,
-  type FormEvent,
 } from "react";
 import { api } from "@/lib/client/api";
 import {
@@ -214,7 +213,6 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
   const dictionaryLoading = useRef<Promise<
     Record<string, FiveLettersCard>
   > | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const demoByWord = useMemo(
     () => new Map(demoWords.map((word) => [word.word, word.card])),
@@ -368,11 +366,6 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
       // sample answers, but a non-sample guess waits for the asset.
     });
   }, [guest, loadDictionary]);
-
-  useEffect(() => {
-    if (game?.status === "playing") inputRef.current?.focus();
-  }, [game?.id, game?.status]);
-
   const canPlay = Boolean(game && game.status === "playing" && !busy);
   const availableHints = game?.remainingHints ?? [];
   const usedHints = game?.hints ?? [];
@@ -452,13 +445,7 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
       );
     } finally {
       setBusy(false);
-      inputRef.current?.focus();
     }
-  };
-
-  const submit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    void submitGuess();
   };
 
   const pressLetter = (letter: string) => {
@@ -481,6 +468,30 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
     if (!canPlay) return;
     void submitGuess();
   };
+
+  const actionsRef = useRef({ pressLetter, eraseLetter, submitGuess });
+  useEffect(() => {
+    actionsRef.current = { pressLetter, eraseLetter, submitGuess };
+  });
+
+  useEffect(() => {
+    if (!canPlay) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey || event.metaKey || event.altKey) return;
+      if (event.key === "Backspace") {
+        event.preventDefault();
+        actionsRef.current.eraseLetter();
+      } else if (event.key === "Enter") {
+        event.preventDefault();
+        void actionsRef.current.submitGuess();
+      } else if (/^[a-z]$/i.test(event.key)) {
+        event.preventDefault();
+        actionsRef.current.pressLetter(event.key.toUpperCase());
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [canPlay]);
 
   const addHint = async (kind: FiveLettersHintKind) => {
     if (!game || !canPlay || game.hints.includes(kind)) return;
@@ -524,7 +535,6 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
       );
     } finally {
       setBusy(false);
-      inputRef.current?.focus();
     }
   };
 
@@ -773,47 +783,10 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
           ) : null}
 
           {playing ? (
-            <form
-              className="five-entry"
-              onSubmit={(event) => void submit(event)}
-            >
-              <label htmlFor="five-guess">Your guess</label>
-              <div className="five-entry-row">
-                <input
-                  id="five-guess"
-                  ref={inputRef}
-                  value={draft}
-                  onChange={(event) =>
-                    setDraft(
-                      event.target.value
-                        .replace(/[^a-z]/gi, "")
-                        .slice(0, 5)
-                        .toUpperCase(),
-                    )
-                  }
-                  autoCapitalize="characters"
-                  autoComplete="off"
-                  spellCheck={false}
-                  inputMode="text"
-                  maxLength={5}
-                  pattern="[A-Za-z]{5}"
-                  placeholder="WORD"
-                  aria-describedby="five-entry-help"
-                  disabled={busy}
-                />
-                <button
-                  type="submit"
-                  className="primary-button"
-                  disabled={busy || draft.length !== 5}
-                >
-                  Guess
-                </button>
-              </div>
-              <p id="five-entry-help" className="five-entry-help">
-                Type or tap five letters, then press Enter or Guess. In the word
-                means the letter is there but in another place.
-              </p>
-            </form>
+            <p id="five-entry-help" className="five-entry-help">
+              Tap letters to fill the row, then press Enter. Backspace edits the
+              current guess.
+            </p>
           ) : null}
 
           {playing && hasHintButtons ? (
