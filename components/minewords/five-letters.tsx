@@ -374,9 +374,9 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
     (kind) => availableHints.includes(kind) || usedHints.includes(kind),
   );
 
-  const submitGuess = async () => {
+  const submitGuess = async (wordOverride?: string) => {
     if (!game || !canPlay) return;
-    const word = normalizeGuess(draft);
+    const word = normalizeGuess(wordOverride ?? draft);
     if (!word) {
       setError("A guess must be exactly five letters.");
       return;
@@ -450,9 +450,16 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
 
   const pressLetter = (letter: string) => {
     if (!canPlay) return;
-    setDraft((current) =>
-      current.length >= 5 ? current : `${current}${letter}`,
-    );
+    setDraft((current) => {
+      if (current.length >= 5) return current;
+      const next = `${current}${letter}`;
+      if (next.length === 5) {
+        // A complete guess is submitted as soon as the fifth letter lands, so
+        // the child never has to reach for Enter.
+        window.setTimeout(() => void submitGuess(next), 0);
+      }
+      return next;
+    });
     setError("");
     setNotice("");
   };
@@ -784,8 +791,8 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
 
           {playing ? (
             <p id="five-entry-help" className="five-entry-help">
-              Tap letters to fill the row, then press Enter. Backspace edits the
-              current guess.
+              Tap letters; the fifth letter submits. Backspace edits the current
+              guess.
             </p>
           ) : null}
 
