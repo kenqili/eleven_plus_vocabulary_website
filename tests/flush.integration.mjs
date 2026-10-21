@@ -541,3 +541,76 @@ test(
     sql.close();
   },
 );
+
+test(
+  "a long sitting saves in one request, without exceeding D1's parameter limit",
+  { skip: !local },
+  async () => {
+    if (!local || !process.env.TEST_NODE_DB) return;
+    const sql = db();
+    sql.prepare("DELETE FROM rate_limits").run();
+    const userId = await register();
+
+    // The longest sitting the endpoint accepts. Every one of these words is a
+    // distinct word, so the flush touches four hundred progress rows and reads
+    // four hundred of them back, and each of those reads binds one parameter per
+    // word. D1 allows at most 100 bound parameters per query, so a statement
+    // that reads them all in one go is rejected outright - "too many SQL
+    // variables" - and the whole flush fails as a 503. It did: a child who
+    // forgot to press Save for a long session lost the session.
+    //
+    // The words are distinct so the flush is genuinely wide, which is the part
+    // that used to break. Repeating one word would not have found it.
+    const wordIds = [
+      ...new Set(
+        bank.problems
+          .filter((problem) => problem[1] === "def")
+          .map((problem) => problem[0]),
+      ),
+    ].slice(0, 400);
+    assert.equal(
+      wordIds.length,
+      400,
+      "the test needs four hundred distinct words to be the wide case",
+    );
+    const answers = wordIds.map((wordId) => answered(wordId));
+    const response = await post({
+      answers,
+      state: {
+        progress: answers.map((answer) => [
+          answer.wordId,
+          1,
+          1,
+          1,
+          0,
+          1,
+          "2026-10-19",
+          null,
+        ]),
+      },
+    });
+    const body = await response.json();
+    assert.equal(
+      response.status,
+      200,
+      `a long sitting must save rather than fail: ${JSON.stringify(body)}`,
+    );
+    assert.equal(body.saved, 400, "every answer in the sitting is recorded");
+    const attempts = sql
+      .prepare(
+        "SELECT COUNT(*) AS c FROM attempts WHERE user_id=? AND answered_at IS NOT NULL",
+      )
+      .get(userId).c;
+    assert.equal(attempts, 400, "and every one of them reached the database");
+    const rows = sql
+      .prepare("SELECT COUNT(*) AS c FROM progress WHERE user_id=?")
+      .get(userId).c;
+    assert.equal(
+      rows,
+      400,
+      "the progress row of every word the sitting touched exists afterwards",
+    );
+    sql.prepare("DELETE FROM users WHERE id=?").run(userId);
+    sql.close();
+  },
+);
