@@ -43,6 +43,13 @@
       "when": 1792380034943,
       "tag": "0005_marked_known_mastery",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1792561415011,
+      "tag": "0006_word_games",
+      "breakpoints": true
     }
   ]
 }

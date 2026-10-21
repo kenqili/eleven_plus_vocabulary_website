@@ -49,6 +49,12 @@ export const users = sqliteTable("users", {
   streak: integer("streak").notNull().default(0),
   bestStreak: integer("best_streak").notNull().default(0),
   /**
+   * Permanent points removed from the displayed 10,000 score by Five Letters
+   * hints. Stored separately from the derived placement score so a hint is
+   * never lost when the word mix changes, and clamped at zero when displayed.
+   */
+  scorePenalty: integer("score_penalty").notNull().default(0),
+  /**
    * When the address was confirmed, as epoch milliseconds. Null means nobody has
    * proved they can read mail there, and sign-in is refused until someone has.
    *
@@ -513,6 +519,45 @@ export const wordExclusions = sqliteTable(
     createdAt: integer("created_at").notNull(),
   },
   (t) => [primaryKey({ columns: [t.userId, t.wordId] })],
+);
+
+/**
+ * One Five Letters round.
+ *
+ * `word_id` is the answer and is therefore never returned while
+ * `status='playing'`. Guesses are a JSON history because they are read and
+ * written as one unit; the unique partial index is what makes "one active
+ * round per account" true in the database rather than in a request handler.
+ *
+ * A finished row is kept: it is the recently-used list, and it lets a retried
+ * guess return the same state instead of appending a second row.
+ */
+export const wordGames = sqliteTable(
+  "word_games",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    wordId: text("word_id").notNull(),
+    guesses: text("guesses").notNull().default("[]"),
+    hints: text("hints").notNull().default(""),
+    status: text("status").notNull().default("playing"),
+    day: text("day").notNull(),
+    createdAt: integer("created_at").notNull(),
+    updatedAt: integer("updated_at").notNull(),
+    /** Whether the solve was a new mastery, kept so a reload tells the truth. */
+    answerNewlyMastered: integer("answer_newly_mastered").notNull().default(0),
+    answerAlreadyMastered: integer("answer_already_mastered")
+      .notNull()
+      .default(0),
+  },
+  (t) => [
+    uniqueIndex("word_games_one_active")
+      .on(t.userId)
+      .where(sql`${t.status} = 'playing'`),
+    index("word_games_recent").on(t.userId, t.createdAt),
+  ],
 );
 
 /**

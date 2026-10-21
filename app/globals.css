@@ -6492,3 +6492,554 @@ hr {
     justify-content: center;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Five Letters
+   A game board and a word-card column. The board is the one place in the app
+   that reads like a game rather than a worksheet, so the tiles get the only
+   saturated colour on the page and everything around them stays quiet.
+--------------------------------------------------------------------------- */
+.five-workspace {
+  padding-bottom: 48px;
+}
+.five-page {
+  display: grid;
+  gap: 22px;
+}
+.five-hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  background: linear-gradient(135deg, var(--surface-brand), var(--surface-2));
+  border: 1px solid var(--line-brand);
+  border-radius: var(--radius);
+  padding: 28px 30px;
+}
+.five-hero h1 {
+  margin: 4px 0 8px;
+}
+.five-hero p {
+  max-width: 670px;
+  margin: 0;
+  color: var(--ink-slate);
+}
+.five-hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  min-width: 180px;
+}
+.five-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--line-brand);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink-brand);
+  padding: 6px 11px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.five-pill.is-demo {
+  background: var(--surface-warn);
+  border-color: var(--line-warn);
+  color: var(--ink-amber);
+}
+.five-pill.is-mastered {
+  background: var(--surface-success);
+  border-color: var(--line-success-2);
+  color: var(--ink-success);
+}
+.five-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(290px, 0.85fr);
+  align-items: start;
+  gap: 22px;
+}
+.five-board-card,
+.five-words-panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card, 0 10px 30px rgba(24, 37, 59, 0.06));
+}
+.five-board-card {
+  padding: 22px;
+}
+.five-words-panel {
+  padding: 22px;
+}
+.five-words-panel h2 {
+  margin: 0 0 6px;
+  font-family: var(--font-display);
+  font-size: 22px;
+}
+.five-panel-intro {
+  margin: 0 0 16px;
+  color: var(--ink-slate);
+  font-size: 13px;
+}
+.five-scorebar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  border-bottom: 1px solid var(--line-2);
+  padding-bottom: 16px;
+  margin-bottom: 18px;
+}
+.five-scorebar > div:first-child {
+  display: grid;
+  gap: 1px;
+}
+.five-score-label {
+  color: var(--ink-brand-5);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+}
+.five-scorebar strong {
+  font-family: var(--font-display);
+  font-size: 30px;
+  line-height: 1.1;
+  color: var(--ink);
+}
+.five-scorebar small {
+  color: var(--ink-slate);
+  font-size: 11px;
+}
+.five-board-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px 12px;
+  max-width: 290px;
+  color: var(--ink-slate);
+  font-size: 11px;
+}
+.five-board-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.five-legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  display: inline-block;
+}
+.five-legend-dot.is-green {
+  background: var(--surface-green);
+}
+.five-legend-dot.is-yellow {
+  background: var(--surface-amber);
+}
+.five-legend-dot.is-grey {
+  background: var(--surface-4);
+  border: 1px solid var(--line);
+}
+.five-board {
+  display: grid;
+  gap: 7px;
+  justify-content: center;
+  padding: 2px 0 18px;
+}
+.five-row {
+  display: grid;
+  grid-template-columns: repeat(5, 54px);
+  gap: 7px;
+  justify-content: center;
+}
+.five-tile {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--line);
+  border-radius: 7px;
+  background: var(--surface-2);
+  color: var(--ink);
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+.five-tile.is-empty {
+  background: var(--surface-2);
+}
+.five-tile.is-current {
+  border-color: var(--line-brand-2);
+}
+.five-tile.is-green {
+  background: var(--surface-green);
+  border-color: var(--line-green);
+  color: var(--ink-invert);
+}
+.five-tile.is-yellow {
+  background: var(--surface-amber);
+  border-color: var(--line-gold);
+  color: var(--ink-amber-deep);
+}
+.five-tile.is-grey {
+  background: var(--surface-4);
+  border-color: var(--line);
+  color: var(--ink-3);
+}
+.five-entry {
+  border-top: 1px solid var(--line-2);
+  padding-top: 16px;
+}
+.five-entry label {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--ink-brand-5);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.five-entry-row {
+  display: flex;
+  gap: 9px;
+}
+.five-entry input {
+  flex: 1;
+  min-width: 0;
+  border: 2px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--ink);
+  padding: 11px 13px;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+}
+.five-entry input:focus {
+  border-color: var(--line-brand-2);
+  outline: 3px solid var(--surface-brand-2);
+  outline-offset: 1px;
+}
+.five-entry-help {
+  margin: 7px 0 0;
+  color: var(--ink-slate);
+  font-size: 11px;
+}
+.five-message {
+  margin: 12px 0 0;
+}
+.five-notice {
+  color: var(--ink-brand);
+  background: var(--surface-brand);
+  border: 1px solid var(--line-brand);
+  padding: 9px 11px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+}
+.five-hint-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+.five-hint-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--line-brand);
+  border-radius: var(--radius-sm);
+  background: var(--surface-brand);
+  color: var(--ink-brand);
+  padding: 8px 11px;
+  text-align: left;
+}
+.five-hint-button:hover:not(:disabled) {
+  background: var(--surface-brand-2);
+}
+.five-hint-button:disabled {
+  opacity: 0.55;
+}
+.five-hint-button span {
+  font-size: 12px;
+  font-weight: 700;
+}
+.five-hint-button small {
+  font-size: 10px;
+  color: var(--ink-brand-4);
+}
+.five-hint-results {
+  display: grid;
+  gap: 4px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-left: 3px solid var(--line-amber-2);
+  background: var(--surface-warn-3);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 13px;
+}
+.five-hint-results p {
+  margin: 0;
+}
+.five-reveal-button {
+  display: block;
+  margin: 18px auto 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink-4);
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.five-reveal-button:hover {
+  color: var(--ink-2);
+}
+.five-finish-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+.five-answer {
+  margin-top: 18px;
+  border: 2px solid var(--line-success-2);
+  border-radius: var(--radius);
+  background: var(--surface-success);
+  padding: 18px;
+}
+.five-answer-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 10px;
+}
+.five-answer-heading h3 {
+  margin: 3px 0 0;
+  font-family: var(--font-display);
+  font-size: 34px;
+  letter-spacing: 5px;
+  color: var(--ink-success);
+}
+.five-answer .five-card-definition {
+  font-size: 16px;
+}
+.five-result-note {
+  margin: 12px 0 0;
+  color: var(--ink-success);
+  font-size: 12px;
+  font-weight: 600;
+}
+.five-word-list {
+  display: grid;
+  gap: 10px;
+}
+.five-word-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  padding: 12px;
+}
+.five-card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.five-card-heading > strong {
+  font-family: var(--font-display);
+  font-size: 21px;
+  letter-spacing: 2px;
+}
+.five-card-marks {
+  display: flex;
+  gap: 3px;
+}
+.five-mini-mark {
+  width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  border-radius: 3px;
+  font-size: 9px;
+  font-weight: 800;
+}
+.five-mini-mark.is-green {
+  background: var(--surface-green);
+  color: var(--ink-invert);
+}
+.five-mini-mark.is-yellow {
+  background: var(--surface-amber);
+  color: var(--ink-amber-deep);
+}
+.five-mini-mark.is-grey {
+  background: var(--surface-4);
+  color: var(--ink-4);
+}
+.five-count-note {
+  margin: 0 0 8px;
+  color: var(--ink-slate);
+  font-size: 11px;
+}
+.five-count-note.is-mastered {
+  color: var(--ink-success);
+  font-weight: 800;
+}
+.five-card-details {
+  display: grid;
+  gap: 7px;
+}
+.five-card-definition {
+  margin: 0;
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.45;
+}
+.five-card-example {
+  margin: 0;
+  color: var(--ink-slate);
+  font-family: var(--font-read);
+  font-size: 13px;
+  font-style: italic;
+}
+.five-card-empty {
+  margin: 0;
+  color: var(--ink-4);
+  font-size: 11px;
+  font-style: italic;
+}
+.five-relations {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.five-relation-label {
+  display: block;
+  color: var(--ink-brand-5);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+.five-relations ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px 5px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.five-relations li {
+  border-radius: 999px;
+  background: var(--surface-4);
+  color: var(--ink-2);
+  padding: 2px 7px;
+  font-size: 10px;
+}
+.five-card-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  border-top: 1px solid var(--line-2);
+  padding-top: 5px;
+  color: var(--ink-4);
+  font-size: 9px;
+}
+.five-words-empty {
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-sm);
+  padding: 22px 14px;
+  color: var(--ink-4);
+  text-align: center;
+  font-size: 13px;
+}
+.five-attribution {
+  margin: 16px 0 0;
+  color: var(--ink-4);
+  font-size: 9px;
+  line-height: 1.5;
+}
+.five-loading,
+.five-empty {
+  min-height: 260px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  text-align: center;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 30px;
+}
+.five-empty h1 {
+  margin: 0;
+}
+.five-empty p {
+  max-width: 460px;
+  margin: 0;
+  color: var(--ink-slate);
+}
+.five-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+@media (max-width: 900px) {
+  .five-hero {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .five-hero-badges {
+    justify-content: flex-start;
+  }
+  .five-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 560px) {
+  .five-workspace {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+  .five-hero {
+    padding: 22px 18px;
+  }
+  .five-board-card,
+  .five-words-panel {
+    padding: 16px;
+  }
+  .five-row {
+    grid-template-columns: repeat(5, 48px);
+    gap: 5px;
+  }
+  .five-tile {
+    width: 48px;
+    height: 48px;
+    font-size: 21px;
+  }
+  .five-scorebar {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .five-board-legend {
+    justify-content: flex-start;
+  }
+  .five-relations {
+    grid-template-columns: 1fr;
+  }
+  .five-entry-row {
+    flex-direction: column;
+  }
+}

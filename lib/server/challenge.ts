@@ -178,7 +178,7 @@ export async function statsFor(
         meetCount: (reads.progress ?? []).filter((p) => ids.has(p.word_id))
           .length,
       }
-    : { mastered: totals.mastered, meetCount: totals.newWords };
+    : { mastered: totals.mastered, meetCount: reads.meetCount };
   return {
     total: ids.size,
     collection: words.length,
@@ -325,6 +325,13 @@ export async function nextQuestion(
   // is nothing to read and the placement stays null.
   const trailing: TrailingAnswer[] =
     level === null ? await trailingAnswers(userId) : [];
+  const scorePenalty =
+    (
+      await db
+        .prepare("SELECT score_penalty FROM users WHERE id=?")
+        .bind(userId)
+        .first<{ score_penalty: number }>()
+    )?.score_penalty ?? 0;
   // Fractions run over the eligible pool rather than the starter-narrowed one,
   // so the estimate describes the child's knowledge and not the fresh-account
   // guard below. The browser engine derives the same number from the same rows,
@@ -355,9 +362,10 @@ export async function nextQuestion(
     );
     return {
       level: placedLevel,
-      score: levelScore(
-        placedLevel,
-        correctCredit(items, totals, placedLevel),
+      score: Math.max(
+        0,
+        levelScore(placedLevel, correctCredit(items, totals, placedLevel)) -
+          scorePenalty,
       ),
     };
   };

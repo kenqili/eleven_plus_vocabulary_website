@@ -300,7 +300,17 @@ export async function applyFlushed(
       ([wordId, correct, run, recalls, mastered, seen, lastSeen, retryAt]) =>
         db
           .prepare(
-            `UPDATE progress SET correct=?,run=?,recalls=?,mastered=?,seen=?,last_seen=?,retry_at=?
+            `UPDATE progress SET
+               correct=MAX(correct,?),
+               run=?,recalls=?,
+               mastered=MAX(mastered,?),
+               seen=?,
+               last_seen=CASE
+                 WHEN ? IS NULL THEN last_seen
+                 WHEN last_seen IS NULL THEN ?
+                 ELSE MAX(last_seen,?)
+               END,
+               retry_at=?
              WHERE user_id=? AND word_id=?`,
           )
           .bind(
@@ -309,6 +319,8 @@ export async function applyFlushed(
             recalls,
             mastered,
             seen,
+            lastSeen,
+            lastSeen,
             lastSeen,
             retryAt,
             userId,

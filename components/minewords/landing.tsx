@@ -28,6 +28,7 @@ import {
   Printer,
   ListChecks,
   CalendarDays,
+  Gamepad2,
   HeartHandshake,
   Sparkles,
 } from "lucide-react";
@@ -415,10 +416,7 @@ export default function Landing({
             <Link className="text-button" href="/words">
               <ListChecks size={16} /> Word list and progress
             </Link>
-            <Link
-              className="text-button"
-              href="/free-11-plus-vocabulary-words"
-            >
+            <Link className="text-button" href="/free-11-plus-vocabulary-words">
               <ListChecks size={16} /> Free 100-word starter list
             </Link>
           </div>
@@ -482,6 +480,20 @@ export default function Landing({
                 week.
               </p>
             </article>
+            <article className="landing-card">
+              <Gamepad2 size={20} />
+              <h3>Five Letters</h3>
+              <p className="muted">
+                A six-guess word game using the same vocabulary. Every guess
+                opens a word card with a meaning, an example, synonyms and
+                opposites.
+              </p>
+            </article>
+          </div>
+          <div className="landing-actions">
+            <Link className="text-button" href="/five-letters">
+              <Gamepad2 size={16} /> Play Five Letters
+            </Link>
           </div>
         </section>
 
@@ -533,10 +545,7 @@ export default function Landing({
                     </span>{" "}
                     {price.usual && (
                       <>
-                        <s
-                          className="was-price"
-                          aria-hidden="true"
-                        >
+                        <s className="was-price" aria-hidden="true">
                           {price.usual}
                         </s>
                         <span className="sr-only">

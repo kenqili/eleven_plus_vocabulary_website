@@ -88,7 +88,7 @@ const nextConfig: NextConfig = {
       // plain literals below. Verbose, and it cannot silently stop matching.
       {
         source:
-          "/:path(practice|account|admin|stories|words|guides|calendar|rewards|confirm-email|reset-password)",
+          "/:path(practice|five-letters|account|admin|stories|words|guides|calendar|rewards|confirm-email|reset-password)",
         headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
       },
       {

@@ -110,6 +110,8 @@ export type Snapshot = {
      */
     /** No free words at all, so there is nothing this account may practise. */
     gated: boolean;
+    /** Permanent points removed from the displayed 10,000 score by hints. */
+    scorePenalty: number;
     /** Paid access has lapsed and the trial is over. */
     trialExpired: boolean;
     trialEndsAt: number | null;
@@ -235,7 +237,7 @@ export async function progressSnapshot(
         "SELECT word_id,COUNT(*) AS count FROM learning_events WHERE user_id=? AND eligible=1 GROUP BY word_id",
       )
       .bind(userId),
-    db.prepare("SELECT timezone FROM users WHERE id=?").bind(userId),
+    db.prepare("SELECT timezone,score_penalty FROM users WHERE id=?").bind(userId),
     // D1 types a batch result as one wide union, so each element is narrowed
     // where it is read rather than by casting the array.
   ])) as unknown as [
@@ -246,7 +248,7 @@ export async function progressSnapshot(
     { results: (AddedWord & { created_at: number })[] },
     { results: { word_id: string; question_type: string; count: number }[] },
     { results: { word_id: string; count: number }[] },
-    { results: { timezone: string }[] },
+    { results: { timezone: string; score_penalty: number }[] },
   ];
 
   // The free collection is a fixed slice of the shipped bank, so its size is
@@ -260,6 +262,7 @@ export async function progressSnapshot(
     bank: { tier, ...entry },
     account: {
       timezone: account.results[0]?.timezone ?? "Europe/London",
+      scorePenalty: account.results[0]?.score_penalty ?? 0,
       freeTier: access.freeTier,
       gated: access.freeTier && !freeCount,
       trialExpired: access.trialExpired,

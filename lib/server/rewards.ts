@@ -100,11 +100,19 @@ const EARNED_SQL =
   "SELECT COALESCE(SUM(amount),0) AS total FROM credit_transactions WHERE user_id=? AND amount>0";
 const PROGRESS_SQL =
   "SELECT word_id,correct,mastered FROM progress WHERE user_id=?";
+/**
+ * Distinct words met, from the rows rather than the daily counters. The sentence
+ * "you have met N words" has to agree with how many distinct words the collection
+ * shown above actually has; summing daily new-word increments double-counts a
+ * word seen on two days and cannot be repaired later.
+ */
+const MEET_COUNT_SQL = "SELECT COUNT(*) AS count FROM progress WHERE user_id=?";
 
 export type SummaryReads = {
   rows: (PeriodStats & { day: string })[];
   wallet: { balance: number; streak: number; bestStreak: number } | null;
   earned: number;
+  meetCount: number;
   mission: { questions: number; stories: number } | null;
   progress: { word_id: string; correct: number; mastered: number }[] | null;
   day: string;
@@ -144,7 +152,11 @@ export async function summaryReads(
     db.prepare(DAILY_STATS_SQL).bind(userId),
     db.prepare(WALLET_SQL).bind(userId),
     db.prepare(EARNED_SQL).bind(userId),
+    db.prepare(MEET_COUNT_SQL).bind(userId),
   ];
+  // Fixed position, before the optional reads, so adding mission/progress
+  // cannot shift it.
+  const meetCountAt = 3;
   const missionAt = options.mission
     ? statements.push(db.prepare(MISSION_SQL).bind(userId, day, userId, day)) -
       1
@@ -167,6 +179,7 @@ export async function summaryReads(
       rowsOf<{ balance: number; streak: number; bestStreak: number }>(1)[0] ??
       null,
     earned: rowsOf<{ total: number }>(2)[0]?.total ?? 0,
+    meetCount: rowsOf<{ count: number }>(meetCountAt)[0]?.count ?? 0,
     mission:
       missionAt < 0
         ? null

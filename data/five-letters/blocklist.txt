@@ -1,0 +1,10 @@
+# Words the game must never accept, even if a source list contains them.
+# The common Wordle answer list is already curated, so this is a backstop for a
+# future source-list change rather than a filter that removes words today.
+# One lower-case word per line; lines beginning # are comments.
+bitch
+chink
+faggot
+nigger
+pussy
+whore

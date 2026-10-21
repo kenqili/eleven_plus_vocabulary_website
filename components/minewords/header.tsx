@@ -15,7 +15,7 @@ import {
 import ThemePicker from "./theme-picker";
 
 /**
- * Four things a child came for, a disclosure for the rest, and one link that is
+ * Five things a child came for, a disclosure for the rest, and one link that is
  * deliberately neither.
  *
  * There were eleven equal links, and a review of this app as a nine-year-old
@@ -35,6 +35,7 @@ import ThemePicker from "./theme-picker";
  * full row.
  */
 const FOR_CHILDREN = [
+  { href: "/five-letters", label: "Five Letters" },
   { href: "/stories", label: "Stories" },
   { href: "/words", label: "Word list" },
   { href: "/rewards", label: "Badges" },

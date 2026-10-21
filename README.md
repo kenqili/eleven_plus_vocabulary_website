@@ -1,6 +1,6 @@
 # 11+ Vocabulary Challenge
 
-A web conversion of MineWordsAndroid's vocabulary challenge. Practice uses Flash Card 1, Flash Card 2 and Blue Book as one library with definition, synonym and antonym questions. There is no game or separate legacy 500-question challenge.
+A web conversion of MineWordsAndroid's vocabulary challenge. Practice uses Flash Card 1, Flash Card 2 and Blue Book as one library with definition, synonym and antonym questions. **Five Letters** is a five-letter word game built on the same collection; the old separate 500-question challenge is still gone.
 
 ## Word database
 
@@ -28,6 +28,52 @@ The current library contains **2,375 question templates**: 864 definitions, 829 
 
 After editing words, run `npm run questions:generate` and `npm run questions:validate`, then have the changed question rows reviewed before updating the review hashes. Rebuild/redeploy afterward. Restart the development server after regenerating CSVs: the current Vinext raw-CSV hot reload can retain stale data. Do not blindly update hashes to bypass semantic review.
 
+## Five Letters
+
+`/five-letters` is a six-guess word game for the same vocabulary collection.
+It is deliberately noindex and is linked from the header, landing page and
+how-to page.
+
+- **Answers:** only the 194 five-letter words in the bank. A full account gets
+  the whole pool; a free account gets the twenty five-letter words in its free
+  collection.
+- **Guesses:** the 2,323-word accepted list (`data/five-letters/accepted.json`)
+  combines the 2,315 common Wordle answers with the eight five-letter bank words
+  that list does not contain. Every accepted guess gets a card with a definition,
+  example, synonyms and antonyms.
+- **Dictionary:** cards are committed in `data/five-letters/dictionary.json`.
+  The 194 bank words copy their curated MineWords card; the rest use the first
+  useful WordNet 3.0 sense, with 58 manual entries for inflections, function
+  words and modern coinages. The browser fetches a copy from
+  `public/five-letters/dictionary.json` only when the game opens. No dictionary
+  request leaves the site at runtime.
+- **Progress:** a solve masters the answer without creating an attempt, credit,
+  streak or learning event. Each guessed bank word in the child's allowed,
+  non-excluded collection adds one `progress.correct`, capped at five; five
+  counts master that guessed word too. A guessed word outside the bank still
+  shows its card but does not count.
+- **Hints:** one synonym and one antonym hint per round, each permanently adds
+  five points to `users.score_penalty` and does not spend a guess. Retries are
+  free. The displayed score is `max(0, derived score - penalty)`; the level is
+  unchanged.
+- **Guest demo:** the twenty free five-letter words run entirely in the browser,
+  save nothing and have no score penalty.
+
+Regenerate or check the game data:
+
+```sh
+# Needs WordNet 3.0 unpacked locally, because it regenerates dictionary.json.
+WORDNET_DIR=/path/to/WordNet-3.0/dict npm run words:five:build
+
+# No WordNet needed: validates committed data and the public copy.
+npm run words:five:check
+```
+
+The source list and licensing are recorded in
+[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md). The answer-selection and
+persistence logic is in `lib/server/five-letters.ts`; pure grading and hints are
+in `lib/challenge/five-letters.ts`.
+
 ## Code architecture
 
 | Location                                 | Responsibility                                                    |
@@ -41,9 +87,12 @@ After editing words, run `npm run questions:generate` and `npm run questions:val
 | `lib/server/billing.ts`, `webhook.ts`    | Stripe subscriptions and signature verification                   |
 | `lib/server/db.ts`, `http.ts`            | Runtime access and request/error handling                         |
 | `app/api/`                               | Small route handlers enforcing authentication and access          |
-| `components/minewords/`                  | Challenge, account, header and progress UI                        |
+| `components/minewords/`                  | Challenge, account, header, Five Letters and progress UI          |
 | `db/schema.ts`, `drizzle/`               | Account/progress schema and versioned migrations                  |
 | `tests/`                                 | Content/security tests and local API integration checks           |
+| `data/five-letters/`                     | Committed accepted list, dictionary cards and source data         |
+| `lib/challenge/five-letters.ts`          | Pure grading, hints, answer acceptance and shared game types      |
+| `lib/server/five-letters.ts`             | Game persistence, answer selection, mastery and correctness       |
 
 Words use the three CSV files. Accounts, hashed credentials, sessions, answers and subscriptions use D1/SQLite, not the CSV files. This avoids storing sensitive account data in downloadable vocabulary files. The runtime is React + TypeScript + Vinext on a Cloudflare Worker. Retained starter infrastructure and UI primitives remain separate from product modules.
 
@@ -122,7 +171,7 @@ node scripts/run-framework.mjs build
 
 ## Accounts and login credentials
 
-Visit `/account`, choose **Create an account**, and register with your email and an 8–128 character password. New free accounts receive full vocabulary practice, saved progress, word summaries, revision exports and badges for the first seven days after sign-up. Configure `FREE_TRIAL_DAYS` in `.env` locally or in the hosting environment (whole number from 0 to 365; default 7; set to 0 to disable free trials). The countdown is enforced by server-side access checks. After the trial, free users keep saved access to a stable, difficulty-balanced selection of 20 words (set `FREE_WORD_LIMIT` to a whole number from 0 to the size of the word bank; default 20). Signed-out visitors can try the same free collection without saved progress. Subscribing unlocks the complete library and preserves existing progress.
+Visit `/account`, choose **Create an account**, and register with your email and an 8–128 character password. New free accounts receive full vocabulary practice, saved progress, word summaries, revision exports and badges for the first seven days after sign-up. Configure `FREE_TRIAL_DAYS` in `.env` locally or in the hosting environment (whole number from 0 to 365; default 7; set to 0 to disable free trials). The countdown is enforced by server-side access checks. After the trial, free users keep saved access to a stable selection of the 224 easiest words (set `FREE_WORD_LIMIT` to a whole number from 0 to the size of the word bank; default 224). Signed-out visitors can try the same free collection without saved progress. Subscribing unlocks the complete library and preserves existing progress.
 
 Passwords use salted scrypt (N=16384, r=8, p=5); session tokens are random, stored only as hashes in D1, and sent in HttpOnly/SameSite cookies (Secure on HTTPS). Authentication endpoints are rate-limited, mutations check Origin, sessions expire after seven days, and logout revokes the session. Emails are normalized to lowercase. A reset link is rate-limited like any other, expires after an hour, and revokes every session on the account when it is used.
 
@@ -222,10 +271,11 @@ npm run questions:validate
 npm run build
 # Requires a running local preview and migrated local database; no Stripe keys configured:
 npm run test:integration
+TEST_NODE_DB=.sites-runtime/node-dev.sqlite npm run test:five-letters:integration
 npm run format
 ```
 
-Integration tests create a unique temporary local account, insert a local-only membership for protected-route checks, and clean up that account. Never run them against a production site. Core tests cover every word's choices, parser failures, reviewed-CSV hashes, salted passwords, and valid/forged/stale Stripe signatures. Integration checks cover CSRF, cookies, registration, wrong passwords, session revocation, paywalls, concurrent questions, all three question types, trial access and expiry, invalid filters, retired questions, answer replay, mastery evidence and per-level targets, persistence and revoked access.
+Integration tests create a unique temporary local account, insert a local-only membership for protected-route checks, and clean up that account. Never run them against a production site. Core tests cover every word's choices, parser failures, reviewed-CSV hashes, salted passwords, and valid/forged/stale Stripe signatures. Integration checks cover CSRF, cookies, registration, wrong passwords, session revocation, paywalls, concurrent questions, all three question types, trial access and expiry, invalid filters, retired questions, answer replay, mastery evidence and per-level targets, persistence and revoked access. The Five Letters integration suite additionally covers answer secrecy, duplicate guesses and hints, hint penalties, solve mastery, guessed-word counts, the free twenty-answer pool, and refresh/next behaviour.
 
 A feature-detected WebMCP surface exposes the visible question and answering action. A supported WebMCP browser validation context was not available in this run; these optional tools are not browser-verified. Browser interaction and responsive checks are documented in [the responsive review](docs/responsive-layout-review.md) and [the child experience review](docs/child-experience-review.md), including their device-emulation limits.
 

@@ -315,7 +315,11 @@ export function useChallenge() {
       // signed-in child the demo and quietly lose their work.
       try {
         const loaded = await loadSession();
-        const client = new ClientSession(loaded.engine, loaded.stats);
+        const client = new ClientSession(
+          loaded.engine,
+          loaded.stats,
+          loaded.snapshot.account.scorePenalty,
+        );
         client.watch(setUnsaved);
         session.current = client;
         bank.current = loaded.bank;

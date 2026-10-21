@@ -137,9 +137,13 @@ export async function accountPlacement(userId: string): Promise<{
   level: number;
   score: number;
 }> {
-  const [{ totals, items }, trailing] = await Promise.all([
+  const [{ totals, items }, trailing, penalty] = await Promise.all([
     bandPool(userId),
     trailingAnswers(userId),
+    database()
+      .prepare("SELECT score_penalty FROM users WHERE id=?")
+      .bind(userId)
+      .first<{ score_penalty: number }>(),
   ]);
   const fractions = levelFractions(items, totals);
   const base = currentLevel(fractions, trailing);
@@ -150,6 +154,12 @@ export async function accountPlacement(userId: string): Promise<{
   );
   return {
     level,
-    score: levelScore(level, correctCredit(items, totals, level)),
+    // Five Letters hints are permanent and account-level. Subtracting here as
+    // well as in the game means every reader of the score sees one number.
+    score: Math.max(
+      0,
+      levelScore(level, correctCredit(items, totals, level)) -
+        (penalty?.score_penalty ?? 0),
+    ),
   };
 }

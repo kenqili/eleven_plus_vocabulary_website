@@ -1,0 +1,495 @@
+{
+  "admin": {
+    "definition": "The people who manage an organization or a computer system; short for administration.",
+    "example": "The admin team helped the parent reset the password.",
+    "synonyms": [
+      "administration",
+      "management"
+    ],
+    "antonyms": []
+  },
+  "among": {
+    "definition": "In the middle of a group of people or things; surrounded by them.",
+    "example": "She found her book among the cushions.",
+    "synonyms": [
+      "amid",
+      "amongst"
+    ],
+    "antonyms": []
+  },
+  "artsy": {
+    "definition": "Showing an interest in art, often in a showy way.",
+    "example": "The artsy poster was covered in paint splashes.",
+    "synonyms": [
+      "artistic",
+      "creative"
+    ],
+    "antonyms": []
+  },
+  "axion": {
+    "definition": "A very light particle proposed by physicists.",
+    "example": "Scientists search for the axion in experiments.",
+    "synonyms": [
+      "particle"
+    ],
+    "antonyms": []
+  },
+  "bicep": {
+    "definition": "The large muscle at the front of the upper arm; usually called the biceps.",
+    "example": "He flexed his bicep after lifting the box.",
+    "synonyms": [
+      "biceps"
+    ],
+    "antonyms": []
+  },
+  "circa": {
+    "definition": "About or approximately, used with a date.",
+    "example": "The castle was built circa 1200.",
+    "synonyms": [
+      "approximately",
+      "about"
+    ],
+    "antonyms": [
+      "exactly"
+    ]
+  },
+  "could": {
+    "definition": "The past tense of can; used to say someone was able to do something, or to make a polite request.",
+    "example": "She could swim when she was four.",
+    "synonyms": [
+      "was able to"
+    ],
+    "antonyms": [
+      "could not"
+    ]
+  },
+  "creme": {
+    "definition": "Cream, especially a thick sweet liquid or the best part of something.",
+    "example": "The dessert was topped with a spoonful of creme.",
+    "synonyms": [
+      "cream"
+    ],
+    "antonyms": []
+  },
+  "cutie": {
+    "definition": "A cute person or animal.",
+    "example": "The puppy was a little cutie.",
+    "synonyms": [
+      "sweetie",
+      "darling"
+    ],
+    "antonyms": []
+  },
+  "cyber": {
+    "definition": "Relating to computers, the internet, or virtual reality.",
+    "example": "The school taught cyber safety.",
+    "synonyms": [
+      "digital",
+      "online"
+    ],
+    "antonyms": []
+  },
+  "dilly": {
+    "definition": "Something excellent or special (informal).",
+    "example": "That new game is a dilly.",
+    "synonyms": [
+      "beauty",
+      "winner"
+    ],
+    "antonyms": []
+  },
+  "droit": {
+    "definition": "A legal right or claim (rare).",
+    "example": "The old law protected the lord's droit.",
+    "synonyms": [
+      "right",
+      "entitlement"
+    ],
+    "antonyms": []
+  },
+  "eking": {
+    "definition": "Present participle of eke; managing to make something last by using it carefully.",
+    "example": "They were eking out their supplies until help arrived.",
+    "synonyms": [
+      "stretching",
+      "rationing"
+    ],
+    "antonyms": []
+  },
+  "femme": {
+    "definition": "A woman, especially in French or in phrases such as femme fatale.",
+    "example": "The character was a glamorous femme fatale.",
+    "synonyms": [
+      "woman"
+    ],
+    "antonyms": []
+  },
+  "fritz": {
+    "definition": "A state of being broken or not working, usually in the phrase on the fritz.",
+    "example": "The old radio was on the fritz.",
+    "synonyms": [
+      "broken"
+    ],
+    "antonyms": [
+      "working"
+    ]
+  },
+  "geeky": {
+    "definition": "Showing a lot of interest in technical or niche subjects.",
+    "example": "He wore geeky glasses and loved computer facts.",
+    "synonyms": [
+      "nerdy",
+      "technical"
+    ],
+    "antonyms": []
+  },
+  "girly": {
+    "definition": "Typical of a girl or showing traditional girliness (informal).",
+    "example": "She chose a girly pink backpack.",
+    "synonyms": [
+      "feminine"
+    ],
+    "antonyms": [
+      "boyish"
+    ]
+  },
+  "golly": {
+    "definition": "An exclamation of surprise or wonder.",
+    "example": "Golly, that was a big wave!",
+    "synonyms": [
+      "gosh",
+      "wow"
+    ],
+    "antonyms": []
+  },
+  "haute": {
+    "definition": "Fancy, high-class, or fashionable, used in phrases such as haute cuisine.",
+    "example": "The chef served haute cuisine at the hotel.",
+    "synonyms": [
+      "fashionable",
+      "upscale"
+    ],
+    "antonyms": [
+      "plain"
+    ]
+  },
+  "humph": {
+    "definition": "A sound made to show doubt, annoyance, or disapproval.",
+    "example": "'Humph,' he said when he saw the muddy shoes.",
+    "synonyms": [
+      "harrumph"
+    ],
+    "antonyms": []
+  },
+  "hunky": {
+    "definition": "Strong and attractive (informal).",
+    "example": "The film star was tall and hunky.",
+    "synonyms": [
+      "muscular",
+      "attractive"
+    ],
+    "antonyms": []
+  },
+  "hydro": {
+    "definition": "Water, or a hydroelectric power station (informal).",
+    "example": "The town gets its power from the hydro.",
+    "synonyms": [
+      "water",
+      "hydroelectric"
+    ],
+    "antonyms": []
+  },
+  "hyper": {
+    "definition": "Very energetic or excited (informal).",
+    "example": "The children were hyper after the party.",
+    "synonyms": [
+      "energetic",
+      "excited"
+    ],
+    "antonyms": [
+      "calm"
+    ]
+  },
+  "inbox": {
+    "definition": "The place where new emails or messages arrive.",
+    "example": "She checked her inbox after lunch.",
+    "synonyms": [
+      "mailbox"
+    ],
+    "antonyms": [
+      "outbox"
+    ]
+  },
+  "login": {
+    "definition": "The name and password used to enter a computer system; also the act of entering.",
+    "example": "Enter your login to open the account.",
+    "synonyms": [
+      "sign-in"
+    ],
+    "antonyms": [
+      "logout"
+    ]
+  },
+  "manga": {
+    "definition": "Japanese comic books or graphic novels.",
+    "example": "He borrowed a manga from the library.",
+    "synonyms": [
+      "comic"
+    ],
+    "antonyms": []
+  },
+  "nerdy": {
+    "definition": "Showing great interest in technical or academic things, often in a way others find unfashionable.",
+    "example": "She told a nerdy joke about maths.",
+    "synonyms": [
+      "geeky",
+      "studious"
+    ],
+    "antonyms": []
+  },
+  "ombre": {
+    "definition": "A colour pattern that shades gradually from light to dark.",
+    "example": "Her hair had an ombre effect.",
+    "synonyms": [
+      "gradient",
+      "shaded"
+    ],
+    "antonyms": []
+  },
+  "ought": {
+    "definition": "Used to say what is right or expected.",
+    "example": "You ought to apologise.",
+    "synonyms": [
+      "should"
+    ],
+    "antonyms": []
+  },
+  "piney": {
+    "definition": "Smelling or looking like pine trees.",
+    "example": "The forest path had a piney smell.",
+    "synonyms": [
+      "resinous"
+    ],
+    "antonyms": []
+  },
+  "pouty": {
+    "definition": "Pushing the lips out in a sulky way.",
+    "example": "The child gave a pouty face.",
+    "synonyms": [
+      "sulky",
+      "sullen"
+    ],
+    "antonyms": [
+      "smiling"
+    ]
+  },
+  "quoth": {
+    "definition": "Said (old use).",
+    "example": "'Never fear,' quoth the knight.",
+    "synonyms": [
+      "said"
+    ],
+    "antonyms": []
+  },
+  "ralph": {
+    "definition": "A boy's name.",
+    "example": "Ralph is a character in the story.",
+    "synonyms": [],
+    "antonyms": []
+  },
+  "ramen": {
+    "definition": "A Japanese noodle soup.",
+    "example": "We ate ramen with chopsticks.",
+    "synonyms": [
+      "noodles"
+    ],
+    "antonyms": []
+  },
+  "rebar": {
+    "definition": "Steel bars used to strengthen concrete.",
+    "example": "Workers tied the rebar before pouring concrete.",
+    "synonyms": [
+      "reinforcement"
+    ],
+    "antonyms": []
+  },
+  "recut": {
+    "definition": "To cut something again, especially a film or gemstone.",
+    "example": "The director recut the film.",
+    "synonyms": [
+      "re-edit"
+    ],
+    "antonyms": []
+  },
+  "rehab": {
+    "definition": "Treatment to help someone recover from illness, injury, or addiction.",
+    "example": "After the injury, she went to rehab.",
+    "synonyms": [
+      "recovery",
+      "therapy"
+    ],
+    "antonyms": []
+  },
+  "roger": {
+    "definition": "Used in radio to mean 'message received'; also a boy's name.",
+    "example": "'Roger that,' said the pilot.",
+    "synonyms": [
+      "received"
+    ],
+    "antonyms": []
+  },
+  "shall": {
+    "definition": "Used to talk about the future, a promise, or a command.",
+    "example": "We shall meet tomorrow.",
+    "synonyms": [
+      "will"
+    ],
+    "antonyms": []
+  },
+  "shalt": {
+    "definition": "An old form of shall, used with thou.",
+    "example": "Thou shalt not give up.",
+    "synonyms": [
+      "shall"
+    ],
+    "antonyms": []
+  },
+  "since": {
+    "definition": "From a past time until now; or because.",
+    "example": "She has lived here since 2020.",
+    "synonyms": [
+      "because",
+      "from"
+    ],
+    "antonyms": []
+  },
+  "terra": {
+    "definition": "Earth or land (Latin).",
+    "example": "The plants grew in terra cotta pots.",
+    "synonyms": [
+      "earth",
+      "land"
+    ],
+    "antonyms": []
+  },
+  "their": {
+    "definition": "Belonging to them.",
+    "example": "The children packed their bags.",
+    "synonyms": [],
+    "antonyms": []
+  },
+  "these": {
+    "definition": "The plural of this; the things here.",
+    "example": "These apples are ripe.",
+    "synonyms": [],
+    "antonyms": []
+  },
+  "those": {
+    "definition": "The plural of that; the things there.",
+    "example": "Those clouds look heavy.",
+    "synonyms": [],
+    "antonyms": []
+  },
+  "turbo": {
+    "definition": "A device that makes an engine more powerful; short for turbocharger.",
+    "example": "The car has a turbo engine.",
+    "synonyms": [
+      "turbocharger"
+    ],
+    "antonyms": []
+  },
+  "twixt": {
+    "definition": "Between (old or literary).",
+    "example": "The village lies twixt the hills.",
+    "synonyms": [
+      "between"
+    ],
+    "antonyms": []
+  },
+  "unmet": {
+    "definition": "Not achieved or satisfied.",
+    "example": "The team had an unmet goal.",
+    "synonyms": [
+      "unsatisfied"
+    ],
+    "antonyms": [
+      "met"
+    ]
+  },
+  "unset": {
+    "definition": "Not yet set or fixed.",
+    "example": "The table was still unset.",
+    "synonyms": [
+      "not set"
+    ],
+    "antonyms": [
+      "set"
+    ]
+  },
+  "until": {
+    "definition": "Up to the time that something happens.",
+    "example": "Wait until the bell rings.",
+    "synonyms": [
+      "till"
+    ],
+    "antonyms": []
+  },
+  "voila": {
+    "definition": "Look there! Used when showing something.",
+    "example": "Voila! The cake is ready.",
+    "synonyms": [
+      "there"
+    ],
+    "antonyms": []
+  },
+  "where": {
+    "definition": "In or to which place.",
+    "example": "Where did you put your coat?",
+    "synonyms": [],
+    "antonyms": []
+  },
+  "which": {
+    "definition": "Used to ask or say what one of a group.",
+    "example": "Which book do you want?",
+    "synonyms": [],
+    "antonyms": []
+  },
+  "whose": {
+    "definition": "Belonging to whom.",
+    "example": "Whose shoes are these?",
+    "synonyms": [],
+    "antonyms": []
+  },
+  "willy": {
+    "definition": "A boy's name.",
+    "example": "Willy won the race.",
+    "synonyms": [],
+    "antonyms": []
+  },
+  "women": {
+    "definition": "The plural of woman.",
+    "example": "The women rowed across the lake.",
+    "synonyms": [
+      "ladies"
+    ],
+    "antonyms": [
+      "men"
+    ]
+  },
+  "would": {
+    "definition": "The past tense of will; used to talk about a possibility or a polite request.",
+    "example": "She would help if she could.",
+    "synonyms": [],
+    "antonyms": []
+  },
+  "abled": {
+    "definition": "Having the ability to do something; not disabled.",
+    "example": "The path was designed for abled walkers and wheelchair users.",
+    "synonyms": [
+      "capable"
+    ],
+    "antonyms": [
+      "disabled"
+    ]
+  }
+}

@@ -23,6 +23,7 @@ import {
   CalendarDays,
   Check,
   CircleHelp,
+  Gamepad2,
   Keyboard,
   ListChecks,
   RotateCcw,
@@ -189,6 +190,16 @@ export default function HowToPage() {
               practice days, questions and study time, so children can see their
               small daily efforts add up. Use it to celebrate taking part and
               find a routine that works for your family.
+            </p>
+          </article>
+          <article>
+            <Gamepad2 size={22} />
+            <h3>Play with the words</h3>
+            <p>
+              <Link href="/five-letters">Five Letters</Link> is a six-guess word
+              game built from the same collection. Each guess opens a card with
+              the meaning, an example and related words, so a lucky guess still
+              teaches something.
             </p>
           </article>
         </section>

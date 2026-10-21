@@ -179,6 +179,7 @@ function advanceStats(
  */
 export class ClientSession {
   private readonly engine: PracticeEngine;
+  private readonly scorePenalty: number;
   private queue: FlushedAnswer[] = [];
   /** Called whenever the queue changes, so a Save button can grey itself out. */
   private onChange: (pending: number) => void = () => {};
@@ -192,9 +193,10 @@ export class ClientSession {
   /** Bumped on every applied answer, so a panel can tell there is something new. */
   private revision = 0;
 
-  constructor(engine: PracticeEngine, stats: Stats) {
+  constructor(engine: PracticeEngine, stats: Stats, scorePenalty = 0) {
     this.engine = engine;
     this.stats = stats;
+    this.scorePenalty = Math.max(0, Math.floor(scorePenalty));
   }
 
   /**
@@ -246,7 +248,14 @@ export class ClientSession {
    * reads. Same rows, same functions as the server — the engine owns both.
    */
   placement(): { level: number; score: number } {
-    return this.engine.placement();
+    const placement = this.engine.placement();
+    // The engine knows the derived level score, not the account's permanent
+    // hint penalty. Subtract it here for the same reason the server does in
+    // accountPlacement: one displayed number, wherever it is read.
+    return {
+      ...placement,
+      score: Math.max(0, placement.score - this.scorePenalty),
+    };
   }
 
   /**
