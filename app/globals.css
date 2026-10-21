@@ -6667,7 +6667,9 @@ hr {
   font-weight: 800;
   line-height: 1;
   text-transform: uppercase;
-  transition: background 120ms ease, border-color 120ms ease;
+  transition:
+    background 120ms ease,
+    border-color 120ms ease;
 }
 .five-tile.is-empty {
   background: var(--surface-2);
@@ -6689,6 +6691,75 @@ hr {
   background: var(--surface-4);
   border-color: var(--line);
   color: var(--ink-3);
+}
+.five-keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto 18px;
+}
+.five-keyboard-row {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+}
+.five-key,
+.five-key-spacer {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.five-key {
+  height: 44px;
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface-2);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease;
+}
+.five-key:hover:not(:disabled) {
+  background: var(--surface-3);
+}
+.five-key:focus-visible {
+  outline: 3px solid var(--surface-brand-2);
+  outline-offset: 1px;
+}
+.five-key.is-green {
+  background: var(--surface-green);
+  border-color: var(--line-green);
+  color: var(--ink-invert);
+}
+.five-key.is-yellow {
+  background: var(--surface-amber);
+  border-color: var(--line-gold);
+  color: var(--ink-amber-deep);
+}
+.five-key.is-grey {
+  background: var(--surface-4);
+  border-color: var(--line);
+  color: var(--ink-3);
+}
+.five-key.is-action {
+  flex-grow: 1.5;
+  font-size: 11px;
+  letter-spacing: 0.2px;
+}
+.five-key-spacer {
+  flex-grow: 0.5;
+}
+.five-key:disabled {
+  cursor: default;
+  opacity: 1;
 }
 .five-entry {
   border-top: 1px solid var(--line-2);
@@ -7035,6 +7106,20 @@ hr {
   }
   .five-board-legend {
     justify-content: flex-start;
+  }
+  .five-keyboard {
+    gap: 5px;
+    margin-bottom: 14px;
+  }
+  .five-keyboard-row {
+    gap: 4px;
+  }
+  .five-key {
+    height: 40px;
+    font-size: 12px;
+  }
+  .five-key.is-action {
+    font-size: 10px;
   }
   .five-relations {
     grid-template-columns: 1fr;

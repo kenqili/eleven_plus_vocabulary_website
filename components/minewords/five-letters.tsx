@@ -15,6 +15,7 @@ import {
   HINT_SCORE_PENALTY,
   hintFor,
   isAcceptedGuess,
+  keyboardMarks,
   MAX_GUESSES,
   normalizeGuess,
   type FiveLettersAnswer,
@@ -37,6 +38,8 @@ const FALLBACK_CARD: FiveLettersCard = {
   antonyms: [],
   source: "Game list",
 };
+
+const KEY_ROWS = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"] as const;
 
 const markLabel = (mark: FiveLettersMark) =>
   mark === "green"
@@ -218,6 +221,11 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
     [demoWords],
   );
 
+  const keyMarks = useMemo(
+    () => keyboardMarks(game?.guesses ?? []),
+    [game?.guesses],
+  );
+
   const applyState = useCallback((next: FiveLettersState) => {
     setGame(next.game);
     setScore(next.score);
@@ -373,8 +381,7 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
     (kind) => availableHints.includes(kind) || usedHints.includes(kind),
   );
 
-  const submit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const submitGuess = async () => {
     if (!game || !canPlay) return;
     const word = normalizeGuess(draft);
     if (!word) {
@@ -447,6 +454,32 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
       setBusy(false);
       inputRef.current?.focus();
     }
+  };
+
+  const submit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    void submitGuess();
+  };
+
+  const pressLetter = (letter: string) => {
+    if (!canPlay) return;
+    setDraft((current) =>
+      current.length >= 5 ? current : `${current}${letter}`,
+    );
+    setError("");
+    setNotice("");
+  };
+
+  const eraseLetter = () => {
+    if (!canPlay) return;
+    setDraft((current) => current.slice(0, -1));
+    setError("");
+    setNotice("");
+  };
+
+  const pressEnter = () => {
+    if (!canPlay) return;
+    void submitGuess();
   };
 
   const addHint = async (kind: FiveLettersHintKind) => {
@@ -570,8 +603,8 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
           <h1>Five Letters</h1>
           <p>
             Guess the five-letter word in six tries. Every vocabulary guess
-            teaches you a word — read the card, use a synonym or antonym hint
-            if you are stuck, and take your time.
+            teaches you a word — read the card, use a synonym or antonym hint if
+            you are stuck, and take your time.
           </p>
         </div>
         <div className="five-hero-badges">
@@ -671,6 +704,63 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
             })}
           </div>
 
+          <div
+            className="five-keyboard"
+            role="group"
+            aria-label="Letter keyboard"
+          >
+            {KEY_ROWS.map((row, rowIndex) => (
+              <div className="five-keyboard-row" key={row}>
+                {rowIndex === 1 ? (
+                  <span className="five-key-spacer" aria-hidden="true" />
+                ) : null}
+                {rowIndex === 2 ? (
+                  <button
+                    type="button"
+                    className="five-key is-action"
+                    onClick={pressEnter}
+                    onMouseDown={(event) => event.preventDefault()}
+                    disabled={!canPlay}
+                    aria-label="Enter guess"
+                  >
+                    Enter
+                  </button>
+                ) : null}
+                {row.split("").map((letter) => {
+                  const mark = keyMarks[letter];
+                  return (
+                    <button
+                      key={letter}
+                      type="button"
+                      className={`five-key${mark ? ` is-${mark}` : ""}`}
+                      onClick={() => pressLetter(letter)}
+                      onMouseDown={(event) => event.preventDefault()}
+                      disabled={!canPlay || draft.length >= 5}
+                      aria-label={`${letter}${mark ? `, ${markLabel(mark)}` : ""}`}
+                    >
+                      {letter}
+                    </button>
+                  );
+                })}
+                {rowIndex === 1 ? (
+                  <span className="five-key-spacer" aria-hidden="true" />
+                ) : null}
+                {rowIndex === 2 ? (
+                  <button
+                    type="button"
+                    className="five-key is-action"
+                    onClick={eraseLetter}
+                    onMouseDown={(event) => event.preventDefault()}
+                    disabled={!canPlay || draft.length === 0}
+                    aria-label="Delete last letter"
+                  >
+                    ⌫
+                  </button>
+                ) : null}
+              </div>
+            ))}
+          </div>
+
           {error ? (
             <p className="error five-message" role="alert">
               {error}
@@ -720,8 +810,8 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
                 </button>
               </div>
               <p id="five-entry-help" className="five-entry-help">
-                Type five letters, then press Enter or Guess. In the word means
-                the letter is there but in another place.
+                Type or tap five letters, then press Enter or Guess. In the word
+                means the letter is there but in another place.
               </p>
             </form>
           ) : null}

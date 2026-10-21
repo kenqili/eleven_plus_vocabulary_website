@@ -124,6 +124,40 @@ export function gradeGuess(answer: string, guess: string): FiveLettersMark[] {
   return marks;
 }
 
+const MARK_RANK: Record<FiveLettersMark, number> = {
+  green: 3,
+  yellow: 2,
+  grey: 1,
+};
+
+/**
+ * The best mark seen for each letter, for the on-screen keyboard.
+ *
+ * A green result outranks a yellow one, and either outranks grey, so a letter
+ * never loses a known place because a later guess used all its copies. Keys are
+ * uppercase to match the on-screen keyboard, while guesses are lowercase.
+ */
+export function keyboardMarks(
+  guesses: ReadonlyArray<{
+    word: string;
+    marks: readonly FiveLettersMark[];
+  }>,
+): Partial<Record<string, FiveLettersMark>> {
+  const marks: Partial<Record<string, FiveLettersMark>> = {};
+  for (const guess of guesses) {
+    for (let index = 0; index < guess.word.length; index += 1) {
+      const letter = guess.word[index]?.toUpperCase();
+      const mark = guess.marks[index];
+      if (!letter || !mark) continue;
+      const current = marks[letter];
+      if (!current || MARK_RANK[mark] > MARK_RANK[current]) {
+        marks[letter] = mark;
+      }
+    }
+  }
+  return marks;
+}
+
 export function usedHintKinds(hints: string): FiveLettersHintKind[] {
   return hints
     .split(",")

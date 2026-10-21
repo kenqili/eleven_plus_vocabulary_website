@@ -7,6 +7,7 @@ import {
   HINT_SCORE_PENALTY,
   hintFor,
   isAcceptedGuess,
+  keyboardMarks,
   MAX_GUESSES,
   normalizeGuess,
   scoreAfterPenalty,
@@ -84,7 +85,8 @@ test("every carded word has a complete card, and the public copy is current", ()
     );
   }
   // A valid guess outside the vocabulary is accepted without a card.
-  for (const word of ["bones", "greek"]) assert.equal(dictionary[word], undefined);
+  for (const word of ["bones", "greek"])
+    assert.equal(dictionary[word], undefined);
   // The bank's own answers must keep the curated card, not a generated gloss.
   for (const word of answers)
     assert.equal(dictionary[word].source, "MineWords");
@@ -162,6 +164,23 @@ test("grading handles greens, yellows, repeats and absent letters", () => {
   ]);
   assert.throws(() => gradeGuess("crane", "four"));
   assert.throws(() => gradeGuess("four", "crane"));
+});
+
+test("the keyboard keeps the best mark for each letter", () => {
+  assert.deepEqual(
+    keyboardMarks([
+      { word: "crane", marks: ["grey", "yellow", "grey", "grey", "green"] },
+      { word: "crate", marks: ["green", "yellow", "grey", "grey", "grey"] },
+    ]),
+    {
+      C: "green",
+      R: "yellow",
+      A: "grey",
+      N: "grey",
+      E: "green",
+      T: "grey",
+    },
+  );
 });
 
 test("hints are deterministic, hide the answer and cost five points", () => {
