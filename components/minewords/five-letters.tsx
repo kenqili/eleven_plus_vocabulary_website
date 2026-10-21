@@ -38,6 +38,22 @@ const FALLBACK_CARD: FiveLettersCard = {
   source: "Game list",
 };
 
+/**
+ * The card shown while the dictionary is still on its way.
+ *
+ * A guest's guess is put on the board the moment it is made, because the
+ * marks are worked out in the browser and the card is only a gloss on top of
+ * them. The dictionary is a 400 KB file, so waiting for it would mean the
+ * child watches nothing happen for as long as it takes to download.
+ */
+const PENDING_CARD: FiveLettersCard = {
+  definition: "Looking up this word...",
+  example: "",
+  synonyms: [],
+  antonyms: [],
+  source: "Game list",
+};
+
 const KEY_ROWS = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"] as const;
 
 const markLabel = (mark: FiveLettersMark) =>
@@ -271,6 +287,32 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
     [demoByWord],
   );
 
+  /**
+   * Fill in a guess's card once the dictionary arrives.
+   *
+   * The guess is already on the board; this only replaces the placeholder it
+   * was given. A guess whose card is not the placeholder is left alone, so a
+   * word that was already known keeps the card it was given.
+   */
+  const replaceGuestCard = useCallback(
+    (word: string, card: FiveLettersCard) => {
+      setGame((current) => {
+        if (!current) return current;
+        const guess = current.guesses.find((entry) => entry.word === word);
+        if (!guess || guess.card !== PENDING_CARD) return current;
+        return guestGame(
+          answerRef.current ?? "",
+          current.guesses.map((entry) =>
+            entry.word === word ? { ...entry, card } : entry,
+          ),
+          current.hints,
+          current.status,
+        );
+      });
+    },
+    [guestGame],
+  );
+
   const startGuest = useCallback(() => {
     if (!demoWords.length) {
       setError(
@@ -396,17 +438,15 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
       if (guest) {
         const answerWord = answerRef.current;
         if (!answerWord) throw new Error("This demo has no answer.");
-        let card = demoByWord.get(word);
-        if (!card) {
-          try {
-            const full = await loadDictionary();
-            card = full[word];
-          } catch {
-            // The dictionary is optional for a word outside the vocabulary;
-            // the fallback card keeps the guess playable.
-          }
-        }
-        card ??= FALLBACK_CARD;
+        // The card for a word outside the sample comes from a dictionary that
+        // is a 400 KB download. The guess itself does not need it: the marks
+        // are worked out here, and the word is the thing the child is waiting
+        // to see. So the guess goes on the board at once, with a placeholder
+        // card if the real one is not here yet, and the card is filled in
+        // when the dictionary lands.
+        const sample = demoByWord.get(word);
+        const ready = sample ?? dictionary.current?.[word];
+        const card = ready ?? PENDING_CARD;
         const guesses = [
           ...game.guesses,
           {
@@ -426,6 +466,15 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
               : "playing";
         setGame(guestGame(answerWord, guesses, game.hints, status));
         setDraft("");
+        if (!ready) {
+          void loadDictionary()
+            .then((full) => replaceGuestCard(word, full[word] ?? FALLBACK_CARD))
+            .catch(() => {
+              // The dictionary is optional for a word outside the vocabulary;
+              // the fallback card keeps the guess playable.
+              replaceGuestCard(word, FALLBACK_CARD);
+            });
+        }
       } else {
         const state = await api<FiveLettersState>("/api/five-letters", {
           action: "guess",
