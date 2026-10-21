@@ -22,14 +22,28 @@ const dictionary = JSON.parse(
 const published = JSON.parse(
   readFileSync("public/five-letters/dictionary.json", "utf8"),
 );
+const valid = readFileSync("data/five-letters/valid-guesses.txt", "utf8")
+  .split(/\r?\n/)
+  .map((line) => line.trim())
+  .filter(Boolean);
+const blocklist = new Set(
+  readFileSync("data/five-letters/blocklist.txt", "utf8")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line && !line.startsWith("#")),
+);
 const bank = JSON.parse(readFileSync("data/problem-bank.json", "utf8"));
 const answers = bank.words
   .filter((row) => String(row[1]).length === 5)
   .map((row) => String(row[1]).toLowerCase())
   .sort();
 
-test("the accepted list is the common list plus the eight missing bank words", () => {
-  assert.equal(accepted.length, 2323);
+test("the accepted list is the full valid-guess list minus the blocklist", () => {
+  const expected = [...new Set([...valid, ...answers])]
+    .filter((word) => !blocklist.has(word))
+    .sort();
+  assert.deepEqual(accepted, expected);
+  assert.equal(accepted.length, 14818);
   assert.equal(new Set(accepted).size, accepted.length);
   assert.deepEqual([...accepted].sort(), accepted, "accepted.json is sorted");
   for (const word of accepted)
@@ -48,12 +62,15 @@ test("the accepted list is the common list plus the eight missing bank words", (
     assert.ok(accepted.includes(word), `missing bank answer: ${word}`);
   for (const word of answers)
     assert.ok(accepted.includes(word), `bank answer not accepted: ${word}`);
+  for (const word of ["bones", "greek", "years", "games"])
+    assert.ok(accepted.includes(word), `missing common guess: ${word}`);
 });
 
-test("every accepted word has a complete card, and the public copy is current", () => {
+test("every carded word has a complete card, and the public copy is current", () => {
   assert.deepEqual(published, dictionary);
-  assert.equal(Object.keys(dictionary).length, accepted.length);
-  for (const word of accepted) {
+  assert.equal(Object.keys(dictionary).length, 2323);
+  for (const word of Object.keys(dictionary)) {
+    assert.ok(accepted.includes(word), `card for unaccepted word ${word}`);
     const card = dictionary[word];
     assert.ok(card, `no card for ${word}`);
     assert.equal(typeof card.definition, "string");
@@ -66,6 +83,8 @@ test("every accepted word has a complete card, and the public copy is current", 
       `source for ${word}`,
     );
   }
+  // A valid guess outside the vocabulary is accepted without a card.
+  for (const word of ["bones", "greek"]) assert.equal(dictionary[word], undefined);
   // The bank's own answers must keep the curated card, not a generated gloss.
   for (const word of answers)
     assert.equal(dictionary[word].source, "MineWords");
@@ -103,6 +122,9 @@ test("guesses are normalised and validated", () => {
   assert.equal(normalizeGuess("cr4ne"), null);
   assert.equal(normalizeGuess(""), null);
   assert.ok(isAcceptedGuess("crane"));
+  assert.ok(isAcceptedGuess("bones"));
+  assert.ok(isAcceptedGuess("greek"));
+  assert.equal(isAcceptedGuess("bitch"), false);
   assert.equal(isAcceptedGuess("zzzzz"), false);
 });
 

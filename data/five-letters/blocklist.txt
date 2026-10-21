@@ -1,10 +1,42 @@
-# Words the game must never accept, even if a source list contains them.
-# The common Wordle answer list is already curated, so this is a backstop for a
-# future source-list change rather than a filter that removes words today.
+# Words the game must never accept, even if a source list contains them. This
+# is a safety filter for a children's game, not a claim about which words exist.
 # One lower-case word per line; lines beginning # are comments.
+arses
+bimbo
 bitch
+boner
+boobs
+busty
 chink
+cocks
+coons
+cunts
+darky
+dicks
+dildo
 faggot
+felch
+fucks
+gyppo
+negro
+nigga
 nigger
+panty
+penis
+pikey
+pissy
+porno
+pubes
 pussy
+sambo
+shits
+skank
+skeet
+sluts
+squaw
+sucks
+titty
+tushy
+twink
+vulva
 whore

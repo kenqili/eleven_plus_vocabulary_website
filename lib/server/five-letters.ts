@@ -45,11 +45,12 @@ for (const answer of ANSWERS)
     throw new Error(`Five Letters has no card for its answer "${answer}".`);
 
 const FALLBACK_CARD: FiveLettersCard = {
-  definition: "A five-letter word accepted by this game.",
+  definition:
+    "This is a valid five-letter word, but it is not one of the vocabulary words.",
   example: "",
   synonyms: [],
   antonyms: [],
-  source: "MineWords",
+  source: "Game list",
 };
 
 const cardFor = (word: string): FiveLettersCard =>

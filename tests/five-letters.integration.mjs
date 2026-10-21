@@ -327,6 +327,22 @@ test("Five Letters keeps the answer secret and pays each action exactly once", a
   assert.equal(nonBankGuess.data.game.guesses.at(-1).correct, 0);
   assert.equal(progressFor(account.id, nonBank), null);
 
+  // A valid word outside the card set is accepted without a dictionary card.
+  const nonCard = "bones";
+  assert.ok(accepted.has(nonCard));
+  assert.equal(fiveLetterIds.has(nonCard), false);
+  const nonCardGuess = await call(account.cookie, {
+    action: "guess",
+    gameId: next.data.game.id,
+    guess: nonCard,
+  });
+  assert.equal(nonCardGuess.status, 200, JSON.stringify(nonCardGuess.data));
+  const nonCardRow = nonCardGuess.data.game.guesses.at(-1);
+  assert.equal(nonCardRow.counted, false);
+  assert.equal(nonCardRow.card.source, "Game list");
+  assert.match(nonCardRow.card.definition, /not one of the vocabulary words/);
+  assert.equal(progressFor(account.id, nonCard), null);
+
   // The fifth correctness masters a guessed word and adds one daily mastery.
   const nextAnswer = activeGame(account.id).word_id;
   const fifth = ["peril", "rigid", "stern", "hasty", "lofty"].find(

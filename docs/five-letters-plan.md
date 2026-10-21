@@ -1,6 +1,7 @@
 # Five Letters — plan for a Wordle-style word game
 
-**Status:** proposal, not implemented. **Date:** 21 October 2026.
+**Status:** implemented; updated 21 October 2026 for the full valid-guess list.
+**Date:** 21 October 2026.
 
 This is a plan for a five-letter guessing game that teaches vocabulary. It is
 written against the current app, not a generic Wordle clone. The answer-pool
@@ -31,7 +32,9 @@ recommends a different name in the product.
 The decisions are locked:
 
 - Strict five-letter game; the 194 five-letter bank words are the answer pool.
-- The 2,323 common words are the accepted guesses.
+- The 14,855-word Wordle valid-guess list, minus a small safety blocklist, is
+  the accepted-guess list. Words outside the vocabulary are accepted but have
+  no dictionary card and do not count correctness.
 - A hint deducts **5 points** from the 10,000 score, not a guess.
 - The answer masters on a solve.
 - Every guess of a vocabulary word counts one correctness on that word.
@@ -120,15 +123,19 @@ Sources are at the end.
 - A round ends when the child solves the word, runs out of guesses, or presses
   "Give up".
 
-### 4.2 Every guess shows a card
+### 4.2 Every vocabulary guess shows a card
 
-Each accepted guess gets a word card with:
+Each accepted guess that is one of the carded words gets a word card with:
 
 - the word and, in the bank, its pronunciation control;
 - the definition (the child-facing `help` line where there is one);
 - an example sentence;
 - synonyms and antonyms, split from the bank's semicolon-separated strings;
-- the source: "MineWords" or "WordNet 3.0".
+- the source: "MineWords" or "WordNet 3.0"; the fallback note says "Game
+  list".
+
+A valid guess outside the card set still shows its word and marks, but the card
+is a short fallback note: it is a valid game word, not a vocabulary word.
 
 On desktop, the board is on the left and a card panel on the right shows the
 latest guess; clicking an older row shows that row's card. On mobile, the latest
@@ -229,22 +236,24 @@ Two different problems are often conflated:
 
 The plan separates them:
 
-- **Accepted guesses** are a bundled list. The recommended list is the 2,315
-  common Wordle answer words plus the 8 bank answers that are not in it
-  (`atlas`, `doyen`, `jaded`, `matte`, `muted`, `odour`, `pious`, `sated`), for
-  **2,323 accepted five-letter words**. Every one of the 194 answers is
-  accepted. This is deliberately narrower than the 14,855-word "anything Wordle
-  accepts" list: the common list is friendlier to children, produces far fewer
-  obscure definitions, and is much easier to cover with a dictionary.
+- **Accepted guesses** are the 14,855-word Wordle valid-guess list, minus a
+  small safety blocklist: **14,818 accepted five-letter words** in
+  `data/five-letters/accepted.json`. Every one of the 194 answers is accepted.
+  This accepts common words the curated answer list omitted (`bones`, `greek`,
+  `years`, `games`) as well as the obscure tail.
+- **Dictionary cards** are a smaller bundled set: the 2,315 common Wordle answer
+  words plus the 8 bank answers that are not in it (`atlas`, `doyen`, `jaded`,
+  `matte`, `muted`, `odour`, `pious`, `sated`), for **2,323 carded words**. The
+  194 bank answers have curated cards; the rest use WordNet. A valid guess
+  outside that set is accepted but shows a short fallback note and does not
+  count correctness. Keeping cards to the common list keeps the dictionary small
+  while the game accepts the full Wordle guess list.
 - **Rejected guesses** get a friendly "that word is not in this game's list"
   message, not "that is not a word". The child keeps the guess; no row is spent.
   The list is a game dictionary, not a claim about the English language.
-- **Unknown words** (not in our 2,247-word bank) get their cards from an
-  **embedded dictionary**, described in section 5.
-
-If the user prefers the authentic 14,855-word list, the game will accept more
-obscure true words and will need a much larger embedded dictionary (and a
-profanity/slur filter). That is a supported option, not the recommendation.
+- **Vocabulary words** (the 2,247-word bank) get their cards from the
+  **embedded dictionary**, described in section 5. A valid guess outside the
+  vocabulary uses the fallback note instead.
 
 ### 4.6 Guests and free accounts
 
@@ -290,7 +299,7 @@ The brief already says "embed", so the plan embeds.
 **Recommended: a generated WordNet 3.0 subset.** WordNet is explicitly free for
 commercial use under its licence (the Princeton copyright notice must be
 included). A build script reads the WordNet database once and emits a JSON file
-for every accepted word:
+for the **2,323 carded words**:
 
 ```json
 {
@@ -304,34 +313,36 @@ for every accepted word:
 }
 ```
 
-The file covers **all 2,323 accepted words**. The 194 bank words are copied from
-the curated bank (definition, example, synonyms, antonyms, source "MineWords"),
-so a guest has a complete card for every accepted guess; the other ~2,129 come
-from WordNet. The signed-in server can still read the bank directly for the 194,
-but the generated file is the single card source for the guest. At roughly
-400–600 KB raw and 150–200 KB gzipped, it is small enough to lazy-load on the
-game page and small enough to import on the server. If the Worker bundle grows
-too much, the same file can be served as a static asset and read by the Worker;
-the data is public, so there is no secret.
+The 194 bank words are copied from the curated bank (definition, example,
+synonyms, antonyms, source "MineWords"); the other ~2,129 carded words come from
+WordNet. The signed-in server can still read the bank directly for the 194, but
+the generated file is the single card source for the guest. At roughly 400–600
+KB raw and 150–200 KB gzipped, it is small enough to lazy-load on the game page
+and small enough to import on the server. If the Worker bundle grows too much,
+the same file can be served as a static asset and read by the Worker; the data
+is public, so there is no secret. A valid guess outside the card set uses a
+short fallback note.
 
 **Build gate.** The generator fails the build unless:
 
-- every accepted word is five lower-case letters;
-- every one of the 194 answers is in the accepted list;
-- every accepted word has a non-empty definition in the generated card source,
-  either copied from the bank or taken from WordNet;
-- every accepted word has a source ("MineWords" or "WordNet 3.0");
+- every accepted guess and every carded word is five lower-case letters;
+- every one of the 194 answers is in the accepted list and the card list;
+- every carded word has a non-empty definition, either copied from the bank or
+  taken from WordNet;
+- every carded word has a source ("MineWords" or "WordNet 3.0");
+- the accepted list is the valid-guess list minus the blocklist plus the bank's
+  five-letter words;
 - no blocklisted word is in the accepted list.
 
 Any gap is fixed by adding a manual gloss for that word (a one-line entry) or
-removing it from the accepted list. It is not fixed by shipping a card with no
+removing it from the card list. It is not fixed by shipping a card with no
 definition. This is a finite, reviewable list.
 
 **Examples.** WordNet's glosses contain usage examples for many senses but not
 all. The card shows an example when the source has one and omits the row
-otherwise. The bank's 194 answers all have examples. If every accepted guess
-must have an example, add a one-time Wiktionary fetch for the gaps with the
-CC BY-SA attribution; that is a follow-up, not a blocker.
+otherwise. The bank's 194 answers all have examples. If every carded word must
+have an example, add a one-time Wiktionary fetch for the gaps with the CC BY-SA
+attribution; that is a follow-up, not a blocker.
 
 **Attribution.** Add `THIRD_PARTY_NOTICES.md` (or a section in the existing
 docs) with the WordNet 3.0 copyright and licence, and a footer line on the game:
@@ -339,11 +350,12 @@ docs) with the WordNet 3.0 copyright and licence, and a footer line on the game:
 say "MineWords". If a build-time Wiktionary supplement is used, its CC BY-SA 4.0
 attribution and source links go there too.
 
-**Safety.** The common list is much safer than the full Wordle list, but run it
-through a profanity/slur blocklist at build time and remove flagged words. The
-dictionary generator should keep the first one or two senses only and strip
-markup. The answer pool is curated; the guess pool is filtered; no dictionary
-card is shown for a rejected word.
+**Safety.** The full Wordle valid-guess list is filtered through a
+profanity/slur blocklist at build time, and flagged words are removed from the
+accepted list. The dictionary generator keeps the first one or two senses only
+and strips markup. The answer pool is curated; the guess pool is filtered; no
+dictionary card is shown for a rejected word. A valid guess outside the card set
+shows the fallback note instead.
 
 ---
 
@@ -556,7 +568,7 @@ unwelcome.
 | `lib/server/snapshot.ts` | Carries `scorePenalty` in the practice snapshot |
 | `lib/client/session.ts` | Subtracts the snapshot penalty in `placement()` |
 | `app/api/placement/route.ts` | Returns the adjusted score |
-| `data/five-letters/dictionary.json` | Generated cards for every accepted word (bank words copied, the rest WordNet); published as `/five-letters/dictionary.json` |
+| `data/five-letters/dictionary.json` | Generated cards for the 2,323 carded words (bank words copied, the rest WordNet); published as `/five-letters/dictionary.json` |
 | `scripts/build-five-letters-dictionary.mjs` | Generator and build gate |
 | `drizzle/0006_word_games.sql` | `word_games` table, indexes, and `users.score_penalty` |
 | `db/schema.ts` | Drizzle definition for `word_games` and `users.scorePenalty` |
@@ -681,7 +693,7 @@ the answer has more copies than the guess, and the `ABBEY`/`BABES` case.
 
 ### 7.6 Dictionary asset
 
-The generated file is keyed by word and covers every accepted guess, including
+The generated file is keyed by word and covers the 2,323 carded words, including
 the 194 bank words (copied from the curated bank). The signed-in API can read
 the bank directly for those and the file for the rest; the guest bundle fetches
 the same content lazily from `/five-letters/dictionary.json`. The generator
@@ -693,8 +705,9 @@ adds a five-letter answer without a dictionary entry fails before deploy.
 
 The 194 cards use `lib/challenge/bank.ts` as their source (definition, example,
 synonyms, antonyms and the child-facing `help` line), so the game shows the same
-curated content as the practice explanations. Only guesses outside the bank use
-WordNet.
+curated content as the practice explanations. Carded words outside the bank use
+WordNet. A valid guess outside the card set gets the fallback note and never
+needs a dictionary entry.
 
 ---
 
@@ -721,11 +734,12 @@ WordNet.
 - **Answer card:** the answer, definition, example, synonyms, antonyms, source,
   and "Mastered" if the solve set the flag. If already mastered before the
   round, say "Already known" rather than claiming a new award.
-- **Guess cards:** the same card for every accepted guess. If the guess's one
-  correctness count reaches the cumulative floor, the card carries "Mastered"
-  and the panel copy explains that five correct counts retire a word. A guess
-  outside the bank, or outside the child's collection, carries no count and says
-  "Not in your word list" rather than implying progress.
+- **Guess cards:** a vocabulary guess gets its card; a valid guess outside the
+  card set gets the fallback note. If the guess's one correctness count reaches
+  the cumulative floor, the card carries "Mastered" and the panel copy explains
+  that five correct counts retire a word. A guess outside the bank, or outside
+  the child's collection, carries no count and says "Not in your word list"
+  rather than implying progress.
 - **Hints:** "Synonym hint — −5 score" and "Antonym hint — −5 score";
   disabled with a reason when unavailable or already used. They do not spend a
   guess and do not end the round. The amount comes from `HINT_SCORE_PENALTY`, so
@@ -930,7 +944,8 @@ are generated, not hand-maintained.
 **Taken**
 
 - **Answer pool:** strict five letters; the 194 five-letter bank words.
-- **Guess list:** the 2,323 common words.
+- **Guess list:** the 14,855-word Wordle valid-guess list minus the safety
+  blocklist; 2,323 words have dictionary cards.
 - **Hint cost:** **5 points** from the 10,000 score per hint, permanent, and the
   hint does **not** spend a guess.
 - **Mastery:** a solve masters the answer; every guessed vocabulary word counts
@@ -950,7 +965,7 @@ All decisions are taken. The plan is ready to build; no open questions remain.
 
 - Wordle rules: [How to Talk About Wordle, The New York Times](https://www.nytimes.com/2023/08/01/crosswords/how-to-talk-about-wordle.html); the Wordle game itself (one puzzle per day, six guesses, five letters).
 - Valid guesses: [`tabatkins/wordle-list`](https://github.com/tabatkins/wordle-list), 14,855 five-letter words, MIT licence, including the duplicate-letter algorithm discussion.
-- Common answer list: [cfreshman's Wordle answers gist](https://gist.github.com/cfreshman/a03ef2cba789d8cf00c08f767e0fad7b), 2,315 words (the list used for the 2,323-word recommendation, plus the 8 bank answers it lacks).
+- Common answer list: [cfreshman's Wordle answers gist](https://gist.github.com/cfreshman/a03ef2cba789d8cf00c08f767e0fad7b), 2,315 words (the source for the 2,323 dictionary cards, plus the 8 bank answers it lacks).
 - WordNet 3.0: [Princeton WordNet](https://wordnet.princeton.edu/), [licence and commercial use](https://wordnet.princeton.edu/license-and-commercial-use); the notice must be preserved.
 - Runtime dictionary options, for comparison only: [FreeDictionaryAPI.com](https://freedictionaryapi.com/) (Wiktionary, CC BY-SA 4.0), [Free Dictionary API](https://dictionaryapi.dev/), [Datamuse](https://www.datamuse.com/api/), [Merriam-Webster](https://dictionaryapi.com/).
 - Repository constraints: `docs/HOSTING.md` ("Nothing third-party at runtime"), `docs/DEPLOY.md`, `AGENTS.md`.

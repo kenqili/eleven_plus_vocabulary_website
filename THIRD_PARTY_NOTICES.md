@@ -43,6 +43,38 @@ Source: <https://wordnet.princeton.edu/>
 The generated cards are in `data/five-letters/dictionary.json`; the public copy
 is `public/five-letters/dictionary.json`.
 
+## Wordle valid-guess list
+
+`data/five-letters/valid-guesses.txt` is the 14,855-word Wordle valid-guess list
+from tabatkins/wordle-list:
+
+<https://github.com/tabatkins/wordle-list>
+
+The game applies `data/five-letters/blocklist.txt` as a safety filter for a
+children's game.
+
+MIT License
+
+Copyright (c) 2022 Tab Atkins Jr.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
 ## Common five-letter answer list
 
 `data/five-letters/common-answers.txt` is the 2,315-word common Wordle answer
@@ -50,9 +82,10 @@ list published in cfreshman's gist:
 
 <https://gist.github.com/cfreshman/a03ef2cba789d8cf00c08f767e0fad7b>
 
-The list is a factual compilation of five-letter English words. It is used only
-to decide which guesses the game accepts; the eight bank answer words missing
-from the list are added by `scripts/build-five-letters-dictionary.mjs`.
+The list is a factual compilation of five-letter English words. It decides which
+words get a dictionary card; the eight bank answer words missing from the list
+are added by `scripts/build-five-letters-dictionary.mjs`. The full valid-guess
+list above decides which guesses the game accepts.
 
 ## MineWords word bank
 

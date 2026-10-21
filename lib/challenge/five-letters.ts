@@ -24,7 +24,7 @@ export type FiveLettersCard = {
   example: string;
   synonyms: string[];
   antonyms: string[];
-  source: "MineWords" | "WordNet 3.0";
+  source: "MineWords" | "WordNet 3.0" | "Game list";
   /** For an inflected form, the base WordNet or bank word it came from. */
   base?: string;
 };

@@ -37,16 +37,17 @@ how-to page.
 - **Answers:** only the 194 five-letter words in the bank. A full account gets
   the whole pool; a free account gets the twenty five-letter words in its free
   collection.
-- **Guesses:** the 2,323-word accepted list (`data/five-letters/accepted.json`)
-  combines the 2,315 common Wordle answers with the eight five-letter bank words
-  that list does not contain. Every accepted guess gets a card with a definition,
-  example, synonyms and antonyms.
-- **Dictionary:** cards are committed in `data/five-letters/dictionary.json`.
-  The 194 bank words copy their curated MineWords card; the rest use the first
-  useful WordNet 3.0 sense, with 58 manual entries for inflections, function
-  words and modern coinages. The browser fetches a copy from
-  `public/five-letters/dictionary.json` only when the game opens. No dictionary
-  request leaves the site at runtime.
+- **Guesses:** the 14,855-word Wordle valid-guess list, minus a small safety
+  blocklist, in `data/five-letters/accepted.json` (14,818 words). A valid word
+  outside the vocabulary is accepted as a guess but does not count correctness.
+- **Dictionary:** cards are committed in `data/five-letters/dictionary.json` for
+  the 2,315 common Wordle answers plus the eight five-letter bank words that
+  list does not contain. The 194 bank words copy their curated MineWords card;
+  the rest use the first useful WordNet 3.0 sense, with 58 manual entries for
+  inflections, function words and modern coinages. A valid guess outside that
+  set shows a short fallback note instead of a card. The browser fetches a copy
+  from `public/five-letters/dictionary.json` only when the game opens. No
+  dictionary request leaves the site at runtime.
 - **Progress:** a solve masters the answer without creating an attempt, credit,
   streak or learning event. Each guessed bank word in the child's allowed,
   non-excluded collection adds one `progress.correct`, capped at five; five

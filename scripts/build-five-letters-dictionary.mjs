@@ -5,14 +5,16 @@
  * The game needs two different things, and they are generated from different
  * sources:
  *
- *   accepted.json   the words a child may guess. It is the 2,315-word common
- *                   Wordle answer list plus the eight five-letter bank words
- *                   that list does not contain.
- *   dictionary.json one card for every accepted word. The 194 five-letter bank
- *                   words copy their curated card; every other word takes its
- *                   first useful WordNet 3.0 sense, with a small manual
- *                   supplement for words WordNet does not define (inflected
- *                   forms, function words and modern coinages).
+ *   accepted.json   the words a child may guess. It is the 14,855-word Wordle
+ *                   valid-guess list, minus the safety blocklist.
+ *   dictionary.json one card for the 2,315 common Wordle answer words plus the
+ *                   eight five-letter bank words that list does not contain.
+ *                   The 194 five-letter bank words copy their curated card;
+ *                   every other carded word takes its first useful WordNet 3.0
+ *                   sense, with a small manual supplement for words WordNet
+ *                   does not define (inflected forms, function words and modern
+ *                   coinages). Words outside that set are accepted guesses but
+ *                   have no card.
  *
  * The normal check (`--check`, also `npm run words:five:check`) needs no
  * WordNet install: it validates the committed files, including the public copy
@@ -36,12 +38,15 @@ const acceptedPath = path.join(dataDir, "accepted.json");
 const dictionaryPath = path.join(dataDir, "dictionary.json");
 const manualPath = path.join(dataDir, "manual-glosses.json");
 const commonPath = path.join(dataDir, "common-answers.txt");
+const validPath = path.join(dataDir, "valid-guesses.txt");
 const blocklistPath = path.join(dataDir, "blocklist.txt");
 const publicPath = path.join(root, "public/five-letters/dictionary.json");
 const bankPath = path.join(root, "data/problem-bank.json");
 
 const WORD_LENGTH = 5;
-const EXPECTED_ACCEPTED = 2323;
+const EXPECTED_VALID = 14855;
+const EXPECTED_COMMON = 2315;
+const EXPECTED_CARDS = 2323;
 const EXPECTED_ANSWERS = 194;
 
 const writing = process.argv.includes("--write");
@@ -106,13 +111,44 @@ function bankCard(row) {
   };
 }
 
+function bankAnswers(bank) {
+  return [...bank.values()]
+    .filter((row) => row.word.length === WORD_LENGTH)
+    .map((row) => row.word.toLowerCase())
+    .sort();
+}
+
 function sourceAccepted(bank) {
+  if (!fs.existsSync(validPath))
+    fail(`missing ${path.relative(root, validPath)}`);
+  const valid = words(fs.readFileSync(validPath, "utf8"));
+  if (valid.length !== EXPECTED_VALID)
+    fail(
+      `valid-guesses.txt has ${valid.length} words, expected ${EXPECTED_VALID}; the source list changed`,
+    );
+  if (new Set(valid).size !== valid.length)
+    fail("valid-guesses.txt contains a duplicate");
+  for (const word of valid)
+    if (!new RegExp(`^[a-z]{${WORD_LENGTH}}$`).test(word))
+      fail(`valid-guesses.txt contains a non-five-letter word: ${word}`);
+
+  const blocklist = readBlocklist();
+  const answers = bankAnswers(bank);
+  for (const answer of answers)
+    if (blocklist.has(answer)) fail(`blocklisted bank answer: ${answer}`);
+  const accepted = [...new Set([...valid, ...answers])]
+    .filter((word) => !blocklist.has(word))
+    .sort();
+  return { accepted, answers };
+}
+
+function sourceCards(bank) {
   if (!fs.existsSync(commonPath))
     fail(`missing ${path.relative(root, commonPath)}`);
   const common = words(fs.readFileSync(commonPath, "utf8"));
-  if (common.length !== 2315)
+  if (common.length !== EXPECTED_COMMON)
     fail(
-      `common-answers.txt has ${common.length} words, expected 2,315; the source list changed`,
+      `common-answers.txt has ${common.length} words, expected ${EXPECTED_COMMON}; the source list changed`,
     );
   if (new Set(common).size !== common.length)
     fail("common-answers.txt contains a duplicate");
@@ -120,35 +156,45 @@ function sourceAccepted(bank) {
     if (!new RegExp(`^[a-z]{${WORD_LENGTH}}$`).test(word))
       fail(`common-answers.txt contains a non-five-letter word: ${word}`);
 
-  const answers = [...bank.values()]
-    .filter((row) => row.word.length === WORD_LENGTH)
-    .map((row) => row.word.toLowerCase());
-  const accepted = [...new Set([...common, ...answers])].sort();
-  return { accepted, answers: answers.sort() };
+  const cards = [...new Set([...common, ...bankAnswers(bank)])].sort();
+  if (cards.length !== EXPECTED_CARDS)
+    fail(`the card list has ${cards.length} words, expected ${EXPECTED_CARDS}`);
+  return cards;
 }
 
-function validate(bank, accepted, answers, dictionary) {
+function validate(bank, accepted, cards, answers, dictionary) {
   const blocklist = readBlocklist();
   const set = new Set(accepted);
   const source = sourceAccepted(bank).accepted;
-  if (accepted.length !== EXPECTED_ACCEPTED)
-    fail(
-      `accepted.json has ${accepted.length} words, expected ${EXPECTED_ACCEPTED}`,
-    );
+  if (accepted.length !== source.length)
+    fail(`accepted.json has ${accepted.length} words, expected ${source.length}`);
   if (set.size !== accepted.length) fail("accepted.json contains a duplicate");
   if (accepted.join("\n") !== source.join("\n"))
-    fail("accepted.json does not match the common list plus the bank's five-letter words");
+    fail(
+      "accepted.json does not match the valid-guess list minus the blocklist plus the bank's five-letter words",
+    );
+  const cardSet = new Set(cards);
+  if (cards.length !== EXPECTED_CARDS)
+    fail(`the card list has ${cards.length} words, expected ${EXPECTED_CARDS}`);
+  if (cardSet.size !== cards.length) fail("the card list contains a duplicate");
+  if (cards.join("\n") !== sourceCards(bank).join("\n"))
+    fail(
+      "the card list does not match the common answer list plus the bank's five-letter words",
+    );
   if (answers.length !== EXPECTED_ANSWERS)
     fail(`the bank has ${answers.length} five-letter words, expected ${EXPECTED_ANSWERS}`);
   if (new Set(answers).size !== answers.length)
     fail("the bank's five-letter words are not distinct");
-  for (const answer of answers)
-    if (!set.has(answer)) fail(`answer "${answer}" is not an accepted guess`);
   for (const word of accepted) {
     if (!new RegExp(`^[a-z]{${WORD_LENGTH}}$`).test(word))
       fail(`accepted guess "${word}" is not five lower-case letters`);
     if (blocklist.has(word))
       fail(`blocklisted word is in the accepted list: ${word}`);
+  }
+  for (const answer of answers)
+    if (!set.has(answer)) fail(`answer "${answer}" is not an accepted guess`);
+  for (const word of cards) {
+    if (!set.has(word)) fail(`card word "${word}" is not an accepted guess`);
     const card = dictionary[word];
     if (!card) fail(`no dictionary card for "${word}"`);
     if (typeof card.definition !== "string" || !card.definition.trim())
@@ -160,10 +206,14 @@ function validate(bank, accepted, answers, dictionary) {
     if (typeof card.example !== "string")
       fail(`card for "${word}" has a malformed example`);
   }
+  for (const answer of answers)
+    if (!cardSet.has(answer)) fail(`answer "${answer}" has no dictionary card`);
   for (const key of Object.keys(dictionary))
-    if (!set.has(key)) fail(`dictionary has an unaccepted word: ${key}`);
-  if (Object.keys(dictionary).length !== accepted.length)
-    fail("dictionary and accepted list differ in length");
+    if (!cardSet.has(key)) fail(`dictionary has an uncarded word: ${key}`);
+  if (Object.keys(dictionary).length !== cards.length)
+    fail("dictionary and card list differ in length");
+  if (Object.keys(dictionary).join("\n") !== cards.join("\n"))
+    fail("dictionary is not in the card-list order");
   if (fs.existsSync(publicPath)) {
     const published = readJson(publicPath);
     if (JSON.stringify(published) !== JSON.stringify(dictionary))
@@ -477,7 +527,8 @@ if (checking && !writing) {
     fail(`missing ${path.relative(root, acceptedPath)}`);
   const accepted = readJson(acceptedPath);
   const { answers } = sourceAccepted(bank);
-  validate(bank, accepted, answers, dictionaryFromDisk);
+  const cards = sourceCards(bank);
+  validate(bank, accepted, cards, answers, dictionaryFromDisk);
   const manual = fs.existsSync(manualPath) ? readJson(manualPath) : {};
   const unused = Object.keys(manual).filter((word) => !dictionaryFromDisk[word]);
   if (unused.length)
@@ -491,6 +542,7 @@ if (checking && !writing) {
 }
 
 const { accepted, answers } = sourceAccepted(bank);
+const cards = sourceCards(bank);
 const wordnet = loadWordNet(process.env.WORDNET_DIR);
 const manual = fs.existsSync(manualPath) ? readJson(manualPath) : {};
 const dictionary = {};
@@ -506,7 +558,7 @@ function manualCard(entry) {
   };
 }
 
-for (const word of accepted) {
+for (const word of cards) {
   const row = bank.get(word);
   // A manual gloss is a deliberate correction for a word WordNet either lacks
   // or explains badly. It outranks the generated card, but never the curated
@@ -526,14 +578,14 @@ for (const word of accepted) {
 
 if (gaps.length) {
   console.error(
-    `five-letters: ${gaps.length} accepted words have no dictionary card. Add a manual gloss to ${path.relative(root, manualPath)} or remove the word from the accepted list:`,
+    `five-letters: ${gaps.length} carded words have no dictionary card. Add a manual gloss to ${path.relative(root, manualPath)} or remove the word from the card list:`,
   );
   console.error(gaps.join(" "));
   process.exit(1);
 }
 
-// A blocklisted word is a hard error rather than a silent drop: the accepted
-// count is a product decision, so removing one has to be deliberate.
+// `sourceAccepted` filters the blocklist deliberately; this is a backstop so a
+// later change to the source path cannot quietly let a blocked word through.
 for (const word of accepted)
   if (blocklist.has(word))
     fail(`blocklisted word is in the accepted list: ${word}`);
@@ -547,7 +599,7 @@ fs.writeFileSync(
 fs.writeFileSync(dictionaryPath, JSON.stringify(dictionary));
 fs.writeFileSync(publicPath, JSON.stringify(dictionary));
 
-validate(bank, accepted, answers, dictionary);
+validate(bank, accepted, cards, answers, dictionary);
 console.log(
   `five-letters: wrote ${accepted.length} accepted words, ${answers.length} answers and ${Object.keys(dictionary).length} cards`,
 );

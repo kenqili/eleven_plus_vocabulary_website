@@ -30,11 +30,12 @@ import {
 type DemoWord = { word: string; card: FiveLettersCard };
 
 const FALLBACK_CARD: FiveLettersCard = {
-  definition: "No definition is available for this word.",
+  definition:
+    "This is a valid five-letter word, but it is not one of the vocabulary words.",
   example: "",
   synonyms: [],
   antonyms: [],
-  source: "MineWords",
+  source: "Game list",
 };
 
 const markLabel = (mark: FiveLettersMark) =>
@@ -92,7 +93,11 @@ function CardDetails({
       </div>
       <div className="five-card-foot">
         <span>
-          {card.source === "WordNet 3.0" ? "WordNet 3.0" : "MineWords"}
+          {card.source === "WordNet 3.0"
+            ? "WordNet 3.0"
+            : card.source === "Game list"
+              ? "Game list"
+              : "MineWords"}
         </span>
         {card.base ? <span>Base word: {card.base}</span> : null}
       </div>
@@ -393,10 +398,15 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
         if (!answerWord) throw new Error("This demo has no answer.");
         let card = demoByWord.get(word);
         if (!card) {
-          const full = await loadDictionary();
-          card = full[word];
+          try {
+            const full = await loadDictionary();
+            card = full[word];
+          } catch {
+            // The dictionary is optional for a word outside the vocabulary;
+            // the fallback card keeps the guess playable.
+          }
         }
-        if (!card) throw new Error("That word has no dictionary card.");
+        card ??= FALLBACK_CARD;
         const guesses = [
           ...game.guesses,
           {
@@ -559,9 +569,9 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
           <div className="eyebrow">A FIVE-LETTER WORD GAME</div>
           <h1>Five Letters</h1>
           <p>
-            Guess the five-letter word in six tries. Every guess teaches you a
-            word — read the card, use a synonym or antonym hint if you are
-            stuck, and take your time.
+            Guess the five-letter word in six tries. Every vocabulary guess
+            teaches you a word — read the card, use a synonym or antonym hint
+            if you are stuck, and take your time.
           </p>
         </div>
         <div className="five-hero-badges">
@@ -762,8 +772,8 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
 
           {dictionaryError && guest ? (
             <p className="five-notice five-message" role="status">
-              {dictionaryError} Sample words still work; other guesses need the
-              dictionary.
+              {dictionaryError} Sample words still work; other guesses use a
+              short note.
             </p>
           ) : null}
 
@@ -801,9 +811,10 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
         <aside className="five-words-panel" aria-labelledby="five-words-title">
           <h2 id="five-words-title">Your words</h2>
           <p className="five-panel-intro">
-            Every accepted guess appears here with its definition, example,
-            synonyms and antonyms. A guess that is one of your vocabulary words
-            also counts one correctness.
+            Vocabulary guesses appear here with their definition, example,
+            synonyms and antonyms. Other valid five-letter words are accepted as
+            guesses but have no card. A guess that is one of your vocabulary
+            words also counts one correctness.
           </p>
           {game.guesses.length ? (
             <div className="five-word-list">
