@@ -86,11 +86,6 @@ const LEARNING_EVENT = `
   FROM attempts a JOIN progress p ON p.user_id=a.user_id AND p.word_id=a.word_id
   WHERE a.id=? AND a.user_id=?`;
 
-/** Put the words an answer touches in the progress table if they are not there. */
-const ENSURE_PROGRESS = `
-  INSERT INTO progress(user_id,word_id,correct,seen,retry_at)
-  VALUES(?,?,0,0,NULL) ON CONFLICT(user_id,word_id) DO NOTHING`;
-
 export type FlushResult = { saved: number; skipped: number };
 
 export async function applyFlushed(
@@ -135,45 +130,63 @@ export async function applyFlushed(
   if (!wanted.length && !state.progress.length) return { saved: 0, skipped };
 
   if (wanted.length) {
-    // One round trip for the whole set, which is the point: these are pure inserts
-    // and there is nothing to decide until they exist.
-    await db.batch(
-      wanted.flatMap((answer) => {
+    // Pure inserts. D1 allows at most 100 bound parameters per statement, so
+    // each statement carries a handful of rows rather than one, and the whole
+    // batch stays well below the per-invocation query limit.
+    const attemptStatements: ReturnType<typeof db.prepare>[] = [];
+    for (let i = 0; i < wanted.length; i += 8) {
+      const chunk = wanted.slice(i, i + 8);
+      const values = chunk
+        .map(() => "(?,?,?,?,?,?,?,'',?,?,?,?)")
+        .join(",");
+      const params = chunk.flatMap((answer) => {
         const correct =
           answer.selected >= 0 &&
           answer.choices[answer.selected] === answer.answer;
         return [
-          db
-            .prepare(
-              `INSERT OR IGNORE INTO attempts
-                 (id,user_id,word_id,choices,created_at,question_type,answer,prompt,answered_at,selected,is_correct,elapsed)
-               VALUES(?,?,?,?,?,?,?,'',?,?,?,?)`,
-            )
-            .bind(
-              answer.id,
-              userId,
-              answer.wordId,
-              JSON.stringify(answer.choices),
-              answer.shownAt,
-              answer.type,
-              answer.answer,
-              // `shownAt` is the clock the evidence is measured from, so a
-              // question that sat in the queue is not read as a guess.
-              answer.shownAt,
-              answer.selected,
-              correct ? 1 : 0,
-              Math.round(answer.elapsed),
-            ),
+          answer.id,
+          userId,
+          answer.wordId,
+          JSON.stringify(answer.choices),
+          answer.shownAt,
+          answer.type,
+          answer.answer,
+          answer.shownAt,
+          answer.selected,
+          correct ? 1 : 0,
+          Math.round(answer.elapsed),
         ];
-      }),
-    );
+      });
+      attemptStatements.push(
+        db
+          .prepare(
+            `INSERT OR IGNORE INTO attempts
+               (id,user_id,word_id,choices,created_at,question_type,answer,prompt,answered_at,selected,is_correct,elapsed)
+             VALUES ${values}`,
+          )
+          .bind(...params),
+      );
+    }
+    if (attemptStatements.length) await db.batch(attemptStatements);
 
     // The words an answer touches must exist before the events can join to them.
-    await db.batch(
-      wanted.map((answer) =>
-        db.prepare(ENSURE_PROGRESS).bind(userId, answer.wordId),
-      ),
-    );
+    const touchedWords = [...new Set(wanted.map((answer) => answer.wordId))];
+    const ensureStatements: ReturnType<typeof db.prepare>[] = [];
+    for (let i = 0; i < touchedWords.length; i += 40) {
+      const chunk = touchedWords.slice(i, i + 40);
+      const values = chunk.map(() => "(?,?,0,0,NULL)").join(",");
+      const params = chunk.flatMap((wordId) => [userId, wordId]);
+      ensureStatements.push(
+        db
+          .prepare(
+            `INSERT INTO progress(user_id,word_id,correct,seen,retry_at)
+             VALUES ${values}
+             ON CONFLICT(user_id,word_id) DO NOTHING`,
+          )
+          .bind(...params),
+      );
+    }
+    if (ensureStatements.length) await db.batch(ensureStatements);
 
     // Which answers finished their word.
     //
@@ -195,27 +208,32 @@ export async function applyFlushed(
       // One read, for the words this flush touches. It is the only query the flush
       // does beyond its writes, and it happens on a save rather than on the path a
       // child is waiting on.
-      const placeholders = touched.map(() => "?").join(",");
-      const read = await db
-        .prepare(
-          `SELECT word_id,correct,run,recalls,mastered FROM progress
-           WHERE user_id=? AND word_id IN (${placeholders})`,
-        )
-        .bind(userId, ...touched)
-        .all<{
-          word_id: string;
-          correct: number;
-          run: number;
-          recalls: number;
-          mastered: number;
-        }>();
-      for (const row of read.results)
-        prior.set(row.word_id, {
-          correct: row.correct,
-          run: row.run,
-          recalls: row.recalls,
-          mastered: row.mastered === 1,
-        });
+      // D1 allows at most 100 bound parameters per statement, so the touched
+      // words are read in chunks. A flush can touch far more than that.
+      for (let i = 0; i < touched.length; i += 90) {
+        const chunk = touched.slice(i, i + 90);
+        const placeholders = chunk.map(() => "?").join(",");
+        const read = await db
+          .prepare(
+            `SELECT word_id,correct,run,recalls,mastered FROM progress
+             WHERE user_id=? AND word_id IN (${placeholders})`,
+          )
+          .bind(userId, ...chunk)
+          .all<{
+            word_id: string;
+            correct: number;
+            run: number;
+            recalls: number;
+            mastered: number;
+          }>();
+        for (const row of read.results)
+          prior.set(row.word_id, {
+            correct: row.correct,
+            run: row.run,
+            recalls: row.recalls,
+            mastered: row.mastered === 1,
+          });
+      }
     }
     // Answers in the order they were given, which is the order the child met them,
     // so a word answered twice in one sitting carries its evidence forward.
@@ -271,11 +289,23 @@ export async function applyFlushed(
   if (state.progress.length) {
     // The marked word may never have been answered, so its progress row may not
     // exist yet and an UPDATE alone would change nothing.
-    await db.batch(
-      [...new Set(state.progress.map(([wordId]) => wordId))].map((wordId) =>
-        db.prepare(ENSURE_PROGRESS).bind(userId, wordId),
-      ),
-    );
+    const stateWords = [...new Set(state.progress.map(([wordId]) => wordId))];
+    const stateEnsureStatements: ReturnType<typeof db.prepare>[] = [];
+    for (let i = 0; i < stateWords.length; i += 40) {
+      const chunk = stateWords.slice(i, i + 40);
+      const values = chunk.map(() => "(?,?,0,0,NULL)").join(",");
+      const params = chunk.flatMap((wordId) => [userId, wordId]);
+      stateEnsureStatements.push(
+        db
+          .prepare(
+            `INSERT INTO progress(user_id,word_id,correct,seen,retry_at)
+             VALUES ${values}
+             ON CONFLICT(user_id,word_id) DO NOTHING`,
+          )
+          .bind(...params),
+      );
+    }
+    if (stateEnsureStatements.length) await db.batch(stateEnsureStatements);
     // A word the child marked known is mastered without an answer, so no
     // learning event fires and the trigger-maintained daily_stats never sees it.
     // The word is retired all the same, and both the panel's "words you know"
@@ -296,45 +326,58 @@ export async function applyFlushed(
           .map(([wordId]) => wordId),
       ),
     ];
-    const writes = state.progress.map(
-      ([wordId, correct, run, recalls, mastered, seen, lastSeen, retryAt]) =>
+    // Batched upserts rather than one UPDATE per row: D1 allows 100 bound
+    // parameters per statement and 1000 queries per invocation, and a long
+    // sitting can carry thousands of progress rows.
+    const upsertStatements: ReturnType<typeof db.prepare>[] = [];
+    for (let i = 0; i < state.progress.length; i += 8) {
+      const chunk = state.progress.slice(i, i + 8);
+      const values = chunk.map(() => "(?,?,?,?,?,?,?,?,?)").join(",");
+      const params = chunk.flatMap(
+        ([wordId, correct, run, recalls, mastered, seen, lastSeen, retryAt]) => [
+          userId,
+          wordId,
+          correct,
+          run,
+          recalls,
+          mastered,
+          seen,
+          lastSeen,
+          retryAt,
+        ],
+      );
+      upsertStatements.push(
         db
           .prepare(
-            `UPDATE progress SET
-               correct=MAX(correct,?),
-               run=?,recalls=?,
-               mastered=MAX(mastered,?),
-               seen=?,
+            `INSERT INTO progress
+               (user_id,word_id,correct,run,recalls,mastered,seen,last_seen,retry_at)
+             VALUES ${values}
+             ON CONFLICT(user_id,word_id) DO UPDATE SET
+               correct=MAX(progress.correct, excluded.correct),
+               run=excluded.run,
+               recalls=excluded.recalls,
+               mastered=MAX(progress.mastered, excluded.mastered),
+               seen=excluded.seen,
                last_seen=CASE
-                 WHEN ? IS NULL THEN last_seen
-                 WHEN last_seen IS NULL THEN ?
-                 ELSE MAX(last_seen,?)
+                 WHEN excluded.last_seen IS NULL THEN progress.last_seen
+                 WHEN progress.last_seen IS NULL THEN excluded.last_seen
+                 ELSE MAX(progress.last_seen, excluded.last_seen)
                END,
-               retry_at=?
-             WHERE user_id=? AND word_id=?`,
+               retry_at=excluded.retry_at`,
           )
-          .bind(
-            correct,
-            run,
-            recalls,
-            mastered,
-            seen,
-            lastSeen,
-            lastSeen,
-            lastSeen,
-            retryAt,
-            userId,
-            wordId,
-          ),
-    );
-    if (marked.length) {
-      writes.unshift(
+          .bind(...params),
+      );
+    }
+    const dailyStatsStatements: ReturnType<typeof db.prepare>[] = [];
+    for (let i = 0; i < marked.length; i += 80) {
+      const chunk = marked.slice(i, i + 80);
+      dailyStatsStatements.push(
         db
           .prepare(
             `INSERT INTO daily_stats(user_id,day,mastered)
              SELECT ?,?,COUNT(*)
              FROM progress p
-             WHERE p.user_id=? AND p.word_id IN (${marked.map(() => "?").join(",")})
+             WHERE p.user_id=? AND p.word_id IN (${chunk.map(() => "?").join(",")})
                AND p.mastered=0 AND p.correct<?
                AND NOT EXISTS(
                  SELECT 1 FROM learning_events e
@@ -346,12 +389,13 @@ export async function applyFlushed(
             userId,
             localDay(Date.now()),
             userId,
-            ...marked,
+            ...chunk,
             CUMULATIVE_FLOOR,
           ),
       );
     }
-    await db.batch(writes);
+    const writes = [...dailyStatsStatements, ...upsertStatements];
+    if (writes.length) await db.batch(writes);
   }
 
   return { saved: wanted.length, skipped };
