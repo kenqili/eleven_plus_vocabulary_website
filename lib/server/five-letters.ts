@@ -23,7 +23,7 @@ import { database } from "./db";
 import { HttpError } from "./http";
 import { isAllowedWord } from "./free-words";
 import { excludedWordIds } from "./parent-words";
-import { accountPlacement } from "./placement";
+import { accountScore } from "./placement";
 
 /**
  * Five Letters persistence and the two writes a game may make to progress.
@@ -133,17 +133,13 @@ async function publicState(
   row: GameRow | null,
   allowedWordIds: ReadonlySet<string> | undefined,
 ): Promise<FiveLettersState> {
-  const placement = await accountPlacement(userId);
-  const db = database();
-  const penalty =
-    (
-      await db
-        .prepare("SELECT score_penalty FROM users WHERE id=?")
-        .bind(userId)
-        .first<{ score_penalty: number }>()
-    )?.score_penalty ?? 0;
+  // One round trip for the score and the penalty, instead of one for the
+  // placement and another for the penalty. The score only changes when the
+  // child's knowledge changes, and the hint penalty only when a hint is taken,
+  // so this is the same read on every request.
+  const { score, penalty } = await accountScore(userId);
   const base = {
-    score: placement.score,
+    score,
     scorePenalty: penalty,
     freeTier: Boolean(allowedWordIds),
     freeWordCount: allowedWordIds?.size ?? 0,

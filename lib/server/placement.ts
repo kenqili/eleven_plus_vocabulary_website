@@ -12,9 +12,15 @@ import {
   type TrailingAnswer,
 } from "@/lib/challenge/placement";
 import { hasMastered } from "@/lib/challenge/mastery";
-import { customWordsFor, excludedWordIds } from "./parent-words";
+import {
+  CUSTOM_WORDS_SQL,
+  EXCLUDED_WORD_IDS_SQL,
+  customWordsFromRows,
+  excludedIdsFromRows,
+  type AddedWord,
+  type CustomWordRow,
+} from "./parent-words";
 import { database } from "./db";
-
 /**
  * Where the account is, for pages that are not asking a question.
  *
@@ -48,21 +54,38 @@ type BandPool = {
   items: Array<{ level: number; mastered: boolean; correct: number }>;
 };
 
-async function bandPool(userId: string): Promise<BandPool> {
-  const db = database();
-  const [excluded, added] = await Promise.all([
-    excludedWordIds(userId),
-    customWordsFor(userId),
-  ]);
-  const rows = (
-    await db
-      .prepare(
-        "SELECT word_id, correct, mastered FROM progress WHERE user_id = ?",
-      )
-      .bind(userId)
-      .all<{ word_id: string; correct: number; mastered: number }>()
-  ).results;
-  const byId = new Map(rows.map((row) => [row.word_id, row]));
+/** The child's own progress, which decides what they have mastered. */
+const PROGRESS_SQL =
+  "SELECT word_id, correct, mastered FROM progress WHERE user_id = ?";
+
+/**
+ * The trailing recent answers, most recent last.
+ *
+ * Read from `learning_events` rather than `attempts` because only it records
+ * the evidence verdict. Shared with the question route so the two cannot drift
+ * into different definitions of "recent".
+ */
+const TRAILING_SQL =
+  "SELECT word_id, correct, revealed, evidence FROM learning_events WHERE user_id = ? ORDER BY created_at DESC LIMIT 30";
+
+/** The permanent penalty the account's hints have cost it. */
+const PENALTY_SQL = "SELECT score_penalty FROM users WHERE id=?";
+
+/**
+ * The band pool, from rows already read.
+ *
+ * Separated from the read so one round trip can fetch every input at once.
+ */
+function bandPoolFrom(
+  excluded: ReadonlySet<string>,
+  added: readonly AddedWord[],
+  progressRows: readonly {
+    word_id: string;
+    correct: number;
+    mastered: number;
+  }[],
+): BandPool {
+  const byId = new Map(progressRows.map((row) => [row.word_id, row]));
   const totals = [0, 0, 0, 0, 0, 0];
   const items: BandPool["items"] = [];
   for (const [id, band] of levelOf) {
@@ -100,22 +123,41 @@ async function bandPool(userId: string): Promise<BandPool> {
   return { totals, items };
 }
 
+/** The trailing answers, from rows already read. Most recent last. */
+function trailingFromRows(
+  rows: readonly {
+    word_id: string;
+    correct: number;
+    revealed: number;
+    evidence: string | null;
+  }[],
+): TrailingAnswer[] {
+  return rows
+    .slice()
+    .reverse()
+    .map((row) => ({
+      level: bandFor(row.word_id),
+      correct:
+        row.correct === 1 &&
+        row.revealed === 0 &&
+        (row.evidence === "recalled" || row.evidence === "uncertain"),
+    }));
+}
+
 /**
- * The trailing recent answers, most recent last.
+ * The trailing recent answers, for the callers that want them on their own.
  *
- * Read from `learning_events` rather than `attempts` because only it records
- * the evidence verdict. Shared with the question route so the two cannot drift
- * into different definitions of "recent".
+ * The shared definition of "recent". Read from `learning_events` rather than
+ * `attempts` because only it records the evidence verdict. The question route
+ * and the score chart both use it, so the two cannot drift into different
+ * definitions.
  */
 export async function trailingAnswers(
   userId: string,
 ): Promise<TrailingAnswer[]> {
-  const db = database();
   const rows = (
-    await db
-      .prepare(
-        "SELECT word_id, correct, revealed, evidence FROM learning_events WHERE user_id = ? ORDER BY created_at DESC LIMIT 30",
-      )
+    await database()
+      .prepare(TRAILING_SQL)
       .bind(userId)
       .all<{
         word_id: string;
@@ -124,27 +166,68 @@ export async function trailingAnswers(
         evidence: string | null;
       }>()
   ).results;
-  return rows.reverse().map((row) => ({
-    level: bandFor(row.word_id),
-    correct:
-      row.correct === 1 &&
-      row.revealed === 0 &&
-      (row.evidence === "recalled" || row.evidence === "uncertain"),
-  }));
+  return trailingFromRows(rows);
 }
 
 export async function accountPlacement(userId: string): Promise<{
   level: number;
   score: number;
 }> {
-  const [{ totals, items }, trailing, penalty] = await Promise.all([
-    bandPool(userId),
-    trailingAnswers(userId),
-    database()
-      .prepare("SELECT score_penalty FROM users WHERE id=?")
-      .bind(userId)
-      .first<{ score_penalty: number }>(),
+  const { level, score } = await accountScore(userId);
+  return { level, score };
+}
+
+/**
+ * The account's level, score and permanent hint penalty.
+ *
+ * `score` is the score the account would show, so the hint penalty has already
+ * been taken off it. `penalty` is that deduction on its own, for the pages that
+ * show what the hints cost.
+ *
+ * Read in one round trip. The placement used to be five separate queries: the
+ * excluded words, the parent's own words, the child's progress, the trailing
+ * answers and the hint penalty. D1 answers a batch in a single request, so the
+ * whole placement now costs one trip instead of five. This is on the path of
+ * every practice question and every Five Letters guess, and it reads the same
+ * five rows every time, so the round trips were being paid for twice over.
+ */
+export async function accountScore(userId: string): Promise<{
+  level: number;
+  score: number;
+  penalty: number;
+}> {
+  const db = database();
+  const out = await db.batch([
+    db.prepare(EXCLUDED_WORD_IDS_SQL).bind(userId),
+    db.prepare(CUSTOM_WORDS_SQL).bind(userId),
+    db.prepare(PROGRESS_SQL).bind(userId),
+    db.prepare(TRAILING_SQL).bind(userId),
+    db.prepare(PENALTY_SQL).bind(userId),
   ]);
+  // `db.batch` returns one result per statement, in the order they were given -
+  // D1 guarantees that positionally, and the shim preserves it with a map. D1
+  // types the rows as unknown, so each is narrowed where it is read rather than
+  // by casting the whole result.
+  const rowsOf = <T,>(index: number): T[] =>
+    index < 0
+      ? []
+      : ((out[index] as { results?: T[] } | undefined)?.results ?? []);
+  const excluded = excludedIdsFromRows(rowsOf<{ word_id: string }>(0));
+  const added = customWordsFromRows(rowsOf<CustomWordRow>(1));
+  const { totals, items } = bandPoolFrom(
+    excluded,
+    added,
+    rowsOf<{ word_id: string; correct: number; mastered: number }>(2),
+  );
+  const trailing = trailingFromRows(
+    rowsOf<{
+      word_id: string;
+      correct: number;
+      revealed: number;
+      evidence: string | null;
+    }>(3),
+  );
+  const penalty = rowsOf<{ score_penalty: number }>(4)[0]?.score_penalty ?? 0;
   const fractions = levelFractions(items, totals);
   const base = currentLevel(fractions, trailing);
   const level = currentLevel(
@@ -158,8 +241,8 @@ export async function accountPlacement(userId: string): Promise<{
     // well as in the game means every reader of the score sees one number.
     score: Math.max(
       0,
-      levelScore(level, correctCredit(items, totals, level)) -
-        (penalty?.score_penalty ?? 0),
+      levelScore(level, correctCredit(items, totals, level)) - penalty,
     ),
+    penalty,
   };
 }
