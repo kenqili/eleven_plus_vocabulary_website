@@ -28,6 +28,30 @@ if (nodeMode) {
   } catch (error) {
     if (error.code !== "ENOENT") throw error;
   }
+  // Local development does not send mail unless asked to.
+  //
+  // `.env` carries the same RESEND_API_KEY the deployed Worker uses, because
+  // there is one Resend account and one key. The effect was that registering an
+  // account locally sent a real message from the production sender: every test
+  // suite that signs a parent up, and every signup while developing, posted to
+  // api.resend.com. The test addresses end in `@example.test`, which cannot
+  // receive mail, so Resend accepted each message and then retried it for hours,
+  // reporting delivery delays for mail nobody would ever read.
+  //
+  // Blanked rather than deleted: the dev server loads `.env` itself, after this
+  // point, and only fills keys that are missing. An empty value stays empty.
+  // `emailReady()` is then false, the paths that send mail already handle that
+  // by logging and carrying on, and a registered account is confirmed by tests
+  // through the database rather than through an inbox. A developer who wants to
+  // see a real message can say so:
+  //
+  //   MINEWORDS_DEV_MAIL=1 npm run dev:node
+  if (!process.env.MINEWORDS_DEV_MAIL && process.env.RESEND_API_KEY) {
+    process.env.RESEND_API_KEY = "";
+    console.log(
+      "Email is off in local development, so nothing is sent through the Resend account. Set MINEWORDS_DEV_MAIL=1 to send real mail.",
+    );
+  }
 }
 // Only the real Workers runtime is affected, and only for a local preview:
 // `build` does not start workerd, `dev --node` replaces D1 with SQLite, and the

@@ -163,6 +163,18 @@ TEST_NODE_DB=.sites-runtime/node-dev.sqlite npm run test:integration
 
 Use the local address printed by the server (normally http://localhost:5173). Local preview data persists under ignored `.wrangler/state`. Run `npm run start` to test the built Worker.
 
+`npm run dev:node` does not send email, even when `RESEND_API_KEY` is set in
+`.env`, because that key is the one the deployed Worker uses: a local signup, or
+any test suite that registers an account, would otherwise post through the
+production Resend account to an address that cannot receive it. Registration and
+password reset behave exactly as they do in production — the requests succeed
+and nothing is delivered — and tests confirm addresses straight in the local
+database. To send real mail from a local preview, opt in explicitly:
+
+```sh
+MINEWORDS_DEV_MAIL=1 npm run dev:node
+```
+
 The Windows Sites helper encountered an npm-shim path issue in this environment. The equivalent direct commands work:
 
 ```powershell
