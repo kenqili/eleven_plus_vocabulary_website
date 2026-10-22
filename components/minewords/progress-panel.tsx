@@ -41,7 +41,10 @@ export default function ProgressPanel({
           </div>
         </div>
         {demo ? (
-          <p>Sign in to save your learning and collect credits and badges.</p>
+          <p>
+            Create a free account to save your learning and collect credits and
+            badges.
+          </p>
         ) : (
           <>
             <div className="credit-balance">
@@ -62,7 +65,10 @@ export default function ProgressPanel({
             </div>
           </>
         )}
-        <a className="rewards-link" href={demo ? "/account" : "/rewards"}>
+        <a
+          className="rewards-link"
+          href={demo ? "/account?register=1" : "/rewards"}
+        >
           {demo ? "Save your progress" : "See badges & rewards"} →
         </a>
       </div>

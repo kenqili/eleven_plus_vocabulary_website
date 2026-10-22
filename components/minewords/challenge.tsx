@@ -487,6 +487,26 @@ export default function Challenge() {
                 {question ? TYPE_LABELS[question.type] : "Mixed practice"}
               </span>
             </div>
+            {/*
+              The one thing a signed-out visitor cannot see for themselves: none
+              of this is being kept. The free words are a sample, and a child who
+              answers twenty of them and comes back tomorrow starts again - which
+              is the point at which a family either makes an account or gives up.
+
+              So the offer sits directly under the "TRY N FREE WORDS" line that
+              raises the question, and links straight into the register form
+              rather than the sign-in form, which is a second click at the moment
+              a parent has just decided to bother.
+            */}
+            {demo && (
+              <div className="demo-banner" role="status">
+                <strong>Nothing here is being saved</strong>
+                <span>An account keeps your level, words and badges.</span>
+                <Link href="/account?register=1">
+                  Create a free account →
+                </Link>
+              </div>
+            )}
             {levelUp !== null && (
               <div className="reward-notice" role="status">
                 <strong>

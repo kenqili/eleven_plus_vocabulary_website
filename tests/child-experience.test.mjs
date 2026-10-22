@@ -301,3 +301,47 @@ test("a promotion arrives with a celebration, a demotion without one", () => {
     "the celebration is not gated on actually rising",
   );
 });
+
+test("a signed-out visitor is offered an account where it can make a difference", () => {
+  // The free sample is the only place a visitor can be told, at the moment it
+  // matters, that nothing is being kept. It is also the moment they either make
+  // an account or drift away, so the offer links straight to the register form:
+  // landing on "sign in" and needing a second click is where that decision dies.
+  const challenge = readFileSync(
+    new URL("../components/minewords/challenge.tsx", import.meta.url),
+    "utf8",
+  );
+  assert.match(
+    challenge,
+    /Nothing here is being saved/,
+    "the practice screen does not tell a guest their progress is lost",
+  );
+  assert.match(
+    challenge,
+    /href="\/account\?register=1"/,
+    "the guest banner does not link to registration",
+  );
+  assert.match(
+    challenge,
+    /\{demo && \(/,
+    "the guest offer is not limited to signed-out visitors",
+  );
+  const account = readFileSync(
+    new URL("../components/minewords/account.tsx", import.meta.url),
+    "utf8",
+  );
+  assert.match(
+    account,
+    /params\.get\("register"\) === "1"/,
+    "the account page ignores the register link, so it opens on the sign-in form",
+  );
+  const panel = readFileSync(
+    new URL("../components/minewords/progress-panel.tsx", import.meta.url),
+    "utf8",
+  );
+  assert.match(
+    panel,
+    /"\/account\?register=1"/,
+    "the rewards panel sends a guest to sign in rather than to register",
+  );
+});

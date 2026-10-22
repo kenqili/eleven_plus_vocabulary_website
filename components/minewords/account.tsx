@@ -168,9 +168,13 @@ export default function Account({
   useEffect(() => {
     void refresh()
       .then(async (current) => {
-        const checkout = new URLSearchParams(window.location.search).get(
-          "checkout",
-        );
+        const params = new URLSearchParams(window.location.search);
+        // A link from the practice screen goes to the register form rather than
+        // the sign-in form. The visitor has just been told their progress is not
+        // saved, so the form they land on should be the one that saves it: asking
+        // them to press "Create an account" again is the moment they leave.
+        if (params.get("register") === "1") setRegister(true);
+        const checkout = params.get("checkout");
         if (checkout === "success") {
           // Checked against what the server says, not asserted. The old wording
           // told a parent their membership "will appear", whatever the page then

@@ -392,6 +392,36 @@ h1 {
 .session-bar span:first-child {
   font-weight: 700;
 }
+/*
+ * The invitation to make a free account, under the "TRY N FREE WORDS" line.
+ *
+ * Blue rather than the amber of the trial banner: nothing has gone wrong here,
+ * and a visitor who has just arrived should be invited rather than warned. It
+ * is one line of text and a link on wide screens, and stacks on a phone.
+ */
+.demo-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 14px;
+  padding: 12px 16px;
+  margin: 0 0 16px;
+  border: 1px solid var(--line-5);
+  border-radius: var(--radius);
+  background: var(--surface-brand);
+  color: var(--ink-navy);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.demo-banner strong {
+  font-size: 14px;
+}
+.demo-banner a {
+  color: var(--ink-brand-6);
+  font-weight: 700;
+  text-decoration: underline;
+  white-space: nowrap;
+}
 .question-card {
   background: var(--surface);
   border: 1px solid var(--line);
