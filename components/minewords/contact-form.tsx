@@ -1,6 +1,7 @@
 "use client";
 import { useState, type FormEvent } from "react";
 import { api } from "@/lib/client/api";
+import Turnstile from "./turnstile";
 
 /**
  * The form on the contact page.
@@ -9,23 +10,32 @@ import { api } from "@/lib/client/api";
  * says plainly what to fix or where to write instead. The address itself is
  * printed on the page beside this, so a parent whose message will not send
  * still has somewhere to go.
+ *
+ * A human check sits before the button when the server is configured for one.
+ * This is the only form on the site a stranger can use to make it send mail, so
+ * it is the one that needs it most.
  */
-export default function ContactForm() {
+export default function ContactForm({ turnstileSiteKey }: { turnstileSiteKey: string }) {
   const [email, setEmail] = useState("");
   const [topic, setTopic] = useState("account");
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [sent, setSent] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
+  const [check, setCheck] = useState(0);
   async function submit(event: FormEvent) {
     event.preventDefault();
     setBusy(true);
     setError("");
     try {
-      await api("/api/contact", { email, topic, message });
+      await api("/api/contact", { email, topic, message, turnstileToken: token });
       setSent(true);
     } catch (e) {
       setError((e as Error).message);
+      // A token is spent by the attempt, whether the attempt got as far as the
+      // challenge or not, so the next one needs a fresh check.
+      setCheck((count) => count + 1);
     } finally {
       setBusy(false);
     }
@@ -77,6 +87,7 @@ export default function ContactForm() {
           {error}
         </p>
       )}
+      <Turnstile siteKey={turnstileSiteKey} onToken={setToken} resetSignal={check} />
       <button className="primary-button" disabled={busy}>
         {busy ? "Sending…" : "Send message"}
       </button>

@@ -2,10 +2,18 @@ import Link from "next/link";
 import Header from "@/components/minewords/header";
 import ContactForm from "@/components/minewords/contact-form";
 import { CONTACT_EMAIL, CONTACT_MAILTO } from "@/lib/contact";
+import { turnstileClientKey } from "@/lib/server/turnstile";
 
 export const metadata = {
   title: "Contact us · MineWords",
 };
+
+/**
+ * Rendered per request because the human check's public key is a setting of the
+ * deployment: a prerendered page would bake in whichever key existed at build
+ * time, which is usually none.
+ */
+export const dynamic = "force-dynamic";
 
 /**
  * How to reach a human.
@@ -35,7 +43,7 @@ export default function ContactPage() {
           </div>
         </div>
         <section className="account-card">
-          <ContactForm />
+          <ContactForm turnstileSiteKey={turnstileClientKey()} />
         </section>
         <footer className="site-footer">
           <span>Small steps. Lasting knowledge.</span>

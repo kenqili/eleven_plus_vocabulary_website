@@ -12,6 +12,7 @@ import {
   verifyPassword,
 } from "@/lib/server/password";
 import { markVerified } from "@/lib/server/email-verification";
+import { requireTurnstile } from "@/lib/server/turnstile";
 import {
   findLiveReset,
   issueResetToken,
@@ -96,6 +97,13 @@ async function requestReset(request: Request) {
   await rateLimit(
     `password-reset-request-ip:${request.headers.get("cf-connecting-ip") || "local"}`,
     10,
+  );
+  // After the rate limits, before the lookup: the check is what keeps this from
+  // being used to make the site send mail on demand, and the limits answer the
+  // cheap floods without asking Cloudflare about any of them.
+  await requireTurnstile(
+    input.turnstileToken,
+    request.headers.get("cf-connecting-ip"),
   );
   const found = await database()
     .prepare("SELECT id, email FROM users WHERE email = ?")

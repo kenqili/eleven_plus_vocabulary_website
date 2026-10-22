@@ -97,6 +97,14 @@ export default function PrivacyPage() {
               sign-in link or a receipt from the payment provider.
             </li>
           </ul>
+          <p>
+            One thing on the site is not ours: the short human check on the
+            contact, sign-up and password-reset forms is Cloudflare Turnstile.
+            It runs on the same network that serves the site, it is not used for
+            advertising or to follow anyone around the web, and it exists so
+            that a script cannot use those forms to send mail. Everything it
+            sees is covered by Cloudflare&rsquo;s own privacy policy.
+          </p>
 
           <h2>Payments</h2>
           <p>

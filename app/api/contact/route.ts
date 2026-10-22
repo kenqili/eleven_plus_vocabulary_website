@@ -2,6 +2,7 @@ import { rateLimit } from "@/lib/server/auth";
 import { body, boundary, HttpError, json, sameOrigin } from "@/lib/server/http";
 import { CONTACT_EMAIL } from "@/lib/contact";
 import { emailReady, sendEmail } from "@/lib/server/email";
+import { requireTurnstile } from "@/lib/server/turnstile";
 
 /**
  * A message for the owner, from the contact page.
@@ -43,6 +44,13 @@ export async function POST(request: Request) {
       throw new HttpError(400, "Say a little more so we can help.");
     if (message.length > 2000)
       throw new HttpError(400, "Keep it under 2000 characters, please.");
+    // After the shape checks and before anything is sent: the challenge is what
+    // stops a stranger using this form as a relay, and there is no point asking
+    // Cloudflare about a message that was never going to be accepted.
+    await requireTurnstile(
+      input.turnstileToken,
+      request.headers.get("cf-connecting-ip"),
+    );
     if (!emailReady())
       throw new HttpError(
         503,

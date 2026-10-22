@@ -189,6 +189,8 @@ and only `.env.example` is tracked.
 npx wrangler@latest secret put APP_ORIGIN
 npx wrangler@latest secret put RESEND_API_KEY
 npx wrangler@latest secret put EMAIL_FROM
+npx wrangler@latest secret put TURNSTILE_SITE_KEY
+npx wrangler@latest secret put TURNSTILE_SECRET_KEY
 npx wrangler@latest secret put STRIPE_SECRET_KEY
 npx wrangler@latest secret put STRIPE_PRICE_MONTHLY
 npx wrangler@latest secret put STRIPE_PRICE_QUARTERLY
@@ -228,6 +230,25 @@ dashboard under Sending → Domains, or every send fails with 403 regardless of
 the key. The token itself is still written to `password_resets` when the send
 fails, so a row there with no email arriving confirms the flow ran and the
 delivery is the part that broke.
+
+**`TURNSTILE_SITE_KEY` and `TURNSTILE_SECRET_KEY` put a human check in front of
+contact, registration and password reset.** They come from a Turnstile widget
+created in the Cloudflare dashboard under Turnstile → Add widget, with the
+site's hostname added to it. Both are read as Worker settings; the site key is
+public but is passed from the server to the page, so it does not need to be
+inlined at build time and a deployment can be switched on without rebuilding.
+
+The check is **off unless both are set**, which is deliberate: local development
+and the test suite have no keys and must not meet a challenge they cannot solve.
+Set one without the other and it stays off, because a widget whose token nobody
+verifies is a puzzle a parent solved for nothing. To check it is on, load
+`/account`, choose Create an account, and look for the Cloudflare widget above
+the button; a registration without it answers 400 "Please complete the short
+human check".
+
+If the Turnstile API cannot be reached, the three forms refuse the request
+rather than letting it through - a check that fails open is not a check - and
+the reason appears in `wrangler tail`.
 
 **Unlike a password reset, this failure is not invisible.** Since email
 verification landed, sign-in refuses an address with no

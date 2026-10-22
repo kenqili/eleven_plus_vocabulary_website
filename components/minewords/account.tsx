@@ -8,6 +8,7 @@ import AccountSecurity from "./account-security";
 import CouponRedeem from "./coupon-redeem";
 import DiscountCode, { type DiscountQuote } from "./discount-code";
 import DeleteAccount from "./delete-account";
+import Turnstile from "./turnstile";
 type User = { id: string; email: string };
 type Billing = {
   active: boolean;
@@ -93,7 +94,17 @@ const date = (ms: number) =>
  */
 const CHECKOUT_TIMEOUT_MS = 45000;
 
-export default function Account() {
+export default function Account({
+  turnstileSiteKey = "",
+}: {
+  /**
+   * The human check's public key, or "" when the server has none.
+   *
+   * Empty on a deployment with no keys, which is what makes the two forms below
+   * render without a challenge rather than rendering one nobody verifies.
+   */
+  turnstileSiteKey?: string;
+}) {
   const [user, setUser] = useState<User | null>(null),
     [billing, setBilling] = useState<Billing | null>(null);
   const [loading, setLoading] = useState(true),
@@ -107,6 +118,21 @@ export default function Account() {
     [notice, setNotice] = useState("");
   const [resetting, setResetting] = useState(false),
     [resetEmail, setResetEmail] = useState("");
+  /**
+   * The human check, when the deployment has one.
+   *
+   * `humanCheck` is the token the widget produced and `checkRun` is what makes
+   * the widget ask again - a token is spent by the attempt it was sent with, so
+   * every refusal has to leave a fresh one behind. Signing in needs no check;
+   * creating an account and asking for a reset link do, because both make the
+   * site send mail to an address somebody else typed.
+   */
+  const [humanCheck, setHumanCheck] = useState<string | null>(null),
+    [checkRun, setCheckRun] = useState(0);
+  const spentHumanCheck = () => {
+    setHumanCheck(null);
+    setCheckRun((run) => run + 1);
+  };
   /** A tutor code the parent applied: discount on the 1-year button only. */
   const [discountQuote, setDiscountQuote] = useState<DiscountQuote | null>(null);
   /**
@@ -187,7 +213,13 @@ export default function Account() {
       const result = await api<{
         needsVerification?: boolean;
         message?: string;
-      }>(`/api/auth/${register ? "register" : "login"}`, { email, password });
+      }>(`/api/auth/${register ? "register" : "login"}`, {
+        email,
+        password,
+        // Only registration is challenged: signing in cannot send mail to
+        // anyone but the account's own address.
+        ...(register ? { turnstileToken: humanCheck } : {}),
+      });
       setPassword("");
       // Registering no longer signs you in, so there is nothing to refresh. The
       // parent waits for the link instead.
@@ -205,6 +237,7 @@ export default function Account() {
         return;
       }
       setError(failure.message);
+      if (register) spentHumanCheck();
     } finally {
       setBusy(false);
     }
@@ -246,12 +279,13 @@ export default function Account() {
     try {
       const result = await api<{ ok: boolean; message: string }>(
         "/api/password-reset/request",
-        { email: resetEmail },
+        { email: resetEmail, turnstileToken: humanCheck },
       );
       setResetEmail("");
       setNotice(result.message);
     } catch (e) {
       setError((e as Error).message);
+      spentHumanCheck();
     } finally {
       setBusy(false);
     }
@@ -843,6 +877,7 @@ export default function Account() {
                     onClick={() => {
                       setAwaitingLink(null);
                       setRegister(false);
+                      spentHumanCheck();
                     }}
                   >
                     Use a different address
@@ -864,6 +899,11 @@ export default function Account() {
                     Check the junk folder if nothing arrives. You can keep using
                     the site meanwhile.
                   </p>
+                  <Turnstile
+                    siteKey={turnstileSiteKey}
+                    onToken={setHumanCheck}
+                    resetSignal={checkRun}
+                  />
                   <button className="primary-button" disabled={busy}>
                     {busy ? "Please wait…" : "Email me a reset link"}
                   </button>
@@ -897,6 +937,13 @@ export default function Account() {
                     At least 8 characters. A short phrase you will remember
                     works better than a long one you will not.
                   </p>
+                  {register && (
+                    <Turnstile
+                      siteKey={turnstileSiteKey}
+                      onToken={setHumanCheck}
+                      resetSignal={checkRun}
+                    />
+                  )}
                   <button className="primary-button" disabled={busy}>
                     {busy
                       ? "Please wait…"
@@ -915,6 +962,7 @@ export default function Account() {
                       setResetting(false);
                       setError("");
                       setNotice("");
+                      spentHumanCheck();
                     }}
                   >
                     Back to sign in
@@ -930,6 +978,7 @@ export default function Account() {
                       onClick={() => {
                         setRegister(!register);
                         setError("");
+                        spentHumanCheck();
                       }}
                     >
                       {register ? "Sign in" : "Create an account"}
@@ -944,6 +993,7 @@ export default function Account() {
                             setResetting(true);
                             setError("");
                             setNotice("");
+                            spentHumanCheck();
                           }}
                         >
                           Forgotten your password?

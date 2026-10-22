@@ -22,6 +22,7 @@ import {
   verifyPassword,
 } from "@/lib/server/password";
 import { emailReady, sendPasswordChangedEmail } from "@/lib/server/email";
+import { requireTurnstile } from "@/lib/server/turnstile";
 
 // Once per Worker instance, as in the reset route, and its own flag rather than
 // that route's: a flag in one module cannot quieten the other, and a deployment
@@ -287,6 +288,14 @@ export async function POST(
       }>();
     let userId: string;
     if (action === "register") {
+      // Before the account is written, and after the rate limit: a bot should
+      // not be able to create accounts at all, while a parent whose check
+      // expired should learn that without having half-created one. Signing in
+      // is not challenged - it cannot send anything to anyone else.
+      await requireTurnstile(
+        input.turnstileToken,
+        request.headers.get("cf-connecting-ip"),
+      );
       const passwordHash = hashPassword(password);
       if (found)
         throw new HttpError(

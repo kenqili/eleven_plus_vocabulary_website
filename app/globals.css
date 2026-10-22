@@ -717,6 +717,18 @@ h1 {
   border-radius: var(--radius);
   padding: 32px;
 }
+/*
+ * Where the Turnstile widget renders, when the deployment uses one.
+ *
+ * It is one line high in its lightest mode and can be taller when Cloudflare
+ * decides to ask an interactive question, so the space is reserved rather than
+ * letting the button jump down the card while someone is reaching for it. The
+ * margin matches the other fields so the form still reads as one column.
+ */
+.turnstile-check {
+  min-height: 70px;
+  margin: 6px 0 14px;
+}
 .account-card h1 {
   font-size: 32px;
 }

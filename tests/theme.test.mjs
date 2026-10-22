@@ -566,17 +566,28 @@ test("the policy allows inline styles and nothing looser, for scripts", () => {
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",
-    "connect-src 'self'",
   ])
     assert.ok(policy.includes(directive), `${directive} is not restricted`);
-  // Nothing is loaded from anywhere else, so nothing is allowed from anywhere
-  // else. An analytics tag or a font CDN added later would need this revisited,
-  // and that is the point of asserting it.
-  assert.doesNotMatch(
+  assert.match(
     policy,
-    /https?:\/\//,
-    "the policy allows an absolute origin, which is a third party this app does not use",
+    /connect-src 'self' \$\{TURNSTILE_ORIGIN\}/,
+    "connect-src is not restricted to this site and the Turnstile endpoint",
   );
+  // One third-party origin, on purpose: Turnstile draws the human check. It is
+  // the only absolute origin in the policy, and it may only appear where the
+  // widget is fetched, framed and verified - not for images, styles, media,
+  // fonts or the document itself.
+  const thirdParty = policy.match(/https?:\/\/[^"'`\s]+/g) ?? [];
+  assert.deepEqual(
+    [...new Set(thirdParty)],
+    ["https://challenges.cloudflare.com"],
+    "the policy allows an origin this app does not use",
+  );
+  for (const directive of ["img-src", "style-src", "media-src", "font-src", "default-src"]) {
+    const start = policy.indexOf(`${directive} `);
+    const line = policy.slice(start, policy.indexOf('"', start));
+    assert.doesNotMatch(line, /https?:\/\//, `${directive} allows a third party`);
+  }
 });
 
 test("the nonce reaches the request the page is rendered from", () => {
