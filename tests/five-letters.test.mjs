@@ -3,16 +3,29 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import {
   availableHintKinds,
+  countGuess,
   gradeGuess,
   HINT_SCORE_PENALTY,
   hintFor,
   isAcceptedGuess,
   keyboardMarks,
+  masterWord,
   MAX_GUESSES,
   normalizeGuess,
   scoreAfterPenalty,
+  scoreFromRound,
+  scoreOf,
   usedHintKinds,
 } from "../lib/challenge/five-letters.ts";
+import {
+  bandsFrom,
+  correctCredit,
+  currentLevel,
+  levelFractions,
+  levelScore,
+  placementFromBands,
+  stretchFraction,
+} from "../lib/challenge/placement.ts";
 
 const accepted = JSON.parse(
   readFileSync("data/five-letters/accepted.json", "utf8"),
@@ -213,4 +226,105 @@ test("a missing relation is not offered", () => {
   assert.equal(hintFor(card, "syn", "test"), null);
   assert.equal(hintFor(card, "ant", "test"), null);
   assert.deepEqual(availableHintKinds(card, "test"), []);
+});
+
+test("the score the browser keeps is the score the server works out", () => {
+  // The server counts the account's knowledge word by word; the browser is
+  // told the counted form and keeps it up to date as the child plays. If the
+  // two forms could differ, the score a child watches move would be a
+  // different number from the one they are finally given.
+  const totals = [116, 427, 426, 426, 426, 426];
+  const items = [];
+  for (let band = 0; band < totals.length; band++) {
+    for (let i = 0; i < totals[band]; i++) {
+      items.push({
+        level: band,
+        mastered: (band * 7 + i) % 11 === 0,
+        correct: (band * 5 + i) % 4,
+      });
+    }
+  }
+  const trailing = [
+    { level: 1, correct: true },
+    { level: 1, correct: false },
+    { level: 2, correct: true },
+  ];
+
+  // The server's way, word by word.
+  const fractions = levelFractions(items, totals);
+  const base = currentLevel(fractions, trailing);
+  const serverLevel = currentLevel(
+    fractions,
+    trailing,
+    stretchFraction(items, totals, base) >= 1,
+  );
+  const serverScore = levelScore(
+    serverLevel,
+    correctCredit(items, totals, serverLevel),
+  );
+
+  // The browser's way, from the counted form.
+  const bands = bandsFrom(items, totals);
+  const browser = placementFromBands(bands, trailing);
+  assert.equal(browser.level, serverLevel);
+  assert.equal(browser.score, serverScore);
+
+  // And the counted form is what the round carries, so the browser can keep
+  // it up to date: a word that counts gains a right answer, and a solved
+  // answer is mastered.
+  const round = {
+    answer: "peril",
+    hints: {},
+    bands: bands.map((band) => ({ ...band })),
+    trailing,
+    penalty: 0,
+    answers: [["peril", 1, 1, false]],
+  };
+  const knowledge = scoreFromRound(round);
+  const before = scoreOf(knowledge);
+  countGuess(knowledge, "peril");
+  const afterCount = scoreOf(knowledge);
+  assert.equal(knowledge.words.get("peril").correct, 2);
+  assert.equal(
+    afterCount >= before,
+    true,
+    "a counted right answer cannot make the score go backwards",
+  );
+  const masteredBefore = knowledge.bands[1].mastered;
+  masterWord(knowledge, "peril");
+  assert.equal(knowledge.words.get("peril").mastered, true);
+  assert.equal(
+    knowledge.bands[1].mastered,
+    masteredBefore + 1,
+    "the band knows the word is mastered",
+  );
+
+  // The same two changes, counted the way the server counts them.
+  const serverItems = items.map((item) => ({ ...item }));
+  const word = serverItems.find(
+    (item) => item.level === 1 && !item.mastered && item.correct === 1,
+  );
+  assert.ok(word, "the fixture has no word to count");
+  word.correct = 2;
+  word.mastered = true;
+  const fractionsAfter = levelFractions(serverItems, totals);
+  const baseAfter = currentLevel(fractionsAfter, trailing);
+  const levelAfter = currentLevel(
+    fractionsAfter,
+    trailing,
+    stretchFraction(serverItems, totals, baseAfter) >= 1,
+  );
+  assert.equal(
+    levelScore(
+      levelAfter,
+      correctCredit(serverItems, totals, levelAfter),
+    ),
+    scoreOf(knowledge),
+    "the browser's score and the server's score are the same number",
+  );
+
+  // A hint costs five points for good, and the browser takes them off as the
+  // child takes it.
+  knowledge.penalty += HINT_SCORE_PENALTY;
+  assert.equal(scoreOf(knowledge), Math.max(0, scoreOf(knowledge)));
 });

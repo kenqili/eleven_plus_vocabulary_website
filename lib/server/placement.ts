@@ -4,11 +4,9 @@ import {
   toCustomWord,
 } from "@/lib/challenge/added-words";
 import {
-  currentLevel,
-  correctCredit,
-  levelFractions,
-  levelScore,
-  stretchFraction,
+  bandsFrom,
+  placementFromBands,
+  type BandSummary,
   type TrailingAnswer,
 } from "@/lib/challenge/placement";
 import { hasMastered } from "@/lib/challenge/mastery";
@@ -178,6 +176,79 @@ export async function accountPlacement(userId: string): Promise<{
 }
 
 /**
+ * The account's knowledge, counted band by band, and the history that reads it.
+ *
+ * The counted form rather than the rows: a game that runs in the browser needs
+ * to keep the score right as the child plays, and these four numbers per band
+ * are all the placement reads. It is also the smallest useful answer - the rows
+ * behind it run to one per word the child has met.
+ *
+ * `wanted` asks for the state of particular words as well: the band they sit
+ * in, the right answers they hold and whether they are mastered. Those words
+ * are picked out of the progress rows already read, so asking costs nothing
+ * extra.
+ *
+ * Read in one round trip, with the same five statements `accountScore` reads.
+ */
+export async function accountBands(
+  userId: string,
+  wanted?: readonly string[],
+): Promise<{
+  bands: BandSummary[];
+  trailing: TrailingAnswer[];
+  penalty: number;
+  /** The words a parent has set aside. */
+  excluded: string[];
+  /** The state of the words asked for: id, band, right answers, mastered. */
+  words: Array<[string, number, number, boolean]>;
+}> {
+  const db = database();
+  const out = await db.batch([
+    db.prepare(EXCLUDED_WORD_IDS_SQL).bind(userId),
+    db.prepare(CUSTOM_WORDS_SQL).bind(userId),
+    db.prepare(PROGRESS_SQL).bind(userId),
+    db.prepare(TRAILING_SQL).bind(userId),
+    db.prepare(PENALTY_SQL).bind(userId),
+  ]);
+  const rowsOf = <T,>(index: number): T[] =>
+    index < 0
+      ? []
+      : ((out[index] as { results?: T[] } | undefined)?.results ?? []);
+  const excluded = excludedIdsFromRows(rowsOf<{ word_id: string }>(0));
+  const added = customWordsFromRows(rowsOf<CustomWordRow>(1));
+  const progressRows = rowsOf<{
+    word_id: string;
+    correct: number;
+    mastered: number;
+  }>(2);
+  const { totals, items } = bandPoolFrom(excluded, added, progressRows);
+  const byId = new Map(progressRows.map((row) => [row.word_id, row]));
+  const words = (wanted ?? []).map((id) => {
+    const row = byId.get(id);
+    return [
+      id,
+      bandFor(id),
+      row?.correct ?? 0,
+      hasMastered({ mastered: row?.mastered, correct: row?.correct ?? 0 }),
+    ] as [string, number, number, boolean];
+  });
+  return {
+    bands: bandsFrom(items, totals),
+    trailing: trailingFromRows(
+      rowsOf<{
+        word_id: string;
+        correct: number;
+        revealed: number;
+        evidence: string | null;
+      }>(3),
+    ),
+    penalty: rowsOf<{ score_penalty: number }>(4)[0]?.score_penalty ?? 0,
+    excluded: [...excluded],
+    words,
+  };
+}
+
+/**
  * The account's level, score and permanent hint penalty.
  *
  * `score` is the score the account would show, so the hint penalty has already
@@ -228,21 +299,15 @@ export async function accountScore(userId: string): Promise<{
     }>(3),
   );
   const penalty = rowsOf<{ score_penalty: number }>(4)[0]?.score_penalty ?? 0;
-  const fractions = levelFractions(items, totals);
-  const base = currentLevel(fractions, trailing);
-  const level = currentLevel(
-    fractions,
-    trailing,
-    stretchFraction(items, totals, base) >= 1,
-  );
+  // Counted, then placed. The same two steps a browser takes from the counted
+  // form it is given, so the number here and the number there are the same
+  // number and not two that happen to agree today.
+  const { level, score } = placementFromBands(bandsFrom(items, totals), trailing);
   return {
     level,
     // Five Letters hints are permanent and account-level. Subtracting here as
     // well as in the game means every reader of the score sees one number.
-    score: Math.max(
-      0,
-      levelScore(level, correctCredit(items, totals, level)) - penalty,
-    ),
+    score: Math.max(0, score - penalty),
     penalty,
   };
 }

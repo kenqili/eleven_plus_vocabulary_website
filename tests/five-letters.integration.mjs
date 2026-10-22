@@ -2,9 +2,10 @@
  * Five Letters against the real endpoint and database.
  *
  * The pure tests prove the marks and the score arithmetic. This suite is about
- * the parts only a request can show: the answer staying out of a playing
- * response, a retried guess or hint being free, a solve mastering exactly once,
- * and a free account never being given an answer outside its collection.
+ * the parts only a request can show: the round that is played in the browser
+ * and written down once at the end, a retried round being free, a solve
+ * mastering exactly once, and a free account never being given an answer
+ * outside its collection.
  *
  * Run against the Node preview:
  *
@@ -111,21 +112,42 @@ function freeSelection(limit) {
     .map((id) => byId.get(id))
     .filter(Boolean);
 }
-test("Five Letters keeps the answer secret and pays each action exactly once", async () => {
+
+test("Five Letters plays a round in the browser and writes it down once", async () => {
   const account = await signedUp("five-letters");
   const cookie = account.cookie;
   const started = await call(cookie, { action: "start" });
   assert.equal(started.status, 200, JSON.stringify(started.data));
   assert.equal(started.data.game.status, "playing");
-  assert.equal(
-    "answer" in started.data.game,
-    false,
-    "a playing response leaked the answer",
-  );
   assert.ok(started.data.game.id);
   assert.deepEqual(started.data.game.hints, []);
   assert.equal(started.data.game.guesses.length, 0);
   assert.equal(started.data.game.remainingGuesses, MAX_GUESSES);
+
+  // The round travels with the state that starts it. The answer is in it,
+  // because the browser marks the guesses, and the account's knowledge is in
+  // it, because the score has to keep right while the child plays.
+  assert.ok(started.data.round, "the round did not come with the state");
+  assert.ok(
+    fiveLetterIds.has(started.data.round.answer),
+    "the round carried an answer that is not a bank word",
+  );
+  assert.equal(started.data.round.bands.length, 6);
+  assert.equal(started.data.round.penalty, 0);
+  assert.ok(started.data.round.answers.length > 0);
+  for (const [wordId, band, correct, mastered] of started.data.round.answers) {
+    assert.equal(typeof wordId, "string");
+    assert.equal(band >= 0 && band <= 5, true);
+    assert.equal(correct >= 0, true);
+    assert.equal(typeof mastered, "boolean");
+  }
+  // The answer is in the round, so it is among the words it counts.
+  assert.ok(
+    started.data.round.answers.some(
+      ([wordId]) => wordId === started.data.round.answer,
+    ),
+    "the answer was not among the countable words",
+  );
 
   // Two starts are one game, because the partial unique index says so.
   const secondStart = await call(cookie, { action: "start" });
@@ -133,7 +155,7 @@ test("Five Letters keeps the answer secret and pays each action exactly once", a
   assert.equal(secondStart.data.game.id, started.data.game.id);
 
   // Use a known answer with both hint kinds, so the assertions are not a
-  // lottery. The update is test setup; the endpoint still has to keep it secret.
+  // lottery. The update is test setup.
   const answer = "covet";
   assert.ok(fiveLetterIds.has(answer));
   const active = activeGame(account.id);
@@ -145,120 +167,73 @@ test("Five Letters keeps the answer secret and pays each action exactly once", a
   const restarted = await call(cookie, { action: "start" });
   assert.equal(restarted.status, 200);
   assert.equal(restarted.data.game.id, active.id);
-  assert.equal("answer" in restarted.data.game, false);
+  assert.equal(restarted.data.round.answer, answer);
   assert.deepEqual(restarted.data.game.remainingHints, ["syn", "ant"]);
+  assert.ok(restarted.data.round.hints.syn);
+  assert.ok(restarted.data.round.hints.ant);
+  assert.notEqual(restarted.data.round.hints.syn, answer);
 
-  const invalid = await call(cookie, {
-    action: "guess",
-    gameId: active.id,
-    guess: "zzzzz",
-  });
-  assert.equal(invalid.status, 409);
+  // A word that is not in the list is not a guess. The browser knows that
+  // before it says anything, and the server drops it if it is told anyway.
+  const wrong = "feign";
+  assert.ok(accepted.has(wrong));
+  assert.ok(fiveLetterIds.has(wrong));
+
+  // Nothing is written until the round ends.
+  assert.equal(progressFor(account.id, wrong), null);
   assert.equal(
     db.prepare("SELECT COUNT(*) AS n FROM word_games WHERE id=?").get(active.id)
       .n,
     1,
   );
 
-  const wrong = "feign";
-  assert.ok(accepted.has(wrong));
-  assert.ok(fiveLetterIds.has(wrong));
-  const wrongGuess = await call(cookie, {
-    action: "guess",
+  const walletBefore = walletBalance(account.id);
+  const finished = await call(cookie, {
+    action: "finish",
     gameId: active.id,
-    guess: wrong.toUpperCase(),
+    guesses: ["zzzzz", wrong, wrong, answer],
+    hints: ["syn"],
+    status: "solved",
   });
-  assert.equal(wrongGuess.status, 200, JSON.stringify(wrongGuess.data));
-  assert.equal("answer" in wrongGuess.data.game, false);
-  assert.equal(wrongGuess.data.game.guesses.length, 1);
-  assert.equal(wrongGuess.data.game.guesses[0].word, wrong);
-  assert.equal(wrongGuess.data.game.guesses[0].counted, true);
-  assert.equal(wrongGuess.data.game.guesses[0].correct, 1);
-  assert.equal(wrongGuess.data.game.guesses[0].mastered, false);
-  assert.ok(wrongGuess.data.game.guesses[0].card.definition);
+  assert.equal(finished.status, 200, JSON.stringify(finished.data));
+  assert.equal(finished.data.game.status, "solved");
+  assert.equal(finished.data.game.answer.word, answer);
+  assert.equal(finished.data.game.answer.newlyMastered, true);
+  assert.equal(finished.data.game.answer.alreadyMastered, false);
+  assert.deepEqual(finished.data.game.hints, ["syn"]);
+  assert.ok(finished.data.game.hintText.syn.length > 0);
+
+  // The word that was guessed is worth what the server says it is worth: one
+  // right answer, the marks the server drew, and the card it holds.
+  const wrongGuess = finished.data.game.guesses.find(
+    (guess) => guess.word === wrong,
+  );
+  assert.ok(wrongGuess, "the guessed word was not recorded");
+  assert.equal(wrongGuess.counted, true);
+  assert.equal(wrongGuess.correct, 1);
+  assert.equal(wrongGuess.mastered, false);
+  assert.equal(wrongGuess.marks.length, 5);
+  assert.ok(wrongGuess.card.definition);
+  // The word that is not in the list was never a guess, and the repeat was
+  // only recorded once.
+  assert.equal(
+    finished.data.game.guesses.filter((guess) => guess.word === wrong).length,
+    1,
+  );
+  assert.equal(
+    finished.data.game.guesses.filter((guess) => guess.word === "zzzzz").length,
+    0,
+  );
   assert.deepEqual(
     { ...progressFor(account.id, wrong) },
     { correct: 1, mastered: 0, seen: 0, last_seen: localDay(Date.now()) },
   );
 
-  const duplicateGuess = await call(cookie, {
-    action: "guess",
-    gameId: active.id,
-    guess: wrong,
-  });
-  assert.equal(duplicateGuess.status, 200);
-  assert.equal(duplicateGuess.data.duplicate, true);
-  assert.equal(duplicateGuess.data.game.guesses.length, 1);
-  assert.equal(progressFor(account.id, wrong).correct, 1);
-
-  const baseScore = restarted.data.score;
-  const firstHint = await call(cookie, {
-    action: "hint",
-    gameId: active.id,
-    kind: "syn",
-  });
-  assert.equal(firstHint.status, 200, JSON.stringify(firstHint.data));
-  assert.equal(firstHint.data.game.hints.join(","), "syn");
-  assert.equal(firstHint.data.game.guesses.length, 1, "a hint spent a guess");
-  assert.equal(firstHint.data.game.hintText.syn.length > 0, true);
-  assert.notEqual(firstHint.data.game.hintText.syn, answer);
-  assert.equal(firstHint.data.game.remainingHints.join(","), "ant");
-  assert.equal(firstHint.data.scorePenalty, HINT_SCORE_PENALTY);
-  assert.equal(
-    firstHint.data.score,
-    Math.max(0, baseScore - HINT_SCORE_PENALTY),
-  );
-  assert.equal(
-    db.prepare("SELECT score_penalty FROM users WHERE id=?").get(account.id)
-      .score_penalty,
-    HINT_SCORE_PENALTY,
-  );
-
-  const repeatedHint = await call(cookie, {
-    action: "hint",
-    gameId: active.id,
-    kind: "syn",
-  });
-  assert.equal(repeatedHint.status, 200);
-  assert.equal(repeatedHint.data.duplicate, true);
-  assert.equal(repeatedHint.data.scorePenalty, HINT_SCORE_PENALTY);
-  assert.equal(
-    db.prepare("SELECT score_penalty FROM users WHERE id=?").get(account.id)
-      .score_penalty,
-    HINT_SCORE_PENALTY,
-  );
-
-  const secondHint = await call(cookie, {
-    action: "hint",
-    gameId: active.id,
-    kind: "ant",
-  });
-  assert.equal(secondHint.status, 200, JSON.stringify(secondHint.data));
-  assert.equal(secondHint.data.game.hints.join(","), "syn,ant");
-  assert.equal(secondHint.data.scorePenalty, HINT_SCORE_PENALTY * 2);
-  assert.equal(
-    secondHint.data.score,
-    Math.max(0, baseScore - HINT_SCORE_PENALTY * 2),
-  );
-  const scoreEndpoint = await placement(cookie);
-  assert.equal(scoreEndpoint.status, 200);
-  assert.equal(scoreEndpoint.data.score, secondHint.data.score);
-
-  const walletBefore = walletBalance(account.id);
-  const solved = await call(cookie, {
-    action: "guess",
-    gameId: active.id,
-    guess: answer,
-  });
-  assert.equal(solved.status, 200, JSON.stringify(solved.data));
-  assert.equal(solved.data.game.status, "solved");
-  assert.equal(solved.data.game.answer.word, answer);
-  assert.equal(solved.data.game.answer.newlyMastered, true);
-  assert.equal(solved.data.game.answer.alreadyMastered, false);
-  const answerGuess = solved.data.game.guesses.find(
+  // The answer was mastered by the solve, and the hints cost what they cost.
+  const answerGuess = finished.data.game.guesses.find(
     (guess) => guess.word === answer,
   );
-  assert.ok(answerGuess);
+  assert.ok(answerGuess, "the answer was not recorded");
   assert.equal(answerGuess.counted, true);
   assert.equal(answerGuess.correct, 1);
   assert.equal(
@@ -276,6 +251,15 @@ test("Five Letters keeps the answer secret and pays each action exactly once", a
     },
   );
   assert.equal(
+    db.prepare("SELECT score_penalty FROM users WHERE id=?").get(account.id)
+      .score_penalty,
+    HINT_SCORE_PENALTY,
+  );
+  assert.equal(finished.data.scorePenalty, HINT_SCORE_PENALTY);
+  const scoreEndpoint = await placement(cookie);
+  assert.equal(scoreEndpoint.status, 200);
+  assert.equal(scoreEndpoint.data.score, finished.data.score);
+  assert.equal(
     eventCount(account.id, answer),
     0,
     "the game created a learning event",
@@ -288,15 +272,25 @@ test("Five Letters keeps the answer secret and pays each action exactly once", a
   );
   assert.equal(masteredToday(account.id), 1);
 
-  const retriedSolve = await call(cookie, {
-    action: "guess",
+  // A retried round is free. The round is claimed before it is paid for, so
+  // the second attempt changes nothing.
+  const retried = await call(cookie, {
+    action: "finish",
     gameId: active.id,
-    guess: answer,
+    guesses: [answer],
+    hints: ["syn"],
+    status: "solved",
   });
-  assert.equal(retriedSolve.status, 200);
-  assert.equal(retriedSolve.data.duplicate, true);
-  assert.equal(progressFor(account.id, answer).correct, 1);
+  assert.equal(retried.status, 200);
+  assert.equal(retried.data.duplicate, true);
+  assert.equal(progressFor(account.id, wrong).correct, 1);
+  assert.equal(progressFor(account.id, answer).mastered, 1);
   assert.equal(masteredToday(account.id), 1);
+  assert.equal(
+    db.prepare("SELECT score_penalty FROM users WHERE id=?").get(account.id)
+      .score_penalty,
+    HINT_SCORE_PENALTY,
+  );
 
   // Refresh keeps the finished round. The explicit next action is what starts
   // the next answer, rather than every page load silently doing so.
@@ -306,42 +300,23 @@ test("Five Letters keeps the answer secret and pays each action exactly once", a
   assert.equal(refreshed.data.game.status, "solved");
   assert.equal(refreshed.data.game.answer.word, answer);
   assert.equal(refreshed.data.game.answer.newlyMastered, true);
+  assert.equal(refreshed.data.round, undefined, "a finished round came with a round");
 
   const next = await call(cookie, { action: "next" });
   assert.equal(next.status, 200, JSON.stringify(next.data));
   assert.notEqual(next.data.game.id, active.id);
   assert.equal(next.data.game.status, "playing");
-  assert.equal("answer" in next.data.game, false);
+  assert.ok(next.data.round.answer);
 
   // A non-bank word gets its card but never touches progress.
   const nonBank = "aback";
   assert.ok(accepted.has(nonBank));
   assert.equal(fiveLetterIds.has(nonBank), false);
-  const nonBankGuess = await call(cookie, {
-    action: "guess",
-    gameId: next.data.game.id,
-    guess: nonBank,
-  });
-  assert.equal(nonBankGuess.status, 200, JSON.stringify(nonBankGuess.data));
-  assert.equal(nonBankGuess.data.game.guesses.at(-1).counted, false);
-  assert.equal(nonBankGuess.data.game.guesses.at(-1).correct, 0);
-  assert.equal(progressFor(account.id, nonBank), null);
 
   // A valid word outside the card set is accepted without a dictionary card.
   const nonCard = "bones";
   assert.ok(accepted.has(nonCard));
   assert.equal(fiveLetterIds.has(nonCard), false);
-  const nonCardGuess = await call(account.cookie, {
-    action: "guess",
-    gameId: next.data.game.id,
-    guess: nonCard,
-  });
-  assert.equal(nonCardGuess.status, 200, JSON.stringify(nonCardGuess.data));
-  const nonCardRow = nonCardGuess.data.game.guesses.at(-1);
-  assert.equal(nonCardRow.counted, false);
-  assert.equal(nonCardRow.card.source, "Game list");
-  assert.match(nonCardRow.card.definition, /not one of the vocabulary words/);
-  assert.equal(progressFor(account.id, nonCard), null);
 
   // The fifth correctness masters a guessed word and adds one daily mastery.
   const nextAnswer = activeGame(account.id).word_id;
@@ -355,13 +330,37 @@ test("Five Letters keeps the answer secret and pays each action exactly once", a
      ON CONFLICT(user_id,word_id) DO UPDATE SET correct=4,mastered=0`,
   ).run(account.id, fifth, localDay(Date.now()));
   const beforeFifth = masteredToday(account.id);
-  const fifthGuess = await call(cookie, {
-    action: "guess",
+
+  const secondRound = await call(cookie, {
+    action: "finish",
     gameId: next.data.game.id,
-    guess: fifth,
+    guesses: [nonBank, nonCard, fifth],
+    hints: [],
+    status: "revealed",
   });
-  assert.equal(fifthGuess.status, 200, JSON.stringify(fifthGuess.data));
-  const fifthCard = fifthGuess.data.game.guesses.at(-1);
+  assert.equal(secondRound.status, 200, JSON.stringify(secondRound.data));
+  assert.equal(secondRound.data.game.status, "revealed");
+  assert.equal(secondRound.data.game.answer.word, nextAnswer);
+  assert.equal(secondRound.data.game.answer.newlyMastered, false);
+
+  const nonBankRow = secondRound.data.game.guesses.find(
+    (guess) => guess.word === nonBank,
+  );
+  assert.equal(nonBankRow.counted, false);
+  assert.equal(nonBankRow.correct, 0);
+  assert.equal(progressFor(account.id, nonBank), null);
+
+  const nonCardRow = secondRound.data.game.guesses.find(
+    (guess) => guess.word === nonCard,
+  );
+  assert.equal(nonCardRow.counted, false);
+  assert.equal(nonCardRow.card.source, "Game list");
+  assert.match(nonCardRow.card.definition, /not one of the vocabulary words/);
+  assert.equal(progressFor(account.id, nonCard), null);
+
+  const fifthCard = secondRound.data.game.guesses.find(
+    (guess) => guess.word === fifth,
+  );
   assert.equal(fifthCard.counted, true);
   assert.equal(fifthCard.correct, 5);
   assert.equal(fifthCard.mastered, true);
@@ -375,40 +374,11 @@ test("Five Letters keeps the answer secret and pays each action exactly once", a
     },
   );
   assert.equal(masteredToday(account.id), beforeFifth + 1);
-
-  const duplicateFifth = await call(cookie, {
-    action: "guess",
-    gameId: next.data.game.id,
-    guess: fifth,
-  });
-  assert.equal(duplicateFifth.data.duplicate, true);
-  assert.equal(masteredToday(account.id), beforeFifth + 1);
-
-  const revealed = await call(cookie, {
-    action: "reveal",
-    gameId: next.data.game.id,
-  });
-  assert.equal(revealed.status, 200, JSON.stringify(revealed.data));
-  assert.equal(revealed.data.game.status, "revealed");
-  assert.equal(revealed.data.game.answer.word, nextAnswer);
-  assert.equal(revealed.data.game.answer.newlyMastered, false);
-  assert.equal(masteredToday(account.id), beforeFifth + 1);
-  assert.equal(progressFor(account.id, nextAnswer)?.mastered ?? 0, 0);
-
-  // A sixth-count guess updates nothing, even in a fresh round.
-  const afterReveal = await call(cookie, { action: "start" });
-  assert.equal(afterReveal.data.game.id, next.data.game.id);
-  const sixthRound = await call(cookie, { action: "next" });
-  assert.equal(sixthRound.status, 200);
-  const sixth = await call(cookie, {
-    action: "guess",
-    gameId: sixthRound.data.game.id,
-    guess: fifth,
-  });
-  assert.equal(sixth.status, 200, JSON.stringify(sixth.data));
-  assert.equal(sixth.data.game.guesses.at(-1).correct, 5);
-  assert.equal(sixth.data.game.guesses.at(-1).mastered, false);
-  assert.equal(masteredToday(account.id), beforeFifth + 1);
+  assert.equal(
+    progressFor(account.id, nextAnswer)?.mastered ?? 0,
+    0,
+    "a revealed round mastered the answer",
+  );
 });
 
 test("a free account only gets free answers and only masters free words", async () => {
@@ -422,7 +392,6 @@ test("a free account only gets free answers and only masters free words", async 
   assert.equal(started.status, 200, JSON.stringify(started.data));
   assert.equal(started.data.freeTier, true);
   assert.equal(started.data.freeWordCount, 224);
-  assert.equal("answer" in started.data.game, false);
 
   const freeIds = new Set(
     freeSelection(started.data.freeWordCount).map((word) => word.id),
@@ -432,6 +401,11 @@ test("a free account only gets free answers and only masters free words", async 
   const active = activeGame(account.id);
   assert.ok(freeIds.has(active.word_id));
   assert.ok(freeAnswers.includes(active.word_id));
+
+  // Only the free words can count, and only the free words are in the round's
+  // list of countable words.
+  const countable = new Set(started.data.round.answers.map(([wordId]) => wordId));
+  for (const wordId of countable) assert.equal(freeIds.has(wordId), true);
 
   const nonFreeAnswer = fiveLetterBank.find(
     (word) => !freeIds.has(word.id) && word.id !== active.word_id,
@@ -443,19 +417,15 @@ test("a free account only gets free answers and only masters free words", async 
   );
 
   // The answer is now outside the free collection, so a mid-round expiry
-  // cannot be used to keep playing it. Starting again replaces it.
-  const staleHint = await call(account.cookie, {
-    action: "hint",
+  // cannot be used to keep playing it. Finishing the round refuses it.
+  const stale = await call(account.cookie, {
+    action: "finish",
     gameId: active.id,
-    kind: "syn",
+    guesses: ["aback"],
+    hints: [],
+    status: "revealed",
   });
-  assert.equal(staleHint.status, 409);
-  const staleGuess = await call(account.cookie, {
-    action: "guess",
-    gameId: active.id,
-    guess: "aback",
-  });
-  assert.equal(staleGuess.status, 409);
+  assert.equal(stale.status, 409);
   const replacement = await call(account.cookie, { action: "start" });
   assert.equal(replacement.status, 200, JSON.stringify(replacement.data));
   assert.notEqual(replacement.data.game.id, active.id);
@@ -469,24 +439,37 @@ test("a free account only gets free answers and only masters free words", async 
   );
   assert.ok(nonFreeGuess);
   const guessed = await call(account.cookie, {
-    action: "guess",
+    action: "finish",
     gameId: replacementRow.id,
-    guess: nonFreeGuess.id,
+    guesses: [nonFreeGuess.id],
+    hints: [],
+    status: "revealed",
   });
   assert.equal(guessed.status, 200, JSON.stringify(guessed.data));
   assert.equal(guessed.data.game.guesses.at(-1).counted, false);
   assert.equal(guessed.data.game.guesses.at(-1).correct, 0);
   assert.equal(progressFor(account.id, nonFreeGuess.id), null);
 
+  // A solve in a round of its own, with a free answer the test chooses.
+  const third = await call(account.cookie, { action: "next" });
+  assert.equal(third.status, 200, JSON.stringify(third.data));
+  const thirdRow = activeGame(account.id);
+  assert.ok(freeIds.has(thirdRow.word_id));
+  db.prepare("UPDATE word_games SET word_id=? WHERE id=?").run(
+    thirdRow.word_id,
+    thirdRow.id,
+  );
   const solved = await call(account.cookie, {
-    action: "guess",
-    gameId: replacementRow.id,
-    guess: replacementRow.word_id,
+    action: "finish",
+    gameId: thirdRow.id,
+    guesses: [thirdRow.word_id],
+    hints: [],
+    status: "solved",
   });
   assert.equal(solved.status, 200, JSON.stringify(solved.data));
   assert.equal(solved.data.game.status, "solved");
-  assert.equal(solved.data.game.answer.word, replacementRow.word_id);
+  assert.equal(solved.data.game.answer.word, thirdRow.word_id);
   assert.equal(solved.data.game.answer.newlyMastered, true);
-  assert.equal(progressFor(account.id, replacementRow.word_id).mastered, 1);
+  assert.equal(progressFor(account.id, thirdRow.word_id).mastered, 1);
   assert.equal(masteredToday(account.id), 1);
 });

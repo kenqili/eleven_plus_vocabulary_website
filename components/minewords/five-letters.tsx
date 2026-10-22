@@ -8,21 +8,28 @@ import {
   useState,
 } from "react";
 import { api } from "@/lib/client/api";
+import { CUMULATIVE_FLOOR } from "@/lib/challenge/mastery";
 import {
   availableHintKinds,
+  countGuess,
   gradeGuess,
   HINT_SCORE_PENALTY,
   hintFor,
   isAcceptedGuess,
   keyboardMarks,
+  masterWord,
   MAX_GUESSES,
   normalizeGuess,
+  scoreFromRound,
+  scoreOf,
   type FiveLettersAnswer,
   type FiveLettersCard,
   type FiveLettersGame,
   type FiveLettersGuess,
   type FiveLettersHintKind,
   type FiveLettersMark,
+  type FiveLettersRound,
+  type FiveLettersScore,
   type FiveLettersState,
   type FiveLettersStatus,
 } from "@/lib/challenge/five-letters";
@@ -220,6 +227,14 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
   const [guest, setGuest] = useState(false);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
+  /**
+   * A finished round is being written down.
+   *
+   * Kept apart from `busy` on purpose: the round is over and the child can
+   * see it, so nothing is blocked - but the next round waits for the last one
+   * to be recorded, so the two cannot land on the screen out of order.
+   */
+  const [recording, setRecording] = useState(false);
   const [draft, setDraft] = useState("");
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
@@ -229,6 +244,16 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
   const dictionaryLoading = useRef<Promise<
     Record<string, FiveLettersCard>
   > | null>(null);
+  /**
+   * The round being played, and the account's knowledge as it stands.
+   *
+   * Both live in refs because they are read and written while the child plays
+   * and the score they produce is what the screen shows. The round is sent
+   * with the state that starts it; the knowledge is the account's, counted
+   * band by band, and it is kept up to date here as the child guesses.
+   */
+  const roundRef = useRef<FiveLettersRound | null>(null);
+  const knowledgeRef = useRef<FiveLettersScore | null>(null);
 
   const demoByWord = useMemo(
     () => new Map(demoWords.map((word) => [word.word, word.card])),
@@ -247,6 +272,11 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
     setFreeTier(next.freeTier);
     setFreeWordCount(next.freeWordCount);
     setGuest(false);
+    // The round comes with the state that starts it, and the account's
+    // knowledge with the round. Once the round is over the server has the
+    // authoritative score, and there is nothing left to keep up to date.
+    roundRef.current = next.round ?? null;
+    knowledgeRef.current = next.round ? scoreFromRound(next.round) : null;
   }, []);
 
   const guestGame = useCallback(
@@ -294,24 +324,19 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
    * was given. A guess whose card is not the placeholder is left alone, so a
    * word that was already known keeps the card it was given.
    */
-  const replaceGuestCard = useCallback(
-    (word: string, card: FiveLettersCard) => {
-      setGame((current) => {
-        if (!current) return current;
-        const guess = current.guesses.find((entry) => entry.word === word);
-        if (!guess || guess.card !== PENDING_CARD) return current;
-        return guestGame(
-          answerRef.current ?? "",
-          current.guesses.map((entry) =>
-            entry.word === word ? { ...entry, card } : entry,
-          ),
-          current.hints,
-          current.status,
-        );
-      });
-    },
-    [guestGame],
-  );
+  const replaceCard = useCallback((word: string, card: FiveLettersCard) => {
+    setGame((current) => {
+      if (!current) return current;
+      const guess = current.guesses.find((entry) => entry.word === word);
+      if (!guess || guess.card !== PENDING_CARD) return current;
+      return {
+        ...current,
+        guesses: current.guesses.map((entry) =>
+          entry.word === word ? { ...entry, card } : entry,
+        ),
+      };
+    });
+  }, []);
 
   const startGuest = useCallback(() => {
     if (!demoWords.length) {
@@ -402,12 +427,16 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
   }, []);
 
   useEffect(() => {
-    if (!guest) return;
+    // The card for a guessed word comes from a dictionary that is a 400 KB
+    // asset. It is fetched as soon as the page is up, in the background, so
+    // the card is there by the time the child guesses - and a guess made
+    // before it lands still goes on the board, with the card filled in when
+    // the dictionary arrives.
     void loadDictionary().catch(() => {
       // The error is shown once by the state setter; a child can still play the
       // sample answers, but a non-sample guess waits for the asset.
     });
-  }, [guest, loadDictionary]);
+  }, [loadDictionary]);
   const canPlay = Boolean(game && game.status === "playing" && !busy);
   const availableHints = game?.remainingHints ?? [];
   const usedHints = game?.hints ?? [];
@@ -415,6 +444,41 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
   const hasHintButtons = hintKinds.some(
     (kind) => availableHints.includes(kind) || usedHints.includes(kind),
   );
+
+  /**
+   * Write a finished round down.
+   *
+   * One request for the whole round. The browser says which words it guessed
+   * and which hints it took - never what they were worth, and never what marks
+   * to draw - and the server marks them itself from the answer it has been
+   * holding. The answer comes back with the score the account now has.
+   */
+  const recordRound = async (
+    guesses: FiveLettersGuess[],
+    hints: FiveLettersHintKind[],
+    status: "solved" | "revealed",
+  ) => {
+    if (!game) return;
+    setRecording(true);
+    try {
+      const state = await api<FiveLettersState>("/api/five-letters", {
+        action: "finish",
+        gameId: game.id,
+        guesses: guesses.map((guess) => guess.word),
+        hints,
+        status,
+      });
+      applyState(state);
+    } catch (cause) {
+      setError(
+        cause instanceof Error
+          ? cause.message
+          : "This round could not be saved. Please try again.",
+      );
+    } finally {
+      setRecording(false);
+    }
+  };
 
   const submitGuess = async (wordOverride?: string) => {
     if (!game || !canPlay) return;
@@ -468,23 +532,68 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
         setDraft("");
         if (!ready) {
           void loadDictionary()
-            .then((full) => replaceGuestCard(word, full[word] ?? FALLBACK_CARD))
+            .then((full) => replaceCard(word, full[word] ?? FALLBACK_CARD))
             .catch(() => {
               // The dictionary is optional for a word outside the vocabulary;
               // the fallback card keeps the guess playable.
-              replaceGuestCard(word, FALLBACK_CARD);
+              replaceCard(word, FALLBACK_CARD);
             });
         }
       } else {
-        const state = await api<FiveLettersState>("/api/five-letters", {
-          action: "guess",
-          gameId: game.id,
-          guess: word,
+        // The round is played here. The answer came with it, so the marks are
+        // worked out where the child is looking, and the server is not asked
+        // again until the round ends.
+        const round = roundRef.current;
+        if (!round) throw new Error("This round has no answer.");
+        const knowledge = knowledgeRef.current;
+        const countable = knowledge?.words.get(word);
+        const counted = Boolean(countable);
+        const prior = countable?.correct ?? 0;
+        const card = dictionary.current?.[word] ?? PENDING_CARD;
+        const guess: FiveLettersGuess = {
+          word,
+          marks: gradeGuess(round.answer, word),
+          card,
+          counted,
+          correct: counted ? Math.min(CUMULATIVE_FLOOR, prior + 1) : 0,
+          mastered:
+            counted &&
+            !countable?.mastered &&
+            prior >= CUMULATIVE_FLOOR - 1,
+        };
+        const guesses = [...game.guesses, guess];
+        const solved = word === round.answer;
+        const status: FiveLettersStatus = solved
+          ? "solved"
+          : guesses.length >= MAX_GUESSES
+            ? "revealed"
+            : "playing";
+        setGame({
+          ...game,
+          guesses,
+          status,
+          remainingGuesses: Math.max(0, MAX_GUESSES - guesses.length),
         });
-        applyState(state);
         setDraft("");
-        if (state.duplicate)
-          setNotice("That guess was already used. No guess was spent.");
+        // The score keeps right here too: a guess that counted is one more
+        // right answer for that word, and a solve masters the answer.
+        if (knowledge) {
+          if (counted) countGuess(knowledge, word);
+          if (solved) masterWord(knowledge, round.answer);
+          setScore(scoreOf(knowledge));
+        }
+        if (!dictionary.current?.[word]) {
+          void loadDictionary()
+            .then((full) => replaceCard(word, full[word] ?? FALLBACK_CARD))
+            .catch(() => {
+              // The dictionary is optional for a word outside the vocabulary;
+              // the fallback card keeps the guess playable.
+              replaceCard(word, FALLBACK_CARD);
+            });
+        }
+        if (status !== "playing") {
+          void recordRound(guesses, game.hints, status);
+        }
       }
     } catch (cause) {
       setError(
@@ -571,16 +680,27 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
         );
         setNotice("Demo hint — no points are deducted.");
       } else {
-        const state = await api<FiveLettersState>("/api/five-letters", {
-          action: "hint",
-          gameId: game.id,
-          kind,
+        // The relation came with the round, so a hint costs the child nothing
+        // but the points it costs. The deduction is permanent and account-wide,
+        // and the browser takes it off the score now, exactly as the server
+        // will when the round is recorded.
+        const round = roundRef.current;
+        const relation = round?.hints[kind];
+        if (!relation) throw new Error("That hint is not available for this word.");
+        setGame({
+          ...game,
+          hints: [...game.hints, kind],
+          hintText: { ...game.hintText, [kind]: relation },
+          remainingHints: game.remainingHints.filter((other) => other !== kind),
         });
-        applyState(state);
+        const knowledge = knowledgeRef.current;
+        if (knowledge) {
+          knowledge.penalty += HINT_SCORE_PENALTY;
+          setScore(scoreOf(knowledge));
+          setScorePenalty(knowledge.penalty);
+        }
         setNotice(
-          state.duplicate
-            ? "That hint was already used."
-            : `A ${kind === "syn" ? "synonym" : "antonym"} hint was added. ${HINT_SCORE_PENALTY} points deducted.`,
+          `A ${kind === "syn" ? "synonym" : "antonym"} hint was added. ${HINT_SCORE_PENALTY} points deducted.`,
         );
       }
     } catch (cause) {
@@ -611,11 +731,21 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
         if (!answerWord) throw new Error("This demo has no answer.");
         setGame(guestGame(answerWord, game.guesses, game.hints, "revealed"));
       } else {
-        const state = await api<FiveLettersState>("/api/five-letters", {
-          action: "reveal",
-          gameId: game.id,
+        // The answer is already here, so the child sees it at once. The round
+        // is written down in the background.
+        const round = roundRef.current;
+        if (!round) throw new Error("This round has no answer.");
+        setGame({
+          ...game,
+          status: "revealed",
+          answer: {
+            word: round.answer,
+            card: dictionary.current?.[round.answer] ?? PENDING_CARD,
+            newlyMastered: false,
+            alreadyMastered: false,
+          },
         });
-        applyState(state);
+        void recordRound(game.guesses, game.hints, "revealed");
       }
     } catch (cause) {
       setError(
@@ -629,6 +759,9 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
   };
 
   const next = async () => {
+    // The last round is written down before the next one starts, so the two
+    // cannot land on the screen out of order.
+    if (recording) return;
     if (guest) {
       startGuest();
       return;
@@ -907,7 +1040,7 @@ export default function FiveLetters({ demoWords }: { demoWords: DemoWord[] }) {
                 <button
                   className="primary-button"
                   onClick={() => void next()}
-                  disabled={busy}
+                  disabled={busy || recording}
                 >
                   Next word
                 </button>

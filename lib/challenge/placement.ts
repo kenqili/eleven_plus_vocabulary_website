@@ -291,3 +291,82 @@ export type Placement = {
   level: number;
   score: number;
 };
+
+/**
+ * One band's worth of the account's knowledge, counted rather than listed.
+ *
+ * The placement is decided by four numbers per band: how many words the
+ * account may use there, how many of them it has mastered, how much countable
+ * credit those words hold, and how many of them are answered right often
+ * enough to open the band above.
+ *
+ * The per-word form of the same thing is what the server reads from the
+ * database. The counted form is what a browser can be given and still land on
+ * the same number, because the four figures are all the placement needs. A
+ * game that runs in the browser - Five Letters - sends these instead of the
+ * rows, and keeps them up to date as the child plays, so the score it shows
+ * while the round runs is the score the server will compute at the end.
+ */
+export type BandSummary = {
+  /** Words of the pool in this band. */
+  total: number;
+  /** How many of them the account has mastered. */
+  mastered: number;
+  /** Countable right answers held by this band, capped per word. */
+  credit: number;
+  /** Words answered right at least twice. */
+  ready: number;
+};
+
+/**
+ * The counted form of a band's knowledge, from the words themselves.
+ *
+ * The one place the two forms meet, so the server and the browser cannot
+ * disagree about what a band holds: the server counts, the browser is told.
+ */
+export function bandsFrom(
+  items: ReadonlyArray<{ level: number; mastered: boolean; correct: number }>,
+  totals: ReadonlyArray<number>,
+): BandSummary[] {
+  const bands: BandSummary[] = totals.map((total) => ({
+    total,
+    mastered: 0,
+    credit: 0,
+    ready: 0,
+  }));
+  for (const item of items) {
+    const band = bands[item.level];
+    if (!band) continue;
+    if (item.mastered) band.mastered += 1;
+    band.credit += Math.max(0, Math.min(COUNTED_CORRECT, item.correct ?? 0));
+    if ((item.correct ?? 0) >= STRETCH_CORRECT) band.ready += 1;
+  }
+  return bands;
+}
+
+/**
+ * The placement, from the counted bands.
+ *
+ * The same arithmetic the per-word path does, written once over the counted
+ * form so that a browser working from the counted form and the server working
+ * from the rows cannot drift: the same fractions, the same level, the same
+ * score.
+ */
+export function placementFromBands(
+  bands: ReadonlyArray<BandSummary>,
+  trailing: ReadonlyArray<TrailingAnswer>,
+): Placement {
+  const fractions = bands.map((band) =>
+    band.total <= 0 ? 1 : Math.min(1, band.mastered / band.total),
+  );
+  const base = currentLevel(fractions, trailing);
+  const band = bands[base];
+  const ready = !band || band.total <= 0 ? 1 : Math.min(1, band.ready / band.total);
+  const level = currentLevel(fractions, trailing, ready >= 1);
+  const current = bands[level];
+  const fraction =
+    !current || current.total <= 0
+      ? 1
+      : Math.min(1, current.credit / (current.total * COUNTED_CORRECT));
+  return { level, score: levelScore(level, fraction) };
+}

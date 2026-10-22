@@ -1,4 +1,12 @@
 import accepted from "../../data/five-letters/accepted.json" with { type: "json" };
+import { CUMULATIVE_FLOOR } from "./mastery.ts";
+import {
+  COUNTED_CORRECT,
+  placementFromBands,
+  STRETCH_CORRECT,
+  type BandSummary,
+  type TrailingAnswer,
+} from "./placement.ts";
 
 /**
  * Pure Five Letters rules, shared by the server and the browser.
@@ -71,16 +79,141 @@ export type FiveLettersState = {
   scorePenalty: number;
   freeTier: boolean;
   freeWordCount: number;
+  /**
+   * What the browser needs to run the round without asking again.
+   *
+   * Present only while the round is playing. It carries the answer, because a
+   * guess is marked in the browser and marking needs the answer; and the
+   * account's knowledge, counted band by band, because the score has to keep
+   * right while the child plays. The round ends in one request, and the server
+   * works out the marks itself from the words the browser reports.
+   */
+  round?: FiveLettersRound;
   /** A repeated guess or hint, answered with the unchanged state. */
   duplicate?: boolean;
+};
+
+/**
+ * The words a guess can count toward the account's knowledge, one tuple each.
+ *
+ * Only the bank's five-letter words can count, and there are fewer than two
+ * hundred of them, so this is small: the word, its band, how many right
+ * answers it holds, and whether it is already mastered. A browser that has
+ * these can work out what a guess is worth without asking the server.
+ */
+export type FiveLettersCountable = [
+  wordId: string,
+  band: number,
+  correct: number,
+  mastered: boolean,
+];
+
+/**
+ * Everything a round needs to run in the browser.
+ *
+ * The answer is here so the browser can mark a guess, and the account's
+ * knowledge is here so the score can keep right. The server still decides
+ * what a guess is worth when the round ends: it re-marks the words the browser
+ * reports and works the credit out from the database.
+ */
+export type FiveLettersRound = {
+  /** The answer, so a guess can be marked in the browser. */
+  answer: string;
+  /** The relation each hint kind would show, so a hint costs no round trip. */
+  hints: Partial<Record<FiveLettersHintKind, string>>;
+  /** The account's knowledge, counted band by band. */
+  bands: BandSummary[];
+  /** The last thirty answers, which the level estimate reads. */
+  trailing: TrailingAnswer[];
+  /** The permanent deduction the account's hints have already cost it. */
+  penalty: number;
+  /** The words a guess can count, and the state the score needs. */
+  answers: FiveLettersCountable[];
 };
 
 export type FiveLettersAction =
   | { action: "start" }
   | { action: "next" }
-  | { action: "guess"; gameId: string; guess: string }
-  | { action: "hint"; gameId: string; kind: FiveLettersHintKind }
-  | { action: "reveal"; gameId: string };
+  | {
+      action: "finish";
+      gameId: string;
+      /** The words guessed, in the order they were guessed. */
+      guesses: string[];
+      /** The hint kinds taken. */
+      hints: FiveLettersHintKind[];
+      /** How the round ended. */
+      status: "solved" | "revealed";
+    };
+
+/**
+ * The account's knowledge, kept in the browser while a round is played.
+ *
+ * The server sends it counted band by band. A guess that counts moves one
+ * word's right answers up; a solve moves the answer into the mastered column;
+ * a hint takes five points off for good. All three are counted here, and the
+ * same shared functions the server uses turn the counts into the number on the
+ * screen, so the score the child watches move is the score the server will
+ * work out at the end of the round.
+ */
+export type FiveLettersScore = {
+  bands: BandSummary[];
+  trailing: TrailingAnswer[];
+  /** What the account's hints have cost it for good. */
+  penalty: number;
+  /** The words a guess can count, and the state each one is in. */
+  words: Map<string, { band: number; correct: number; mastered: boolean }>;
+};
+
+/** The account's knowledge, from the round the server sent. */
+export function scoreFromRound(round: FiveLettersRound): FiveLettersScore {
+  return {
+    bands: round.bands.map((band) => ({ ...band })),
+    trailing: round.trailing,
+    penalty: round.penalty,
+    words: new Map(
+      round.answers.map(([wordId, band, correct, mastered]) => [
+        wordId,
+        { band, correct, mastered },
+      ]),
+    ),
+  };
+}
+
+/** The number on the screen: the placement, less what the hints have cost. */
+export function scoreOf(score: FiveLettersScore): number {
+  const { score: placed } = placementFromBands(score.bands, score.trailing);
+  return scoreAfterPenalty(placed, score.penalty);
+}
+
+/**
+ * A guess that counted: one more right answer for that word.
+ *
+ * The credit a word is worth is capped, so a word that is already worth the
+ * most adds nothing, and the count that opens the band above is counted once,
+ * when the word reaches it.
+ */
+export function countGuess(score: FiveLettersScore, wordId: string): void {
+  const word = score.words.get(wordId);
+  const band = word ? score.bands[word.band] : undefined;
+  if (!word || !band) return;
+  const prior = word.correct;
+  word.correct = Math.min(CUMULATIVE_FLOOR, prior + 1);
+  band.credit +=
+    Math.min(COUNTED_CORRECT, word.correct) -
+    Math.min(COUNTED_CORRECT, prior);
+  if (prior < STRETCH_CORRECT && word.correct >= STRETCH_CORRECT) {
+    band.ready += 1;
+  }
+}
+
+/** The answer was found: the word is mastered, and the band knows it. */
+export function masterWord(score: FiveLettersScore, wordId: string): void {
+  const word = score.words.get(wordId);
+  if (!word || word.mastered) return;
+  word.mastered = true;
+  const band = score.bands[word.band];
+  if (band) band.mastered += 1;
+}
 
 const ACCEPTED = new Set(accepted);
 const FIVE_LETTERS = /^[a-z]{5}$/;

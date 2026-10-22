@@ -117,11 +117,22 @@ Sources are at the end.
   selection prefers words the child has **met but not mastered**, then unmastered
   words, then mastered words for revision. The last 20 answers the child has
   played are excluded until the pool is exhausted, so it does not repeat.
-- The answer is never sent to the browser while the round is in progress.
-  The server grades guesses and returns the tiles. The answer is returned only
-  when the round is solved or revealed.
+- The answer is sent to the browser with the round, and the browser marks the
+  guesses. A round used to be marked by the server, one request per guess, and
+  that cost sixteen database round trips for every guess a child made - the
+  placement recomputed on each one, the same rows read again and again, from a
+  browser in the Indian Ocean to a database in Europe-West.
+- The round now runs in the browser. The answer comes with it, and so does the
+  account's knowledge counted band by band, so the score keeps right while the
+  child plays. The server is asked once, at the end, and it marks the words
+  itself: the browser reports which words were guessed, never what they were
+  worth and never what marks to draw.
+- The cost of that is that the answer is in the browser, where a child with
+  developer tools can read it. The guest demo has always worked this way, and
+  the server still decides what a guess is worth.
 - A round ends when the child solves the word, runs out of guesses, or presses
-  "Give up".
+  "Give up". Nothing is written until then, so a round the child abandons
+  records nothing: the answer is kept and the round can be played again.
 
 ### 4.2 Every vocabulary guess shows a card
 

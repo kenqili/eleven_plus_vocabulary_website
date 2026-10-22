@@ -1,11 +1,8 @@
-import { isAcceptedGuess, normalizeGuess } from "@/lib/challenge/five-letters";
 import { currentUser, rateLimit, requireUser } from "@/lib/server/auth";
 import { membership } from "@/lib/server/billing";
 import { freeWordIds } from "@/lib/server/free-words";
 import {
-  guessGame,
-  hintGame,
-  revealGame,
+  finishGame,
   startOrResume,
   stateFor,
 } from "@/lib/server/five-letters";
@@ -14,11 +11,14 @@ import { body, boundary, HttpError, json, sameOrigin } from "@/lib/server/http";
 /**
  * Five Letters has one endpoint because it has one state object.
  *
- * The signed-out browser gets a 401 and runs the free sample locally. A signed-in
- * account gets only the cards for the words it has actually guessed; the answer
- * is absent until the round is over. Entitlement is the same membership call and
- * the same free-word set the practice page uses, so a free child can never be
- * handed an answer outside their collection.
+ * A round runs in the browser: the answer goes out with it, the child marks
+ * their own guesses, and the server is not asked again until the round ends.
+ * Then the browser reports the words it guessed, and the server marks them
+ * itself and records the round in one request.
+ *
+ * The signed-out browser gets a 401 and runs the free sample locally. Entitlement
+ * is the same membership call and the same free-word set the practice page uses,
+ * so a free child can never be handed an answer outside their collection.
  */
 async function allowedFor(user: Awaited<ReturnType<typeof currentUser>>) {
   if (!user) throw new HttpError(401, "Sign in to play Five Letters.");
@@ -66,35 +66,29 @@ export async function POST(request: Request) {
     if (action === "next")
       return json(await startOrResume(user.id, allowedWordIds, true));
 
-    if (action === "guess") {
+    if (action === "finish") {
       if (typeof input.gameId !== "string")
-        throw new HttpError(400, "Choose a game to play.");
-      const guess = normalizeGuess(
-        typeof input.guess === "string" ? input.guess : "",
-      );
-      if (!guess)
-        throw new HttpError(400, "A guess must be exactly five letters.");
-      if (!isAcceptedGuess(guess))
-        throw new HttpError(409, "That word is not in the Five Letters list.");
+        throw new HttpError(400, "Choose a game to finish.");
+      const guesses = Array.isArray(input.guesses)
+        ? input.guesses.filter((word): word is string => typeof word === "string")
+        : [];
+      const hints = Array.isArray(input.hints)
+        ? input.hints.filter(
+            (kind): kind is "syn" | "ant" => kind === "syn" || kind === "ant",
+          )
+        : [];
+      if (input.status !== "solved" && input.status !== "revealed")
+        throw new HttpError(400, "A round ends solved or revealed.");
       return json(
-        await guessGame(user.id, input.gameId, guess, allowedWordIds),
+        await finishGame(
+          user.id,
+          input.gameId,
+          guesses,
+          hints,
+          input.status,
+          allowedWordIds,
+        ),
       );
-    }
-
-    if (action === "hint") {
-      if (typeof input.gameId !== "string")
-        throw new HttpError(400, "Choose a game to play.");
-      if (input.kind !== "syn" && input.kind !== "ant")
-        throw new HttpError(400, "Choose a synonym or antonym hint.");
-      return json(
-        await hintGame(user.id, input.gameId, input.kind, allowedWordIds),
-      );
-    }
-
-    if (action === "reveal") {
-      if (typeof input.gameId !== "string")
-        throw new HttpError(400, "Choose a game to play.");
-      return json(await revealGame(user.id, input.gameId, allowedWordIds));
     }
 
     throw new HttpError(400, "Invalid Five Letters action.");
