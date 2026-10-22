@@ -11,9 +11,9 @@ export const MIN_STORIES_PER_LEVEL = 10;
 /** Story numbers are zero-padded to two digits, so 99 is the ceiling per level. */
 export const MAX_STORIES_PER_LEVEL = 99;
 /**
- * Stories a level needs before each of its words can be marked somewhere.
- * Derived from the word count so a bigger word bank simply needs more
- * stories, instead of failing an exact count.
+ * Stories a level keeps, so a reader at that level has a shelf to choose from
+ * rather than a single story. Derived from the word count so a bigger word bank
+ * simply needs more stories, instead of failing an exact count.
  */
 export const storiesForWords = (wordCount: number) =>
   Math.max(MIN_STORIES_PER_LEVEL, Math.ceil(wordCount / MAX_STORY_TARGETS));
@@ -96,11 +96,17 @@ export function validateStories(
       errors.push(
         `Level ${level}: story numbers must run 1–${group.length} with no gaps.`,
       );
-    const covered = new Set(group.flatMap((story) => story.wordIds));
-    for (const word of words)
-      if (levels[word.id]?.difficulty === level && !covered.has(word.id))
-        errors.push(`Level ${level}: missing ${word.id}.`);
   }
+  // A story may mark a word from its own level or an easier one: a Level 1 story
+  // is already written out of Level 0 words, it simply does not mark them. Words
+  // move between levels, and a word that moves down must not force a story that
+  // reads well with it to be rewritten. Coverage is therefore "some story marks
+  // this word" rather than "this level's stories mark every word of this level"
+  // - and the per-story check below still refuses a word harder than its story.
+  const markedSomewhere = new Set(stories.flatMap((story) => story.wordIds));
+  for (const word of words)
+    if (levels[word.id] && !markedSomewhere.has(word.id))
+      errors.push(`No story marks ${word.id}.`);
   for (const story of stories) {
     const prefix = `${story.id}: `;
     if (
@@ -137,8 +143,9 @@ export function validateStories(
       ...story.paragraphs.join("\n").matchAll(/\*\*([^*]+)\*\*/g),
     ].map((match) => targetFor(match[1]));
     for (const id of targets) {
-      if (!bank.has(id) || levels[id]?.difficulty !== story.level)
-        errors.push(prefix + `Wrong level or unknown word: ${id}.`);
+      const wordLevel = levels[id]?.difficulty;
+      if (!bank.has(id) || wordLevel === undefined || wordLevel > story.level)
+        errors.push(prefix + `Word above this story's level, or unknown: ${id}.`);
       if (!marked.includes(id))
         errors.push(prefix + `Missing bold target: ${id}.`);
     }

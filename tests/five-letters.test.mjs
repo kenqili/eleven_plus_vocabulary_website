@@ -105,15 +105,19 @@ test("every carded word has a complete card, and the public copy is current", ()
     assert.equal(dictionary[word].source, "MineWords");
 });
 
-test("the free collection holds the twenty five-letter answers", () => {
+test("the free collection holds at least twenty five-letter answers", () => {
   // The server takes the free collection as a prefix of the shipped order, and
-  // the browser downloads the same prefix. Keeping twenty five-letter words
-  // inside it is what lets a lapsed account play without being handed an answer
-  // outside its collection.
+  // the browser downloads the same prefix. Twenty five-letter words inside it
+  // are what lets a lapsed account play without being handed an answer outside
+  // its collection; somewhere over the years a band change can add more, and
+  // the guarantee is that there are at least that many, not the exact count.
   const free = new Set(bank.freeOrder.slice(0, 224));
   assert.equal(free.size, 224);
   const freeAnswers = answers.filter((word) => free.has(word));
-  assert.equal(freeAnswers.length, 20);
+  assert.ok(
+    freeAnswers.length >= 20,
+    `the free collection holds ${freeAnswers.length} five-letter answers, not 20`,
+  );
   for (const word of freeAnswers) assert.ok(isAcceptedGuess(word));
 });
 

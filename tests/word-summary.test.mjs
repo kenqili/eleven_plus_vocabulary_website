@@ -212,9 +212,30 @@ test("difficulty snapshot covers the word bank with reproducible length/frequenc
   const sorted = Object.entries(snapshot.words).sort(
     ([a, x], [b, y]) => x.score - y.score || (a < b ? -1 : a > b ? 1 : 0),
   );
-  const core = sorted.filter(([, row]) => row.difficulty !== 0);
-  core.forEach(([, row], index) => assert.equal(row.difficulty, Math.min(5, Math.floor(index * 5 / core.length) + 1)));
-  for (const word of words) assert.equal(snapshot.words[word.id].difficulty === 0, word.source === "curriculum");
+  // The bands are cut over every non-curriculum word, and the words listed as
+  // everyday are pulled out of their band afterwards, so the band arithmetic
+  // runs over the whole collection rather than over whatever is left in 1-5.
+  const everyday = new Set(
+    JSON.parse(
+      readFileSync(
+        new URL("../data/word-levels/everyday-words.json", import.meta.url),
+        "utf8",
+      ),
+    ).words,
+  );
+  const byId = new Map(words.map((word) => [word.id, word]));
+  const core = sorted.filter(([id]) => byId.get(id)?.source !== "curriculum");
+  core.forEach(([id], index) =>
+    assert.equal(
+      snapshot.words[id].difficulty,
+      everyday.has(id) ? 0 : Math.min(5, Math.floor((index * 5) / core.length) + 1),
+    ),
+  );
+  for (const word of words)
+    assert.equal(
+      snapshot.words[word.id].difficulty === 0,
+      word.source === "curriculum" || everyday.has(word.id),
+    );
   for (let level = 0; level <= 5; level++)
     assert.equal(
       sorted.filter(([, row]) => row.difficulty === level).length,

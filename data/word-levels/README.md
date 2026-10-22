@@ -20,11 +20,20 @@ The heuristic combines **70% rarity and 30% letter count**:
 - Length: `clamp((letters - 3) / 12, 0, 1)`; letters only, excluding spaces and punctuation.
 - Score: `100 × (0.7 × rarity + 0.3 × length)`, rounded to four decimals.
 - Sort by score, then normalized word ID to break ties; divide the
-  original-source words into five equal bands (149 or 150 words each in the
-  current 747-word collection: 150, 149, 150, 149, 149 from Level 1 to 5).
+  original-source words into five equal bands. In the current 2,247-word
+  collection the bands hold 427, 426, 426, 426 and 426 words before the
+  everyday list is taken out of Level 1.
 
 Curriculum extension words are scored for reference but always take Level 0, so
 the five bands keep exactly the words they had before the extension was added.
+
+`data/word-levels/everyday-words.json` names words that a child meets every day
+whatever the corpus says about their rarity — `just`, `company`, `fact`,
+`yacht`. They also take Level 0, and they are moved there *after* the bands are
+cut, so no other word changes level: Level 0 is the curriculum words plus these,
+and Level 1 is its band minus them. The list is read by
+`scripts/generate-word-levels.py`, which refuses to run if it names a word that
+is not in the bank, so a typo cannot leave a word silently re-banded.
 
 These are estimated, relative difficulty levels for this collection. They do not
 measure meaning complexity, exam grades, or the learner's personal progress.

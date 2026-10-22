@@ -1,12 +1,12 @@
 {
   "full": {
-    "url": "/bank/bank-full-d52572432d73.json",
+    "url": "/bank/bank-full-54f03fbfb567.json",
     "words": 2247,
     "problems": 10974
   },
   "free": {
-    "url": "/bank/bank-free-72abeffd5df6.json",
+    "url": "/bank/bank-free-ae85af1fe627.json",
     "words": 224,
-    "problems": 985
+    "problems": 987
   }
 }

@@ -1,50 +1,50 @@
 {
   "version": 1,
-  "generated": "2026-10-10",
+  "generated": "2026-10-22",
   "count": 100,
   "groups": [
     {
       "band": 0,
       "words": [
         {
-          "word": "accommodate",
-          "definition": "To provide enough space for someone or something."
+          "word": "abstract",
+          "definition": "Dealing with general ideas and qualities rather than particular things"
         },
         {
           "word": "audience",
           "definition": "The people who watch or listen to a performance or talk."
         },
         {
-          "word": "communicate",
-          "definition": "To share information, thoughts or feelings."
+          "word": "comparison",
+          "definition": "The act of examining things to see how they are similar or different."
         },
         {
-          "word": "curiosity",
-          "definition": "A strong wish to find out about something."
+          "word": "desperate",
+          "definition": "Feeling that a situation is so bad that you will try almost anything."
         },
         {
-          "word": "evidence",
-          "definition": "Facts or information that help show whether something is true."
+          "word": "faint",
+          "definition": "So little that it can hardly be noticed, especially a sound or a smell"
         },
         {
           "word": "identity",
           "definition": "Who someone is, or what makes them recognisable."
         },
         {
-          "word": "lightning",
-          "definition": "A bright electrical flash in the sky during a storm."
+          "word": "literal",
+          "definition": "Using the ordinary, exact meaning of words."
         },
         {
-          "word": "parliament",
-          "definition": "The body that debates and passes laws; in the UK it includes the Commons, Lords and monarch."
+          "word": "poetry",
+          "definition": "Literary writing using rhythm, imagery, and expressive language"
         },
         {
-          "word": "recognise",
-          "definition": "To know someone or something because you have met or seen them before."
+          "word": "rhyme",
+          "definition": "A match between the end sounds of words, such as 'cat' and 'hat'."
         },
         {
-          "word": "sincerely",
-          "definition": "In a way that shows you really mean what you say or feel."
+          "word": "summarise",
+          "definition": "To give the main points in a shorter form."
         }
       ]
     },
@@ -56,72 +56,72 @@
           "definition": "To leave someone or something behind completely."
         },
         {
-          "word": "ample",
-          "definition": "More than enough of something for a purpose"
+          "word": "anxious",
+          "definition": "Worried and nervous about something that may happen"
         },
         {
           "word": "bland",
           "definition": "Lacking strong flavour or interest"
         },
         {
-          "word": "commit",
-          "definition": "To promise firmly to do something, or to give something to a cause"
+          "word": "companion",
+          "definition": "A person or animal that spends its time with someone"
         },
         {
-          "word": "criticism",
-          "definition": "Expression of faults or disapproval"
+          "word": "crucial",
+          "definition": "So important that it affects the whole result"
         },
         {
           "word": "desire",
           "definition": "A strong wish to have or achieve something"
         },
         {
-          "word": "eclipse",
-          "definition": "One body in space passing in front of another so that it is hidden, or the moment when something important is pushed into the background"
+          "word": "dumb",
+          "definition": "Unable to speak or having nothing to say"
         },
         {
-          "word": "exile",
-          "definition": "Forced absence from one's country or home"
+          "word": "evolve",
+          "definition": "To develop gradually and naturally over a long period of time"
         },
         {
-          "word": "foundation",
-          "definition": "The solid lowest part of a building that carries its weight, or the strong idea a plan rests on"
+          "word": "foil",
+          "definition": "To prevent a plan from succeeding"
         },
         {
-          "word": "hind",
-          "definition": "A female deer"
+          "word": "heroic",
+          "definition": "Extremely brave and noble, especially in the face of great danger or serious difficulty"
         },
         {
-          "word": "intention",
-          "definition": "Something you mean and plan to do, or the reason for doing it"
+          "word": "intense",
+          "definition": "Extreme in strength, degree or feeling, much stronger than usual"
         },
         {
-          "word": "limp",
-          "definition": "To walk unevenly because of injury; also lacking stiffness"
+          "word": "lieu",
+          "definition": "Standing in the place or stead of another thing, or given in exchange for it"
         },
         {
-          "word": "neat",
-          "definition": "Tidy, clean and arranged carefully so that everything is in its proper place"
+          "word": "naive",
+          "definition": "Inexperienced and too willing to believe people"
         },
         {
-          "word": "prominent",
-          "definition": "Very noticeable, or important enough to be noticed by everybody"
+          "word": "potent",
+          "definition": "Powerful or having a strong effect"
         },
         {
-          "word": "resign",
-          "definition": "To give up your job or position deliberately, usually by saying so officially"
+          "word": "relevant",
+          "definition": "Closely connected with or appropriate to the matter being considered."
         },
         {
-          "word": "score",
-          "definition": "The number of points a player or team earns in a game, match or test"
+          "word": "sane",
+          "definition": "Having a calm, sensible mind, able to think clearly and behave reasonably"
         },
         {
-          "word": "strive",
-          "definition": "To make every effort you can towards achieving something difficult"
+          "word": "stability",
+          "definition": "The quality of remaining firm and unchanging, with no risk of collapse"
         },
         {
-          "word": "universal",
-          "definition": "Concerning or applying to every person, thing or situation without exception"
+          "word": "thorough",
+          "definition": "Careful, detailed, and complete"
         }
       ]
     },

@@ -26,6 +26,14 @@ for word in words:
         "frequencyKind": "unavailable" if frequency == 0 else "phrase-estimate" if " " in word["word"] else "word",
         "score": round(100 * (0.7 * rarity + 0.3 * length_score), 4),
     }
+# Words a child meets every day, whatever the corpus says about their rarity.
+# They are named by hand in data/word-levels/everyday-words.json, take Level 0
+# with the curriculum words, and are pulled out of the bands *after* the bands
+# are cut, so no other word moves a level.
+everyday = set(json.loads((ROOT / "data/word-levels/everyday-words.json").read_text())["words"])
+unknown = everyday - {word["id"] for word in words}
+if unknown:
+    raise SystemExit(f"everyday-words.json names words that are not in the bank: {', '.join(sorted(unknown))}")
 ordered = sorted(entries, key=lambda key: (entries[key]["score"], key))
 # Curriculum extension is a separate Level 0; the original five bands stay unchanged.
 core = [key for key in ordered if next(w for w in words if w["id"] == key)["source"] != "curriculum"]
@@ -34,10 +42,12 @@ for index, key in enumerate(core):
 for word in words:
     if word["source"] == "curriculum":
         entries[word["id"]]["difficulty"] = 0
+for key in everyday:
+    entries[key]["difficulty"] = 0
 result = {
     "version": 2,
     "source": {"name": "wordfreq", "version": "3.1.1", "author": "Robyn Speer", "url": "https://github.com/rspeer/wordfreq", "language": "en", "wordlist": "large", "license": "CC-BY-SA-4.0", "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"},
-    "method": "70% rarity + 30% letter count. Rarity = 1 - clamp((Zipf - 1) / 5, 0, 1). Length = clamp((letters - 3) / 12, 0, 1). Score rounded to 4 decimals; sort original-source words by score then normalized word ID into five equal bands. Curriculum extension words use Level 0 independently, preserving the original five bands. Levels are estimates, not exam grades. Phrase frequency is estimated; missing frequency uses Zipf 0 and is flagged.",
+    "method": "70% rarity + 30% letter count. Rarity = 1 - clamp((Zipf - 1) / 5, 0, 1). Length = clamp((letters - 3) / 12, 0, 1). Score rounded to 4 decimals; sort original-source words by score then normalized word ID into five equal bands. Curriculum extension words, and the everyday words listed in data/word-levels/everyday-words.json, take Level 0 after the bands are cut, so they leave the band they scored into without moving any other word. Levels are estimates, not exam grades. Phrase frequency is estimated; missing frequency uses Zipf 0 and is flagged.",
     "wordIdsSha256": hashlib.sha256("\n".join(word["id"] for word in words).encode()).hexdigest(),
     "counts": {str(level): sum(row["difficulty"] == level for row in entries.values()) for level in range(0, 6)},
     "words": entries,

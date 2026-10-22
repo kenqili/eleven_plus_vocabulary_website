@@ -151,33 +151,56 @@ test("Level 0 practises alongside levels 1-5 and only known levels are accepted"
   }
   for (const value of ["6", -1, 1.5, "curriculum", true, {}])
     assert.throws(() => parsePracticeLevel(value), /practice level/);
-  // The five original bands keep their words; only curriculum words take level 0.
+  // Level 0 is the curriculum extension plus the words named as everyday in
+  // data/word-levels/everyday-words.json. Those words are taken out of the
+  // bands after the bands themselves are cut, so a word moves to Level 0 and
+  // no other word changes level.
   const snapshot = JSON.parse(
     readFileSync(
       new URL("../data/word-levels/levels.json", import.meta.url),
       "utf8",
     ),
   ).words;
+  const listed = JSON.parse(
+    readFileSync(
+      new URL("../data/word-levels/everyday-words.json", import.meta.url),
+      "utf8",
+    ),
+  ).words;
+  const everyday = new Set(listed);
   const levelFor = (id) => snapshot[id]?.difficulty;
+  assert.equal(everyday.size, listed.length, "everyday-words.json repeats a word");
+  const byId = new Map(words.map((word) => [word.id, word]));
+  for (const id of everyday)
+    assert.ok(
+      byId.has(id),
+      `everyday-words.json names "${id}", which is not in the bank`,
+    );
+
   const counts = [0, 1, 2, 3, 4, 5].map(
     (level) => words.filter((word) => levelFor(word.id) === level).length,
   );
-  // Bands 1-5 are five equal slices of the non-curriculum words, so they may
-  // differ by at most one; Level 0 is exactly the curriculum extension.
-  assert.equal(counts[0], words.filter((word) => word.source === "curriculum").length);
-  const core = counts.slice(1);
-  assert.ok(
-    Math.max(...core) - Math.min(...core) <= 1,
-    `core bands should be equal within one word, got ${core.join(", ")}`,
-  );
   assert.equal(
-    core.reduce((a, b) => a + b, 0),
-    words.filter((word) => word.source !== "curriculum").length,
+    counts[0],
+    words.filter((word) => word.source === "curriculum").length + everyday.size,
+    "Level 0 is not exactly the curriculum words plus the everyday list",
   );
-  assert.equal(
-    words.every(
-      (word) => (levelFor(word.id) === 0) === (word.source === "curriculum"),
-    ),
-    true,
-  );
+
+  const core = words
+    .filter((word) => word.source !== "curriculum")
+    .sort(
+      (a, b) =>
+        snapshot[a.id].score - snapshot[b.id].score ||
+        (a.id < b.id ? -1 : a.id > b.id ? 1 : 0),
+    );
+  const sliceOf = (index) => Math.min(5, Math.floor((index * 5) / core.length) + 1);
+  for (const [index, word] of core.entries()) {
+    const sliced = sliceOf(index);
+    const want = everyday.has(word.id) ? 0 : sliced;
+    assert.equal(
+      levelFor(word.id),
+      want,
+      `${word.word} is level ${levelFor(word.id)}, not ${want} (slice ${sliced}${everyday.has(word.id) ? ", listed as everyday" : ""})`,
+    );
+  }
 });
