@@ -62,11 +62,14 @@ export default function WordExplanation({ word }: { word: Feedback }) {
    * the row could only ever repeat it. Instead the sentence appears once, here,
    * completed - which is what the label says it is - and the example row is
    * dropped rather than shown twice.
+   *
+   * The answer is marked inside the sentence when it appears there word for word.
+   * It is not always: the blank can replace an inflection, so the sentence may
+   * read "coveted" where the answer was "covet", and then the sentence is shown
+   * as it stands, unmarked. Faking a highlight by matching the stem would put it
+   * on the wrong letters.
    */
-  const answerIsSentence =
-    word.type === "cloze" &&
-    has(word.example) &&
-    new RegExp(escape(word.answer), "i").test(word.example);
+  const answerIsSentence = word.type === "cloze" && has(word.example);
   return (
     <dl className="word-explanation">
       {!answerIsMeaning && (
