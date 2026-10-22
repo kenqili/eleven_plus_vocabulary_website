@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, BookOpen, Check, Lightbulb, Trophy } from "lucide-react";
 import Pronunciation, { AnswerAudio } from "./pronunciation";
@@ -23,6 +23,7 @@ import { DIFFICULTY_LEVELS, type Difficulty } from "@/lib/challenge/difficulty";
 import Header from "./header";
 import ProgressPanel from "./progress-panel";
 import DailyMission from "./daily-mission";
+import UsageTips from "./usage-tips";
 import LevelProgress from "./level-progress";
 import WordExplanation from "./word-explanation";
 import { CoachNote } from "./coach-note";
@@ -133,6 +134,15 @@ function SaveProgress({ study }: { study: ReturnType<typeof useChallenge> }) {
 export default function Challenge() {
   const study = useChallenge();
   const [clueQuestion, setClueQuestion] = useState<string | null>(null);
+  /**
+   * How many questions this session has answered.
+   *
+   * Counted here rather than asked of the study hook, because it is the one
+   * number the parent tip needs and the hook has no notion of a session. A
+   * tip that arrives with the first question is a tip read while the child is
+   * still finding the buttons.
+   */
+  const [answered, setAnswered] = useState(0);
   const cardRef = useRef<HTMLElement>(null);
   const { question, feedback, stats, demo, busy, error } = study;
   // The level the child just rose to, shown once on the first question that
@@ -195,6 +205,21 @@ export default function Challenge() {
         }
       : null,
   );
+  /**
+   * Answering, counted.
+   *
+   * Every answer passes through here: a click on an option, the letter keys,
+   * and the reveal. The count is what the parent tip waits for, so it is
+   * taken where the answers are, rather than asked of the study hook.
+   */
+  const answer = useCallback(
+    (index: number) => {
+      setAnswered((count) => count + 1);
+      void study.answer(index);
+    },
+    [study],
+  );
+
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (event.altKey || event.ctrlKey || event.metaKey) return;
@@ -218,7 +243,7 @@ export default function Challenge() {
         !study.historical
       ) {
         event.preventDefault();
-        void study.answer(answerIndex);
+        void answer(answerIndex);
       } else if (key === "arrowleft" && study.hasPrevious) {
         event.preventDefault();
         study.goPrevious();
@@ -244,7 +269,7 @@ export default function Challenge() {
         !(target instanceof HTMLElement && target.closest("button, a"))
       ) {
         event.preventDefault();
-        void study.answer(-1);
+        void answer(-1);
       } else if (key === "k" && canMarkKnown) {
         // "I know this": retires the word just answered right. The press has no
         // attempt of its own, earns no credits and moves no streak - the word
@@ -255,7 +280,7 @@ export default function Challenge() {
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [study, question, feedback, busy, canMarkKnown]);
+  }, [study, answer, question, feedback, busy, canMarkKnown]);
   // A word or cloze question asks the child to produce the word, so the card
   // must not print it or play it above the options.
   const asksForWord = question ? typeAsksForTheWord(question.type) : false;
@@ -360,6 +385,21 @@ export default function Challenge() {
                   liveScore={
                     study.livePlacement?.score ?? question?.placement?.score ?? null
                   }
+                />
+              )}
+              {/*
+                One tip for the parent, offered once and then never again.
+
+                It sits under the settings, where a parent is already choosing
+                how practice works, rather than above the question, where it
+                would be in the child's way. Signed-in only: every tip points
+                at something that needs an account, and a tip that leads to a
+                sign-in wall is worse than no tip.
+              */}
+              {!demo && (
+                <UsageTips
+                  answered={answered}
+                  hasAccess={Boolean(study.active || study.trial)}
                 />
               )}
             </div>
@@ -562,7 +602,7 @@ export default function Challenge() {
                         aria-keyshortcuts={`${String.fromCharCode(65 + i)} ${i + 1}`}
                         onClick={() => {
                           if (busy || feedback) return;
-                          void study.answer(i);
+                          void answer(i);
                         }}
                       >
                         <span>{String.fromCharCode(65 + i)}</span>
@@ -774,7 +814,7 @@ export default function Challenge() {
                         className="text-button"
                         aria-keyshortcuts="Enter"
                         disabled={busy}
-                        onClick={() => void study.answer(-1)}
+                        onClick={() => void answer(-1)}
                       >
                         Skip & reveal <ArrowRight size={16} />
                       </button>

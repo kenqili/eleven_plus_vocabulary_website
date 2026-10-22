@@ -1,0 +1,69 @@
+[
+  {
+    "id": "set-aside",
+    "title": "Set the easy ones aside first",
+    "text": "Before your child starts, set aside the words they already know. Practice time then goes on words that are still new, and nothing is spent on words that never needed the work.",
+    "href": "/words/manage",
+    "linkText": "Choose which words to practise"
+  },
+  {
+    "id": "mark-known",
+    "title": "Already know it? Say so",
+    "text": "When a word is one your child knows, answer it right and press “I know this word” — or just the K key. The word is mastered there and then, and it never comes up again."
+  },
+  {
+    "id": "word-map",
+    "title": "See the whole picture",
+    "text": "The word list shows every word and how it is going. The word map shows the same thing as a picture: what is mastered, what is nearly there, and what is still new.",
+    "href": "/words/map",
+    "linkText": "Open the word map"
+  },
+  {
+    "id": "badge",
+    "title": "Turn a badge into an afternoon",
+    "text": "Badges are digital, but the reward does not have to be. Redeem one for game time, a film, or the drive to the park. The app keeps the record; you choose the prize.",
+    "href": "/rewards",
+    "linkText": "See the badges"
+  },
+  {
+    "id": "print",
+    "title": "Tired of the screen?",
+    "text": "Print a sheet of the words and practise away from the app. It is laid out for A4, so a print or a saved PDF is one clean grid per page.",
+    "href": "/words/print",
+    "linkText": "Printable word sheets",
+    "needsAccess": true
+  },
+  {
+    "id": "own-words",
+    "title": "Add the words you use at home",
+    "text": "The words your family argues about, the names of your pets, the words from your favourite books: add them and they become part of the practice. Familiar words are the easiest ones to remember.",
+    "href": "/words/manage",
+    "linkText": "Add your own words"
+  },
+  {
+    "id": "question-types",
+    "title": "Ask it more than one way",
+    "text": "A word asked as a definition, a synonym and an antonym is a word met three ways, and it sticks sooner. Choose more than one question type and practice rotates through them."
+  },
+  {
+    "id": "five-letters",
+    "title": "Play the same words",
+    "text": "Five Letters is the same collection as a six-guess game. Every guess opens a card with the meaning, an example and related words, so a lucky guess still teaches something.",
+    "href": "/five-letters",
+    "linkText": "Play Five Letters"
+  },
+  {
+    "id": "stories",
+    "title": "Read a story",
+    "text": "A word met in a story is remembered. The story library has stories with the hard words explained as you read, which is the best vocabulary teacher there is.",
+    "href": "/stories",
+    "linkText": "Open the story library"
+  },
+  {
+    "id": "calendar",
+    "title": "Make the effort visible",
+    "text": "The learning calendar shows practice days, questions and study time. Children keep going when they can see the small days adding up, and you can see where the gaps are.",
+    "href": "/calendar",
+    "linkText": "Open the learning calendar"
+  }
+]

@@ -972,6 +972,75 @@ hr {
   font-size: 16px;
 }
 /*
+ * A tip for the parent, offered once while the child practises.
+ *
+ * It sits in the parent's column, under the settings they were just choosing
+ * from, and it is quiet on purpose: a light green panel rather than a
+ * warning, because it is advice rather than a problem. The dismiss button is
+ * small and in the corner, so taking the tip away costs one tap and does not
+ * need a decision.
+ */
+.usage-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex-basis: 100%;
+  padding: 15px 17px;
+  margin: 2px 0 20px;
+  border: 1px solid var(--line-sage);
+  border-radius: var(--radius);
+  background: var(--surface-success);
+  color: var(--ink-brand-3);
+}
+.usage-tip-mark {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink-brand-4);
+}
+.usage-tip-body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.usage-tip-body strong {
+  display: block;
+  font-size: 15px;
+}
+.usage-tip-body p {
+  margin: 4px 0 0;
+  color: var(--ink-brand-4);
+  font-size: 14px;
+  line-height: 1.65;
+}
+.usage-tip-body a {
+  display: inline-block;
+  margin-top: 8px;
+  color: var(--ink-brand-6);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: underline;
+}
+.usage-tip-dismiss {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--line-4);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink-slate);
+  cursor: pointer;
+}
+.usage-tip-dismiss:hover {
+  color: var(--ink-brand-3);
+}
+/*
  * How far to 10,000, under the level picker.
  *
  * The fill shows the first slice of the full 0–10,000 green → yellow → red

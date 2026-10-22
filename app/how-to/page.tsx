@@ -39,7 +39,7 @@ const steps = [
   {
     icon: BookOpenCheck,
     title: "Choose what to practise",
-    text: "Start with Definition questions to practise meanings. Add Synonym questions for words with similar meanings and Antonym questions for opposites. Choose one or more types, and change them whenever you like.",
+    text: "Start with Definition questions to practise meanings. Add Synonym questions for words with similar meanings and Antonym questions for opposites. Choose one or more types, and change them whenever you like. Before the first question, set aside the words your child already knows, so the session goes on words that are still new.",
   },
   {
     icon: CircleHelp,
@@ -172,6 +172,18 @@ export default function HowToPage() {
         </section>
 
         <section className="howto-tools">
+          <article>
+            <ListChecks size={22} />
+            <h3>Set the easy ones aside first</h3>
+            <p>
+              Before your child starts, set aside the words they already know,
+              in{" "}
+              <Link href="/words/manage">Choose which words to practise</Link>.
+              Practice time then goes on words that are still new, and nothing
+              is spent on words that never needed the work. A word set aside
+              can be brought back whenever you like.
+            </p>
+          </article>
           <article>
             <ListChecks size={22} />
             <h3>Focus your revision</h3>
