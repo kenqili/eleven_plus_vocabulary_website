@@ -547,6 +547,19 @@ export class PracticeEngine {
   }
 
   /**
+   * Restart the clock on the question on screen.
+   *
+   * The evidence verdict is measured from when a question was shown, which is
+   * right for a question that has been sitting in front of the child and wrong
+   * for one whose page was put away and picked up again: the minutes spent on the
+   * word list would be recorded as thinking time and the answer would read as a
+   * guess. Coming back to the screen restarts the clock, and nothing else.
+   */
+  reshow() {
+    if (this.lastQuestion) this.lastQuestion.shownAt = this.options.now();
+  }
+
+  /**
    * Grade an answer and advance every counter it should.
    *
    * The evidence verdict is computed from the time the question was *shown*, not

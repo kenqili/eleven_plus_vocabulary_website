@@ -180,6 +180,26 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  experimental: {
+    /**
+     * How long the client router may reuse a dynamic page it has already
+     * fetched, in seconds.
+     *
+     * Next's default here is zero, which means every visit to the practice
+     * screen, the word list or the stories asks the server for the page again,
+     * even when the child went there and came straight back. A child moves
+     * between these screens constantly, so the child pays that round trip on
+     * every tap.
+     *
+     * Thirty seconds, not minutes. These pages still come back from the server
+     * whenever anything has changed, and the numbers that must never be stale -
+     * an answer's progress, the streak, the level - are not in the page at all:
+     * they arrive from `/api/progress` and `/api/flush`, which are requests and
+     * stay uncached. What is reused is the shell of a screen the child saw a
+     * moment ago.
+     */
+    staleTimes: { dynamic: 30 },
+  },
 };
 
 export default nextConfig;

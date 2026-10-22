@@ -22,6 +22,11 @@ import {
   type MasteryState,
 } from "@/lib/challenge/mastery";
 import { api } from "@/lib/client/api";
+import {
+  forgetRound,
+  holdRound,
+  readHeldRound,
+} from "@/lib/client/practice-round";
 import { ClientSession, loadSession } from "@/lib/client/session";
 import { chosenWordExplanation } from "@/lib/challenge/option-gloss";
 import type {
@@ -175,19 +180,37 @@ function gradedToFeedback(
 }
 
 export function useChallenge() {
-  const [state, setState] = useState<ChallengeState>({
-    question: null,
-    stats: initialStats,
-    demo: true,
-  });
-  const [busy, setBusy] = useState(true),
+  /**
+   * The round a previous mount parked, if this is a return visit.
+   *
+   * Read once, outside the initialisers, because `restoring` decides whether the
+   * load effect below runs at all. Everything restored here is the same value the
+   * child left on screen - the question, the answer they had just given, the
+   * place in the round - so coming back to practice looks like coming back to
+   * practice rather than to a fresh one.
+   */
+  const held = readHeldRound();
+  const restoring = useRef(held !== null);
+  const [state, setState] = useState<ChallengeState>(
+    () =>
+      held?.state ?? {
+        question: null,
+        stats: initialStats,
+        demo: true,
+      },
+  );
+  const [busy, setBusy] = useState(held === null),
     [error, setError] = useState("");
-  const [previous, setPrevious] = useState<Feedback | null>(null);
+  const [previous, setPrevious] = useState<Feedback | null>(
+    held?.previous ?? null,
+  );
   const [history, setHistory] = useState<
     Array<{ question: Question; feedback: Feedback }>
-  >([]);
-  const [historyView, setHistoryView] = useState<number | null>(null);
-  const historyViewRef = useRef<number | null>(null);
+  >(held?.history ?? []);
+  const [historyView, setHistoryView] = useState<number | null>(
+    held?.historyView ?? null,
+  );
+  const historyViewRef = useRef<number | null>(held?.historyView ?? null);
   const changeHistoryView = useCallback((index: number | null) => {
     historyViewRef.current = index;
     setHistoryView(index);
@@ -197,11 +220,11 @@ export function useChallenge() {
     readAutoNext,
     serverAutoNext,
   );
-  const [selectedTypes, setSelectedTypes] = useState<QuestionType[]>([
-    ...QUESTION_TYPES,
-  ]);
+  const [selectedTypes, setSelectedTypes] = useState<QuestionType[]>(
+    held?.selectedTypes ?? [...QUESTION_TYPES],
+  );
   // null is mixed practice across every level, which keeps levels 1-5 unchanged.
-  const [level, setLevel] = useState<Difficulty | null>(null);
+  const [level, setLevel] = useState<Difficulty | null>(held?.level ?? null);
   /**
    * Where the child is right now, from the browser's own counters.
    *
@@ -212,7 +235,7 @@ export function useChallenge() {
   const [livePlacement, setLivePlacement] = useState<{
     level: number;
     score: number;
-  } | null>(null);
+  } | null>(held?.livePlacement ?? null);
   const demoProgress = useRef(new Map<string, number>());
   const demoMastery = useRef(new Map<string, MasteryState>());
   const assisted = useRef(false);
@@ -232,10 +255,10 @@ export function useChallenge() {
    * something to render, and because `answer` and `next` must reach the same
    * instance without a re-render between showing a question and grading it.
    */
-  const session = useRef<ClientSession | null>(null);
-  const bank = useRef<ClientBank | null>(null);
+  const session = useRef<ClientSession | null>(held?.session ?? null);
+  const bank = useRef<ClientBank | null>(held?.bank ?? null);
   /** How many answers are not yet saved. Zero is what greys the Save button. */
-  const [unsaved, setUnsaved] = useState(0);
+  const [unsaved, setUnsaved] = useState(held?.unsaved ?? 0);
   useEffect(() => {
     stateRef.current = state;
   }, [state]);
@@ -305,6 +328,10 @@ export function useChallenge() {
       : null;
   }, []);
   const load = useCallback(async () => {
+    // A load is a new round: different filters, or the words themselves moved.
+    // Whatever was parked belongs to the round being replaced, so it must not
+    // come back over the top of this one.
+    forgetRound();
     try {
       // One request for the whole of a child's state, and one for the bank it
       // names. After this a question costs no round trip at all.
@@ -415,6 +442,19 @@ export function useChallenge() {
     }
   }, [demoQuestion, selectedTypes, level]);
   useEffect(() => {
+    if (restoring.current) {
+      restoring.current = false;
+      // The screen that owned this session has unmounted, but the round has not
+      // travelled anywhere. Two things were left pointing at the old screen: the
+      // session is stopped, and its panel callback is the old component's state
+      // setter. Take both back. `resume` also restarts the clock on the question
+      // on screen and on the counter behind it, so the minutes spent on the word
+      // list are not recorded as thinking time.
+      session.current?.watch(setUnsaved);
+      session.current?.resume();
+      elapsed.current = 0;
+      return;
+    }
     let active = true;
     const timer = setTimeout(() => {
       if (active) void load();
@@ -424,6 +464,38 @@ export function useChallenge() {
       clearTimeout(timer);
     };
   }, [load]);
+  /**
+   * Park the round, so coming back to the page does not rebuild it.
+   *
+   * Written on every render rather than on unmount because the round is mostly
+   * mutable objects - the engine inside the session, the bank - and a snapshot
+   * taken on the way out would have to copy a dozen refs one at a time. Reading
+   * them here is one assignment, and it is current to the last render the child
+   * saw.
+   *
+   * Two states are deliberately not parked. Nothing is parked while `busy`, since
+   * the words are still arriving and the state on screen is the round being
+   * replaced. And nothing is parked while gated: a paywall is the server's answer
+   * rather than the child's work, and re-reading it is what lets a parent who has
+   * just paid stop seeing it.
+   */
+  useEffect(() => {
+    if (busy || state.gated) return;
+    if (!session.current || !bank.current) return;
+    if (!state.question && !state.complete) return;
+    holdRound({
+      state,
+      previous,
+      history,
+      historyView,
+      unsaved,
+      livePlacement,
+      selectedTypes,
+      level,
+      session: session.current,
+      bank: bank.current,
+    });
+  });
   useEffect(() => {
     const refreshStats = async () => {
       if (stateRef.current.demo || lock.current) return;

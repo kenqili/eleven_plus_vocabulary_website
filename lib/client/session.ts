@@ -463,6 +463,22 @@ export class ClientSession {
     }
   }
 
+  /**
+   * Take the session back after the page that owned it was unmounted.
+   *
+   * `stop` runs from the practice screen's cleanup, because leaving the page is
+   * normally the end of the sitting. A client-side route change is not: the
+   * document, the engine and this queue are all still here. Coming back to the
+   * page resumes rather than rebuilds, which re-arms whatever the exit flush could
+   * not send and restarts the clock on the question on screen.
+   */
+  resume() {
+    this.engine.reshow();
+    if (!this.stopped) return;
+    this.stopped = false;
+    if (this.queue.length || this.stateDirty) this.schedule();
+  }
+
   /** Stop the timer. Called when the child leaves the practice page. */
   stop() {
     this.stopped = true;

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useEffect, useState, type FormEvent } from "react";
 import Header from "./header";
 import { api } from "@/lib/client/api";
+import { forgetRound } from "@/lib/client/practice-round";
 import { CONTACT_EMAIL } from "@/lib/contact";
 import AccountSecurity from "./account-security";
 import CouponRedeem from "./coupon-redeem";
@@ -231,6 +232,9 @@ export default function Account({
         setAwaitingLink(email);
         return;
       }
+      // Signing in (or in as someone else) is a change of who is practising, so
+      // the round parked by the previous visitor is not theirs to resume.
+      forgetRound();
       await refresh();
     } catch (e) {
       const failure = e as Error & { code?: string };
@@ -484,6 +488,11 @@ export default function Account({
    * so this is the only place the sentence can live.
    */
   function endSession(message: string) {
+    // The practice screen parks the round it was showing so a return visit does
+    // not rebuild it. A round belongs to the child who was signed in, so signing
+    // out drops it: the next person to open practice must not be handed the
+    // question and progress of the one before them.
+    forgetRound();
     setUser(null);
     setBilling(null);
     setNotice(message);
