@@ -115,9 +115,18 @@ export default function PrivacyPage() {
 
           <h2>How long it is kept</h2>
           <p>
-            Until you delete it. There is no automatic expiry, because a
-            practice record that quietly disappears would be worse than one that
-            stays. Your account page removes all of it in one step.
+            Two years after the account is last used — signed into, or practised
+            on — it is deleted. Everything goes with it: the email address, the
+            password hash, the practice record, the story positions and the words
+            you added. That is the longest we keep any of it.
+          </p>
+          <p>
+            An account that is in use is never expired. A practice record that
+            quietly disappears while a child is still working through the words
+            would be worse than one that stays, and a child coming back after a
+            term away should find their words where they left them. After two
+            years without a visit, that is no longer a reasonable thing to
+            expect.
           </p>
 
           <h2>Deleting everything</h2>
@@ -143,7 +152,8 @@ export default function PrivacyPage() {
           <p>
             One email address, one row per question answered, and how far
             through each story your child got. No name, no advertising, no
-            sharing, and one button on your account page removes all of it.
+            sharing, and one button on your account page removes all of it —
+            and if the account is left unused, it goes after two years anyway.
           </p>
 
           <h2>Contact</h2>

@@ -63,7 +63,9 @@ export default function PrivacySummary() {
       <p>
         Your account page has <strong>Delete this account</strong> at the
         bottom. It removes the account and every practice record in it, and
-        there is no copy kept. You do not need to email anyone.{" "}
+        there is no copy kept. You do not need to email anyone. And if the
+        account is simply left alone, we delete it two years after the last time
+        it was signed into or practised on.{" "}
         <a href="/privacy">The full privacy notice</a> has the detail, including
         how payments are handled.
       </p>
