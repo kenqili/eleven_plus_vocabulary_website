@@ -173,62 +173,6 @@ test(
   },
 );
 
-test(
-  "a registration nobody confirmed is not kept for ever",
-  { skip },
-  async () => {
-    // An unconfirmed row cannot be signed into, so it is only a claim on an
-    // address. Without an expiry that claim is permanent: the address cannot be
-    // registered by whoever it belongs to, and half the users table fills with
-    // rows that can never be used.
-    const db = sql();
-    const day = 86_400_000;
-    const abandoned = await register();
-    const asked = await register();
-    const fresh = { address: null };
-    try {
-      // Both are eight days old, which is past the window on its own.
-      for (const address of [abandoned.address, asked.address])
-        db.prepare("UPDATE users SET created_at=? WHERE email=?").run(
-          Date.now() - 8 * day,
-          address,
-        );
-      // The second asked for the link two days ago, and that is what keeps an
-      // account: the rule is "abandoned", not "old".
-      db.prepare(
-        "INSERT INTO email_verifications (id,user_id,token_hash,expires_at,created_at) VALUES(?,(SELECT id FROM users WHERE email=?),?,?,?)",
-      ).run(
-        randomUUID(),
-        asked.address,
-        digest("0".repeat(64)),
-        Date.now() + day,
-        Date.now() - 2 * day,
-      );
-
-      // Any new registration is what sweeps.
-      fresh.address = (await register()).address;
-      assert.equal(
-        db.prepare("SELECT id FROM users WHERE email=?").get(abandoned.address),
-        undefined,
-        "eight days unconfirmed, and never asked about again, is deleted",
-      );
-      assert.ok(
-        db.prepare("SELECT id FROM users WHERE email=?").get(asked.address),
-        "a link asked for inside the window keeps the account",
-      );
-      assert.ok(
-        db.prepare("SELECT id FROM users WHERE email=?").get(fresh.address),
-        "the registration that did the sweeping must survive it",
-      );
-    } finally {
-      cleanup(db, abandoned.address);
-      cleanup(db, asked.address);
-      if (fresh.address) cleanup(db, fresh.address);
-      db.close();
-    }
-  },
-);
-
 test("the confirmation link opens the account, once", { skip }, async () => {
   const db = sql();
   const { address, result } = await register();

@@ -8,7 +8,6 @@ import { body, boundary, HttpError, json, sameOrigin } from "@/lib/server/http";
 import {
   CHECK_INBOX,
   deliverVerification,
-  forgetAbandonedRegistrations,
 } from "@/lib/server/email-verification";
 import {
   createSession,
@@ -277,21 +276,6 @@ export async function POST(
       `auth:ip:${request.headers.get("cf-connecting-ip") || "local"}`,
       40,
     );
-    if (action === "register") {
-      // Before the address is looked up and before anything is written, and
-      // after the rate limits: a bot should not be able to create accounts at
-      // all, nor to make this route delete rows, while a parent whose check
-      // expired should learn that without having half-created one. Signing in is
-      // not challenged - it cannot send anything to anyone else.
-      await requireTurnstile(
-        input.turnstileToken,
-        request.headers.get("cf-connecting-ip"),
-      );
-      // A registration that was never confirmed is cleared here, before the
-      // address is known to be taken. Otherwise a mistyped address stays blocked
-      // for ever, and so does one somebody else typed in on purpose.
-      await forgetAbandonedRegistrations();
-    }
     const found = await database()
       .prepare(
         "SELECT id,password,email_verified_at FROM users WHERE email = ?",
@@ -304,6 +288,14 @@ export async function POST(
       }>();
     let userId: string;
     if (action === "register") {
+      // Before the account is written, and after the rate limit: a bot should
+      // not be able to create accounts at all, while a parent whose check
+      // expired should learn that without having half-created one. Signing in
+      // is not challenged - it cannot send anything to anyone else.
+      await requireTurnstile(
+        input.turnstileToken,
+        request.headers.get("cf-connecting-ip"),
+      );
       const passwordHash = hashPassword(password);
       if (found)
         throw new HttpError(
