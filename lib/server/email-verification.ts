@@ -31,8 +31,51 @@ export const VERIFY_TTL_MS = 24 * 60 * 60 * 1000;
 /** Where the link goes, and what a parent reads when it opens. */
 export const VERIFY_LINK_PATH = "/confirm-email";
 
+/**
+ * How long a registration that was never confirmed is kept.
+ *
+ * An unconfirmed row grants nothing - no session is issued for it and sign-in
+ * refuses it - so what it holds is a claim on an address, and the password that
+ * was typed next to it. Left alone, that claim never expires: the address cannot
+ * be registered by whoever it really belongs to, and the row sits there for ever.
+ *
+ * Seven days, against a link that lasts a day. A parent who means to confirm does
+ * it the same evening; one who comes back a week later can register again, and
+ * the address is theirs to take.
+ */
+export const UNCONFIRMED_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+
 const TOKEN_SHAPE = /^[0-9a-f]{64}$/;
 export const isVerifyToken = (token: string) => TOKEN_SHAPE.test(token);
+
+/**
+ * Remove registrations that were started, never confirmed, and then forgotten.
+ *
+ * Called when a new registration arrives. That is the only moment the table can
+ * grow, and the moment an abandoned claim is worth clearing: the address becomes
+ * registrable again rather than answering "already used" for ever.
+ *
+ * A row survives while a link was asked for inside the window, so pressing
+ * "send the link again" is what keeps an account alive; being old is not enough
+ * on its own. The tokens go with the row by cascade, and the account-delete
+ * cascade covers everything else - of which there is nothing, because a row that
+ * never confirmed cannot be signed into and so cannot have practised.
+ */
+export async function forgetAbandonedRegistrations(): Promise<void> {
+  const cutoff = Date.now() - UNCONFIRMED_TTL_MS;
+  await database()
+    .prepare(
+      `DELETE FROM users
+        WHERE email_verified_at IS NULL
+          AND created_at < ?
+          AND NOT EXISTS (
+            SELECT 1 FROM email_verifications v
+             WHERE v.user_id = users.id AND v.created_at >= ?
+          )`,
+    )
+    .bind(cutoff, cutoff)
+    .run();
+}
 
 /**
  * Issue a link, retiring any previous one.

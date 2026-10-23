@@ -128,6 +128,11 @@ export default function PrivacyPage() {
             years without a visit, that is no longer a reasonable thing to
             expect.
           </p>
+          <p>
+            An address that is never confirmed has a shorter rule: seven days
+            after the last confirmation link was sent, the registration is
+            deleted, so a mistyped address is not held on to.
+          </p>
 
           <h2>Deleting everything</h2>
           <p>
