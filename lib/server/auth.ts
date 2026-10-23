@@ -52,15 +52,22 @@ export function sessionCookie(
 }
 export async function createSession(userId: string, request: Request) {
   const token = newToken();
+  const now = Date.now();
   await database().batch([
     database()
       .prepare("DELETE FROM sessions WHERE expires_at < ?")
-      .bind(Date.now()),
+      .bind(now),
+    // Every way in goes through here - signing in, confirming an address, a
+    // password reset - so this is the one place "last used" can be written down
+    // without a second copy that would eventually disagree.
+    database()
+      .prepare("UPDATE users SET last_seen_at=? WHERE id=?")
+      .bind(now, userId),
     database()
       .prepare(
         "INSERT INTO sessions (token_hash,user_id,expires_at) VALUES (?,?,?)",
       )
-      .bind(tokenDigest(token), userId, Date.now() + 604800000),
+      .bind(tokenDigest(token), userId, now + 604800000),
   ]);
   return sessionCookie(token, request);
 }

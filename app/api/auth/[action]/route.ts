@@ -23,6 +23,7 @@ import {
 } from "@/lib/server/password";
 import { emailReady, sendPasswordChangedEmail } from "@/lib/server/email";
 import { requireTurnstile } from "@/lib/server/turnstile";
+import { removeAccount } from "@/lib/server/account";
 
 // Once per Worker instance, as in the reset route, and its own flag rather than
 // that route's: a flag in one module cannot quieten the other, and a deployment
@@ -82,30 +83,18 @@ export async function POST(
         throw new HttpError(400, "Enter your password to confirm.");
       const account = (
         await database()
-          .prepare("SELECT password_hash FROM users WHERE id=?")
+          .prepare("SELECT password FROM users WHERE id=?")
           .bind(user.id)
-          .first<{ password_hash: string }>()
-      )?.password_hash;
+          .first<{ password: string }>()
+      )?.password;
       // A dummy verify on an unknown account, so the timing of this response
       // does not reveal whether the account exists.
       if (!account || !(await verifyPassword(password, account)))
         throw new HttpError(401, "That password does not match.");
       await rateLimit(`delete-account:${user.id}`, 5);
-      const recorded =
-        (
-          await database()
-            .prepare(
-              "SELECT COUNT(*) AS count FROM learning_events WHERE user_id=?",
-            )
-            .bind(user.id)
-            .first<{ count: number }>()
-        )?.count ?? 0;
-      // One row per answer is kept in aggregate form on the account, so the
-      // detail has to go first or the cascade will be refused.
-      await database()
-        .prepare("DELETE FROM users WHERE id=?")
-        .bind(user.id)
-        .run();
+      // The detail goes with the row by cascade; the count is what the parent is
+      // told, not something kept afterwards.
+      const recorded = await removeAccount(user.id);
       return json({ ok: true, removed: { records: recorded } }, 200, {
         "Set-Cookie": sessionCookie("", request, 0),
       });
@@ -140,10 +129,10 @@ export async function POST(
       );
       const account = (
         await database()
-          .prepare("SELECT password_hash FROM users WHERE id=?")
+          .prepare("SELECT password FROM users WHERE id=?")
           .bind(user.id)
-          .first<{ password_hash: string }>()
-      )?.password_hash;
+          .first<{ password: string }>()
+      )?.password;
       if (!account || !(await verifyPassword(current, account)))
         throw new HttpError(401, "That current password does not match.");
 

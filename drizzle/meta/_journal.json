@@ -50,6 +50,13 @@
       "when": 1792561415011,
       "tag": "0006_word_games",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1792734354338,
+      "tag": "0007_last_seen",
+      "breakpoints": true
     }
   ]
 }

@@ -1,0 +1,13 @@
+-- When an account was last signed into.
+--
+-- The privacy notice promises that an account unused for two years is deleted -
+-- "signed into, or practised on". Practising leaves a record; signing in did
+-- not. A session is deleted on sign-out and pruned when it expires, so the only
+-- durable evidence of use was an answered question. An account signed into every
+-- week and never practised would then have looked abandoned, which is the one
+-- account that promise must not reach.
+--
+-- Null means "not signed in since this column existed", not "never used": the
+-- administrator's list falls back to the account's creation, its practice and
+-- its purchases, so an older account is judged on the evidence there is.
+ALTER TABLE users ADD COLUMN last_seen_at INTEGER;

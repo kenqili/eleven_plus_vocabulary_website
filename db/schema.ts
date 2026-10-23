@@ -14,6 +14,22 @@ export const users = sqliteTable("users", {
   /** scrypt, never a plaintext password. See lib/server/password.ts. */
   password: text("password").notNull(),
   createdAt: integer("created_at").notNull(),
+  /**
+   * When the account was last signed into, as epoch milliseconds. Null until the
+   * first sign-in after this column existed.
+   *
+   * The privacy notice promises that an account unused for two years is deleted,
+   * and a sign-in used to leave no durable trace: a session is deleted when the
+   * parent signs out and pruned when it expires, so the only evidence of "used"
+   * was practice. An account signed into every week and never practised would
+   * then have looked abandoned - the one account the promise must not delete.
+   *
+   * Written by `createSession`, and read by the administrator's list of accounts
+   * due for deletion. Not written on every request: that would be a write per
+   * page load for a value only a two-year question asks about, and a session
+   * lasts at most a week, so using the app at all means signing in again.
+   */
+  lastSeenAt: integer("last_seen_at"),
   customerId: text("customer_id").unique(),
   rewardsInitialized: integer("rewards_initialized").notNull().default(0),
   /**
