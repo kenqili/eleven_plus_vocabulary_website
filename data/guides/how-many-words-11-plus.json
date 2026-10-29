@@ -1,1 +1,81 @@
-{"description": "No fixed number, but a practical answer: which words recur in 11+ English papers, how many a Year 4-5 child needs, and how to prioritise.", "reviewed": "2026-10-15", "sections": [{"heading": "There is no official word count", "paragraphs": ["No 11+ board publishes a vocabulary list, and anyone selling you an exact number is guessing. the main paper styles and school-written papers all draw on the same broad school vocabulary, and what separates strong candidates is not rare words but fast, confident handling of ordinary ones under time pressure.", "Think in bands rather than totals. A Year 4 child heading for the 11+ typically needs the everyday band secure first: common words used precisely, then the less-common band where most lost marks live — words like reluctant, frugal or vivid that adults use without thinking and children misread under pressure."]}, {"heading": "Why the same words keep appearing", "paragraphs": ["Examiners favour words with clear synonyms and antonyms, because those make clean multiple-choice questions. That is why the same few thousand words recur year after year: they are testable, not fashionable. A child who knows them handles synonyms, antonyms, cloze and odd-one-out questions with the same knowledge.", "This recurrence is good news. It means vocabulary preparation converges: the words worth learning for a Kent paper are overwhelmingly the same words worth learning for a Buckinghamshire or London independent paper."]}, {"heading": "How many is enough, practically", "paragraphs": ["As a working rule, aim for roughly two thousand words known well rather than five thousand half-known. Known well means the child can give the meaning, pick the synonym and the antonym, and use the word in a sentence of their own. A word that only survives as a memorised definition will not survive a timed paper.", "Count in both directions. Words learned but never revisited fade within weeks, so the total that matters is words retained, not words covered. Short lists with regular recycling beat long lists done once."]}, {"heading": "Where to find the words", "paragraphs": ["Start with what the child already reads: pull unfamiliar words from school books and library reads into a running list, a dozen a week at most. Then add a curated exam-word list for coverage, so the less-common band does not arrive as a surprise in September of Year 6.", "Free GL familiarisation papers show the formats the words appear in, which matters as much as the words themselves. A word practised only as a definition is a different skill from the same word tested as a synonym under time pressure."]}], "slug": "how-many-words-11-plus", "sources": [{"publisher": "GL Assessment", "title": "Free familiarisation materials", "url": "https://11plus.gl-assessment.co.uk/pages/free-materials"}, {"publisher": "Department for Education", "title": "School Admissions Code 2021", "url": "https://www.gov.uk/government/publications/school-admissions-code"}], "standfirst": "Nobody can give you an exact number, but examiners reuse the same testable words — so preparation converges on roughly two thousand words known well.", "title": "How Many Words Does My Child Need for the 11+?"}
+{
+  "slug": "how-many-words-11-plus",
+  "title": "How Many Words Does My Child Need for the 11+?",
+  "description": "No fixed number, but a practical answer: which words recur in 11+ English papers, how many a Year 4-5 child needs, and how to prioritise.",
+  "standfirst": "Nobody can give you an exact number, but examiners reuse the same testable words — so preparation converges on roughly two thousand words known well.",
+  "reviewed": "2026-10-29",
+  "sections": [
+    {
+      "heading": "There is no official word count",
+      "paragraphs": [
+        "No 11+ board publishes a vocabulary list, and anyone selling you an exact number is guessing. Papers differ by school, by region and by year; what they share is a broad school vocabulary rather than a fixed list. So the honest answer to \"how many words?\" is that the number matters less than what \"knowing\" means.",
+        "That is not a dodge. It changes what you do on a Tuesday evening. If the target were a list, the job would be to finish it. Because the target is a set of words known well, the job is to meet fewer words more often, in more ways, and to keep meeting the ones that slip.",
+        "Think in bands rather than totals. The everyday band comes first: common words used precisely — not merely recognised, but chosen correctly. Then the middle band, where most lost marks live: words like reluctant, frugal or vivid, which adults use without thinking and children misread under pressure. The rare, showy words matter far less than they feel like they should."
+      ]
+    },
+    {
+      "heading": "Why the same words keep appearing",
+      "paragraphs": [
+        "Examiners favour words that make clean questions. A word with a clear synonym and a clear antonym can be tested several ways; a word with neither is hard to set a fair question on. That is why the same few thousand words recur year after year: they are testable, not fashionable.",
+        "This is good news. It means preparation converges. The words worth learning for one paper are overwhelmingly the same words worth learning for another, and the middle band is shared across English, verbal reasoning and comprehension. A child who learns reluctant properly has not learned one answer; they have learned something that will be asked in several forms.",
+        "It also explains why reading a thesaurus cover to cover does not work. Rarity is not the same as usefulness. The words that decide papers are ordinary words used precisely, and precision is learned in sentences rather than in columns."
+      ]
+    },
+    {
+      "heading": "What \"knowing\" a word means",
+      "paragraphs": [
+        "A word is known well enough for an exam when the child can do four things with it. Say what it means in their own words. Give a synonym. Give an antonym. Use it in a sentence that shows the meaning rather than merely containing the word.",
+        "That last one is the test that separates real knowledge from a memorised definition. \"The man was reluctant\" contains the word and says nothing. \"She was reluctant to lend her bike because he had lost it before\" shows that the child knows what reluctance is.",
+        "Recognition is a lower bar, and it is where most vocabulary work stops. A child can read a word in a book, understand the sentence, and still be unable to produce the word when four options are in front of them and the clock is running. The exam asks for recall, so the practice has to include recall.",
+        "One more test, useful at home: can the child tell you which of two similar words a writer would choose, and why? Stubborn or determined, thrifty or miserly, curious or nosy. That is the precision the middle band is really made of."
+      ]
+    },
+    {
+      "heading": "How many is enough, practically",
+      "paragraphs": [
+        "A working figure is roughly two thousand words known well, rather than five thousand half-known. It is a rule of thumb rather than a number published anywhere, but it is the figure that keeps coming up when you count the middle band of a school vocabulary and the words that recur in papers.",
+        "The arithmetic is worth doing, because it is encouraging and it is also a warning. Five new words a day is about a hundred and fifty a month, and roughly eighteen hundred in a year. That is the right order of magnitude. But five new words a day with no review is not eighteen hundred words learned; it is eighteen hundred words met, most of which will be gone within weeks.",
+        "So the daily number should include review. Five new words and fifteen old ones takes about the same ten minutes and produces a very different result. The count that matters is words retained, not words covered.",
+        "A rough plan by year. In Year 4, secure the everyday band and start the middle one: three to five words a week, mostly through reading. In Year 5, the main push: a structured list, five a day, a synonym and an antonym for each, and a review habit. In Year 6, consolidate — the words already met, the mistakes already made, and timed practice."
+      ]
+    },
+    {
+      "heading": "The arithmetic of remembering",
+      "paragraphs": [
+        "Words fade. A word met once and never revisited is usually gone within days, and a word met five times in one evening is not much better — the repetitions need to be spread out. That is why the last-minute list does so little for so much effort.",
+        "A simple schedule is enough. A new word comes back the next day, then two or three days later, then a week later, then a month later. Each time it is recalled rather than reread: cover the meaning and say it. Recall is what builds the memory; rereading mostly builds familiarity.",
+        "This is also why the list of mistakes is more valuable than the list of words. A word answered correctly first time needs less attention than one that has been missed twice. If you only have ten minutes, spend them on the words that have already proved difficult.",
+        "None of this needs an app or a spreadsheet. A notebook with a page per week works: new words on one side, the ones that came back on the other, and a line through a word once it has survived a month. The system matters far less than the return visit."
+      ]
+    },
+    {
+      "heading": "Where to find the words",
+      "paragraphs": [
+        "Start with what the child already reads. Pull unfamiliar words out of school books and library reads into a running list, a dozen a week at most. A word the child met in a story arrives with a context attached, which is exactly what a list cannot give it.",
+        "Then add a curated list for coverage, so the middle band does not arrive as a surprise in September of Year 6. A good list is grouped by difficulty and gives a meaning, a synonym and an antonym; a bad one is a thousand words in alphabetical order with no context.",
+        "Free familiarisation papers are worth reading for the format as much as the words. A word practised as a definition is a different skill from the same word met as a synonym under time pressure, and the paper is the only place the second skill can be practised.",
+        "Resist the rare-word list. It feels like progress because the words are impressive, but a child who can define an obscure word and cannot choose between reluctant and eager has learned the wrong thing for the paper in front of them."
+      ]
+    },
+    {
+      "heading": "What to do if you are behind",
+      "paragraphs": [
+        "Start with the most common words, not the most impressive ones. The everyday band is where fluency is built, and a child who is confident there can often infer the rest from context. Ten minutes a day beats a weekend of cramming, because the review is what makes it stick.",
+        "Use what the child already reads, and let the list grow from there. A dozen words a week, used in sentences, reviewed after a few days, is a real programme. It does not need a subscription or a spreadsheet.",
+        "And do not buy a new list in the last month. The words that will help are already in the child's notebook; the job then is to keep them, not to add to them."
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "title": "Free familiarisation materials",
+      "publisher": "GL Assessment",
+      "url": "https://11plus.gl-assessment.co.uk/pages/free-materials"
+    },
+    {
+      "title": "National curriculum in England: English programmes of study",
+      "publisher": "Department for Education",
+      "url": "https://www.gov.uk/government/publications/national-curriculum-in-england-english-programmes-of-study"
+    }
+  ]
+}

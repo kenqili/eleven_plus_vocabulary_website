@@ -1,1 +1,80 @@
-{"description": "Why synonyms and antonyms decide 11+ English papers, how they are tested, and a practice method that works in ten minutes a day.", "reviewed": "2026-10-15", "sections": [{"heading": "The question type that decides papers", "paragraphs": ["More 11+ English marks turn on synonyms and antonyms than on any other single skill. The format looks easy, which is exactly why children lose marks to it: they skim, trust recognition, and choose the word they have seen rather than the word that means the same.", "Under time pressure the failure mode is consistent. A child knows the word in isolation but has never met it doing a job in a sentence, so a near-miss option that feels familiar wins over the right answer."]}, {"heading": "How they are actually tested", "paragraphs": ["Typically four options, one correct, with distractors chosen to catch partial knowledge: a word that sounds similar, a word from the same topic with a different meaning, and a word the child half-remembers from somewhere else.", "Gap-fill questions test the same knowledge from the other side: the word must fit the sentence, which punishes memorised definitions and rewards words met in context. This is why lists alone stall."]}, {"heading": "Pairs, not lists", "paragraphs": ["Teach synonyms in pairs, never as columns. Take reluctant: pair it with unwilling, oppose it with eager, and the child has a small structure instead of a fact. Structures survive exam pressure; facts do not.", "Make each new word earn its opposite before tea. It takes a minute, and it builds antonym skill as a side effect of synonym practice."]}, {"heading": "A ten-minute method", "paragraphs": ["Twenty quick multiple-choice questions, same time daily, then stop, even mid-flow. Stopping early is what brings the child back tomorrow, and the words missed today show exactly what to revisit in a few days.", "Follow each round into a sentence. Ask the child to use one new word at dinner or spot it in a book. A word met doing a job in a sentence survives four options under a timer."]}], "slug": "synonyms-antonyms-11-plus", "sources": [{"publisher": "GL Assessment", "title": "Free familiarisation materials", "url": "https://11plus.gl-assessment.co.uk/pages/free-materials"}, {"publisher": "Department for Education", "title": "School Admissions Code 2021", "url": "https://www.gov.uk/government/publications/school-admissions-code"}], "standfirst": "Synonym and antonym questions look easy, which is why they cost so many marks. They test whether a child knows a word well enough to reject three impostors in seconds.", "title": "Synonyms and Antonyms: the 11+ Deciders"}
+{
+  "slug": "synonyms-antonyms-11-plus",
+  "title": "Synonyms and Antonyms: the 11+ Deciders",
+  "description": "Why synonyms and antonyms decide 11+ English papers, how they are tested, and a practice method that works in ten minutes a day.",
+  "standfirst": "Synonym and antonym questions look easy, which is why they cost so many marks. They test whether a child knows a word well enough to reject three impostors in seconds.",
+  "reviewed": "2026-10-29",
+  "sections": [
+    {
+      "heading": "The question type that decides papers",
+      "paragraphs": [
+        "Few question types in an 11+ English or verbal reasoning paper carry as much weight as the synonym and the antonym. They appear as questions in their own right, inside gap-fill sentences, in odd-one-out lists and in comprehension answers, and the same knowledge is doing the work in all of them. A child who can handle a word in one format can usually handle it in the others.",
+        "The format looks easy, which is exactly why children lose marks to it. Four options, one of which means the same as the word at the top. A confident reader recognises one of the four, decides they have seen it before, and moves on. Recognition is not the same as knowing, and the paper is built to find the difference.",
+        "Under time pressure the failure is consistent. A child has met the word in a list but never seen it doing a job in a sentence, so a near-miss that feels familiar wins over the answer that is right. The wrong option is rarely random; it is chosen to feel like the word."
+      ]
+    },
+    {
+      "heading": "What the question is really asking",
+      "paragraphs": [
+        "English has almost no exact synonyms. Two words can share a meaning and still differ in strength, formality or feeling: content, pleased and delighted all sit near happy, and none of them means quite the same thing. The instruction is usually \"closest in meaning\", and that word closest is doing real work.",
+        "So the question is not \"do you know a word that means the same?\" It is \"can you tell which of these four is nearest, and why the other three are not?\" That is a finer skill, and it is the one being tested.",
+        "There are two parts to it. Breadth is knowing the word at all — having met reluctant often enough to read it without stopping. Precision is knowing its edges: that reluctant is about willingness rather than speed, that it is milder than refuses, and that its opposite is eager rather than quick. A child with breadth and no precision will recognise every option and still choose the wrong one."
+      ]
+    },
+    {
+      "heading": "How they are tested",
+      "paragraphs": [
+        "The commonest format is a straight choice: one word, four options, pick the synonym or the antonym. The distractors are not random. A good one sounds like the target, comes from the same topic but means something else, or is a word the child half-remembers from a previous list. Spotting that pattern helps a child slow down at the right moment rather than at every word.",
+        "Gap-fill questions test the same knowledge from the other side. The word has to fit the sentence, which punishes a memorised definition and rewards a word met in context. A child who has only ever matched word to definition often knows the answer and still picks an option that does not fit the grammar of the sentence.",
+        "Odd-one-out and matching formats appear too, and both reward the same thing: comparing words with each other rather than recalling them one at a time. A child who has learned words in pairs has an advantage here that no amount of list-reading provides.",
+        "The time pressure is part of the test, not an accident of it. A question that a child could answer in a minute with a dictionary is meant to be answered in ten seconds from memory. That is why the practice has to include a clock, and why a slow, careful correct answer is not yet the skill."
+      ]
+    },
+    {
+      "heading": "Why children lose marks",
+      "paragraphs": [
+        "The first cause is reading the options before the sentence. A child who sees four words and picks the one that looks most impressive is guessing with extra steps. The habit to build is to cover the options, read the word or the sentence, decide what is needed, and only then look.",
+        "The second is partial knowledge. Frugal is not mean, and it is not poor. A child who knows only that a word belongs to money can be caught by any option from the same topic. Near-synonyms differ in strength and in judgement: thrifty is approving, frugal is neutral, miserly is not. Questions are often built on exactly those differences.",
+        "The third is vocabulary without depth. Five thousand words met once are worth less than two thousand met often enough to use. A word that exists only as a definition disappears the moment it has to survive a timed paper. The list is not the skill; the skill is the word arriving when it is needed."
+      ]
+    },
+    {
+      "heading": "Pairs, not lists",
+      "paragraphs": [
+        "Teach synonyms in pairs, and add the opposite in the same breath. Reluctant goes with unwilling, and against eager. Frugal goes with thrifty, and against wasteful. The child is then holding a small structure rather than a fact, and structures survive exam pressure.",
+        "Where a pair is close, say what separates them. Stubborn and determined both describe someone who will not give way; one is a criticism and one is a compliment. That single sentence does more than a definition, because it tells the child which word a writer would choose and why.",
+        "Roots and prefixes are worth a little time, because they let a child make a good guess at a word they have never met. Bene- and mal- carry good and bad; dis-, mis- and un- turn a word around; -less removes the thing. A child who knows that malodorous is likely to be about smell has a better chance of rejecting an option about manners, even without knowing the word.",
+        "Keep the pairs concrete. A child who can say \"reluctant means she does not want to, but she might still do it\" has something to reason with. A child who can only say \"reluctant means reluctant\" has a word-shaped hole."
+      ]
+    },
+    {
+      "heading": "A ten-minute method",
+      "paragraphs": [
+        "Twenty quick questions at the same time each day, then stop — even mid-flow. Stopping while it is still going well is what brings the child back tomorrow, and it keeps the session short enough that nobody dreads it.",
+        "Marking matters more than the score. For every wrong answer, ask the child to say why each of the other three is wrong. That is the exam skill: not \"I know this one\" but \"this one is about money, this one is too strong, this one is the opposite\". Rejecting impostors is the thing being practised.",
+        "Revisit the words that were missed two or three days later, then again a week or so after that. A word answered correctly once has been recognised; a word answered correctly after a gap has been learned. Keep a short list of the misses — five or six at a time is plenty — and let it shrink.",
+        "Then take one word into the day. Ask for a sentence at dinner, or point it out in a book. A word used once, out loud, in a sentence the child made up, is remembered far better than a word ticked off a list."
+      ]
+    },
+    {
+      "heading": "What to do in the last few weeks",
+      "paragraphs": [
+        "Stop adding new words. In the last few weeks before a paper, the useful work is consolidation: the words already met, the mistakes already made, and the habit of reading the whole question. A new list at that stage adds anxiety and very little else.",
+        "Practise in mixed, timed sets rather than one question type at a time, because that is the shape of the paper. Ten minutes of mixed questions, then a short review of what went wrong, is a better use of an evening than an hour of new vocabulary.",
+        "Watch for the moment a child starts explaining why an option is wrong without being asked. That is the sign the skill has moved from recognition to judgement, and it is worth more than any score on a practice paper."
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "title": "Free familiarisation materials",
+      "publisher": "GL Assessment",
+      "url": "https://11plus.gl-assessment.co.uk/pages/free-materials"
+    },
+    {
+      "title": "National curriculum in England: English programmes of study",
+      "publisher": "Department for Education",
+      "url": "https://www.gov.uk/government/publications/national-curriculum-in-england-english-programmes-of-study"
+    }
+  ]
+}
