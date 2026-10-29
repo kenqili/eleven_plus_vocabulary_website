@@ -13,6 +13,7 @@ import {
   X,
 } from "lucide-react";
 import ThemePicker from "./theme-picker";
+import { GUIDES as GUIDES_LIST, guideHref } from "@/lib/guides";
 
 /**
  * Five things a child came for, a disclosure for the rest, and one link that is
@@ -52,18 +53,18 @@ const FOR_GROWN_UPS = [
 ];
 
 /**
- * The three parent guides that are articles in their own right. Listed here
- * rather than left to search engines: a sitemap entry with no link pointing
- * at it is reachable only by typing the address, which no parent does.
+ * The parent guides, from the one list in `lib/guides.ts`.
+ *
+ * It used to be a literal here, and it said "three" long after two more articles
+ * had been written - so the menu, `/info` and the sitemap disagreed about how many
+ * guides there were, and the two that were not in this list had no link pointing
+ * at them anywhere on the site. A page reached only through its sitemap entry is
+ * one a crawler may fetch and a parent never will.
  */
-const GUIDES = [
-  { href: "/guides/when-to-start-preparing", label: "When to start preparing" },
-  {
-    href: "/guides/how-to-practise-effectively",
-    label: "How to practise effectively",
-  },
-  { href: "/guides/managing-exam-pressure", label: "Handling exam pressure" },
-];
+const GUIDES = GUIDES_LIST.map((guide) => ({
+  href: guideHref(guide.slug),
+  label: guide.label,
+}));
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);

@@ -2,6 +2,8 @@ import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Header from "@/components/minewords/header";
+import { siteUrl } from "@/lib/server/origin";
+import { GUIDES, guideHref } from "@/lib/guides";
 import whenToStart from "@/data/guides/when-to-start-preparing.json";
 import howToPractise from "@/data/guides/how-to-practise-effectively.json";
 import managingPressure from "@/data/guides/managing-exam-pressure.json";
@@ -103,10 +105,53 @@ export default async function GuidePage({
   const { slug } = await params;
   const article = articleOf(slug);
   if (!article) redirect(`/info#${MOVED[slug] ?? "what-this-app-does"}`);
+  const origin = siteUrl();
+  const url = `${origin}${guideHref(slug)}`;
+  // What this page is, said in the form a crawler reads. Without it the article
+  // is a page with a title and no declared author, date or subject, which is the
+  // shape of an anonymous page rather than a written one. `dateModified` is the
+  // reviewed date in the data, not the build time: the claim is "this was checked
+  // on that day", and a deploy is not a review.
+  //
+  // No `datePublished`: the files record when an article was last reviewed and not
+  // when it first appeared, and a made-up publication date on a page whose value is
+  // that its sources are checkable would be the one unverifiable thing on it.
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Article",
+        headline: article.title,
+        description: article.description,
+        dateModified: article.reviewed,
+        inLanguage: "en-GB",
+        mainEntityOfPage: url,
+        image: `${origin}/og-image.png`,
+        author: { "@type": "Organization", name: "MineWords", url: origin },
+        publisher: {
+          "@type": "Organization",
+          name: "MineWords",
+          url: origin,
+          logo: { "@type": "ImageObject", url: `${origin}/favicon.svg` },
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: origin },
+          { "@type": "ListItem", position: 2, name: article.title, item: url },
+        ],
+      },
+    ],
+  };
   return (
     <div className="site">
       <Header />
       <main className="workspace prose-workspace">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
         <section className="page-hero">
           <div>
             <div className="eyebrow">A GUIDE FOR FAMILIES</div>
@@ -138,6 +183,23 @@ export default async function GuidePage({
                   {source.title}
                 </a>{" "}
                 <span className="muted">{source.publisher}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+        {/*
+          The other guides, linked from each one. A reader who has just finished
+          an article is the person most likely to read another, and the crawler
+          following these links is how an article stops being reachable only
+          through its sitemap entry.
+        */}
+        <section className="landing-section" aria-label="More guides">
+          <h2>More guides</h2>
+          <ul className="landing-list">
+            {GUIDES.filter((guide) => guide.slug !== slug).map((guide) => (
+              <li key={guide.slug}>
+                <Link href={guideHref(guide.slug)}>{guide.label}</Link> —{" "}
+                {guide.blurb}
               </li>
             ))}
           </ul>

@@ -34,6 +34,7 @@ import {
 } from "lucide-react";
 import Header from "./header";
 import { USUAL_PRICES_FROM_LABEL } from "@/lib/server/billing";
+import { GUIDES, guideHref } from "@/lib/guides";
 
 /**
  * What the app covers, said to a parent.
@@ -647,6 +648,32 @@ export default function Landing({
             without paying. No proof needed — one email and a code appears on
             your account page.
           </p>
+        </section>
+
+        {/*
+          The guides, linked from the page every visitor lands on.
+
+          They were reachable only from a menu that renders when a parent opens
+          "Grown-ups", so the HTML a crawler reads contained no link to any of
+          them - and two of the five had no link anywhere on the site at all.
+          A sitemap entry is enough to be fetched; it is not enough to be read as
+          part of the site. This is a plain list in the server-rendered page, so
+          every guide has a path from `/` that needs no JavaScript.
+        */}
+        <section className="landing-section">
+          <h2>Guides for families</h2>
+          <p className="muted">
+            Longer reads for the questions that come before the first word,
+            written for a parent rather than a tutor.
+          </p>
+          <ul className="landing-list">
+            {GUIDES.map((guide) => (
+              <li key={guide.slug}>
+                <Link href={guideHref(guide.slug)}>{guide.label}</Link> —{" "}
+                {guide.blurb}
+              </li>
+            ))}
+          </ul>
         </section>
 
         <section className="landing-cta">

@@ -114,6 +114,17 @@ export default async function FreeWordListPage() {
             own test. For what the papers actually ask, read{" "}
             <Link href="/info">how the 11+ papers work</Link>.
           </p>
+          <p className="muted">
+            Two questions come up more than any other:{" "}
+            <Link href="/guides/how-many-words-11-plus">
+              how many words a child actually needs
+            </Link>
+            , and{" "}
+            <Link href="/guides/synonyms-antonyms-11-plus">
+              why synonyms and antonyms decide so much of the paper
+            </Link>
+            .
+          </p>
         </section>
         <section className="landing-cta no-print">
           <h2>Ready for the other {remaining.toLocaleString("en-GB")}?</h2>

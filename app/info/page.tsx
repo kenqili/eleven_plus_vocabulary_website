@@ -4,6 +4,7 @@ import { ExternalLink, List } from "lucide-react";
 import Header from "@/components/minewords/header";
 import { infoGroups, infoPage } from "@/lib/info/info";
 import { PAGE_METADATA } from "@/lib/seo";
+import { GUIDES, guideHref } from "@/lib/guides";
 
 const page = infoPage();
 
@@ -218,28 +219,16 @@ export default function InfoPage() {
 
             <section
               className="info-group"
-              aria-label="Go deeper with three guides"
+              aria-label="Go deeper with the parent guides"
             >
               <h2 className="info-group-name">Go deeper</h2>
               <ul>
-                <li>
-                  <Link href="/guides/when-to-start-preparing">
-                    When to start 11+ preparation
-                  </Link>{" "}
-                  — a calm timeline from Year 4.
-                </li>
-                <li>
-                  <Link href="/guides/how-to-practise-effectively">
-                    How to practise for the 11+
-                  </Link>{" "}
-                  — short sessions that stick.
-                </li>
-                <li>
-                  <Link href="/guides/managing-exam-pressure">
-                    Handling 11+ exam pressure
-                  </Link>{" "}
-                  — keeping nerves healthy.
-                </li>
+                {GUIDES.map((guide) => (
+                  <li key={guide.slug}>
+                    <Link href={guideHref(guide.slug)}>{guide.label}</Link> —{" "}
+                    {guide.blurb}
+                  </li>
+                ))}
               </ul>
             </section>
 

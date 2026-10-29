@@ -16,6 +16,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { INDEXABLE_PAGES, PAGE_METADATA, resolveOrigin } from "../lib/seo.ts";
+import { GUIDES } from "../lib/guides.ts";
 
 const config = readFileSync("next.config.ts", "utf8");
 
@@ -251,6 +252,55 @@ test("the sitemap lists exactly the pages the header allows", () => {
     allowed.sort(),
     "the sitemap and the X-Robots-Tag rule list different pages, so some page is listed and unreadable or readable and unfound",
   );
+});
+
+test("every guide article is linked from a page a crawler reads", () => {
+  // The failure this catches is an orphan: a page in the sitemap, allowed by the
+  // robots header, with no link pointing at it anywhere on the site. Two of the
+  // five were exactly that - written after the header menu and the /info block had
+  // each been given their list of three - so a crawler could fetch them and a
+  // parent had no way to reach them.
+  const pages = INDEXABLE_PAGES.filter((page) =>
+    page.startsWith("guides/"),
+  ).map((page) => page.slice("guides/".length));
+  assert.deepEqual(
+    GUIDES.map((guide) => guide.slug).sort(),
+    [...pages].sort(),
+    "the guide list and the indexable guide pages disagree: one article is an orphan, or one link points at nothing",
+  );
+  for (const guide of GUIDES) {
+    assert.ok(
+      existsSync(`data/guides/${guide.slug}.json`),
+      `${guide.slug} is in the guide list but has no article file`,
+    );
+  }
+  // The front page is where every visitor lands, and it is a server component, so
+  // this list is in the HTML before any JavaScript runs. The menu that carried the
+  // links renders only when a parent opens "Grown-ups", which a crawler never does.
+  const landing = readFileSync("components/minewords/landing.tsx", "utf8");
+  assert.match(
+    landing,
+    /GUIDES\.map\(/,
+    "the front page does not render the guide list, so the guides are reachable only through a menu that opens on a click",
+  );
+  assert.match(landing, /guideHref\(guide\.slug\)/);
+  // And /info links them, because that is where a parent reading about the exam
+  // ends up.
+  const info = readFileSync("app/info/page.tsx", "utf8");
+  assert.match(info, /GUIDES\.map\(/);
+});
+
+test("each guide says what it is, in structured data", () => {
+  // An article with no declared author, date or subject is the shape of an
+  // anonymous page rather than a written one. The date is the reviewed date from
+  // the data, never the build time: a deploy is not a review.
+  const source = readFileSync("app/guides/[slug]/page.tsx", "utf8");
+  assert.match(source, /"@type": "Article"/);
+  assert.match(source, /dateModified: article\.reviewed/);
+  assert.match(source, /"@type": "BreadcrumbList"/);
+  // No publication date is invented: the files record when an article was last
+  // reviewed, not when it first appeared.
+  assert.doesNotMatch(source, /"datePublished":/);
 });
 
 test("every indexable page exists and has its own title and description", () => {
