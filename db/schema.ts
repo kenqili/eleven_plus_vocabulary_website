@@ -577,6 +577,36 @@ export const wordGames = sqliteTable(
 );
 
 /**
+ * The score history of the games in `/games`.
+ *
+ * One row per finished match, written once when the child reaches the end. The
+ * id comes from the browser: a retried finish finds the row and is answered
+ * from it instead of creating a second match and a second correctness. `kind`
+ * is the challenge (`syn` or `ant`), so the right-hand panel can show the
+ * history of the game being played rather than a mixed list.
+ *
+ * A match that is abandoned half way leaves no row. There is nothing to resume
+ * and nothing to score; a child who closes the tab has simply stopped.
+ */
+export const gameMatches = sqliteTable(
+  "game_matches",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    kind: text("kind").notNull(),
+    score: integer("score").notNull().default(0),
+    questions: integer("questions").notNull().default(0),
+    seconds: integer("seconds").notNull().default(0),
+    createdAt: integer("created_at").notNull(),
+  },
+  (t) => [
+    index("game_matches_recent").on(t.userId, t.kind, t.createdAt),
+  ],
+);
+
+/**
  * Password recovery, one live link per account.
  *
  * `tokenHash` is the sha256 of the token the parent was emailed, never the token

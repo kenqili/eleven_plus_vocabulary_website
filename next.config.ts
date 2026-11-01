@@ -88,7 +88,22 @@ const nextConfig: NextConfig = {
       // plain literals below. Verbose, and it cannot silently stop matching.
       {
         source:
-          "/:path(practice|five-letters|account|admin|stories|words|guides|calendar|rewards|confirm-email|reset-password)",
+          "/:path(practice|five-letters|games|account|admin|stories|words|guides|calendar|rewards|confirm-email|reset-password)",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+      {
+        // The games are a child's playground, not a page a parent searches
+        // for. `:path(games)` reaches `/games` only, so the games themselves
+        // are named - the same trap as `/words/print`.
+        source: "/games/five-letters",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+      {
+        source: "/games/syn",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+      {
+        source: "/games/ant",
         headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
       },
       {

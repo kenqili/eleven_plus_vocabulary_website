@@ -36,7 +36,7 @@ import { GUIDES as GUIDES_LIST, guideHref } from "@/lib/guides";
  * full row.
  */
 const FOR_CHILDREN = [
-  { href: "/five-letters", label: "Five Letters" },
+  { href: "/games", label: "Games" },
   { href: "/stories", label: "Stories" },
   { href: "/words", label: "Word list" },
   { href: "/rewards", label: "Badges" },

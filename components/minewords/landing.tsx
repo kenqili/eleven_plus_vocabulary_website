@@ -492,7 +492,7 @@ export default function Landing({
             </article>
           </div>
           <div className="landing-actions">
-            <Link className="text-button" href="/five-letters">
+            <Link className="text-button" href="/games/five-letters">
               <Gamepad2 size={16} /> Play Five Letters
             </Link>
           </div>
