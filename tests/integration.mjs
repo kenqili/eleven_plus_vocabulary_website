@@ -452,6 +452,30 @@ try {
   );
   assert.equal(printed.status, 200);
   assert.match(await printed.text(), /1 words/);
+  // The sheet's print button is an inline handler, so the policy the browser
+  // receives has to allow it. The app's document policy does not. When the
+  // proxy applied that policy to this response too, the button rendered and the
+  // click did nothing: the browser refused the handler and the sheet could not
+  // be printed or saved at all.
+  const sheet = await fetch(
+    origin +
+      "/api/words/export?format=sheet&filter=all&level=all&layout=5x12&content=word",
+    { headers: { Cookie: cookie } },
+  );
+  assert.equal(sheet.status, 200);
+  const sheetHtml = await sheet.text();
+  assert.match(sheetHtml, /onclick="window\.print\(\)"/);
+  const sheetPolicy = sheet.headers.get("content-security-policy") ?? "";
+  assert.match(
+    sheetPolicy,
+    /script-src[^;]*'unsafe-inline'/,
+    "the policy the browser receives blocks the sheet's own print button",
+  );
+  assert.doesNotMatch(
+    sheetPolicy,
+    /script-src[^;]*'nonce-/,
+    "the app's document policy is applied to the sheet as well, so its inline print handler cannot run",
+  );
   const escaped = await fetch(
     origin +
       "/api/words/export?format=print&search=" +

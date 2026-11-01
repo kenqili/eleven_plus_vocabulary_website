@@ -78,7 +78,14 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Everything, including the static assets, because the policy has to be on
-  // the document response and that is the only response a browser reads.
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  // Every response that renders an app document, because the policy has to be
+  // on the document response and that is the only response a browser reads.
+  //
+  // `/api/` is deliberately outside it. Those responses are data, not
+  // documents, and a policy on JSON protects nothing. The one API response
+  // that is a document - the printable word sheet - sets its own policy,
+  // because its print button is an inline handler. This policy would replace
+  // that one and block the handler, which is exactly what happened: the button
+  // was rendered, the click was refused, and the console said so.
+  matcher: ["/((?!api/|_next/static|_next/image|favicon.ico).*)"],
 };
