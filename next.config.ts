@@ -107,7 +107,7 @@ const nextConfig: NextConfig = {
         headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
       },
       {
-        source: "/games/mi",
+        source: "/games/mix",
         headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
       },
       {

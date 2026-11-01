@@ -5,7 +5,7 @@ import { formatMatchDate, formatMatchSeconds } from "@/lib/games";
 /**
  * The last ten matches, in the right-hand column of a game.
  *
- * The three games share this panel rather than each carrying a copy. The
+ * The games share this panel rather than each carrying a copy. The
  * history is already per game in the database; what differs between the games
  * is only the intro line above it and the key hints below it.
  */

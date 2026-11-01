@@ -246,11 +246,11 @@ test("the relation games draw from the child's current band", async () => {
 });
 
 test("the mixed game asks every practice type and pays once", async () => {
-  const account = await signedUp("games-mi");
+  const account = await signedUp("games-mix");
   const cookie = account.cookie;
-  const started = await get(cookie, "mi");
+  const started = await get(cookie, "mix");
   assert.equal(started.status, 200, JSON.stringify(started.data));
-  assert.equal(started.data.kind, "mi");
+  assert.equal(started.data.kind, "mix");
   assert.equal(started.data.questions.length, 10);
   assert.equal(
     new Set(started.data.questions.map((question) => question.wordId)).size,
@@ -279,7 +279,7 @@ test("the mixed game asks every practice type and pays once", async () => {
     selected: question.answer,
   }));
   const finished = await post(cookie, {
-    kind: "mi",
+    kind: "mix",
     matchId,
     answers,
     seconds: 21,
@@ -288,7 +288,7 @@ test("the mixed game asks every practice type and pays once", async () => {
   assert.equal(finished.data.score, 10);
   assert.equal(finished.data.awarded, 10);
   assert.equal(finished.data.history.length, 1);
-  assert.equal(finished.data.history[0].kind, "mi");
+  assert.equal(finished.data.history[0].kind, "mix");
   for (const question of started.data.questions)
     assert.equal(
       progressFor(account.id, question.wordId).correct,
@@ -297,7 +297,7 @@ test("the mixed game asks every practice type and pays once", async () => {
     );
 
   const retried = await post(cookie, {
-    kind: "mi",
+    kind: "mix",
     matchId,
     answers,
     seconds: 21,
@@ -305,7 +305,7 @@ test("the mixed game asks every practice type and pays once", async () => {
   assert.equal(retried.status, 200);
   assert.equal(retried.data.duplicate, true);
   assert.equal(retried.data.awarded, 0);
-  assert.equal(matchRows(account.id, "mi"), 1);
+  assert.equal(matchRows(account.id, "mix"), 1);
   // The relation history is a different game.
   const syn = await get(cookie, "syn");
   assert.deepEqual(syn.data.history, []);
@@ -332,7 +332,7 @@ test("the games pages are served, and the old Five Letters address redirects", a
     ["/games", /Synonym Challenge/],
     ["/games/syn", /Synonym Challenge/],
     ["/games/ant", /Antonym Challenge/],
-    ["/games/mi", /Mi Challenge/],
+    ["/games/mix", /Mix Challenge/],
     ["/games/five-letters", /Five Letters/],
   ];
   for (const [path, expected] of pages) {

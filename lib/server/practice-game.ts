@@ -38,7 +38,7 @@ import { placementLevelFor } from "./placement";
  */
 
 export type PracticeGameState = {
-  kind: "mi";
+  kind: "mix";
   questions: PracticeGameQuestion[];
   history: RelationMatch[];
   /**
@@ -116,9 +116,9 @@ export async function startPracticeGame(
   if (!questions.length)
     throw new HttpError(402, "There are no words to play with yet.");
   return {
-    kind: "mi",
+    kind: "mix",
     questions,
-    history: await historyFor(userId, "mi"),
+    history: await historyFor(userId, "mix"),
     level: aligned ? level : null,
   };
 }
@@ -174,5 +174,5 @@ export async function finishPracticeMatch(
     });
   }
 
-  return recordGameMatch({ userId, kind: "mi", matchId, graded, seconds });
+  return recordGameMatch({ userId, kind: "mix", matchId, graded, seconds });
 }

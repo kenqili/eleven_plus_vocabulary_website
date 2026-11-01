@@ -25,7 +25,7 @@ import WordCard from "./word-card";
  */
 
 type GameState = {
-  kind: "mi";
+  kind: "mix";
   questions: PracticeGameQuestion[];
   history: RelationMatch[];
   level: number | null;
@@ -78,7 +78,7 @@ export default function PracticeGame({
     setChecked(false);
     setMatchId(newMatchId());
     try {
-      const state = await api<GameState>("/api/games?kind=mi");
+      const state = await api<GameState>("/api/games?kind=mix");
       setQuestions(state.questions);
       setHistory(state.history);
       setLevel(state.level);
@@ -152,7 +152,7 @@ export default function PracticeGame({
     setBusy(true);
     try {
       const state = await api<RelationFinish>("/api/games", {
-        kind: "mi",
+        kind: "mix",
         matchId,
         answers: submissions,
         seconds,
@@ -220,7 +220,7 @@ export default function PracticeGame({
       <div className="relation-hero">
         <div>
           <p className="eyebrow">Games</p>
-          <h1>Mi Challenge</h1>
+          <h1>Mix Challenge</h1>
           <p>
             Ten mixed questions from your practice words: meanings, similar
             words, opposites, name the word and fill the gap.

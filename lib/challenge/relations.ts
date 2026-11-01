@@ -22,11 +22,11 @@ export type RelationKind = (typeof RELATION_KINDS)[number];
 /**
  * Every game that writes a row to `game_matches`.
  *
- * `mi` is the mixed-practice game: ten questions of every practice type rather
+ * `mix` is the mixed-practice game: ten questions of every practice type rather
  * than a relation pick. It shares the match history and the correctness write,
  * so it belongs in the same list even though its questions are built elsewhere.
  */
-export const GAME_KINDS = [...RELATION_KINDS, "mi"] as const;
+export const GAME_KINDS = [...RELATION_KINDS, "mix"] as const;
 export type GameKind = (typeof GAME_KINDS)[number];
 
 /** Questions in one match. A sitting, not a test. */

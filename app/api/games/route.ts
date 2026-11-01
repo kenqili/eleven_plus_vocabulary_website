@@ -52,7 +52,7 @@ export async function GET(request: Request) {
     if (!user) throw new HttpError(401, "Sign in to play.");
     const kind = gameKind(new URL(request.url).searchParams.get("kind"));
     const allowedWordIds = await allowedFor(user);
-    if (kind === "mi")
+    if (kind === "mix")
       return json(await startPracticeGame(user.id, allowedWordIds));
     return json(await startRelationGame(user.id, kind, allowedWordIds));
   });
@@ -70,7 +70,7 @@ export async function POST(request: Request) {
       throw new HttpError(400, "That match could not be saved.");
     const answers = Array.isArray(input.answers) ? input.answers : [];
     const allowedWordIds = await allowedFor(user);
-    if (kind === "mi")
+    if (kind === "mix")
       return json(
         await finishPracticeMatch(
           user.id,

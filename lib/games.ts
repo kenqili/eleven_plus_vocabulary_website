@@ -34,9 +34,9 @@ export const GAMES: readonly Game[] = [
     blurb: "Pick the words that mean the opposite. Ten rounds, then a score.",
   },
   {
-    slug: "mi",
-    href: "/games/mi",
-    label: "Mi Challenge",
+    slug: "mix",
+    href: "/games/mix",
+    label: "Mix Challenge",
     blurb:
       "Ten mixed questions: meanings, similar words, opposites, name the word and fill the gap.",
   },

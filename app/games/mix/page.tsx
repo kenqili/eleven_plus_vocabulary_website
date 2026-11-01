@@ -10,12 +10,12 @@ import { guestPracticeQuestions } from "@/lib/server/practice-game";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Mi Challenge — an 11+ word game",
+  title: "Mix Challenge — an 11+ word game",
   description:
     "Ten mixed practice questions: meanings, similar words, opposites, name the word and fill the gap.",
   robots: { index: false, follow: false },
 };
 
-export default function MiChallengePage() {
+export default function MixChallengePage() {
   return <PracticeGame demoQuestions={guestPracticeQuestions()} />;
 }
