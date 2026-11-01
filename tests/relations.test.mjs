@@ -125,6 +125,15 @@ test("every question the real bank builds is fair and gradeable", () => {
           question.options.map(normalise).includes(normalise(answer)),
           `${kind}: ${question.word} does not offer ${answer}`,
         );
+      for (const [option, meaning] of Object.entries(
+        question.optionDefinitions,
+      )) {
+        assert.ok(
+          question.options.includes(option),
+          `${kind}: ${question.word} defines ${option}, which is not an option`,
+        );
+        assert.ok(meaning.trim(), `${kind}: ${option} has an empty meaning`);
+      }
       const own = new Set(
         [...splitRelations(word.syn), ...splitRelations(word.ant)].map(normalise),
       );
@@ -224,6 +233,77 @@ test("a word with no relation of the kind asked is never a question", () => {
     }),
     [],
   );
+});
+
+test("an option that is a headword carries its meaning", () => {
+  const vocabulary = [
+    {
+      id: "a",
+      word: "happy",
+      definition: "feeling good",
+      example: "",
+      syn: "glad; cheerful",
+      ant: "sad",
+      help: "Feeling pleased about something.",
+    },
+    {
+      id: "b",
+      word: "glad",
+      definition: "pleased",
+      example: "",
+      syn: "happy",
+      ant: "sad",
+      help: "Pleased about something that happened.",
+    },
+    {
+      id: "c",
+      word: "brave",
+      definition: "not afraid",
+      example: "",
+      syn: "courageous",
+      ant: "afraid",
+      help: "Not frightened.",
+    },
+    {
+      id: "d",
+      word: "calm",
+      definition: "not excited",
+      example: "",
+      syn: "peaceful",
+      ant: "agitated",
+      help: "Quiet and steady.",
+    },
+    {
+      id: "e",
+      word: "dull",
+      definition: "not bright",
+      example: "",
+      syn: "boring",
+      ant: "bright",
+      help: "Not interesting.",
+    },
+  ];
+  const [question] = buildQuestions({
+    kind: "syn",
+    targets: [vocabulary[0]],
+    vocabulary,
+    count: 1,
+    random: seeded(7),
+  });
+  assert.ok(
+    question.optionDefinitions.glad,
+    "the answer `glad` is a headword but has no meaning",
+  );
+  for (const [option, meaning] of Object.entries(
+    question.optionDefinitions,
+  )) {
+    assert.ok(question.options.includes(option));
+    assert.equal(
+      meaning,
+      vocabulary.find((entry) => entry.word === option)?.help,
+      `${option} is explained with another word's meaning`,
+    );
+  }
 });
 
 test("the labels a child reads are singular and plural", () => {

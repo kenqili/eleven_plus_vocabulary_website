@@ -107,6 +107,10 @@ const nextConfig: NextConfig = {
         headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
       },
       {
+        source: "/games/mi",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+      {
         // The nested pages, literally.
         source: "/words/manage",
         headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],

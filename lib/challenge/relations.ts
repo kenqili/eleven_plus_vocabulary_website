@@ -19,6 +19,16 @@ import { shuffle } from "./words.ts";
 export const RELATION_KINDS = ["syn", "ant"] as const;
 export type RelationKind = (typeof RELATION_KINDS)[number];
 
+/**
+ * Every game that writes a row to `game_matches`.
+ *
+ * `mi` is the mixed-practice game: ten questions of every practice type rather
+ * than a relation pick. It shares the match history and the correctness write,
+ * so it belongs in the same list even though its questions are built elsewhere.
+ */
+export const GAME_KINDS = [...RELATION_KINDS, "mi"] as const;
+export type GameKind = (typeof GAME_KINDS)[number];
+
 /** Questions in one match. A sitting, not a test. */
 export const QUESTIONS_PER_MATCH = 10;
 /** Correct options per question. */
@@ -40,7 +50,7 @@ export type RelationWord = {
 /** One finished match, as the history panel shows it. */
 export type RelationMatch = {
   id: string;
-  kind: RelationKind;
+  kind: GameKind;
   score: number;
   questions: number;
   seconds: number;
@@ -78,6 +88,12 @@ export type RelationQuestion = {
   answers: string[];
   /** Every option, in the order shown. */
   options: string[];
+  /**
+   * The plain-language meaning of each option the bank has as a headword.
+   * Options are relations of other words, so not every one of them is a
+   * headword; the ones that are not simply have no entry here.
+   */
+  optionDefinitions: Record<string, string>;
   /** How many of the options the child must pick. */
   selectCount: number;
 };
@@ -185,6 +201,16 @@ export function buildQuestions(input: {
     }
   }
 
+  // The options are relations rather than headwords, so this is a lookup by
+  // headword with the misses left out. It is what lets a wrong pick be
+  // explained instead of only marked.
+  const definitionByHeadword = new Map<string, string>();
+  for (const word of vocabulary) {
+    const meaning = (word.help || word.definition || "").trim();
+    if (meaning)
+      definitionByHeadword.set(word.word.trim().toLowerCase(), meaning);
+  }
+
   const questions: RelationQuestion[] = [];
   for (const target of shuffle([...targets], random)) {
     if (questions.length >= count) break;
@@ -236,6 +262,7 @@ export function buildQuestions(input: {
     );
     if (!distractors.length) continue;
 
+    const options = shuffle([...answers, ...distractors], random);
     questions.push({
       wordId: target.id,
       word: target.word,
@@ -244,7 +271,15 @@ export function buildQuestions(input: {
       synonyms: splitRelations(target.syn),
       antonyms: splitRelations(target.ant),
       answers,
-      options: shuffle([...answers, ...distractors], random),
+      options,
+      optionDefinitions: Object.fromEntries(
+        options
+          .map((option) => [
+            option,
+            definitionByHeadword.get(option.trim().toLowerCase()),
+          ])
+          .filter((entry): entry is [string, string] => Boolean(entry[1])),
+      ),
       selectCount: answers.length,
     });
   }

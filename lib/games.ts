@@ -33,4 +33,23 @@ export const GAMES: readonly Game[] = [
     label: "Antonym Challenge",
     blurb: "Pick the words that mean the opposite. Ten rounds, then a score.",
   },
+  {
+    slug: "mi",
+    href: "/games/mi",
+    label: "Mi Challenge",
+    blurb:
+      "Ten mixed questions: meanings, similar words, opposites, name the word and fill the gap.",
+  },
 ] as const;
+
+/** A match time as `m:ss`, shared by every game's summary and history. */
+export const formatMatchSeconds = (seconds: number) => {
+  const value = Math.max(0, Math.round(seconds));
+  return `${Math.floor(value / 60)}:${String(value % 60).padStart(2, "0")}`;
+};
+
+/** A match date as `1 Nov`, shared by every game's history. */
+export const formatMatchDate = (time: number) =>
+  new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short" }).format(
+    new Date(time),
+  );

@@ -18,7 +18,7 @@ import { randomUUID } from "node:crypto";
 import { DatabaseSync } from "node:sqlite";
 import { signedUp } from "./helpers/account.mjs";
 import { relationAnswers } from "../lib/challenge/relations.ts";
-import { freeOrder, words } from "../lib/challenge/bank.ts";
+import { freeOrder, levelOf, words } from "../lib/challenge/bank.ts";
 
 const origin = process.env.TEST_ORIGIN || "http://127.0.0.1:5173";
 if (!["localhost", "127.0.0.1"].includes(new URL(origin).hostname))
@@ -212,6 +212,105 @@ test("a free account is never asked, or credited for, a paid word", async () => 
   assert.equal(progressFor(account.id, paid.id), null);
 });
 
+test("the relation games draw from the child's current band", async () => {
+  const account = await signedUp("games-level");
+  // Master 95% of band 0. The slow rule promotes out of a band at 80%, so the
+  // account is on level 1 and the games must draw from there. The margin is
+  // wider than 80% because the band's totals in the game are the words that
+  // have a relation, a subset of the band, and the unmastered remainder could
+  // otherwise fall inside that subset.
+  const bandZero = words.filter((word) => levelOf.get(word.id) === 0);
+  const insert = db.prepare(
+    "INSERT INTO progress(user_id,word_id,correct,mastered) VALUES(?,?,5,1) ON CONFLICT(user_id,word_id) DO UPDATE SET correct=5,mastered=1",
+  );
+  db.exec("BEGIN");
+  for (const word of bandZero.slice(0, Math.ceil(bandZero.length * 0.95)))
+    insert.run(account.id, word.id);
+  db.exec("COMMIT");
+
+  for (const kind of ["syn", "ant"]) {
+    const started = await get(account.cookie, kind);
+    assert.equal(started.status, 200, JSON.stringify(started.data));
+    assert.equal(
+      started.data.level,
+      1,
+      `${kind}: the game did not report the account's band`,
+    );
+    for (const question of started.data.questions)
+      assert.equal(
+        levelOf.get(question.wordId),
+        1,
+        `${kind}: ${question.word} is outside the account's band`,
+      );
+  }
+});
+
+test("the mixed game asks every practice type and pays once", async () => {
+  const account = await signedUp("games-mi");
+  const cookie = account.cookie;
+  const started = await get(cookie, "mi");
+  assert.equal(started.status, 200, JSON.stringify(started.data));
+  assert.equal(started.data.kind, "mi");
+  assert.equal(started.data.questions.length, 10);
+  assert.equal(
+    new Set(started.data.questions.map((question) => question.wordId)).size,
+    10,
+    "the same word was asked twice",
+  );
+  assert.deepEqual(
+    [
+      ...new Set(started.data.questions.map((question) => question.type)),
+    ].sort(),
+    ["ant", "cloze", "def", "syn", "word"],
+    "the match does not cover every practice type",
+  );
+  for (const question of started.data.questions) {
+    assert.equal(question.choices.length, 4);
+    assert.ok(
+      question.choices.includes(question.answer),
+      `${question.word}: the answer is not among the choices`,
+    );
+  }
+
+  const matchId = randomUUID();
+  const answers = started.data.questions.map((question) => ({
+    wordId: question.wordId,
+    type: question.type,
+    selected: question.answer,
+  }));
+  const finished = await post(cookie, {
+    kind: "mi",
+    matchId,
+    answers,
+    seconds: 21,
+  });
+  assert.equal(finished.status, 200, JSON.stringify(finished.data));
+  assert.equal(finished.data.score, 10);
+  assert.equal(finished.data.awarded, 10);
+  assert.equal(finished.data.history.length, 1);
+  assert.equal(finished.data.history[0].kind, "mi");
+  for (const question of started.data.questions)
+    assert.equal(
+      progressFor(account.id, question.wordId).correct,
+      1,
+      `${question.word} was not credited once`,
+    );
+
+  const retried = await post(cookie, {
+    kind: "mi",
+    matchId,
+    answers,
+    seconds: 21,
+  });
+  assert.equal(retried.status, 200);
+  assert.equal(retried.data.duplicate, true);
+  assert.equal(retried.data.awarded, 0);
+  assert.equal(matchRows(account.id, "mi"), 1);
+  // The relation history is a different game.
+  const syn = await get(cookie, "syn");
+  assert.deepEqual(syn.data.history, []);
+});
+
 test("a signed-out browser is refused, and a malformed match id is not saved", async () => {
   const guest = await get(undefined, "syn");
   assert.equal(guest.status, 401);
@@ -233,6 +332,7 @@ test("the games pages are served, and the old Five Letters address redirects", a
     ["/games", /Synonym Challenge/],
     ["/games/syn", /Synonym Challenge/],
     ["/games/ant", /Antonym Challenge/],
+    ["/games/mi", /Mi Challenge/],
     ["/games/five-letters", /Five Letters/],
   ];
   for (const [path, expected] of pages) {

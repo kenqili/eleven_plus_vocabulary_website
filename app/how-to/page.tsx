@@ -208,10 +208,10 @@ export default function HowToPage() {
             <Gamepad2 size={22} />
             <h3>Play with the words</h3>
             <p>
-              <Link href="/games/five-letters">Five Letters</Link> is a six-guess word
-              game built from the same collection. Each guess opens a card with
-              the meaning, an example and related words, so a lucky guess still
-              teaches something.
+              <Link href="/games">Games</Link> turns the same collection into
+              Five Letters, synonym and antonym challenges, and mixed practice.
+              Every round ends with the meaning, an example and related words,
+              so a lucky guess still teaches something.
             </p>
           </article>
         </section>

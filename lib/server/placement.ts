@@ -5,6 +5,8 @@ import {
 } from "@/lib/challenge/added-words";
 import {
   bandsFrom,
+  currentLevel,
+  levelFractions,
   placementFromBands,
   type BandSummary,
   type TrailingAnswer,
@@ -165,6 +167,48 @@ export async function trailingAnswers(
       }>()
   ).results;
   return trailingFromRows(rows);
+}
+
+/**
+ * The child's band, counted over a particular pool.
+ *
+ * The games draw from a narrower pool than the account does - the words a free
+ * account may see, or the words that have the relation the game asks for - so
+ * the level has to be counted over that same pool. Counting the whole bank
+ * would put a free child on a band their collection does not contain, and the
+ * game would then have no words to ask at the level it had chosen.
+ */
+export async function placementLevelFor(
+  userId: string,
+  targets: readonly { id: string }[],
+): Promise<number> {
+  const db = database();
+  const [rows, trailing] = await Promise.all([
+    db
+      .prepare(PROGRESS_SQL)
+      .bind(userId)
+      .all<{ word_id: string; correct: number; mastered: number }>(),
+    trailingAnswers(userId),
+  ]);
+  const byId = new Map((rows.results ?? []).map((row) => [row.word_id, row]));
+  const totals = [0, 0, 0, 0, 0, 0];
+  const items: Array<{ level: number; mastered: boolean; correct: number }> =
+    [];
+  for (const target of targets) {
+    const band = bandFor(target.id);
+    if (band < 0 || band > 5) continue;
+    totals[band] += 1;
+    const row = byId.get(target.id);
+    items.push({
+      level: band,
+      mastered: hasMastered({
+        mastered: row?.mastered,
+        correct: row?.correct ?? 0,
+      }),
+      correct: row?.correct ?? 0,
+    });
+  }
+  return currentLevel(levelFractions(items, totals), trailing);
 }
 
 export async function accountPlacement(userId: string): Promise<{

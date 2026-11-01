@@ -7519,6 +7519,33 @@ hr {
 .relation-option-text {
   flex: 1;
 }
+.practice-options {
+  grid-template-columns: 1fr;
+}
+.practice-option {
+  font-weight: 500;
+  line-height: 1.4;
+}
+.relation-prompt {
+  margin: 0 0 10px;
+  font-size: 22px;
+  line-height: 1.35;
+}
+.relation-wrong-words {
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  border-left: 3px solid var(--line-danger-2);
+  border-radius: 8px;
+  background: var(--surface-danger-2);
+}
+.relation-wrong-words ul {
+  margin: 0;
+  padding-left: 18px;
+}
+.relation-wrong-words li {
+  margin: 6px 0;
+  font-size: 14px;
+}
 .relation-mark {
   color: var(--ink-success);
   font-weight: 900;

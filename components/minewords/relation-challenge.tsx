@@ -12,6 +12,9 @@ import {
   type RelationResult,
 } from "@/lib/challenge/relations";
 import { shuffle } from "@/lib/challenge/words";
+import { formatMatchSeconds } from "@/lib/games";
+import MatchHistory from "./match-history";
+import WordCard from "./word-card";
 
 /**
  * One component, two games.
@@ -32,6 +35,7 @@ type GameState = {
   kind: RelationKind;
   questions: RelationQuestion[];
   history: RelationMatch[];
+  level: number | null;
 };
 
 type Summary = {
@@ -47,49 +51,33 @@ const newMatchId = () => {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 };
 
-const formatSeconds = (seconds: number) => {
-  const value = Math.max(0, Math.round(seconds));
-  return `${Math.floor(value / 60)}:${String(value % 60).padStart(2, "0")}`;
-};
-
-const formatDate = (time: number) =>
-  new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short" }).format(
-    new Date(time),
+function WrongPicks({
+  question,
+  selected,
+}: {
+  question: RelationQuestion;
+  selected: readonly string[];
+}) {
+  const wrong = selected.filter(
+    (option) =>
+      !question.answers.some(
+        (answer) => answer.toLowerCase() === option.toLowerCase(),
+      ),
   );
-
-function WordCard({ question }: { question: RelationQuestion }) {
+  if (!wrong.length) return null;
   return (
-    <div className="relation-card-details">
-      <p className="relation-definition">{question.definition}</p>
-      {question.example ? (
-        <p className="relation-example">“{question.example}”</p>
-      ) : null}
-      <div className="relation-relations">
-        <div>
-          <span className="relation-relation-label">Synonyms</span>
-          {question.synonyms.length ? (
-            <ul>
-              {question.synonyms.map((word) => (
-                <li key={word}>{word}</li>
-              ))}
-            </ul>
-          ) : (
-            <p className="relation-none">None recorded.</p>
-          )}
-        </div>
-        <div>
-          <span className="relation-relation-label">Antonyms</span>
-          {question.antonyms.length ? (
-            <ul>
-              {question.antonyms.map((word) => (
-                <li key={word}>{word}</li>
-              ))}
-            </ul>
-          ) : (
-            <p className="relation-none">None recorded.</p>
-          )}
-        </div>
-      </div>
+    <div className="relation-wrong-words">
+      <p className="relation-relation-label">What your wrong picks mean</p>
+      <ul>
+        {wrong.map((option) => (
+          <li key={option}>
+            <strong>{option}</strong>
+            {question.optionDefinitions[option]
+              ? ` — ${question.optionDefinitions[option]}`
+              : " — no definition recorded"}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
@@ -117,6 +105,7 @@ export default function RelationChallenge({
   const [error, setError] = useState("");
   const [matchId, setMatchId] = useState("");
   const [startedAt, setStartedAt] = useState(0);
+  const [level, setLevel] = useState<number | null>(null);
 
   const start = useCallback(async () => {
     setLoading(true);
@@ -132,6 +121,7 @@ export default function RelationChallenge({
       const state = await api<GameState>(`/api/games?kind=${kind}`);
       setQuestions(state.questions);
       setHistory(state.history);
+      setLevel(state.level);
       setGuest(false);
     } catch (cause) {
       if ((cause as { status?: number }).status === 401) {
@@ -141,6 +131,7 @@ export default function RelationChallenge({
         setGuest(true);
         setQuestions(shuffle(demoQuestions));
         setHistory([]);
+        setLevel(null);
       } else {
         setError(
           cause instanceof Error
@@ -261,7 +252,7 @@ export default function RelationChallenge({
       if (event.metaKey || event.ctrlKey || event.altKey) return;
       const target = event.target as HTMLElement | null;
       if (target && /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)) return;
-      if (event.key === "Enter") {
+      if (event.key === "Enter" || event.key === "ArrowRight") {
         event.preventDefault();
         next();
         return;
@@ -294,6 +285,9 @@ export default function RelationChallenge({
         </div>
         <div className="relation-badges">
           {guest ? <span className="relation-pill is-guest">Guest</span> : null}
+          {level !== null ? (
+            <span className="relation-pill">Level {level}</span>
+          ) : null}
           <span className="relation-pill">
             {loading
               ? "Getting ready"
@@ -316,7 +310,7 @@ export default function RelationChallenge({
                 {summary.score} / {summary.questions}
               </h2>
               <p className="relation-summary-line">
-                You took {formatSeconds(summary.seconds)}.
+                You took {formatMatchSeconds(summary.seconds)}.
               </p>
               {guest ? (
                 <p className="relation-note">
@@ -434,7 +428,10 @@ export default function RelationChallenge({
                       ? "All correct."
                       : "Not quite. The right answers are highlighted."}
                   </p>
-                  <WordCard question={current} />
+                  {!last?.correct ? (
+                    <WrongPicks question={current} selected={selected} />
+                  ) : null}
+                  <WordCard word={current} />
                 </>
               ) : null}
               <div className="relation-actions">
@@ -445,7 +442,7 @@ export default function RelationChallenge({
                     onClick={next}
                   >
                     {index + 1 < total ? "Next word" : "See your score"}{" "}
-                    <kbd>Enter</kbd>
+                    <kbd>Enter</kbd> or <kbd>→</kbd>
                   </button>
                 ) : (
                   <button
@@ -454,7 +451,7 @@ export default function RelationChallenge({
                     onClick={check}
                     disabled={selected.length !== current.selectCount}
                   >
-                    Check <kbd>Enter</kbd>
+                    Check <kbd>Enter</kbd> or <kbd>→</kbd>
                   </button>
                 )}
               </div>
@@ -479,47 +476,19 @@ export default function RelationChallenge({
           )}
         </section>
 
-        <aside className="relation-history">
-          <h2>Your matches</h2>
-          <p className="relation-history-intro">
-            The last ten rounds on this challenge.
-          </p>
-          {loading ? (
-            <p className="relation-history-empty">Loading your matches…</p>
-          ) : guest ? (
-            <p className="relation-history-empty">
-              Sign in to keep a history.
-            </p>
-          ) : history.length ? (
-            <ol className="relation-history-list">
-              {history.map((match) => (
-                <li key={match.id}>
-                  <span className="relation-history-score">
-                    {match.score}/{match.questions}
-                  </span>
-                  <span className="relation-history-time">
-                    {formatSeconds(match.seconds)}
-                  </span>
-                  <span className="relation-history-date">
-                    {formatDate(match.createdAt)}
-                  </span>
-                </li>
-              ))}
-            </ol>
-          ) : (
-            <p className="relation-history-empty">
-              No matches yet. This is your first.
-            </p>
-          )}
-          <div className="relation-howto">
-            <h3>How to play</h3>
+        <MatchHistory
+          history={history}
+          loading={loading}
+          guest={guest}
+          intro="The last ten rounds on this challenge."
+          howTo={
             <p>
               Press <kbd>A</kbd>–<kbd>F</kbd> to choose a word, and{" "}
-              <kbd>Enter</kbd> to check. Select every {relationLabel(kind)}{" "}
-              to score the word.
+              <kbd>Enter</kbd> or <kbd>→</kbd> to check. Select every{" "}
+              {relationLabel(kind)} to score the word.
             </p>
-          </div>
-        </aside>
+          }
+        />
       </div>
     </div>
   );
