@@ -170,18 +170,23 @@ export async function trailingAnswers(
 }
 
 /**
- * The child's band, counted over a particular pool.
+ * The child's band, counted over a particular pool, and the words in it that
+ * are already mastered.
  *
  * The games draw from a narrower pool than the account does - the words a free
  * account may see, or the words that have the relation the game asks for - so
  * the level has to be counted over that same pool. Counting the whole bank
  * would put a free child on a band their collection does not contain, and the
  * game would then have no words to ask at the level it had chosen.
+ *
+ * The mastered set comes from the same read as the level: the games leave
+ * mastered words out by default, and review mode needs exactly this set to put
+ * them back. One query, one definition of "mastered".
  */
-export async function placementLevelFor(
+export async function placementForPool(
   userId: string,
   targets: readonly { id: string }[],
-): Promise<number> {
+): Promise<{ level: number; mastered: Set<string> }> {
   const db = database();
   const [rows, trailing] = await Promise.all([
     db
@@ -192,23 +197,32 @@ export async function placementLevelFor(
   ]);
   const byId = new Map((rows.results ?? []).map((row) => [row.word_id, row]));
   const totals = [0, 0, 0, 0, 0, 0];
+  const mastered = new Set<string>();
   const items: Array<{ level: number; mastered: boolean; correct: number }> =
     [];
   for (const target of targets) {
+    const row = byId.get(target.id);
+    const isMastered = hasMastered({
+      mastered: row?.mastered,
+      correct: row?.correct ?? 0,
+    });
+    // Mastery is recorded for every word, including a parent's own words,
+    // which have no band. They still have to be left out of a game by
+    // default, so they join the mastered set before the band check.
+    if (isMastered) mastered.add(target.id);
     const band = bandFor(target.id);
     if (band < 0 || band > 5) continue;
     totals[band] += 1;
-    const row = byId.get(target.id);
     items.push({
       level: band,
-      mastered: hasMastered({
-        mastered: row?.mastered,
-        correct: row?.correct ?? 0,
-      }),
+      mastered: isMastered,
       correct: row?.correct ?? 0,
     });
   }
-  return currentLevel(levelFractions(items, totals), trailing);
+  return {
+    level: currentLevel(levelFractions(items, totals), trailing),
+    mastered,
+  };
 }
 
 export async function accountPlacement(userId: string): Promise<{

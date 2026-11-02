@@ -34,10 +34,13 @@ const freeIds = new Set(
   freeOrder.slice(0, 224).map((id) => id),
 );
 
-async function get(cookie, kind) {
-  const response = await fetch(`${origin}/api/games?kind=${kind}`, {
-    headers: cookie ? { Cookie: cookie } : {},
-  });
+async function get(cookie, kind, extra = "") {
+  const response = await fetch(
+    `${origin}/api/games?kind=${kind}${extra ? `&${extra}` : ""}`,
+    {
+      headers: cookie ? { Cookie: cookie } : {},
+    },
+  );
   return { status: response.status, data: await response.json() };
 }
 
@@ -242,6 +245,55 @@ test("the relation games draw from the child's current band", async () => {
         1,
         `${kind}: ${question.word} is outside the account's band`,
       );
+  }
+});
+
+test("mastered words are left out unless review mode is on", async () => {
+  const account = await signedUp("games-review");
+  // Master the whole bank. Every game then has nothing left to ask, which is
+  // the only way to prove the default excludes mastered words rather than
+  // merely being unlikely to draw one.
+  const insert = db.prepare(
+    "INSERT INTO progress(user_id,word_id,correct,mastered) VALUES(?,?,5,1) ON CONFLICT(user_id,word_id) DO UPDATE SET correct=5,mastered=1",
+  );
+  db.exec("BEGIN");
+  for (const word of words) insert.run(account.id, word.id);
+  db.exec("COMMIT");
+
+  for (const kind of ["syn", "ant", "mix"]) {
+    const started = await get(account.cookie, kind);
+    assert.equal(
+      started.status,
+      402,
+      `${kind}: ${JSON.stringify(started.data)}`,
+    );
+    assert.match(
+      started.data.error,
+      /review mode/i,
+      `${kind}: the refusal does not point at review mode`,
+    );
+  }
+
+  // Review mode puts them back. The band is counted over the whole pool, not
+  // the review selection, so every band being fully mastered leaves the game
+  // on the top band rather than sliding down to the first unmastered one.
+  for (const kind of ["syn", "ant", "mix"]) {
+    const started = await get(account.cookie, kind, "includeMastered=1");
+    assert.equal(
+      started.status,
+      200,
+      `${kind}: ${JSON.stringify(started.data)}`,
+    );
+    assert.equal(started.data.questions.length, 10);
+    assert.equal(started.data.level, 5, `${kind}: the band moved in review`);
+    for (const question of started.data.questions) {
+      assert.equal(
+        progressFor(account.id, question.wordId)?.mastered,
+        1,
+        `${kind}: ${question.word} is not mastered, so review did not include the mastered words`,
+      );
+      assert.equal(levelOf.get(question.wordId), 5);
+    }
   }
 });
 

@@ -14,7 +14,7 @@ import {
 import { freeWordIds } from "./free-words";
 import { HttpError } from "./http";
 import { historyFor, recordGameMatch } from "./game-match";
-import { placementLevelFor } from "./placement";
+import { placementForPool } from "./placement";
 
 /**
  * The relation challenge's questions, and the level they are drawn from.
@@ -62,6 +62,7 @@ export async function startRelationGame(
   userId: string,
   kind: RelationKind,
   allowedWordIds: ReadonlySet<string> | undefined,
+  includeMastered: boolean,
 ): Promise<RelationState> {
   const targets = words.filter(
     (word) =>
@@ -74,16 +75,30 @@ export async function startRelationGame(
       "Your free collection is disabled. Subscribe to continue playing.",
     );
 
+  // Mastered words are left out by default: a game that keeps asking words the
+  // child already knows is a game that stops teaching. Review mode puts them
+  // back, because a child who wants to play the familiar words should be able
+  // to. The level is counted over the whole pool either way, so turning review
+  // on does not move the band.
+  const { level, mastered } = await placementForPool(userId, targets);
+  const playable = includeMastered
+    ? targets
+    : targets.filter((word) => !mastered.has(word.id));
+  if (!playable.length)
+    throw new HttpError(
+      402,
+      "Every word here is mastered. Turn on review mode to play them again.",
+    );
+
   // Align the questions with where the child is. The band is drawn from the
   // same placement the practice screen shows; if it cannot fill a match - a
   // free account whose collection has no words at that band, say - the whole
-  // allowed pool is used and the page is told there is no level to show.
-  const level = await placementLevelFor(userId, targets);
-  const inBand = targets.filter((word) => levelOf.get(word.id) === level);
+  // playable pool is used and the page is told there is no level to show.
+  const inBand = playable.filter((word) => levelOf.get(word.id) === level);
   const aligned = inBand.length >= QUESTIONS_PER_MATCH;
   const questions = buildQuestions({
     kind,
-    targets: aligned ? inBand : targets,
+    targets: aligned ? inBand : playable,
     vocabulary: words,
   });
   if (!questions.length)

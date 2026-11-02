@@ -14,6 +14,7 @@ import {
 import { shuffle } from "@/lib/challenge/words";
 import { formatMatchSeconds } from "@/lib/games";
 import MatchHistory from "./match-history";
+import ReviewToggle from "./review-toggle";
 import WordCard from "./word-card";
 
 /**
@@ -106,10 +107,12 @@ export default function RelationChallenge({
   const [matchId, setMatchId] = useState("");
   const [startedAt, setStartedAt] = useState(0);
   const [level, setLevel] = useState<number | null>(null);
+  const [includeMastered, setIncludeMastered] = useState(false);
 
   const start = useCallback(async () => {
     setLoading(true);
     setError("");
+    setQuestions([]);
     setSummary(null);
     setResults([]);
     setSubmissions([]);
@@ -118,7 +121,9 @@ export default function RelationChallenge({
     setChecked(false);
     setMatchId(newMatchId());
     try {
-      const state = await api<GameState>(`/api/games?kind=${kind}`);
+      const state = await api<GameState>(
+        `/api/games?kind=${kind}&includeMastered=${includeMastered ? "1" : "0"}`,
+      );
       setQuestions(state.questions);
       setHistory(state.history);
       setLevel(state.level);
@@ -145,7 +150,7 @@ export default function RelationChallenge({
       setStartedAt(Date.now());
       setLoading(false);
     }
-  }, [kind, demoQuestions]);
+  }, [kind, demoQuestions, includeMastered]);
 
   useEffect(() => {
     // Deferred a turn so the first render paints before the request's state
@@ -271,6 +276,7 @@ export default function RelationChallenge({
   }, [next, toggle, questions, index, checked, summary]);
 
   const title = kind === "syn" ? "Synonym Challenge" : "Antonym Challenge";
+  const midMatch = !loading && !summary && results.length > 0;
 
   return (
     <div className="relation-page">
@@ -282,6 +288,13 @@ export default function RelationChallenge({
             Pick the {relationLabel(kind, 3)} of each word. Ten rounds, then
             your score.
           </p>
+          {!guest ? (
+            <ReviewToggle
+              checked={includeMastered}
+              onChange={setIncludeMastered}
+              disabled={busy || loading || midMatch}
+            />
+          ) : null}
         </div>
         <div className="relation-badges">
           {guest ? <span className="relation-pill is-guest">Guest</span> : null}

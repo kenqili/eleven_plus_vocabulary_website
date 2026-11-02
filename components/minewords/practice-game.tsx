@@ -12,6 +12,7 @@ import type {
 import { shuffle } from "@/lib/challenge/words";
 import { formatMatchSeconds } from "@/lib/games";
 import MatchHistory from "./match-history";
+import ReviewToggle from "./review-toggle";
 import WordCard from "./word-card";
 
 /**
@@ -66,10 +67,12 @@ export default function PracticeGame({
   const [matchId, setMatchId] = useState("");
   const [startedAt, setStartedAt] = useState(0);
   const [level, setLevel] = useState<number | null>(null);
+  const [includeMastered, setIncludeMastered] = useState(false);
 
   const start = useCallback(async () => {
     setLoading(true);
     setError("");
+    setQuestions([]);
     setSummary(null);
     setResults([]);
     setSubmissions([]);
@@ -78,7 +81,9 @@ export default function PracticeGame({
     setChecked(false);
     setMatchId(newMatchId());
     try {
-      const state = await api<GameState>("/api/games?kind=mix");
+      const state = await api<GameState>(
+        `/api/games?kind=mix&includeMastered=${includeMastered ? "1" : "0"}`,
+      );
       setQuestions(state.questions);
       setHistory(state.history);
       setLevel(state.level);
@@ -102,7 +107,7 @@ export default function PracticeGame({
       setStartedAt(Date.now());
       setLoading(false);
     }
-  }, [demoQuestions]);
+  }, [demoQuestions, includeMastered]);
 
   useEffect(() => {
     const timer = setTimeout(() => void start(), 0);
@@ -215,6 +220,8 @@ export default function PracticeGame({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [next, choose, questions, index, checked, summary]);
 
+  const midMatch = !loading && !summary && results.length > 0;
+
   return (
     <div className="relation-page">
       <div className="relation-hero">
@@ -225,6 +232,13 @@ export default function PracticeGame({
             Ten mixed questions from your practice words: meanings, similar
             words, opposites, name the word and fill the gap.
           </p>
+          {!guest ? (
+            <ReviewToggle
+              checked={includeMastered}
+              onChange={setIncludeMastered}
+              disabled={busy || loading || midMatch}
+            />
+          ) : null}
         </div>
         <div className="relation-badges">
           {guest ? <span className="relation-pill is-guest">Guest</span> : null}

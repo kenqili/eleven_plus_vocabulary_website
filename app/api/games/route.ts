@@ -17,7 +17,7 @@ import { GAME_KINDS, type GameKind } from "@/lib/challenge/relations";
  *
  * The kind is a parameter rather than a second route because the games share
  * the match history, the correctness write and the entitlement check. Syn and
- * ant differ in one list of the bank; mi is the mixed-practice game, which
+ * ant differ in one list of the bank; mix is the mixed-practice game, which
  * builds its questions from the practice collection instead.
  *
  * Entitlement is the same membership call and the same free-word set the
@@ -50,11 +50,19 @@ export async function GET(request: Request) {
   return boundary(async () => {
     const user = await currentUser(request);
     if (!user) throw new HttpError(401, "Sign in to play.");
-    const kind = gameKind(new URL(request.url).searchParams.get("kind"));
+    const selection = new URL(request.url).searchParams;
+    const kind = gameKind(selection.get("kind"));
+    // Off by default: a game that keeps asking words the child has mastered
+    // stops teaching. `includeMastered=1` is the review mode.
+    const includeMastered = selection.get("includeMastered") === "1";
     const allowedWordIds = await allowedFor(user);
     if (kind === "mix")
-      return json(await startPracticeGame(user.id, allowedWordIds));
-    return json(await startRelationGame(user.id, kind, allowedWordIds));
+      return json(
+        await startPracticeGame(user.id, allowedWordIds, includeMastered),
+      );
+    return json(
+      await startRelationGame(user.id, kind, allowedWordIds, includeMastered),
+    );
   });
 }
 
