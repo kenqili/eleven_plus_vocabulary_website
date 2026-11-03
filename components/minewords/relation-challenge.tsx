@@ -13,6 +13,7 @@ import {
 } from "@/lib/challenge/relations";
 import { shuffle } from "@/lib/challenge/words";
 import { formatMatchSeconds } from "@/lib/games";
+import { useEventSound } from "@/lib/theme/use-sounds";
 import MatchHistory from "./match-history";
 import ReviewToggle from "./review-toggle";
 import WordCard from "./word-card";
@@ -163,6 +164,12 @@ export default function RelationChallenge({
   const total = questions.length;
   const scoreSoFar = results.filter((result) => result.correct).length;
   const last = results[results.length - 1];
+  // One verdict sound per checked answer. The match id and index make the key
+  // unique, so two right answers in a row are two sounds rather than one.
+  useEventSound(
+    checked ? `${matchId}:${index}` : null,
+    last?.correct ? "correct" : "wrong",
+  );
 
   const toggle = useCallback(
     (option: string) => {

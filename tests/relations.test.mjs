@@ -319,6 +319,12 @@ test("every game in the navigation has a page, and the header points at the sect
       existsSync(`app${game.href}/page.tsx`),
       `${game.label} is in the navigation but app${game.href}/page.tsx does not exist`,
     );
+  assert.equal(GAMES[0].slug, "mix", "Mix Challenge should be the first game");
+  assert.equal(
+    GAMES[GAMES.length - 1].slug,
+    "five-letters",
+    "Five Letters should be the last game",
+  );
   assert.ok(existsSync("app/games/page.tsx"), "the games index is missing");
   const header = readFileSync("components/minewords/header.tsx", "utf8");
   assert.match(header, /href: "\/games"/, "the header has no Games link");

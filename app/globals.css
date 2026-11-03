@@ -7524,6 +7524,27 @@ hr {
   background: var(--surface-danger-2);
   border-color: var(--line-danger-2);
   color: var(--ink-danger);
+  animation: option-shake 0.36s ease-in-out;
+}
+/* The pick the child made, shaking once so a wrong answer is felt as well as
+   seen. The global reduced-motion rule turns this off. */
+@keyframes option-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(6px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
 }
 .relation-option.is-missed {
   opacity: 0.72;

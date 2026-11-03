@@ -189,6 +189,12 @@ test("a sound that lands on top of another is dropped", () => {
   assert.equal(isTooSoon(10, 10.5), false, "long enough after");
   // A tap click is not a verdict, so it is never dropped for being early.
   assert.equal(isTooSoon(10, 10.001, CLASSIC_VOICE, "select"), false);
+  // Nor may a tap click swallow the verdict that follows it.
+  assert.equal(
+    isTooSoon(10, 10.001, CLASSIC_VOICE, "correct", "select"),
+    false,
+    "a tap click must not swallow the verdict",
+  );
   // But a correct answer arriving a moment after another one is dropped.
   assert.equal(isTooSoon(10, 10.001, CLASSIC_VOICE, "correct"), true);
   assert.ok(RETRIGGER_GAP_SECONDS > 0.02, "must be long enough to be audible");

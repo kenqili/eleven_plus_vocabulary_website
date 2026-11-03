@@ -5,7 +5,7 @@ import { GAMES } from "@/lib/games";
 export const metadata: Metadata = {
   title: "Games — word games for 11+ vocabulary",
   description:
-    "Short word games for the vocabulary a child is learning: Five Letters, synonym and antonym challenges, and mixed practice.",
+    "Short word games for the vocabulary a child is learning: mixed practice, synonym and antonym challenges, and Five Letters.",
 };
 
 /**

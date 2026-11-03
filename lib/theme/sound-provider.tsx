@@ -54,8 +54,8 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
   const voice = useRef<Voice>(CLASSIC_VOICE);
   /** True once a gesture has happened. Not the same as the context running. */
   const unlocked = useRef(false);
-  /** When the last feedback sound started, so a fast tap cannot pile them up. */
-  const lastStarted = useRef<number | null>(null);
+  /** The last sound and when it started, so a fast tap cannot pile them up. */
+  const lastStarted = useRef<{ at: number; name: SoundName } | null>(null);
 
   // The voice follows the theme, so the app sounds like it looks. A theme
   // chosen from the menu changes the voice without a rebuild.
@@ -81,9 +81,20 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
       const sound = SOUNDS[name];
       const now = voice.current;
       // Drop a sound that lands while the last one is still ringing. A missing
-      // click goes unnoticed; a pile of them does not.
-      if (isTooSoon(lastStarted.current, audio.currentTime, now, name)) return;
-      lastStarted.current = audio.currentTime;
+      // click goes unnoticed; a pile of them does not. The name travels with
+      // the time so a tap click cannot swallow the verdict that follows it.
+      const previous = lastStarted.current;
+      if (
+        isTooSoon(
+          previous?.at ?? null,
+          audio.currentTime,
+          now,
+          name,
+          previous?.name,
+        )
+      )
+        return;
+      lastStarted.current = { at: audio.currentTime, name };
 
       /** One short pitched blip with a hard decay. */
       const blip = (

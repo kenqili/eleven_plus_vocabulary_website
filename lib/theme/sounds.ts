@@ -215,9 +215,14 @@ export const isTooSoon = (
   now: number,
   voice: Voice = CLASSIC_VOICE,
   name?: SoundName,
+  previous?: SoundName,
 ) => {
   if (lastStartedAt === null) return false;
   // The feedback sounds are the ones worth protecting; a tap click is not.
   if (name === "select") return false;
+  // Nor may a tap click swallow the verdict that follows it. The click is a
+  // texture under the finger; the verdict is the thing the child is listening
+  // for, and it often starts less than a tenth of a second later.
+  if (previous === "select") return false;
   return now - lastStartedAt < Math.max(RETRIGGER_GAP_SECONDS, voice.length * 0.5);
 };

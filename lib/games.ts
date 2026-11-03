@@ -16,10 +16,11 @@ export type Game = {
 
 export const GAMES: readonly Game[] = [
   {
-    slug: "five-letters",
-    href: "/games/five-letters",
-    label: "Five Letters",
-    blurb: "Guess the hidden five-letter word in six tries.",
+    slug: "mix",
+    href: "/games/mix",
+    label: "Mix Challenge",
+    blurb:
+      "Ten mixed questions: meanings, similar words, opposites, name the word and fill the gap.",
   },
   {
     slug: "syn",
@@ -34,11 +35,10 @@ export const GAMES: readonly Game[] = [
     blurb: "Pick the words that mean the opposite. Ten rounds, then a score.",
   },
   {
-    slug: "mix",
-    href: "/games/mix",
-    label: "Mix Challenge",
-    blurb:
-      "Ten mixed questions: meanings, similar words, opposites, name the word and fill the gap.",
+    slug: "five-letters",
+    href: "/games/five-letters",
+    label: "Five Letters",
+    blurb: "Guess the hidden five-letter word in six tries.",
   },
 ] as const;
 
