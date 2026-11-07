@@ -17,6 +17,11 @@ export type PlacementData = {
  * and the refresh when `refreshKey` changes (the practice page passes the
  * mastered count).
  *
+ * Callers pass no live number when the browser's bank is narrower than the
+ * account's - the free tier gets only the free collection - because a live
+ * placement over that smaller pool would read as a score for the account. The
+ * server's full-bank placement is the number then.
+ *
  * The fill shows the first slice of the full 0–10,000 gradient, not the whole
  * gradient squeezed into the fill: at low scores only green shows, yellow
  * arrives around the middle, red near the top. Ticks mark where each level

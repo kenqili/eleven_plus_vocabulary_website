@@ -34,7 +34,9 @@ import { database } from "./db";
  * practice pool of the moment (which also folds in the chosen types and the
  * free-tier allow-list). For a full-access account practising all types the
  * two coincide exactly; for anyone else the badge on a question is the live
- * number and this is the trend. Conflating them would mean threading
+ * number and this is the trend. The 0–10,000 bar reads this on the free tier,
+ * where the browser's bank is the free collection alone, so a smaller pool
+ * cannot inflate the account's score. Conflating them would mean threading
  * entitlement into every consumer.
  */
 

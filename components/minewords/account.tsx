@@ -650,16 +650,16 @@ export default function Account({
                       <>
                         <span className="pill">Free</span>
                         <p>
-                          <strong>Your access has ended.</strong>
+                          <strong>Your full access has ended.</strong>
                         </p>
                         <p className="muted">
                           It ran until{" "}
                           {billing.periodEnd
                             ? date(billing.periodEnd)
                             : "the end of your last term"}
-                          . You now have the {freeWordLimit}-word free
-                          collection. Buy a length below and it will be added
-                          to that date — it does not replace it.
+                          . You can now access only the {freeWordLimit}-word
+                          free collection. Buy a length below and it will be
+                          added to that date — it does not replace it.
                         </p>
                       </>
                     ) : (

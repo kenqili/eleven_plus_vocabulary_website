@@ -1372,7 +1372,11 @@ test("an expired term says so instead of going quiet", () => {
   // happens when something has been paid for - so it cannot fire for a family
   // who has never paid and think they are being chased.
   const source = readFileSync("components/minewords/challenge.tsx", "utf8");
-  assert.match(source, /Your access has ended/, "there is no expired message");
+  assert.match(
+    source,
+    /Your full access has ended/,
+    "there is no expired message",
+  );
   assert.match(
     source,
     /!study\.active && study\.periodEnd/,

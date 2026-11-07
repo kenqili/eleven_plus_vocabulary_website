@@ -138,7 +138,7 @@ test("a lapsed paid term is never called a trial", () => {
   );
   assert.match(
     account,
-    /Your access has ended/,
+    /Your full access has ended/,
     "a lapsed paid term does not say the access ended",
   );
   // And it is given the date it ran until, which is the question they came with.

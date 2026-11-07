@@ -155,6 +155,12 @@ export default function Challenge() {
   const lastLevel = useRef<number | null>(null);
   useEffect(() => {
     if (!question || study.historical) return;
+    // The free tier's browser bank is only the free collection, so its
+    // placement counts mastery of those words and can reach level 5 while the
+    // account itself is nowhere near it. The bar shows the server's full-bank
+    // level on that tier, so a celebration from the smaller pool would announce
+    // a promotion the number beside it does not show.
+    if (study.freeTier) return;
     if (lastQuestion.current === question.id) return;
     lastQuestion.current = question.id;
     const level = question.placement?.level ?? null;
@@ -164,7 +170,7 @@ export default function Challenge() {
         : null,
     );
     if (level !== null) lastLevel.current = level;
-  }, [question, study.historical]);
+  }, [question, study.historical, study.freeTier]);
   const mastery = feedback?.mastery ?? question?.mastery;
   // The run the child just extended, which is the one the coach names. Before
   // an answer there is nothing to say about a run that has not happened.
@@ -372,18 +378,36 @@ export default function Challenge() {
               {/*
                 How far to 10,000, in automatic mode only: with an explicit
                 level choice the bands would describe a pool the child is not
-                practising. The bar is live from the browser engine, so the
-                score chip on it moves the moment an answer is graded. Signed
-                in only — the demo keeps nothing, so it has nothing to show.
+                practising. With full access the bar is live from the browser
+                engine, so the score chip on it moves the moment an answer is
+                graded; on the free tier it reads the server's full-bank
+                placement, so a smaller practice collection cannot inflate it.
+                Signed in only — the demo keeps nothing, so it has nothing to
+                show.
               */}
               {!demo && study.level === null && (
                 <LevelProgress
                   refreshKey={stats?.mastered ?? 0}
+                  // A free account's browser bank is the free collection, so
+                  // its live placement counts mastery of those 224 words and
+                  // reports a level and score for that smaller pool. The
+                  // 0–10,000 bar is the account's knowledge, so on the free
+                  // tier it reads the server's full-bank placement instead.
+                  // Otherwise a child who had mastered most of the free words
+                  // saw the bar jump to 9,955 when their access ended.
                   liveLevel={
-                    study.livePlacement?.level ?? question?.placement?.level ?? null
+                    study.freeTier
+                      ? null
+                      : (study.livePlacement?.level ??
+                        question?.placement?.level ??
+                        null)
                   }
                   liveScore={
-                    study.livePlacement?.score ?? question?.placement?.score ?? null
+                    study.freeTier
+                      ? null
+                      : (study.livePlacement?.score ??
+                        question?.placement?.score ??
+                        null)
                   }
                 />
               )}
@@ -453,11 +477,12 @@ export default function Challenge() {
                 // works on the free collection, so without this a parent has no
                 // reason to know their paid access ended at all.
                 <div className="trial-banner" role="status">
-                  <strong>Your access has ended</strong>
+                  <strong>Your full access has ended</strong>
                   <span>
                     It ran until{" "}
-                    {new Date(study.periodEnd).toLocaleDateString()}. Your child
-                    can still practise with the free collection.
+                    {new Date(study.periodEnd).toLocaleDateString()}. You can
+                    now practise only the free collection of{" "}
+                    {study.freeWordCount ?? 20} words.
                   </span>
                   <Link href="/account">Buy access to continue →</Link>
                 </div>
@@ -546,16 +571,25 @@ export default function Challenge() {
                         question carries no placement, because the child said
                         where they are. The score is formatted for en-GB so
                         4,150 reads as four thousand, not a decimal.
+
+                        Not on the free tier: the browser engine there counts
+                        the free collection only, so its level and score describe
+                        those 224 words rather than the account. The bar above
+                        reads the server's full-bank placement instead, and a
+                        second number built from a different pool would only
+                        contradict it.
                       */}
-                      {study.level === null && question.placement && (
-                        <span
-                          className="pill level-pill"
-                          title={`Level ${question.placement.level} of 0 to 5, score ${question.placement.score} out of 10,000`}
-                        >
-                          Level {question.placement.level} ·{" "}
-                          {question.placement.score.toLocaleString("en-GB")}
-                        </span>
-                      )}
+                      {study.level === null &&
+                        !study.freeTier &&
+                        question.placement && (
+                          <span
+                            className="pill level-pill"
+                            title={`Level ${question.placement.level} of 0 to 5, score ${question.placement.score} out of 10,000`}
+                          >
+                            Level {question.placement.level} ·{" "}
+                            {question.placement.score.toLocaleString("en-GB")}
+                          </span>
+                        )}
                       <span className="pill">
                         {question.seen <= 1
                           ? "New word"
